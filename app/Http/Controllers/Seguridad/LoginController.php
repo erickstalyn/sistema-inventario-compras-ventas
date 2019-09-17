@@ -9,7 +9,7 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 class LoginController extends Controller
 {
     use AuthenticatesUsers;
-    protected $redirectTo = '/main';
+    protected $redirectTo = 'main';
 
     public function index()
     {
@@ -21,4 +21,25 @@ class LoginController extends Controller
         return 'usuario';
     }
  
+    
+
+    protected function authenticated(Request $request, $user)
+    {
+        if($user->estado==1){
+            auth()->user()->setSession();
+        }else{
+            $this->guard()->logout();
+            $request->session()->invalidate();
+            return redirect('login')->withErrors(['errors' => 'EL usuario se encuentra desactivado']);
+        }
+    }
+
+    public function logout(Request $request)
+    {
+        $this->guard()->logout();
+
+        $request->session()->invalidate();
+
+        return $this->loggedOut($request) ?: redirect('login');
+    }
 }

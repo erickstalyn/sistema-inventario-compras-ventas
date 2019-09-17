@@ -42,5 +42,16 @@ class UsuarioSeeder extends Seeder
                 'updated_at' => $now
             )
         ));
+        DB::table('usuario')->insert(array(
+            array(
+                'rol_id'=> 3,
+                'persona_id'=>3 ,
+                'usuario'=>'almacen2',
+                'password'=>bcrypt('almacen2'),
+                'estado' => false,
+                'created_at' => $now,
+                'updated_at' => $now
+            )
+        ));
     }
 }

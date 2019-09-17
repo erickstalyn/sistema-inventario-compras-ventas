@@ -27,8 +27,17 @@
 
       <!-- BARRA LATERAL DE OPCIONES SEGUN EL TIPO SE USUARIO -->
 
-      @include('sidebars.sidebaradministrador')
+      @if(Auth::check())
+          @if(Auth::user()->rol_id==1)
+              @include('sidebars.sidebaradministrador')
+          @elseif(Auth::user()->rol_id==2)
+              @include('sidebars.sidebarpuesto')
+          @elseif(Auth::user()->rol_id==3)
+              @include('sidebars.sidebaralmacen')
+          @else
 
+          @endif
+      @endif
       
 
 
@@ -268,7 +277,7 @@
         <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
         <div class="modal-footer">
           <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-          <a class="btn btn-primary" href="login.html">Logout</a>
+        <a class="btn btn-primary" href="{{route('logout')}}">Logout</a>
         </div>
       </div>
     </div>

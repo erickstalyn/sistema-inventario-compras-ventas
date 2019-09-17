@@ -5,12 +5,14 @@
     <div class="col-md-8">
       <div class="card-group mb-0">
         <div class="card p-4">
+          
         <form class="form-horizontal was-validated" action="{{route('login_post')}}" method="post" autocomplete="off">
           {{ csrf_field()}}
-          
           <div class="card-body">
+            
             <h1 class="text-dark">Acceder</h1>
             <p class="text-muted">Control de acceso al sistema</p>
+            
             <div class="form-group mb-3{{$errors->has('usuario' ? 'is-invalid' : '')}}">
               <span class="input-group-addon"><i class="icon-user"></i></span>
             <input type="text" name="usuario" id="usuario" class="form-control" placeholder="Usuario" value="{{old('usuario')}}">

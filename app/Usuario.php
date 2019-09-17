@@ -11,11 +11,11 @@ class Usuario extends Authenticatable
     protected $table= 'usuario';
     protected $remember_token = false;
     protected $fillable = [
-        'rol_id', 'usuario', 'clave', 'estado'
+        'rol_id', 'usuario', 'password', 'estado'
     ];
 
     protected $hidden = [
-        'clave'
+        'password'
     ];
 
     //Relación inversa de uno a muchos con Rol
@@ -39,5 +39,8 @@ class Usuario extends Authenticatable
         return $this->belongsTo('App\Persona');
     }
 
+    public function setSession(){
+
+    }
 
 }
