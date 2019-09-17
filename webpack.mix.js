@@ -17,11 +17,10 @@ mix.styles([
  ], 'public/css/plantilla.css')
  .scripts([
     
-    'resources/assets/plantilla/js/Chart.min.js',
     'resources/assets/plantilla/js/jquery.min.js',
     'resources/assets/plantilla/js/jquery.easing.min.js',
-    
+    'resources/assets/plantilla/js/Chart.min.js',
     'resources/assets/plantilla/js/sb-admin-2.min.js',
-    'resources/assets/plantilla/js/bootstrap.bundle.min.js'
+     'resources/assets/plantilla/js/bootstrap.bundle.min.js'
 ], 'public/js/plantilla.js')
 .js(['resources/js/app.js'], 'public/js/app.js');

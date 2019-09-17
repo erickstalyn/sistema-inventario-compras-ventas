@@ -284,8 +284,15 @@
   <script src="js/jquery.easing.min.js"></script>
   <script src="js/sb-admin-2.min.js"></script>
   <script src="js/Chart.min.js"></script>-->
+
+  
+  
+  
+  
   <script src="js/app.js"></script>
-  <script src="js/plantilla.js"></script>
+
+  <!--<script src="js/plantilla.js"></script>-->
+  
 </body>
 
 </html>
