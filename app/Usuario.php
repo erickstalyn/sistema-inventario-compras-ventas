@@ -12,7 +12,7 @@ class Usuario extends Authenticatable
     protected $table= 'usuario';
     protected $remember_token = false;
     protected $fillable = [
-        'rol_id', 'usuario', 'password', 'estado'
+        'rol_id', 'usuario', 'password', 'estado', 'persona_id'
     ];
 
     protected $hidden = [
@@ -46,6 +46,7 @@ class Usuario extends Authenticatable
         // Session::put([
             
         // ]);
+        dd($this->getPersona()->nombre);
     }
 
 }

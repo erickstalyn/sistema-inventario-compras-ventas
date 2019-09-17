@@ -14,21 +14,21 @@ class PersonaSeeder extends Seeder
         $now = new DateTime;
         DB::table('persona')->insert(array(
             array(
-                'nombre'=>'Silmar',
+                'nombre'=>'Silmar Gutierrez',
                 'created_at' => $now,
                 'updated_at' => $now
             )
         ));
         DB::table('persona')->insert(array(
             array(
-                'nombre_negocio' => 'Puesto A',
+                'nombre_negocio' => 'Mi puesto A',
                 'created_at' => $now,
                 'updated_at' => $now
             )
         ));
         DB::table('persona')->insert(array(
             array(
-                'nombre_negocio' => 'Almacen 1',
+                'nombre_negocio' => 'Mi almacen 1',
                 'created_at' => $now,
                 'updated_at' => $now
             )
