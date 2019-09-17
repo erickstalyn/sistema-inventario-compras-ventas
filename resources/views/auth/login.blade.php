@@ -9,19 +9,29 @@
         <form class="form-horizontal was-validated" action="{{route('login_post')}}" method="post" autocomplete="off">
           {{ csrf_field()}}
           <div class="card-body">
-            
+            <!-- Prueba-->
+            @if($errors->any())
+            <div class="alert alert-danger alert-dismissible">
+              <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>
+              <div class="alert-text">
+                  @foreach($errors->all() as $error)
+                    <span>{{ $error }}</span>
+                  @endforeach
+              </div>
+              </div>
+            @endif
+          <!-- Prueba-->
             <h1 class="text-dark">Acceder</h1>
             <p class="text-muted">Control de acceso al sistema</p>
             
-            <div class="form-group mb-3{{$errors->has('usuario' ? 'is-invalid' : '')}}">
+            <div class="form-group mb-3">
               <span class="input-group-addon"><i class="icon-user"></i></span>
-            <input type="text" name="usuario" id="usuario" class="form-control" placeholder="Usuario" value="{{old('usuario')}}">
-              {!!$errors->first('usuario','<span class="invalid-feedback">:message</span>')!!}
+              <input type="text" name="usuario" id="usuario" class="form-control" placeholder="Usuario" value="{{old('usuario')}}">
             </div>
-            <div class="form-group mb-4{{$errors->has('clave' ? 'is-invalid' : '')}}">
+            
+            <div class="form-group mb-4">
               <span class="input-group-addon"><i class="icon-lock"></i></span>
               <input type="password" name="password" id="clave" class="form-control" placeholder="Clave">
-              {!!$errors->first('clave','<span class="invalid-feedback">:message</span>')!!}
             </div>
             <div class="row">
               <div class="col-6">
