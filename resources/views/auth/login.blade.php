@@ -5,7 +5,7 @@
     <div class="col-md-8">
       <div class="card-group mb-0">
         <div class="card p-4">
-        <form class="form-horizontal was-validated" action="{{route('login')}}" method="post">
+        <form class="form-horizontal was-validated" action="{{route('login_post')}}" method="post" autocomplete="off">
           {{ csrf_field()}}
           
           <div class="card-body">
@@ -18,7 +18,7 @@
             </div>
             <div class="form-group mb-4{{$errors->has('clave' ? 'is-invalid' : '')}}">
               <span class="input-group-addon"><i class="icon-lock"></i></span>
-              <input type="password" name="clave" id="clave" class="form-control" placeholder="Clave">
+              <input type="password" name="password" id="clave" class="form-control" placeholder="Clave">
               {!!$errors->first('clave','<span class="invalid-feedback">:message</span>')!!}
             </div>
             <div class="row">

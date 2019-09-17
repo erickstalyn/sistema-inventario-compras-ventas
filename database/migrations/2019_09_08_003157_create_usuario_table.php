@@ -18,7 +18,7 @@ class CreateUsuarioTable extends Migration
             $table->unsignedBigInteger('rol_id');
             $table->unsignedBigInteger('persona_id');
             $table->string('usuario', 25);
-            $table->string('clave', 25);
+            $table->string('password');
             $table->boolean('estado')->default(1);
 
             $table->foreign('rol_id')->references('id')->on('rol');

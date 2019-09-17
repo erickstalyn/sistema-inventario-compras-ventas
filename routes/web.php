@@ -1,23 +1,29 @@
 <?php
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
-
-Route::get('/main', function () {
-    return view('contenidoPrincipal.contenidoPrincipal');
-})->name('main');
-
-Route::get('/', 'Auth\LoginController@showLoginForm');
-
-Route::post('/login', 'Auth\LoginController@login')->name('login');
 
 
-Route::get('/home', 'HomeController@index')->name('home');
+// Route::get('/main', function () {
+//     return view('contenidoPrincipal.contenidoPrincipal');
+// })->name('main');
+
+// Route::get('/', 'Auth\LoginController@showLoginForm');
+
+// Route::post('/login', 'Auth\LoginController@login')->name('login');
+
+
+// Route::get('/home', 'HomeController@index')->name('home');
+
+//Route::get('', 'AdminController@index');
+
+Route::get('/login', 'Seguridad\LoginController@index')->name('login');
+Route::post('/login', 'Seguridad\LoginController@login')->name('login_post');
+
+Route::group(['middleware' => ['auth']], function () {
+
+    Route::get('/main', function () {
+        return view('contenidoPrincipal.contenidoPrincipal');
+    })->name('main');
+    
+    Route::get('/home', 'HomeController@index')->name('home');
+
+});

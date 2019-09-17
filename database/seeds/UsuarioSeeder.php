@@ -17,7 +17,7 @@ class UsuarioSeeder extends Seeder
                 'rol_id'=> 1,
                 'persona_id'=>1 ,
                 'usuario'=>'silmar',
-                'clave'=>'silmar',
+                'password'=>bcrypt('silmar'),
                 'created_at' => $now,
                 'updated_at' => $now
             )
@@ -27,7 +27,7 @@ class UsuarioSeeder extends Seeder
                 'rol_id'=> 2,
                 'persona_id'=>2 ,
                 'usuario'=>'puestoa',
-                'clave'=>'puestoa',
+                'password'=>bcrypt('puestoa'),
                 'created_at' => $now,
                 'updated_at' => $now
             )
@@ -37,7 +37,7 @@ class UsuarioSeeder extends Seeder
                 'rol_id'=> 3,
                 'persona_id'=>3 ,
                 'usuario'=>'almacen1',
-                'clave'=>'almacen1',
+                'password'=>bcrypt('almacen1'),
                 'created_at' => $now,
                 'updated_at' => $now
             )
