@@ -23,6 +23,8 @@ Route::get('/logout', 'Seguridad\LoginController@logout')->name('logout');
 Route::group(['middleware' => ['auth']], function () {
 
     Route::get('/main', function () {
+        // con ello muestras toda la informacion del usuario logueado
+        // dd(auth());
         return view('contenidoPrincipal.contenidoPrincipal');
     })->name('main');
 

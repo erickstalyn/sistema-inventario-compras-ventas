@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\Session;
 
 class Usuario extends Authenticatable
 {
@@ -40,7 +41,11 @@ class Usuario extends Authenticatable
     }
 
     public function setSession(){
-
+        //con this, me refiero a $user, y $user es el usuario loqueado actualmente
+        //Sirve para añadir variables en la sesion
+        // Session::put([
+            
+        // ]);
     }
 
 }

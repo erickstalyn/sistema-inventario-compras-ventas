@@ -26,7 +26,7 @@ class LoginController extends Controller
     protected function authenticated(Request $request, $user)
     {
         if($user->estado==1){
-            auth()->user()->setSession();
+            $user->setSession();
         }else{
             $this->guard()->logout();
             $request->session()->invalidate();
