@@ -18,9 +18,6 @@ class CreateRolTable extends Migration
             $table->string('nombre',20)->unique();
 
         });
-        DB::table('rol')->insert(array('nombre'=>'Administrador'));
-        DB::table('rol')->insert(array('nombre'=>'Puesto'));
-        DB::table('rol')->insert(array('nombre'=>'Almacén'));
     }
 
     /**

@@ -28,10 +28,6 @@ class CreateUsuarioTable extends Migration
 
             
         });
-
-        DB::table('usuario')->insert(array('rol_id'=> 1, 'persona_id'=>1 ,'usuario'=>'silmar', 'clave'=>'silmar'));
-        DB::table('usuario')->insert(array('rol_id'=> 2, 'persona_id'=>2 ,'usuario'=>'puestoa', 'clave'=>'puestoa'));
-        DB::table('usuario')->insert(array('rol_id'=> 3, 'persona_id'=>3 ,'usuario'=>'almacena', 'clave'=>'almacena'));
     }
 
     /**

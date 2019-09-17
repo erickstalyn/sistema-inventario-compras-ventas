@@ -31,9 +31,6 @@ class CreatePersonaTable extends Migration
             $table->timestamps();
         });
 
-        DB::table('persona')->insert(array('nombre'=>'Silmar'));
-        DB::table('persona')->insert(array('nombre'=>'Puesto A'));
-        DB::table('persona')->insert(array('nombre'=>'Almacen 1'));
     }
 
     /**
