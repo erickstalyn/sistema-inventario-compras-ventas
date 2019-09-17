@@ -26,7 +26,7 @@
     <div id="wrapper">
 
       <!-- BARRA LATERAL DE OPCIONES SEGUN EL TIPO SE USUARIO -->
-
+      
       @if(Auth::check())
           @if(Auth::user()->rol_id==1)
               @include('sidebars.sidebaradministrador')
@@ -199,7 +199,9 @@
               <!-- INICIO DE LA INFORMACIÓN DEL USUARIO -->
               <li class="nav-item dropdown no-arrow">
                 <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Hola, {{ Auth::user()->id}}</span>
+                <span class="mr-2 d-none d-lg-inline text-gray-600 small">
+                  Hola, {{ Auth::user()->rol_id == 1 ? Auth::user()->getPersona->nombre : Auth::user()->getPersona->nombre_negocio }}
+                </span>
                   <img class="img-profile rounded-circle" src="https://source.unsplash.com/QAB-WJcbgJk/60x60">
                 </a>
                 <!-- Dropdown - User Information -->

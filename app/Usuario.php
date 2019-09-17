@@ -37,7 +37,7 @@ class Usuario extends Authenticatable
     }
 
     public function getPersona(){
-        return $this->belongsTo('App\Persona');
+        return $this->belongsTo('App\Persona', 'persona_id');
     }
 
     public function setSession(){

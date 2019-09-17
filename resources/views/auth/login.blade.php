@@ -26,7 +26,7 @@
             
             <div class="form-group mb-3">
               <span class="input-group-addon"><i class="icon-user"></i></span>
-              <input type="text" name="usuario" id="usuario" class="form-control" placeholder="Usuario" value="{{old('usuario')}}">
+              <input type="text" name="usuario" id="usuario" class="form-control" placeholder="Usuario" value="{{old('usuario')}}" autofocus>
             </div>
             
             <div class="form-group mb-4">

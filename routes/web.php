@@ -15,9 +15,14 @@
 
 //Route::get('', 'AdminController@index');
 
+//Pruebas
+//Route::get('/mostrar', 'PruebasController@mostrar')->name('mostrar');
+
+
 Route::get('/', 'Seguridad\LoginController@index')->name('login');
 Route::post('/login', 'Seguridad\LoginController@login')->name('login_post');
 Route::get('/logout', 'Seguridad\LoginController@logout')->name('logout');
+
 
 
 Route::group(['middleware' => ['auth']], function () {
