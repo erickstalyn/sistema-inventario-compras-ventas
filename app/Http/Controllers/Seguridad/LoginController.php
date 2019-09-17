@@ -30,7 +30,7 @@ class LoginController extends Controller
         }else{
             $this->guard()->logout();
             $request->session()->invalidate();
-            return redirect('login')->withErrors(['errors' => 'EL usuario se encuentra desactivado']);
+            return redirect('/')->withErrors(['errors' => 'EL usuario se encuentra desactivado']);
         }
     }
 
@@ -40,6 +40,6 @@ class LoginController extends Controller
 
         $request->session()->invalidate();
 
-        return $this->loggedOut($request) ?: redirect('login');
+        return $this->loggedOut($request) ?: redirect('/');
     }
 }

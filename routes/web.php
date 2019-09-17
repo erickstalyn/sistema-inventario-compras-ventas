@@ -15,7 +15,7 @@
 
 //Route::get('', 'AdminController@index');
 
-Route::get('/login', 'Seguridad\LoginController@index')->name('login');
+Route::get('/', 'Seguridad\LoginController@index')->name('login');
 Route::post('/login', 'Seguridad\LoginController@login')->name('login_post');
 Route::get('/logout', 'Seguridad\LoginController@logout')->name('logout');
 

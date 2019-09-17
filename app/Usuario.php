@@ -46,7 +46,7 @@ class Usuario extends Authenticatable
         // Session::put([
             
         // ]);
-        dd($this->getPersona()->nombre);
+        dd($this->getPersona()->get()->nombre);
     }
 
 }
