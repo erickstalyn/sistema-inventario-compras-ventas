@@ -19,7 +19,7 @@
 //Route::get('/mostrar', 'PruebasController@mostrar')->name('mostrar');
 
 
-Route::get('/', 'Seguridad\LoginController@index')->name('login');
+Route::get('/login', 'Seguridad\LoginController@index')->name('login');
 Route::post('/login', 'Seguridad\LoginController@login')->name('login_post');
 Route::get('/logout', 'Seguridad\LoginController@logout')->name('logout');
 
@@ -33,6 +33,6 @@ Route::group(['middleware' => ['auth']], function () {
         return view('contenidoPrincipal.contenidoPrincipal');
     })->name('main');
 
-    // Route::get('/home', 'HomeController@index')->name('home');
+    Route::get('/home', 'HomeController@index')->name('home');
 
 });
