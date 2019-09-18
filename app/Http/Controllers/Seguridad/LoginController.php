@@ -9,7 +9,13 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 class LoginController extends Controller
 {
     use AuthenticatesUsers;
-    protected $redirectTo = 'main';
+
+    // protected $redirectTo = '/';
+    // public function redirectTo(){
+    //     return '/'; //o - f
+    //     // return redirect()->route('login'); //e-login
+    //     // return route('login'); //f
+    // }
 
     public function index()
     {
@@ -21,17 +27,31 @@ class LoginController extends Controller
         return 'usuario';
     }
  
+    // public function login(Request $request)
+    // {
+    //     $this->validateLogin($request);
+
+    //     if ($this->attemptLogin($request)) {
+    //         // return $this->sendLoginResponse($request);
+    //         return redirect('/');
+    //     }
+
+    //     $this->incrementLoginAttempts($request);
+
+    //     return $this->sendFailedLoginResponse($request);
+    // }
     
 
     protected function authenticated(Request $request, $user)
     {
-        if($user->estado==1){
-            $user->setSession();
-        }else{
-            $this->guard()->logout();
-            $request->session()->invalidate();
-            return redirect('/login')->withErrors(['errors' => 'EL usuario se encuentra desactivado']);
-        }
+        return false;
+        // if($user->estado==1){
+        //     $user->setSession();
+        // }else{
+        //     $this->guard()->logout();
+        //     $request->session()->invalidate();
+        //     return redirect('/')->withErrors(['errors' => 'EL usuario se encuentra desactivado']);
+        // }
     }
 
     public function logout(Request $request)
@@ -40,6 +60,7 @@ class LoginController extends Controller
 
         $request->session()->invalidate();
 
-        return $this->loggedOut($request) ?: redirect('/login');
+        // return $this->loggedOut($request) ?: redirect('/login');
+        return $this->loggedOut($request) ?: redirect('/main');
     }
 }

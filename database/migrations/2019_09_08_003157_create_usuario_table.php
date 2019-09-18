@@ -16,7 +16,7 @@ class CreateUsuarioTable extends Migration
         Schema::create('usuario', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('rol_id');
-            $table->unsignedBigInteger('persona_id');
+            $table->unsignedBigInteger('persona_id')->unique();
             $table->string('usuario', 25);
             $table->string('password');
             $table->boolean('estado')->default(1);

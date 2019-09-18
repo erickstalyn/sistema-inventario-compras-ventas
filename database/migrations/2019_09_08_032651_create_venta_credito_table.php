@@ -14,7 +14,7 @@ class CreateVentaCreditoTable extends Migration
     public function up(){
         Schema::create('venta_credito', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('venta_id');
+            $table->unsignedBigInteger('venta_id')->unique();
             
             $table->string('deudor', 80);
             $table->decimal('monto_faltante', 11, 2);

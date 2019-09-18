@@ -33,5 +33,12 @@ class PersonaSeeder extends Seeder
                 'updated_at' => $now
             )
         ));
+        DB::table('persona')->insert(array(
+            array(
+                'nombre_negocio' => 'Mi almacen 2',
+                'created_at' => $now,
+                'updated_at' => $now
+            )
+        ));
     }
 }

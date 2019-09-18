@@ -45,7 +45,7 @@ class UsuarioSeeder extends Seeder
         DB::table('usuario')->insert(array(
             array(
                 'rol_id'=> 3,
-                'persona_id'=>3 ,
+                'persona_id'=> 4,
                 'usuario'=>'almacen2',
                 'password'=>bcrypt('almacen2'),
                 'estado' => false,

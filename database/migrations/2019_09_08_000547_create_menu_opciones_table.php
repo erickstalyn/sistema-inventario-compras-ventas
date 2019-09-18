@@ -15,7 +15,7 @@ class CreateMenuOpcionesTable extends Migration
     {
         Schema::create('menu_opciones', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('rol_id');
+            $table->unsignedBigInteger('rol_id')->unique();
             $table->boolean('productos')->default(0);
             $table->boolean('categorias')->default(0);
             $table->boolean('usuarios')->default(0);
