@@ -27,31 +27,30 @@ class LoginController extends Controller
         return 'usuario';
     }
  
-    // public function login(Request $request)
-    // {
-    //     $this->validateLogin($request);
+    public function login(Request $request)
+    {
+        $this->validateLogin($request);
 
-    //     if ($this->attemptLogin($request)) {
-    //         // return $this->sendLoginResponse($request);
-    //         return redirect('/');
-    //     }
+        if ($this->attemptLogin($request)) {
+            return $this->sendLoginResponse($request);
+        }
 
-    //     $this->incrementLoginAttempts($request);
+        $this->incrementLoginAttempts($request);
 
-    //     return $this->sendFailedLoginResponse($request);
-    // }
+        return $this->sendFailedLoginResponse($request);
+    }
     
 
     protected function authenticated(Request $request, $user)
     {
-        return false;
-        // if($user->estado==1){
-        //     $user->setSession();
-        // }else{
-        //     $this->guard()->logout();
-        //     $request->session()->invalidate();
-        //     return redirect('/')->withErrors(['errors' => 'EL usuario se encuentra desactivado']);
-        // }
+        if($user->estado==1){
+            $user->setSession();
+            return redirect('/');
+        }else{
+            $this->guard()->logout();
+            $request->session()->invalidate();
+            return redirect('/')->withErrors(['errors' => 'EL usuario se encuentra desactivado']);
+        }
     }
 
     public function logout(Request $request)
