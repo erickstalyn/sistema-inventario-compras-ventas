@@ -33,6 +33,6 @@ Route::group(['middleware' => ['auth']], function () {
         return view('contenidoPrincipal.contenidoPrincipal');
     })->name('main');
 
-    Route::get('/home', 'HomeController@index')->name('home');
+    
 
 });
