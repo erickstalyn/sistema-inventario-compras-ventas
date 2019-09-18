@@ -19,20 +19,30 @@
 //Route::get('/mostrar', 'PruebasController@mostrar')->name('mostrar');
 
 
-Route::get('/login', 'Seguridad\LoginController@index')->name('login');
-Route::post('/login', 'Seguridad\LoginController@login')->name('login_post');
-Route::get('/logout', 'Seguridad\LoginController@logout')->name('logout');
 
-
+Route::group(['middleware' => ['guest']], function (){
+    Route::get('/login', 'Seguridad\LoginController@index')->name('login');
+    Route::post('/login', 'Seguridad\LoginController@login')->name('login_post');
+});
 
 Route::group(['middleware' => ['auth']], function () {
+    Route::get('/logout', 'Seguridad\LoginController@logout')->name('logout');
 
     Route::get('/main', function () {
-        // con ello muestras toda la informacion del usuario logueado
-        // dd(auth());
         return view('contenidoPrincipal.contenidoPrincipal');
     })->name('main');
 
+    Route::group(['middleware' => ['Administrador']], function (){
+        
+
+
+    });
+    Route::group(['middleware' => ['Puesto']], function (){
+
+    });
+    Route::group(['middleware' => ['Almacen']], function (){
+
+    });
     
 
 });

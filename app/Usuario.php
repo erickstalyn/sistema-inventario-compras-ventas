@@ -43,9 +43,9 @@ class Usuario extends Authenticatable
     public function setSession(){
         //con this, me refiero a $user, y $user es el usuario loqueado actualmente
         //Sirve para añadir variables en la sesion
-        // Session::put([
-            
-        // ]);
+        Session::put([
+            'tipoUsuario' => $this->rol_id
+        ]);
         // dd($this->getPersona()->get()->nombre);
     }
 
