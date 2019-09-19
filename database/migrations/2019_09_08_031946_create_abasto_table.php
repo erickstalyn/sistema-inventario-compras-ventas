@@ -18,6 +18,7 @@ class CreateAbastoTable extends Migration
 
             $table->decimal('total', 11, 2)->nullable();
             $table->timestamps();
+            $table->softDeletes();
 
             $table->foreign('proveedor_id')->references('id')->on('proveedor');
         });

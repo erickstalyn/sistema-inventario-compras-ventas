@@ -20,6 +20,11 @@ class CreateDetalleVentaTable extends Migration
             $table->integer('cantidad');
             $table->decimal('precio', 11, 2);
             $table->decimal('subtotal', 11, 2);
+            $table->integer('cantidad_especial')->nullable();
+            $table->char('tipo', 2)->default('VN');
+
+            //VN -> VENTA NORMAL
+            //CD -> CANCELADO por DEFECTO
 
             $table->foreign('producto_id')->references('id')->on('producto');
             $table->foreign('venta_id')->references('id')->on('venta');

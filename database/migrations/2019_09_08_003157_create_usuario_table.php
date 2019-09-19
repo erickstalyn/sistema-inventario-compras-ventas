@@ -17,16 +17,13 @@ class CreateUsuarioTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('rol_id');
             $table->unsignedBigInteger('persona_id')->unique();
-            $table->string('usuario', 25);
+
+            $table->string('usuario', 25)->unique();
             $table->string('password');
             $table->boolean('estado')->default(1);
 
             $table->foreign('rol_id')->references('id')->on('rol');
             $table->foreign('persona_id')->references('id')->on('persona');
-
-            $table->timestamps();
-
-            
         });
     }
 

@@ -20,6 +20,7 @@ class CreateCategoriaTable extends Migration
             $table->string('descripcion', 50)->nullable();
             $table->boolean('estado')->default(1);
             $table->timestamps();
+            $table->softDeletes();
 
             $table->foreign('categoria_id')->references('id')->on('categoria');
         });

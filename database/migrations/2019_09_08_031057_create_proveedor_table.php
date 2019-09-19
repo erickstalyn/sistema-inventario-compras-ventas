@@ -17,9 +17,10 @@ class CreateProveedorTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('persona_id');
 
-            $table->foreign('persona_id')->references('id')->on('persona');
+            $table->string('contacto', 30)->nullable();
+            $table->string('celular', 15)->nullable();
 
-            $table->timestamps();
+            $table->foreign('persona_id')->references('id')->on('persona');
         });
     }
 

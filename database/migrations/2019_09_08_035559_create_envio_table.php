@@ -14,16 +14,20 @@ class CreateEnvioTable extends Migration
     public function up () {
         Schema::create('envio', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('usuario_from_id')->nullable();
             $table->unsignedBigInteger('usuario_to_id');
-            $table->unsignedBigInteger('id_abasto')->nullable();
+            $table->unsignedBigInteger('usuario_from_id')->nullable();
+            $table->unsignedBigInteger('abasto_id')->nullable();
 
-            $table->boolean('estado')->default(0);
+            $table->char('estado', 1)->default('E');
+            $table->timestamps();
+
+            //E -> estado ENVIADO
+            //R -> estado RECIBIDO
+            //C -> estado CANCELADO
 
             $table->foreign('usuario_from_id')->references('id')->on('usuario');
             $table->foreign('usuario_to_id')->references('id')->on('usuario');
-            
-            $table->timestamps();
+            $table->foreign('abasto_id')->references('id')->on('abasto');
         });
     }
 

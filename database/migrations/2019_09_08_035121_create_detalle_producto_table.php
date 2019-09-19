@@ -17,12 +17,11 @@ class CreateDetalleProductoTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('producto_id');
             $table->unsignedBigInteger('usuario_id');
-            $table->integer('stock')->default(0);
+
+            $table->integer('substock')->default(0);
 
             $table->foreign('producto_id')->references('id')->on('producto');
             $table->foreign('usuario_id')->references('id')->on('usuario');
-
-
         });
     }
 

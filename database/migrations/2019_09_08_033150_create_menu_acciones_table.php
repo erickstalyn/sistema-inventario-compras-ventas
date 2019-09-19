@@ -17,6 +17,7 @@ class CreateMenuAccionesTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('usuario_id');
             $table->unsignedBigInteger('menu_opciones_id');
+
             $table->string('nombre', 20);
             $table->boolean('listar')->default(1);
             $table->boolean('agregar')->default(1);
@@ -25,7 +26,6 @@ class CreateMenuAccionesTable extends Migration
 
             $table->foreign('usuario_id')->references('id')->on('usuario');
             $table->foreign('menu_opciones_id')->references('id')->on('menu_opciones');
-
         });
     }
 

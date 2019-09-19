@@ -20,8 +20,10 @@ class CreateProductoTable extends Migration
             $table->string('codigo', 50)->nullable();
             $table->string('descripcion', 100)->nullable();
             $table->decimal('precio', 11, 2);
-            $table->integer('stock_total')->default(0);
+            $table->integer('stock')->default(0);
             $table->boolean('estado')->default(1);
+            $table->timestamps();
+            $table->softDeletes();
 
             $table->foreign('categoria_id')->references('id')->on('categoria');
         });
