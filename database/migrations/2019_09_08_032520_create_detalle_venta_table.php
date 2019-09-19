@@ -16,6 +16,7 @@ class CreateDetalleVentaTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('producto_id');
             $table->unsignedBigInteger('venta_id');
+            $table->unsignedBigInteger('venta_especial_id');
             
             $table->integer('cantidad');
             $table->decimal('precio', 11, 2);
@@ -28,6 +29,7 @@ class CreateDetalleVentaTable extends Migration
 
             $table->foreign('producto_id')->references('id')->on('producto');
             $table->foreign('venta_id')->references('id')->on('venta');
+            $table->foreign('venta_especial_id')->references('id')->on('venta');
         });
     }
 
