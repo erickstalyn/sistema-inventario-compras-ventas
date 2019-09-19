@@ -45,9 +45,9 @@
       </a>
       <div id="operaciones" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
         <div class="bg-white py-2 collapse-inner rounded">
-          <a class="collapse-item font-weight-bold" href="#">Abastecimiento</a>
+          <a class="collapse-item font-weight-bold" href="#" @click="menu=3">Abastecimiento</a>
           <h6 class="collapse-header ">Mis proveedores</h6>
-          <a class="collapse-item font-weight-bold" href="#">Proveedores</a>
+          <a class="collapse-item font-weight-bold" href="#" @click="menu=4">Proveedores</a>
         </div>
       </div>
     </li>
@@ -61,23 +61,24 @@
       <div id="centros" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
         <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Mis Puestos</h6>
-          <a class="collapse-item font-weight-bold" href="#">Puesto A</a>
-          <a class="collapse-item font-weight-bold" href="#">Puesto B</a>
-          <a class="collapse-item font-weight-bold" href="#">Puesto C</a>
-          <h6 class="collapse-header font-weight-bold">Mis Almacenes</h6>
-          <a class="collapse-item font-weight-bold" href="#">Almacen 1</a>
-          <a class="collapse-item font-weight-bold" href="#">Almacen 2</a>
-          <a class="collapse-item font-weight-bold" href="#">Almacen 3</a>
-          <a class="collapse-item font-weight-bold" href="#">Almacen 4</a>
+            <a class="collapse-item font-weight-bold" href="#">Puesto A</a>
+            <a class="collapse-item font-weight-bold" href="#">Puesto B</a>
+            <a class="collapse-item font-weight-bold" href="#">Puesto C</a>
+
+            <h6 class="collapse-header font-weight-bold">Mis Almacenes</h6>
+            <a class="collapse-item font-weight-bold" href="#">Almacen 1</a>
+            <a class="collapse-item font-weight-bold" href="#">Almacen 2</a>
+            <a class="collapse-item font-weight-bold" href="#">Almacen 3</a>
+            <a class="collapse-item font-weight-bold" href="#">Almacen 4</a>
         </div>
       </div>
     </li>
 
     <!-- Elemento de navegación: MENÚ USUARIOS -->
     <li class="nav-item">
-      <a class="nav-link collapsed" href="#">
+      <a class="nav-link collapsed" href="#" @click="menu=5">
           <i class="fas fa-users"></i>
-        <span>Usuarios</span>
+          <span>Usuarios</span>
       </a>
     </li>
 
@@ -97,7 +98,7 @@
       Extras
     </div>
 
-    <!-- Nav Item - Pages Collapse Menu -->
+    <!-- N  av Item - Pages Collapse Menu -->
     <li class="nav-item">
       <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#redes" aria-expanded="true" aria-controls="redes">
           <i class="fas fa-thumbs-up"></i>
@@ -119,5 +120,5 @@
       <button class="rounded-circle border-0" id="sidebarToggle"></button>
     </div>
 
-  </ul>
-  <!-- FIN DEL MENÚ LATERAL -->
+</ul>
+<!-- FIN DEL MENÚ LATERAL -->
