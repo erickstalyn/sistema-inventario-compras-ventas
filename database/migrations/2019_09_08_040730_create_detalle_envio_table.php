@@ -15,7 +15,13 @@ class CreateDetalleEnvioTable extends Migration
     {
         Schema::create('detalle_envio', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->timestamps();
+            $table->unsignedBigInteger('envio_id');
+            $table->unsignedBigInteger('producto_id');
+
+            $table->integer('cantidad');
+
+            $table->foreign('envio_id')->references('id')->on('envio');
+            $table->foreign('producto_id')->references('id')->on('producto');
         });
     }
 
