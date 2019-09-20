@@ -1803,22 +1803,94 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      'usuario': {
-        'id': 0,
-        'nombre': '',
-        'dni': '',
-        'direccion': '',
-        'telefono': '',
-        'email': '',
-        'birthday': '',
-        'tipo': ''
+      //datos generales
+      ListaUsuario: [],
+      Usuario: {
+        id: 0,
+        nombre: '',
+        dni: '',
+        ruc: '',
+        direccion: '',
+        telefono: '',
+        email: '',
+        birthday: '',
+        observacion: '',
+        tipo: '',
+        usuario: '',
+        password: '',
+        estado: 0,
+        rol: ''
+      },
+      SelectRol: [],
+      //datos de busqueda y filtracion
+      Busqueda: {
+        texto: '',
+        estado: 1
+      },
+      //datos de modales
+      Modal: {
+        numero: 0,
+        estado: 0,
+        titulo: '',
+        accion: ''
+      },
+      //datos de paginacion
+      Paginacion: {
+        total: 0,
+        currentPage: 0,
+        lastPage: 0,
+        perPage: 0,
+        firstItem: 0,
+        lastItem: 0
+      },
+      //datos de errores
+      Error: {
+        estado: 0,
+        mensaje: []
       }
     };
   },
-  mounted: function mounted() {}
+  methods: {
+    abrirModalAgregar: function abrirModalAgregar() {},
+    abrirModalEditar: function abrirModalEditar() {},
+    abrirModal: function abrirModal() {},
+    listar: function listar(page, estado, texto) {
+      var me = this;
+      var url = '/usuario?page=' + page + '&estado=' + estado + '&texto=' + texto;
+      axios.get(url).then(function (response) {
+        me.ListaUsuario = response.data.usuarios.data;
+        me.Paginacion = response.data.paginacion;
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
+    agregar: function agregar() {},
+    editar: function editar() {},
+    activar: function activar() {},
+    desactivar: function desactivar() {},
+    cambiarPagina: function cambiarPagina() {}
+  },
+  mounted: function mounted() {
+    this.listar(1, this.Busqueda.estado, this.Busqueda.texto);
+  }
 });
 
 /***/ }),
@@ -37164,118 +37236,276 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm._m(0)
+  return _c("div", { staticClass: "container-fluid" }, [
+    _c("div", { staticClass: "card" }, [
+      _c("div", { staticClass: "card-header" }, [
+        _c("i", { staticClass: "fa fa-align-justify" }),
+        _vm._v(" Usuarios\n            "),
+        _c(
+          "button",
+          {
+            staticClass: "btn btn-success",
+            attrs: { type: "button" },
+            on: {
+              click: function($event) {
+                return _vm.abrirModalAgregar()
+              }
+            }
+          },
+          [
+            _c("i", { staticClass: "icon-plus" }),
+            _vm._v("  Nuevo\n            ")
+          ]
+        ),
+        _vm._v(" "),
+        _vm._m(0)
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "card-body" }, [
+        _c("div", { staticClass: "row form-group" }, [
+          _c("div", { staticClass: "col-md-8" }, [
+            _c("div", { staticClass: "input-group" }, [
+              _c(
+                "select",
+                {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.Busqueda.estado,
+                      expression: "Busqueda.estado"
+                    }
+                  ],
+                  staticClass: "col-md-3 form-control",
+                  on: {
+                    change: function($event) {
+                      var $$selectedVal = Array.prototype.filter
+                        .call($event.target.options, function(o) {
+                          return o.selected
+                        })
+                        .map(function(o) {
+                          var val = "_value" in o ? o._value : o.value
+                          return val
+                        })
+                      _vm.$set(
+                        _vm.Busqueda,
+                        "estado",
+                        $event.target.multiple
+                          ? $$selectedVal
+                          : $$selectedVal[0]
+                      )
+                    }
+                  }
+                },
+                [
+                  _c("option", { attrs: { value: "1" } }, [
+                    _vm._v("Activados")
+                  ]),
+                  _vm._v(" "),
+                  _c("option", { attrs: { value: "0" } }, [
+                    _vm._v("Desactivados")
+                  ]),
+                  _vm._v(" "),
+                  _c("option", { attrs: { value: "2" } }, [_vm._v("Todos")])
+                ]
+              ),
+              _vm._v(" "),
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.Busqueda.texto,
+                    expression: "Busqueda.texto"
+                  }
+                ],
+                staticClass: "form-control",
+                attrs: { type: "text" },
+                domProps: { value: _vm.Busqueda.texto },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.$set(_vm.Busqueda, "texto", $event.target.value)
+                  }
+                }
+              }),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-primary",
+                  attrs: { type: "button" },
+                  on: {
+                    click: function($event) {
+                      return _vm.listar(
+                        1,
+                        _vm.Busqueda.estado,
+                        _vm.Busqueda.texto
+                      )
+                    }
+                  }
+                },
+                [
+                  _c("i", { staticClass: "fa fa-search" }),
+                  _vm._v("  Buscar\n                        ")
+                ]
+              )
+            ])
+          ])
+        ]),
+        _vm._v(" "),
+        _c(
+          "table",
+          { staticClass: "table table-bordered table-striped table-sm" },
+          [
+            _vm._m(1),
+            _vm._v(" "),
+            _c(
+              "tbody",
+              _vm._l(_vm.ListaUsuario, function(usuario) {
+                return _c("tr", { key: usuario.id }, [
+                  _c("td", {
+                    domProps: { textContent: _vm._s(usuario.nombre) }
+                  }),
+                  _vm._v(" "),
+                  _c("td", {
+                    domProps: { textContent: _vm._s(usuario.direccion) }
+                  }),
+                  _vm._v(" "),
+                  _c("td", { domProps: { textContent: _vm._s(usuario.rol) } }),
+                  _vm._v(" "),
+                  _c("td", {
+                    domProps: { textContent: _vm._s(usuario.fecha_creacion) }
+                  }),
+                  _vm._v(" "),
+                  _c("td", {
+                    domProps: {
+                      textContent: _vm._s(usuario.fecha_actualizacion)
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c("td", {
+                    domProps: { textContent: _vm._s(usuario.fecha_eliminacion) }
+                  }),
+                  _vm._v(" "),
+                  _c("td", {
+                    domProps: { textContent: _vm._s(usuario.estado) }
+                  }),
+                  _vm._v(" "),
+                  _c("td", [
+                    _c(
+                      "button",
+                      {
+                        attrs: { type: "button" },
+                        on: {
+                          click: function($event) {
+                            return _vm.abrirModalVer(usuario)
+                          }
+                        }
+                      },
+                      [
+                        _c("i", { staticClass: "icon-eye" }),
+                        _vm._v(" \n                                ")
+                      ]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "button",
+                      {
+                        attrs: { type: "button" },
+                        on: {
+                          click: function($event) {
+                            return _vm.abrirModalEditar(usuario)
+                          }
+                        }
+                      },
+                      [
+                        _c("i", { staticClass: "icon-pencil" }),
+                        _vm._v(" \n                                ")
+                      ]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "button",
+                      {
+                        attrs: { type: "button" },
+                        on: {
+                          click: function($event) {
+                            return _vm.activar(usuario.id)
+                          }
+                        }
+                      },
+                      [_c("i", { staticClass: "icon-trash" })]
+                    )
+                  ])
+                ])
+              }),
+              0
+            )
+          ]
+        ),
+        _vm._v(" "),
+        _vm._m(2)
+      ])
+    ])
+  ])
 }
 var staticRenderFns = [
   function() {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "container-fluid" }, [
-      _c("div", { staticClass: "card" }, [
-        _c("div", { staticClass: "card-header" }, [
-          _c("i", { staticClass: "fa fa-align-justify" }),
-          _vm._v(" Usuarios\n            "),
-          _c(
-            "button",
-            { staticClass: "btn btn-success", attrs: { type: "button" } },
-            [
-              _c("i", { staticClass: "icon-plus" }),
-              _vm._v("  Nuevo\n            ")
-            ]
-          ),
-          _vm._v(" "),
-          _c(
-            "button",
-            { staticClass: "btn btn-danger", attrs: { type: "button" } },
-            [
-              _c("i", { staticClass: "icon-picture" }),
-              _vm._v("  PDF\n            ")
-            ]
-          )
+    return _c(
+      "button",
+      { staticClass: "btn btn-danger", attrs: { type: "button" } },
+      [_c("i", { staticClass: "icon-picture" }), _vm._v("  PDF\n            ")]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", [_vm._v("Nombre")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Direccion")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Rol")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Fecha de creacion")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Fecha de actualizacion")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Fecha de eliminacion")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Estado")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Opciones")])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("nav", [
+      _c("ul", { staticClass: "pagination" }, [
+        _c("li", { staticClass: "page-item" }, [
+          _c("a", { staticClass: "page-link", attrs: { href: "#" } }, [
+            _vm._v("Anterior")
+          ])
         ]),
         _vm._v(" "),
-        _c("div", { staticClass: "card-body" }, [
-          _c("div", { staticClass: "row form-group" }, [
-            _c("div", { staticClass: "col-md-8" }, [
-              _c("div", { staticClass: "input-group" }, [
-                _c("select", { staticClass: "col-md-3 form-control" }, [
-                  _c("option", { attrs: { value: "A" } }, [
-                    _vm._v("Activados")
-                  ]),
-                  _vm._v(" "),
-                  _c("option", { attrs: { value: "D" } }, [
-                    _vm._v("Desactivados")
-                  ]),
-                  _vm._v(" "),
-                  _c("option", { attrs: { value: "T" } }, [_vm._v("Todos")])
-                ]),
-                _vm._v(" "),
-                _c("input", {
-                  staticClass: "form-control",
-                  attrs: { type: "text" }
-                }),
-                _vm._v(" "),
-                _c(
-                  "button",
-                  { staticClass: "btn btn-primary", attrs: { type: "button" } },
-                  [
-                    _c("i", { staticClass: "fa fa-search" }),
-                    _vm._v("  Buscar\n                        ")
-                  ]
-                )
-              ])
-            ])
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "table-responsive" }, [
-            _c(
-              "table",
-              { staticClass: "table table-bordered table-striped table-sm" },
-              [
-                _c("thead", [
-                  _c("tr", [
-                    _c("th", [_vm._v("Nombre")]),
-                    _vm._v(" "),
-                    _c("th", [_vm._v("Direccion")]),
-                    _vm._v(" "),
-                    _c("th", [_vm._v("Usuario")]),
-                    _vm._v(" "),
-                    _c("th", [_vm._v("Fecha de creacion")]),
-                    _vm._v(" "),
-                    _c("th", [_vm._v("Fecha de actualizacion")]),
-                    _vm._v(" "),
-                    _c("th", [_vm._v("Fecha de eliminacion")]),
-                    _vm._v(" "),
-                    _c("th", [_vm._v("Estado")]),
-                    _vm._v(" "),
-                    _c("th", [_vm._v("Opciones")])
-                  ])
-                ]),
-                _vm._v(" "),
-                _c("tbody", [_c("tr", [_c("td")])])
-              ]
-            )
-          ]),
-          _vm._v(" "),
-          _c("nav", [
-            _c("ul", { staticClass: "pagination" }, [
-              _c("li", { staticClass: "page-item" }, [
-                _c("a", { staticClass: "page-link", attrs: { href: "#" } }, [
-                  _vm._v("Anterior")
-                ])
-              ]),
-              _vm._v(" "),
-              _c("li", { staticClass: "page-item" }, [
-                _c("a", { staticClass: "page-link", attrs: { href: "#" } })
-              ]),
-              _vm._v(" "),
-              _c("li", { staticClass: "page-item" }, [
-                _c("a", { staticClass: "page-link", attrs: { href: "#" } }, [
-                  _vm._v("Siguiente")
-                ])
-              ])
-            ])
+        _c("li", { staticClass: "page-item" }, [
+          _c("a", { staticClass: "page-link", attrs: { href: "#" } })
+        ]),
+        _vm._v(" "),
+        _c("li", { staticClass: "page-item" }, [
+          _c("a", { staticClass: "page-link", attrs: { href: "#" } }, [
+            _vm._v("Siguiente")
           ])
         ])
       ])

@@ -35,9 +35,7 @@ Route::group(['middleware' => ['auth']], function () {
     })->name('main');
 
     Route::group(['middleware' => ['Administrador']], function (){
-        
-
-
+        Route::get('/usuario', 'UsuarioController@index');
     });
     Route::group(['middleware' => ['Puesto']], function (){
 

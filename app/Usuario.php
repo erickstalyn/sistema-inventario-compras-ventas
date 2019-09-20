@@ -12,7 +12,7 @@ class Usuario extends Authenticatable
     protected $table= 'usuario';
     protected $remember_token = false;
     protected $fillable = [
-        'rol_id', 'usuario', 'password', 'estado', 'persona_id'
+        'rol_id', 'persona_id', 'usuario', 'password', 'estado'
     ];
 
     protected $hidden = [
@@ -25,18 +25,16 @@ class Usuario extends Authenticatable
     }
 
     //Relación de uno a muchos con Envio
-    public function getEnviosEnviados()
-    {
+    public function getEnviosEnviados() {
         return $this->hasMany('App\Envio','usuario_from_id');
     }
 
     //Relación de uno a muchos con Envio
-    public function getEnviosRecibidos()
-    {
+    public function getEnviosRecibidos() {
         return $this->hasMany('App\Envio','usuario_to_id');
     }
 
-    public function getPersona(){
+    public function getPersona() {
         return $this->belongsTo('App\Persona', 'persona_id');
     }
 
