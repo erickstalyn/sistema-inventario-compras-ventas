@@ -1818,6 +1818,21 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -1861,6 +1876,9 @@ __webpack_require__.r(__webpack_exports__);
         firstItem: 0,
         lastItem: 0
       },
+      Navegacion: {
+        offset: 3
+      },
       //datos de errores
       Error: {
         estado: 0,
@@ -1868,13 +1886,41 @@ __webpack_require__.r(__webpack_exports__);
       }
     };
   },
+  computed: {
+    Paginas: function Paginas() {
+      if (!this.Paginacion.lastItem) {
+        return [];
+      }
+
+      var from = this.Paginacion.currentPage - this.Navegacion.offset;
+
+      if (from < 1) {
+        from = 1;
+      }
+
+      var to = this.Paginacion.currentPage + this.Navegacion.offset * 2;
+
+      if (to > this.Paginacion.lastPage) {
+        to = this.Paginacion.lastPage;
+      }
+
+      var pagesArray = [];
+
+      while (from <= to) {
+        pagesArray.push(from);
+        from++;
+      }
+
+      return pagesArray;
+    }
+  },
   methods: {
     abrirModalAgregar: function abrirModalAgregar() {},
     abrirModalEditar: function abrirModalEditar() {},
     abrirModal: function abrirModal() {},
-    listar: function listar(page, estado, texto) {
+    listar: function listar(page) {
       var me = this;
-      var url = '/usuario?page=' + page + '&estado=' + estado + '&texto=' + texto;
+      var url = '/usuario?page=' + page + '&estado=' + this.Busqueda.estado + '&texto=' + this.Busqueda.texto;
       axios.get(url).then(function (response) {
         me.ListaUsuario = response.data.usuarios.data;
         me.Paginacion = response.data.paginacion;
@@ -1886,10 +1932,21 @@ __webpack_require__.r(__webpack_exports__);
     editar: function editar() {},
     activar: function activar() {},
     desactivar: function desactivar() {},
-    cambiarPagina: function cambiarPagina() {}
+    cambiarPagina: function cambiarPagina(page) {
+      if (page >= 1 && page <= this.Paginacion.lastPage) {
+        this.Paginacion.currentPage = page;
+        this.listar(page);
+      } else {
+        if (page <= 0) {
+          this.Paginacion.currentPage = 1;
+        } else {
+          this.Paginacion.currentPage = this.Paginacion.lastPage;
+        }
+      }
+    }
   },
   mounted: function mounted() {
-    this.listar(1, this.Busqueda.estado, this.Busqueda.texto);
+    this.listar(1);
   }
 });
 
@@ -37278,6 +37335,9 @@ var render = function() {
                   ],
                   staticClass: "col-md-3 form-control",
                   on: {
+                    click: function($event) {
+                      return _vm.listar(1)
+                    },
                     change: function($event) {
                       var $$selectedVal = Array.prototype.filter
                         .call($event.target.options, function(o) {
@@ -37323,6 +37383,15 @@ var render = function() {
                 attrs: { type: "text" },
                 domProps: { value: _vm.Busqueda.texto },
                 on: {
+                  keyup: function($event) {
+                    if (
+                      !$event.type.indexOf("key") &&
+                      _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
+                    ) {
+                      return null
+                    }
+                    return _vm.listar(1)
+                  },
                   input: function($event) {
                     if ($event.target.composing) {
                       return
@@ -37339,11 +37408,7 @@ var render = function() {
                   attrs: { type: "button" },
                   on: {
                     click: function($event) {
-                      return _vm.listar(
-                        1,
-                        _vm.Busqueda.estado,
-                        _vm.Busqueda.texto
-                      )
+                      return _vm.listar(1)
                     }
                   }
                 },
@@ -37356,98 +37421,203 @@ var render = function() {
           ])
         ]),
         _vm._v(" "),
-        _c(
-          "table",
-          { staticClass: "table table-bordered table-striped table-sm" },
-          [
-            _vm._m(1),
-            _vm._v(" "),
-            _c(
-              "tbody",
-              _vm._l(_vm.ListaUsuario, function(usuario) {
-                return _c("tr", { key: usuario.id }, [
-                  _c("td", {
-                    domProps: { textContent: _vm._s(usuario.nombre) }
-                  }),
+        _vm.ListaUsuario.length
+          ? _c("div", { staticClass: "table-responsive" }, [
+              _c(
+                "table",
+                { staticClass: "table table-bordered table-striped table-sm" },
+                [
+                  _vm._m(1),
                   _vm._v(" "),
-                  _c("td", {
-                    domProps: { textContent: _vm._s(usuario.direccion) }
-                  }),
-                  _vm._v(" "),
-                  _c("td", { domProps: { textContent: _vm._s(usuario.rol) } }),
-                  _vm._v(" "),
-                  _c("td", {
-                    domProps: { textContent: _vm._s(usuario.fecha_creacion) }
-                  }),
-                  _vm._v(" "),
-                  _c("td", {
-                    domProps: {
-                      textContent: _vm._s(usuario.fecha_actualizacion)
-                    }
-                  }),
-                  _vm._v(" "),
-                  _c("td", {
-                    domProps: { textContent: _vm._s(usuario.fecha_eliminacion) }
-                  }),
-                  _vm._v(" "),
-                  _c("td", {
-                    domProps: { textContent: _vm._s(usuario.estado) }
-                  }),
-                  _vm._v(" "),
-                  _c("td", [
-                    _c(
-                      "button",
-                      {
-                        attrs: { type: "button" },
-                        on: {
-                          click: function($event) {
-                            return _vm.abrirModalVer(usuario)
+                  _c(
+                    "tbody",
+                    _vm._l(_vm.ListaUsuario, function(usuario) {
+                      return _c("tr", { key: usuario.id }, [
+                        _c("td", {
+                          domProps: { textContent: _vm._s(usuario.nombre) }
+                        }),
+                        _vm._v(" "),
+                        _c("td", {
+                          domProps: { textContent: _vm._s(usuario.direccion) }
+                        }),
+                        _vm._v(" "),
+                        _c("td", {
+                          domProps: { textContent: _vm._s(usuario.rol) }
+                        }),
+                        _vm._v(" "),
+                        _c("td", {
+                          domProps: {
+                            textContent: _vm._s(usuario.fecha_creacion)
                           }
-                        }
-                      },
-                      [
-                        _c("i", { staticClass: "icon-eye" }),
-                        _vm._v(" \n                                ")
-                      ]
-                    ),
+                        }),
+                        _vm._v(" "),
+                        _c("td", {
+                          domProps: {
+                            textContent: _vm._s(usuario.fecha_actualizacion)
+                          }
+                        }),
+                        _vm._v(" "),
+                        _c("td", {
+                          domProps: {
+                            textContent: _vm._s(usuario.fecha_eliminacion)
+                          }
+                        }),
+                        _vm._v(" "),
+                        _c("td", [
+                          usuario.estado
+                            ? _c("div", [
+                                _c(
+                                  "span",
+                                  { staticClass: "badge badge-success" },
+                                  [_vm._v("Activado")]
+                                )
+                              ])
+                            : _c("div", [
+                                _c(
+                                  "span",
+                                  { staticClass: "badge badge-danger" },
+                                  [_vm._v("Desactivado")]
+                                )
+                              ])
+                        ]),
+                        _vm._v(" "),
+                        _c(
+                          "td",
+                          [
+                            _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-warning btn-sm",
+                                attrs: { type: "button" },
+                                on: {
+                                  click: function($event) {
+                                    return _vm.abrirModalEditar(usuario)
+                                  }
+                                }
+                              },
+                              [_c("i", { staticClass: "fa fa-user-edit" })]
+                            ),
+                            _vm._v(" "),
+                            usuario.estado
+                              ? [
+                                  _c(
+                                    "button",
+                                    {
+                                      staticClass: "btn btn-danger btn-sm",
+                                      attrs: { type: "button" },
+                                      on: {
+                                        click: function($event) {
+                                          return _vm.desactivar(usuario.id)
+                                        }
+                                      }
+                                    },
+                                    [
+                                      _c("i", {
+                                        staticClass: "fa fa-user-times"
+                                      })
+                                    ]
+                                  )
+                                ]
+                              : [
+                                  _c(
+                                    "button",
+                                    {
+                                      staticClass: "btn btn-success btn-sm",
+                                      attrs: { type: "button" },
+                                      on: {
+                                        click: function($event) {
+                                          return _vm.activar(usuario.id)
+                                        }
+                                      }
+                                    },
+                                    [
+                                      _c("i", {
+                                        staticClass: "fa fa-user-check"
+                                      })
+                                    ]
+                                  )
+                                ]
+                          ],
+                          2
+                        )
+                      ])
+                    }),
+                    0
+                  )
+                ]
+              ),
+              _vm._v(" "),
+              _c("nav", [
+                _c(
+                  "ul",
+                  { staticClass: "pagination align-content-center" },
+                  [
+                    _c("li", { staticClass: "page-item" }, [
+                      _c(
+                        "a",
+                        {
+                          staticClass: "page-link",
+                          attrs: { href: "#" },
+                          on: {
+                            click: function($event) {
+                              return _vm.cambiarPagina(
+                                _vm.Paginacion.currentPage - 1
+                              )
+                            }
+                          }
+                        },
+                        [_vm._v("Anterior")]
+                      )
+                    ]),
                     _vm._v(" "),
-                    _c(
-                      "button",
-                      {
-                        attrs: { type: "button" },
-                        on: {
-                          click: function($event) {
-                            return _vm.abrirModalEditar(usuario)
-                          }
-                        }
-                      },
-                      [
-                        _c("i", { staticClass: "icon-pencil" }),
-                        _vm._v(" \n                                ")
-                      ]
-                    ),
+                    _vm._l(_vm.Paginas, function(page) {
+                      return _c(
+                        "li",
+                        {
+                          key: page,
+                          staticClass: "page-item",
+                          class: [
+                            page == _vm.Paginacion.currentPage ? "active" : ""
+                          ]
+                        },
+                        [
+                          _c("a", {
+                            staticClass: "page-link",
+                            attrs: { href: "#" },
+                            domProps: { textContent: _vm._s(page) },
+                            on: {
+                              click: function($event) {
+                                return _vm.cambiarPagina(page)
+                              }
+                            }
+                          })
+                        ]
+                      )
+                    }),
                     _vm._v(" "),
-                    _c(
-                      "button",
-                      {
-                        attrs: { type: "button" },
-                        on: {
-                          click: function($event) {
-                            return _vm.activar(usuario.id)
+                    _c("li", { staticClass: "page-item" }, [
+                      _c(
+                        "a",
+                        {
+                          staticClass: "page-link",
+                          attrs: { href: "#" },
+                          on: {
+                            click: function($event) {
+                              return _vm.cambiarPagina(
+                                _vm.Paginacion.currentPage + 1
+                              )
+                            }
                           }
-                        }
-                      },
-                      [_c("i", { staticClass: "icon-trash" })]
-                    )
-                  ])
-                ])
-              }),
-              0
-            )
-          ]
-        ),
-        _vm._v(" "),
-        _vm._m(2)
+                        },
+                        [_vm._v("Siguiente")]
+                      )
+                    ])
+                  ],
+                  2
+                )
+              ])
+            ])
+          : _c("div", [_c("h5", [_vm._v("No se han encontrado resultados")])])
       ])
     ])
   ])
@@ -37484,30 +37654,6 @@ var staticRenderFns = [
         _c("th", [_vm._v("Estado")]),
         _vm._v(" "),
         _c("th", [_vm._v("Opciones")])
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("nav", [
-      _c("ul", { staticClass: "pagination" }, [
-        _c("li", { staticClass: "page-item" }, [
-          _c("a", { staticClass: "page-link", attrs: { href: "#" } }, [
-            _vm._v("Anterior")
-          ])
-        ]),
-        _vm._v(" "),
-        _c("li", { staticClass: "page-item" }, [
-          _c("a", { staticClass: "page-link", attrs: { href: "#" } })
-        ]),
-        _vm._v(" "),
-        _c("li", { staticClass: "page-item" }, [
-          _c("a", { staticClass: "page-link", attrs: { href: "#" } }, [
-            _vm._v("Siguiente")
-          ])
-        ])
       ])
     ])
   }

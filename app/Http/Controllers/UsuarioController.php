@@ -12,7 +12,7 @@ class UsuarioController extends Controller
         
         $estado = $request->estado;
         $texto = $request->texto;
-        $items_per_page = 4;
+        $items_per_page = 2;
 
         $usuarios = Usuario::join('persona', 'usuario.persona_id', '=', 'persona.id')->join('rol', 'usuario.rol_id', '=', 'rol.id')
                             ->select('persona.nombre', 'persona.direccion', 'persona.created_at as fecha_creacion', 'persona.updated_at as fecha_actualizacion', 'persona.deleted_at as fecha_eliminacion',
