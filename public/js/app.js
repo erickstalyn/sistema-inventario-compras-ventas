@@ -1832,7 +1832,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -37296,8 +37295,12 @@ var render = function() {
   return _c("div", { staticClass: "container-fluid" }, [
     _c("div", { staticClass: "card" }, [
       _c("div", { staticClass: "card-header" }, [
-        _c("i", { staticClass: "fa fa-align-justify" }),
-        _vm._v(" Usuarios\n            "),
+        _c("i", { staticClass: "fas fa-map-signs" }),
+        _vm._v("  "),
+        _c("span", { staticClass: "h3 mb-0 text-gray-900" }, [
+          _vm._v("Usuarios")
+        ]),
+        _vm._v(" "),
         _c(
           "button",
           {
@@ -37333,7 +37336,7 @@ var render = function() {
                       expression: "Busqueda.estado"
                     }
                   ],
-                  staticClass: "col-md-3 form-control",
+                  staticClass: "col-md-3 form-control text-gray-900",
                   on: {
                     click: function($event) {
                       return _vm.listar(1)
@@ -37425,7 +37428,10 @@ var render = function() {
           ? _c("div", { staticClass: "table-responsive" }, [
               _c(
                 "table",
-                { staticClass: "table table-bordered table-striped table-sm" },
+                {
+                  staticClass:
+                    "table table-bordered table-striped table-sm text-gray-900"
+                },
                 [
                   _vm._m(1),
                   _vm._v(" "),
@@ -50045,7 +50051,7 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! E:\Programas\XAMPP\XAMPP\htdocs\EC_ci\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\laragon\www\control_inventario\resources\js\app.js */"./resources/js/app.js");
 
 
 /***/ })

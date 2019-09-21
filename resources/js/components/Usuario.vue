@@ -1,9 +1,8 @@
 <template>
     <div class="container-fluid">
         <div class="card">
-
             <div class="card-header">
-                <i class="fa fa-align-justify"></i> Usuarios
+                <i class="fas fa-map-signs"></i>&nbsp;&nbsp;<span class="h3 mb-0 text-gray-900">Usuarios</span>
                 <button type="button" class="btn btn-success" @click="abrirModalAgregar()">
                     <i class="icon-plus"></i>&nbsp; Nuevo
                 </button>
@@ -16,7 +15,7 @@
                 <div class="row form-group">
                     <div class="col-md-8">
                         <div class="input-group">
-                            <select class="col-md-3 form-control" v-model="Busqueda.estado" @click="listar(1)">
+                            <select class="col-md-3 form-control text-gray-900" v-model="Busqueda.estado" @click="listar(1)">
                                 <option value="1">Activados</option>
                                 <option value="0">Desactivados</option>
                                 <option value="2">Todos</option>
@@ -30,7 +29,7 @@
                 </div>
                 
                 <div v-if="ListaUsuario.length" class="table-responsive">
-                    <table class="table table-bordered table-striped table-sm">
+                    <table class="table table-bordered table-striped table-sm text-gray-900">
                         <thead>
                             <tr>
                                 <th>Nombre</th>
