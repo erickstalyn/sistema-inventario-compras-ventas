@@ -1841,6 +1841,78 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -1848,6 +1920,10 @@ __webpack_require__.r(__webpack_exports__);
       ListaUsuario: [],
       Usuario: {
         id: 0,
+        usuario: '',
+        password: '',
+        estado: 0,
+        persona_id: 0,
         nombre: '',
         dni: '',
         ruc: '',
@@ -1857,10 +1933,7 @@ __webpack_require__.r(__webpack_exports__);
         birthday: '',
         observacion: '',
         tipo: '',
-        usuario: '',
-        password: '',
-        estado: 0,
-        rol: ''
+        rol_id: ''
       },
       SelectRol: [],
       //datos de busqueda y filtracion
@@ -1870,7 +1943,7 @@ __webpack_require__.r(__webpack_exports__);
       },
       //datos de modales
       Modal: {
-        numero: 0,
+        numero: 1,
         estado: 0,
         titulo: '',
         accion: ''
@@ -1923,9 +1996,6 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
-    abrirModalAgregar: function abrirModalAgregar() {},
-    abrirModalEditar: function abrirModalEditar() {},
-    abrirModal: function abrirModal() {},
     listar: function listar(page) {
       var me = this;
       var url = '/usuario?page=' + page + '&estado=' + this.Busqueda.estado + '&texto=' + this.Busqueda.texto;
@@ -1936,10 +2006,37 @@ __webpack_require__.r(__webpack_exports__);
         console.log(error);
       });
     },
+    ver: function ver() {},
     agregar: function agregar() {},
     editar: function editar() {},
     activar: function activar() {},
     desactivar: function desactivar() {},
+    abrirModalVer: function abrirModalVer() {},
+    abrirModalAgregar: function abrirModalAgregar() {
+      this.abrirModal();
+      this.Modal.titulo = 'Nuevo Usuario';
+    },
+    abrirModalEditar: function abrirModalEditar() {
+      this.abrirModal();
+      this.Modal.titulo = 'Editar Usuario';
+    },
+    abrirModal: function abrirModal() {
+      this.Modal.estado = 1;
+      this.selectRol();
+    },
+    cerrarModal: function cerrarModal() {
+      this.Modal.estado = 0;
+      this.SelectRol = [];
+    },
+    selectRol: function selectRol() {
+      var me = this;
+      var url = 'usuario/selectRol';
+      axios.get(url).then(function (response) {
+        me.SelectRol = response.data;
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
     cambiarPagina: function cambiarPagina(page) {
       if (page >= 1 && page <= this.Paginacion.lastPage) {
         this.Paginacion.currentPage = page;
@@ -37951,7 +38048,7 @@ var render = function() {
       _c("div", { staticClass: "card" }, [
         _c("div", { staticClass: "card-header" }, [
           _c("i", { staticClass: "fas fa-map-signs" }),
-          _vm._v("  "),
+          _vm._v("  \n                "),
           _c("span", { staticClass: "h3 mb-0 text-gray-900" }, [
             _vm._v("Usuarios")
           ]),
@@ -37968,7 +38065,7 @@ var render = function() {
               }
             },
             [
-              _c("i", { staticClass: "fa fa-user-plus" }),
+              _c("i", { staticClass: "fas fa-user-plus" }),
               _vm._v("  Nuevo\n                ")
             ]
           ),
@@ -38103,7 +38200,9 @@ var render = function() {
                           }),
                           _vm._v(" "),
                           _c("td", {
-                            domProps: { textContent: _vm._s(usuario.rol) }
+                            domProps: {
+                              textContent: _vm._s(usuario.rol_nombre)
+                            }
                           }),
                           _vm._v(" "),
                           _c("td", {
@@ -38145,6 +38244,20 @@ var render = function() {
                           _c(
                             "td",
                             [
+                              _c(
+                                "button",
+                                {
+                                  staticClass: "btn btn-primary btn-sm",
+                                  attrs: { type: "button" },
+                                  on: {
+                                    click: function($event) {
+                                      return _vm.abrirModalVer(usuario)
+                                    }
+                                  }
+                                },
+                                [_c("i", { staticClass: "fas fa-user-lock" })]
+                              ),
+                              _vm._v(" "),
                               _c(
                                 "button",
                                 {
@@ -38208,7 +38321,7 @@ var render = function() {
                   ]
                 ),
                 _vm._v(" "),
-                _c("nav", [
+                _c("nav", { staticClass: "d-flex justify-content-center" }, [
                   _c(
                     "ul",
                     { staticClass: "pagination align-content-center" },
@@ -38283,7 +38396,266 @@ var render = function() {
       ])
     ]),
     _vm._v(" "),
-    _c("div", { class: { mostrar: _vm.Modal.estado } })
+    _c("div", { staticClass: "modal", class: { mostrar: _vm.Modal.estado } }, [
+      _c("div", { staticClass: "modal-content modal-dialog modal-lg" }, [
+        _vm.Modal.numero == 1
+          ? _c("div", [
+              _c("div", { staticClass: "modal-header" }, [
+                _c("h3", {
+                  staticClass: "modal-title",
+                  domProps: { textContent: _vm._s(_vm.Modal.titulo) }
+                }),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "close",
+                    attrs: { type: "button" },
+                    on: {
+                      click: function($event) {
+                        return _vm.cerrarModal()
+                      }
+                    }
+                  },
+                  [_vm._v("X")]
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-body" }, [
+                _c("div", { staticClass: "row form-group" }, [
+                  _c("label", { staticClass: "col-md-3" }, [
+                    _vm._v("Nombre (*)")
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-md-9" }, [
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.Usuario.nombre,
+                          expression: "Usuario.nombre"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: { type: "text", placeholder: "ingrese el nombre" },
+                      domProps: { value: _vm.Usuario.nombre },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.$set(_vm.Usuario, "nombre", $event.target.value)
+                        }
+                      }
+                    })
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "row form-group" }, [
+                  _c("label", { staticClass: "col-md-3" }, [
+                    _vm._v("Direccion")
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-md-9" }, [
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.Usuario.direccion,
+                          expression: "Usuario.direccion"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: {
+                        type: "text",
+                        placeholder: "ingrese la direccion"
+                      },
+                      domProps: { value: _vm.Usuario.direccion },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.$set(
+                            _vm.Usuario,
+                            "direccion",
+                            $event.target.value
+                          )
+                        }
+                      }
+                    })
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "row form-group" }, [
+                  _c("label", { staticClass: "col-md-3" }, [_vm._v("Rol")]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-md-9" }, [
+                    _c(
+                      "select",
+                      {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.Usuario.rol_id,
+                            expression: "Usuario.rol_id"
+                          }
+                        ],
+                        staticClass: "form-control",
+                        on: {
+                          change: function($event) {
+                            var $$selectedVal = Array.prototype.filter
+                              .call($event.target.options, function(o) {
+                                return o.selected
+                              })
+                              .map(function(o) {
+                                var val = "_value" in o ? o._value : o.value
+                                return val
+                              })
+                            _vm.$set(
+                              _vm.Usuario,
+                              "rol_id",
+                              $event.target.multiple
+                                ? $$selectedVal
+                                : $$selectedVal[0]
+                            )
+                          }
+                        }
+                      },
+                      [
+                        _c("option", { attrs: { value: "0" } }, [
+                          _vm._v("seleccione un rol")
+                        ]),
+                        _vm._v(" "),
+                        _vm._l(_vm.SelectRol, function(rol) {
+                          return _c("option", {
+                            key: rol.id,
+                            domProps: { textContent: _vm._s(rol.nombre) }
+                          })
+                        })
+                      ],
+                      2
+                    )
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "row form-group" }, [
+                  _c("label", { staticClass: "col-md-3" }, [
+                    _vm._v("Usuario (*)")
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-md-9" }, [
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.Usuario.usuario,
+                          expression: "Usuario.usuario"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: {
+                        type: "text",
+                        placeholder: "ingrese el usuario"
+                      },
+                      domProps: { value: _vm.Usuario.usuario },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.$set(_vm.Usuario, "usuario", $event.target.value)
+                        }
+                      }
+                    })
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "row form-group" }, [
+                  _c("label", { staticClass: "col-md-3" }, [
+                    _vm._v("Contraseña (*)")
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-md-9" }, [
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.Usuario.password,
+                          expression: "Usuario.password"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: {
+                        type: "password",
+                        placeholder: "ingrese la contraseña"
+                      },
+                      domProps: { value: _vm.Usuario.password },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.$set(_vm.Usuario, "password", $event.target.value)
+                        }
+                      }
+                    })
+                  ])
+                ])
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-footer" }, [
+                _c(
+                  "button",
+                  {
+                    on: {
+                      click: function($event) {
+                        return _vm.cerrarModal()
+                      }
+                    }
+                  },
+                  [
+                    _vm._v(
+                      "\n                        Cancelar\n                    "
+                    )
+                  ]
+                )
+              ])
+            ])
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.Modal.numero == 2
+          ? _c("div", [
+              _c("div", { staticClass: "modal-header" }),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-body" }),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-footer" }, [
+                _c(
+                  "button",
+                  {
+                    on: {
+                      click: function($event) {
+                        return _vm.cerrarModal()
+                      }
+                    }
+                  },
+                  [
+                    _vm._v(
+                      "\n                        Cerrar Modal \n                    "
+                    )
+                  ]
+                )
+              ])
+            ])
+          : _vm._e()
+      ])
+    ])
   ])
 }
 var staticRenderFns = [
@@ -38295,7 +38667,7 @@ var staticRenderFns = [
       "button",
       { staticClass: "btn btn-danger", attrs: { type: "button" } },
       [
-        _c("i", { staticClass: "fa fa-user-tag" }),
+        _c("i", { staticClass: "far fa-file-pdf" }),
         _vm._v("  PDF\n                ")
       ]
     )
@@ -50730,7 +51102,7 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! C:\laragon\www\control_inventario\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! E:\Programas\XAMPP\XAMPP\htdocs\EC_ci\resources\js\app.js */"./resources/js/app.js");
 
 
 /***/ })

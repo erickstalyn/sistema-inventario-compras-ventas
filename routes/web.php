@@ -36,6 +36,7 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::group(['middleware' => ['Administrador']], function (){
         Route::get('/usuario', 'UsuarioController@index');
+        Route::get('/usuario/selectRol', 'UsuarioController@selectRol');
     });
     Route::group(['middleware' => ['Puesto']], function (){
 

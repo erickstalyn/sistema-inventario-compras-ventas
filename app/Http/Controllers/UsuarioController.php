@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Usuario;
+use App\Rol;
 
 class UsuarioController extends Controller
 {
+
     public function index(Request $request){
         if ( !$request->ajax() ) return redirect('/') ;
         
@@ -16,7 +18,7 @@ class UsuarioController extends Controller
 
         $usuarios = Usuario::join('persona', 'usuario.persona_id', '=', 'persona.id')->join('rol', 'usuario.rol_id', '=', 'rol.id')
                             ->select('persona.nombre', 'persona.direccion', 'persona.created_at as fecha_creacion', 'persona.updated_at as fecha_actualizacion', 'persona.deleted_at as fecha_eliminacion',
-                                    'usuario.id', 'usuario.estado', 'rol.nombre as rol')
+                                    'usuario.id', 'usuario.estado', 'rol.nombre as rol_nombre')
                             ->where(function ($query) use ($estado) {
                                 if ( $estado != 2 ) {
                                     $query->where('usuario.estado', '=', $estado);
@@ -41,5 +43,14 @@ class UsuarioController extends Controller
             ],
             'usuarios' => $usuarios
         ];
+    }
+
+    public function selectRol(Request $request){
+        if ( !$request->ajax() ) return redirect('/');
+
+        $roles = Rol::select('id', 'nombre')
+                    ->orderBy('nombre', 'asc')->get();
+
+        return $roles;
     }
 }

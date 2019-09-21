@@ -4,17 +4,20 @@
         <!-- Interfaz Principal -->
         <div class="container-fluid">
             <div class="card">
+                <!-- Encabezado principal -->
                 <div class="card-header">
-                    <i class="fas fa-map-signs"></i>&nbsp;&nbsp;<span class="h3 mb-0 text-gray-900">Usuarios</span>
+                    <i class="fas fa-map-signs"></i>&nbsp;&nbsp;
+                    <span class="h3 mb-0 text-gray-900">Usuarios</span>
                     <button type="button" class="btn btn-success" @click="abrirModalAgregar()">
-                        <i class="fa fa-user-plus"></i>&nbsp; Nuevo
+                        <i class="fas fa-user-plus"></i>&nbsp; Nuevo
                     </button>
                     <button type="button" class="btn btn-danger">
-                        <i class="fa fa-user-tag"></i>&nbsp; PDF
+                        <i class="far fa-file-pdf"></i>&nbsp; PDF
                     </button>
                 </div>
 
                 <div class="card-body">
+                    <!-- Inputs de busqueda -->
                     <div class="row form-group">
                         <div class="col-md-8">
                             <div class="input-group">
@@ -30,8 +33,9 @@
                             </div>
                         </div>
                     </div>
-                    
+                    <!-- Listado -->
                     <div v-if="ListaUsuario.length" class="table-responsive">
+                        <!-- Tabla -->
                         <table class="table table-bordered table-striped table-sm text-gray-900">
                             <thead>
                                 <tr>
@@ -49,7 +53,7 @@
                                 <tr v-for="usuario in ListaUsuario" :key="usuario.id" >
                                     <td v-text="usuario.nombre"></td>
                                     <td v-text="usuario.direccion"></td>
-                                    <td v-text="usuario.rol"></td>
+                                    <td v-text="usuario.rol_nombre"></td>
                                     <td v-text="usuario.fecha_creacion"></td>
                                     <td v-text="usuario.fecha_actualizacion"></td>
                                     <td v-text="usuario.fecha_eliminacion"></td>
@@ -62,6 +66,9 @@
                                         </div>
                                     </td>
                                     <td>
+                                        <button type="button" @click="abrirModalVer(usuario)" class="btn btn-primary btn-sm">
+                                            <i class="fas fa-user-lock"></i>
+                                        </button>
                                         <button type="button" @click="abrirModalEditar(usuario)" class="btn btn-warning btn-sm">
                                             <i class="fas fa-user-edit"></i>
                                         </button>
@@ -79,7 +86,8 @@
                                 </tr>
                             </tbody>
                         </table>
-                        <nav>
+                        <!-- Barra de navegacion -->
+                        <nav class="d-flex justify-content-center">
                             <ul class="pagination align-content-center">
                                 <li class="page-item">
                                     <a href="#" @click="cambiarPagina(Paginacion.currentPage-1)" class="page-link">Anterior</a>
@@ -102,8 +110,72 @@
         </div>
 
         <!-- Modales -->
-        <div :class="{'mostrar': Modal.estado}">
+        <div class="modal" :class="{'mostrar': Modal.estado}">
+            <div class="modal-content modal-dialog modal-lg">
+                
+                <!-- Modal Numero 1 -->
+                <div v-if="Modal.numero==1">
+                    <div class="modal-header">
+                        <h3 v-text="Modal.titulo" class="modal-title"></h3>
+                        <button type="button" @click="cerrarModal()" class="close">X</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row form-group">
+                            <label class="col-md-3">Nombre (*)</label>
+                            <div class="col-md-9">
+                                <input type="text" v-model="Usuario.nombre" class="form-control" placeholder="ingrese el nombre">
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <label class="col-md-3">Direccion</label>
+                            <div class="col-md-9">
+                                <input type="text" v-model="Usuario.direccion" class="form-control" placeholder="ingrese la direccion">
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <label class="col-md-3">Rol</label>
+                            <div class="col-md-9">
+                                <select v-model="Usuario.rol_id" class="form-control">
+                                    <option value="0">seleccione un rol</option>
+                                    <option v-for="rol in SelectRol" :key="rol.id" v-text="rol.nombre"></option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <label class="col-md-3">Usuario (*)</label>
+                            <div class="col-md-9">
+                                <input type="text" v-model="Usuario.usuario" class="form-control" placeholder="ingrese el usuario">
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <label class="col-md-3">Contraseña (*)</label>
+                            <div class="col-md-9">
+                                <input type="password" v-model="Usuario.password" class="form-control" placeholder="ingrese la contraseña">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button @click="cerrarModal()">
+                            Cancelar
+                        </button>
+                    </div>
+                </div>
+                <!-- Modal Numero 2 -->
+                <div v-if="Modal.numero==2">
+                    <div class="modal-header">
+                        
+                    </div>
+                    <div class="modal-body">
 
+                    </div>
+                    <div class="modal-footer">
+                        <button @click="cerrarModal()">
+                            Cerrar Modal 
+                        </button>
+                    </div>
+                </div>
+
+            </div>
         </div>
 
     </main>
@@ -117,6 +189,10 @@
                 ListaUsuario: [],
                 Usuario: {
                     id: 0,
+                    usuario: '',
+                    password: '',
+                    estado: 0,
+                    persona_id: 0,
                     nombre: '',
                     dni: '',
                     ruc: '',
@@ -126,10 +202,7 @@
                     birthday: '',
                     observacion: '',
                     tipo: '',
-                    usuario: '',
-                    password: '',
-                    estado: 0,
-                    rol: '',
+                    rol_id: '',
                 },
                 SelectRol: [],
 
@@ -141,7 +214,7 @@
 
                 //datos de modales
                 Modal: {
-                    numero: 0,
+                    numero: 1,
                     estado: 0,
                     titulo: '',
                     accion: ''
@@ -193,17 +266,8 @@
             }
         },
         methods: {
-            abrirModalAgregar(){
-
-            },
-            abrirModalEditar(){
-
-            },
-            abrirModal(){
-
-            },
             listar(page){
-                let me = this;
+                var me = this;
                 var url = '/usuario?page='+page+'&estado='+this.Busqueda.estado+'&texto='+this.Busqueda.texto;
 
                 axios.get(url).then(function (response) {
@@ -212,6 +276,9 @@
                 }).catch(function (error) {
                     console.log(error)
                 });
+            },
+            ver(){
+
             },
             agregar(){
 
@@ -224,6 +291,38 @@
             },
             desactivar(){
 
+            },
+            abrirModalVer(){
+
+            },
+            abrirModalAgregar(){
+                this.abrirModal();
+                
+                this.Modal.titulo = 'Nuevo Usuario';
+            },
+            abrirModalEditar(){
+                this.abrirModal();
+
+                this.Modal.titulo = 'Editar Usuario';
+            },
+            abrirModal(){
+                this.Modal.estado = 1;
+                this.selectRol();
+            },
+            cerrarModal(){
+                this.Modal.estado = 0;
+
+                this.SelectRol = [];
+            },
+            selectRol(){
+                var me = this;
+                var url = 'usuario/selectRol';
+
+                axios.get(url).then(function(response){
+                    me.SelectRol = response.data;
+                }).catch(function(error){
+                    console.log(error);
+                });
             },
             cambiarPagina(page){
                 if ( page >= 1 && page <= this.Paginacion.lastPage) {
