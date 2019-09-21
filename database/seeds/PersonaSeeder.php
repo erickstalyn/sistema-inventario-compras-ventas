@@ -31,6 +31,7 @@ class PersonaSeeder extends Seeder {
         DB::table('persona')->insert(array(
             'nombre' => 'Mi almacen 2',
             'created_at' => $now,
+            'deleted_at' => $now,
             'tipo' => 'A'
         ));
     }

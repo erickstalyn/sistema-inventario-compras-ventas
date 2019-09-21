@@ -38682,11 +38682,11 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", [_vm._v("Rol")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Fecha de creacion")]),
+        _c("th", [_vm._v("F.creación")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Fecha de actualizacion")]),
+        _c("th", [_vm._v("F.modificación")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Fecha de eliminacion")]),
+        _c("th", [_vm._v("F.desactivación")]),
         _vm._v(" "),
         _c("th", [_vm._v("Estado")]),
         _vm._v(" "),
@@ -51100,7 +51100,7 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! E:\Programas\XAMPP\XAMPP\htdocs\EC_ci\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\laragon\www\control_inventario\resources\js\app.js */"./resources/js/app.js");
 
 
 /***/ })
