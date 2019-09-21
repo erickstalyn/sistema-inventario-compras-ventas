@@ -53,7 +53,7 @@
                                 <tr v-for="usuario in ListaUsuario" :key="usuario.id" >
                                     <td v-text="usuario.nombre"></td>
                                     <td v-text="usuario.direccion"></td>
-                                    <td v-text="usuario.rol_nombre"></td>
+                                    <td v-text="usuario.rol"></td>
                                     <td v-text="usuario.fecha_creacion"></td>
                                     <td v-text="usuario.fecha_actualizacion"></td>
                                     <td v-text="usuario.fecha_eliminacion"></td>

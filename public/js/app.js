@@ -38200,9 +38200,7 @@ var render = function() {
                           }),
                           _vm._v(" "),
                           _c("td", {
-                            domProps: {
-                              textContent: _vm._s(usuario.rol_nombre)
-                            }
+                            domProps: { textContent: _vm._s(usuario.rol) }
                           }),
                           _vm._v(" "),
                           _c("td", {
