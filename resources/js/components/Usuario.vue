@@ -4,10 +4,10 @@
             <div class="card-header">
                 <i class="fas fa-map-signs"></i>&nbsp;&nbsp;<span class="h3 mb-0 text-gray-900">Usuarios</span>
                 <button type="button" class="btn btn-success" @click="abrirModalAgregar()">
-                    <i class="icon-plus"></i>&nbsp; Nuevo
+                    <i class="fa fa-user-plus"></i>&nbsp; Nuevo
                 </button>
                 <button type="button" class="btn btn-danger">
-                    <i class="icon-picture"></i>&nbsp; PDF
+                    <i class="fa fa-user-tag"></i>&nbsp; PDF
                 </button>
             </div>
 
@@ -198,8 +198,8 @@
                 var url = '/usuario?page='+page+'&estado='+this.Busqueda.estado+'&texto='+this.Busqueda.texto;
 
                 axios.get(url).then(function (response) {
-                    this.ListaUsuario = response.data.usuarios.data;
-                    this.Paginacion = response.data.paginacion;
+                    me.ListaUsuario = response.data.usuarios.data;
+                    me.Paginacion = response.data.paginacion;
                 }).catch(function (error) {
                     console.log(error)
                 });

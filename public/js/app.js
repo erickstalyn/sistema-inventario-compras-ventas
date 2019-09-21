@@ -1921,8 +1921,8 @@ __webpack_require__.r(__webpack_exports__);
       var me = this;
       var url = '/usuario?page=' + page + '&estado=' + this.Busqueda.estado + '&texto=' + this.Busqueda.texto;
       axios.get(url).then(function (response) {
-        this.ListaUsuario = response.data.usuarios.data;
-        this.Paginacion = response.data.paginacion;
+        me.ListaUsuario = response.data.usuarios.data;
+        me.Paginacion = response.data.paginacion;
       })["catch"](function (error) {
         console.log(error);
       });
@@ -37313,7 +37313,7 @@ var render = function() {
             }
           },
           [
-            _c("i", { staticClass: "icon-plus" }),
+            _c("i", { staticClass: "fa fa-user-plus" }),
             _vm._v("  Nuevo\n            ")
           ]
         ),
@@ -37636,7 +37636,10 @@ var staticRenderFns = [
     return _c(
       "button",
       { staticClass: "btn btn-danger", attrs: { type: "button" } },
-      [_c("i", { staticClass: "icon-picture" }), _vm._v("  PDF\n            ")]
+      [
+        _c("i", { staticClass: "fa fa-user-tag" }),
+        _vm._v("  PDF\n            ")
+      ]
     )
   },
   function() {
@@ -50051,7 +50054,7 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! C:\laragon\www\control_inventario\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! E:\Programas\XAMPP\XAMPP\htdocs\EC_ci\resources\js\app.js */"./resources/js/app.js");
 
 
 /***/ })
