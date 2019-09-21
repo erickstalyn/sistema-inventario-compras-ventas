@@ -1922,8 +1922,8 @@ __webpack_require__.r(__webpack_exports__);
       var me = this;
       var url = '/usuario?page=' + page + '&estado=' + this.Busqueda.estado + '&texto=' + this.Busqueda.texto;
       axios.get(url).then(function (response) {
-        me.ListaUsuario = response.data.usuarios.data;
-        me.Paginacion = response.data.paginacion;
+        this.ListaUsuario = response.data.usuarios.data;
+        this.Paginacion = response.data.paginacion;
       })["catch"](function (error) {
         console.log(error);
       });
