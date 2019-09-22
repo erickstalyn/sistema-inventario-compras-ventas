@@ -38603,7 +38603,7 @@ var render = function() {
                                 "button",
                                 {
                                   staticClass: "btn btn-warning btn-sm",
-                                  attrs: { type: "button" },
+                                  attrs: { type: "button", title: "Editar" },
                                   on: {
                                     click: function($event) {
                                       return _vm.abrirModalEditar(usuario)
@@ -38619,7 +38619,10 @@ var render = function() {
                                       "button",
                                       {
                                         staticClass: "btn btn-danger btn-sm",
-                                        attrs: { type: "button" },
+                                        attrs: {
+                                          type: "button",
+                                          title: "Desactivar"
+                                        },
                                         on: {
                                           click: function($event) {
                                             return _vm.desactivar(usuario.id)
@@ -38638,7 +38641,10 @@ var render = function() {
                                       "button",
                                       {
                                         staticClass: "btn btn-success btn-sm",
-                                        attrs: { type: "button" },
+                                        attrs: {
+                                          type: "button",
+                                          title: "Activar"
+                                        },
                                         on: {
                                           click: function($event) {
                                             return _vm.activar(usuario.id)

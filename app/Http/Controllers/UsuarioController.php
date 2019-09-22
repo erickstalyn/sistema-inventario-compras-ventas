@@ -19,7 +19,7 @@ class UsuarioController extends Controller
         
         $estado = $request->estado;
         $texto = $request->texto;
-        $items_per_page = 2;
+        $items_per_page = 6;
 
         $usuarios = Usuario::join('persona', 'usuario.persona_id', '=', 'persona.id')->join('rol', 'usuario.rol_id', '=', 'rol.id')
                             ->select('persona.nombre', 'persona.direccion',
@@ -120,7 +120,7 @@ class UsuarioController extends Controller
         $usuario = Usuario::findOrFail($request->id);
 
         $usuario->estado = 1;
-        $usuario.save();
+        $usuario->save();
     }
 
     public function desactivar(Request $request){

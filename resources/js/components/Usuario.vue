@@ -68,16 +68,16 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <button type="button" @click="abrirModalEditar(usuario)" class="btn btn-warning btn-sm">
+                                        <button type="button" @click="abrirModalEditar(usuario)" title="Editar" class="btn btn-warning btn-sm">
                                             <i class="fas fa-user-edit"></i>
                                         </button>
                                         <template v-if="usuario.estado">
-                                            <button type="button" @click="desactivar(usuario.id)" class="btn btn-danger btn-sm">
+                                            <button type="button" @click="desactivar(usuario.id)" title="Desactivar" class="btn btn-danger btn-sm">
                                                 <i class="fas fa-user-times"></i>
                                             </button>        
                                         </template>
                                         <template v-else>
-                                            <button type="button" @click="activar(usuario.id)" class="btn btn-success btn-sm">
+                                            <button type="button" @click="activar(usuario.id)" title="Activar" class="btn btn-success btn-sm">
                                                 <i class="fas fa-user-check"></i>
                                             </button>
                                         </template>
