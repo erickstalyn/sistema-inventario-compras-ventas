@@ -19,7 +19,7 @@ class UsuarioController extends Controller
         
         $estado = $request->estado;
         $texto = $request->texto;
-        $items_per_page = 10;
+        $items_per_page = 2;
 
         $usuarios = Usuario::join('persona', 'usuario.persona_id', '=', 'persona.id')->join('rol', 'usuario.rol_id', '=', 'rol.id')
                             ->select('persona.nombre', 'persona.direccion',
@@ -40,7 +40,7 @@ class UsuarioController extends Controller
                                 }
                             })
                             ->orderBy('rol', 'asc')->paginate($items_per_page);
-                            
+
         return [
             'paginacion' => [
                 'total' => $usuarios->total(),
