@@ -1922,8 +1922,6 @@ __webpack_require__.r(__webpack_exports__);
         id: 0,
         usuario: '',
         password: '',
-        estado: 0,
-        persona_id: 0,
         nombre: '',
         dni: '',
         ruc: '',
@@ -1933,7 +1931,7 @@ __webpack_require__.r(__webpack_exports__);
         birthday: '',
         observacion: '',
         tipo: '',
-        rol_id: ''
+        rol_id: 0
       },
       SelectRol: [],
       //datos de busqueda y filtracion
@@ -2007,26 +2005,99 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     ver: function ver() {},
-    agregar: function agregar() {},
-    editar: function editar() {},
+    agregar: function agregar() {
+      if (this.validar()) return;
+      this.Usuario.tipo = this.getTipo(this.Usuario.rol_id);
+      var me = this;
+      axios.post('usuario/agregar', {
+        'usuario': this.Usuario.usuario,
+        'password': this.Usuario.password,
+        'nombre': this.Usuario.nombre,
+        'dni': this.Usuario.dni,
+        'ruc': this.Usuario.ruc,
+        'direccion': this.Usuario.direccion,
+        'birthday': this.Usuario.birthday,
+        'telefono': this.Usuario.telefono,
+        'email': this.Usuario.email,
+        'observacion': this.Usuario.observacion,
+        'tipo': this.Usuario.tipo,
+        'rol_id': this.Usuario.rol_id
+      }).then(function (response) {
+        me.cerrarModal();
+        me.listar(1);
+        console.response();
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
+    editar: function editar() {
+      if (this.validar()) return;
+    },
     activar: function activar() {},
     desactivar: function desactivar() {},
     abrirModalVer: function abrirModalVer() {},
     abrirModalAgregar: function abrirModalAgregar() {
-      this.abrirModal();
+      this.abrirModal(1);
       this.Modal.titulo = 'Nuevo Usuario';
+      this.Modal.accion = 'Agregar';
+      this.Usuario.usuario = '';
+      this.Usuario.password = '';
+      this.Usuario.nombre = '';
+      this.Usuario.dni = '';
+      this.Usuario.ruc = '';
+      this.Usuario.direccion = '';
+      this.Usuario.telefono = '';
+      this.Usuario.email = '';
+      this.Usuario.birthday = '';
+      this.Usuario.observacion = '';
+      this.Usuario.tipo = '';
+      this.Usuario.rol_id = 0;
+      this.selectRol();
     },
     abrirModalEditar: function abrirModalEditar() {
-      this.abrirModal();
+      this.abrirModal(1);
       this.Modal.titulo = 'Editar Usuario';
-    },
-    abrirModal: function abrirModal() {
-      this.Modal.estado = 1;
+      this.Modal.accion = 'Editar';
       this.selectRol();
+    },
+    abrirModal: function abrirModal(numero) {
+      this.Modal.estado = 1;
+      this.Modal.numero = numero;
     },
     cerrarModal: function cerrarModal() {
       this.Modal.estado = 0;
+      this.Modal.mensaje = [];
+      this.Error.estado = 0;
+      this.Error.mensaje = [];
+      this.Usuario.id = 0;
+      this.Usuario.usuario = '';
+      this.Usuario.password = '';
+      this.Usuario.nombre = '';
+      this.Usuario.dni = '';
+      this.Usuario.ruc = '';
+      this.Usuario.direccion = '';
+      this.Usuario.telefono = '';
+      this.Usuario.email = '';
+      this.Usuario.birthday = '';
+      this.Usuario.observacion = '';
+      this.Usuario.tipo = '';
+      this.Usuario.rol_id = 0;
       this.SelectRol = [];
+    },
+    accionar: function accionar(accion) {
+      switch (accion) {
+        case 'Agregar':
+          {
+            this.agregar();
+            break;
+          }
+
+        case 'Editar':
+          {
+            this.editar();
+            break;
+          }
+      }
     },
     selectRol: function selectRol() {
       var me = this;
@@ -2036,6 +2107,58 @@ __webpack_require__.r(__webpack_exports__);
       })["catch"](function (error) {
         console.log(error);
       });
+    },
+    getRol: function getRol(id) {
+      for (var i = 0; i < this.SelectRol.length; i++) {
+        if (this.SelectRol[i].id == id) return this.SelectRol[i];
+      }
+    },
+    getTipo: function getTipo(rol_id) {
+      switch (this.getRol(rol_id).nombre) {
+        case 'Administrador':
+          {
+            return 'N';
+          }
+
+        case 'Puesto':
+          {
+            return 'P';
+          }
+
+        case 'Almacen':
+          {
+            return 'A';
+          }
+      }
+    },
+    validar: function validar() {
+      this.Error.estado = 0;
+      this.Error.mensaje = []; //nombre
+
+      if (!this.Usuario.nombre) {
+        this.Error.mensaje.push("Debe ingresar un nombre");
+      } //rol
+
+
+      if (this.Usuario.rol_id == 0) {
+        this.Error.mensaje.push("Debe seleccionar un rol");
+      } //usuario
+
+
+      if (!this.Usuario.usuario) {
+        this.Error.mensaje.push("Debe ingresar un usuario");
+      } //password
+
+
+      if (!this.Usuario.password) {
+        this.Error.mensaje.push("Debe ingresar un password");
+      }
+
+      if (this.Error.mensaje.length) {
+        this.Error.estado = 1;
+      }
+
+      return this.Error.estado;
     },
     cambiarPagina: function cambiarPagina(page) {
       if (page >= 1 && page <= this.Paginacion.lastPage) {
@@ -38396,30 +38519,65 @@ var render = function() {
     _vm._v(" "),
     _c("div", { staticClass: "modal", class: { mostrar: _vm.Modal.estado } }, [
       _c("div", { staticClass: "modal-content modal-dialog modal-lg" }, [
-        _vm.Modal.numero == 1
-          ? _c("div", [
-              _c("div", { staticClass: "modal-header" }, [
-                _c("h3", {
-                  staticClass: "modal-title",
-                  domProps: { textContent: _vm._s(_vm.Modal.titulo) }
-                }),
+        _c("div", { staticClass: "modal-header" }, [
+          _c("h3", {
+            staticClass: "modal-title",
+            domProps: { textContent: _vm._s(_vm.Modal.titulo) }
+          }),
+          _vm._v(" "),
+          _c(
+            "button",
+            {
+              staticClass: "close",
+              attrs: { type: "button" },
+              on: {
+                click: function($event) {
+                  return _vm.cerrarModal()
+                }
+              }
+            },
+            [_vm._v("X")]
+          )
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "modal-body" }, [
+          _vm.Modal.numero == 1
+            ? _c("div", [
+                _vm.Error.estado
+                  ? _c("div", { staticClass: "row form-group" }, [
+                      _c("div", { staticClass: "alert alert-danger" }, [
+                        _c(
+                          "button",
+                          {
+                            staticClass: "close",
+                            attrs: { type: "button", "data-dismiss": "alert" },
+                            on: {
+                              click: function($event) {
+                                _vm.Error.estado = 0
+                              }
+                            }
+                          },
+                          [_vm._v("×")]
+                        ),
+                        _vm._v(" "),
+                        _c("strong", [
+                          _vm._v("Corregir los siguentes errores:")
+                        ]),
+                        _vm._v(" "),
+                        _c(
+                          "ul",
+                          _vm._l(_vm.Error.mensaje, function(error) {
+                            return _c("li", {
+                              key: error,
+                              domProps: { textContent: _vm._s(error) }
+                            })
+                          }),
+                          0
+                        )
+                      ])
+                    ])
+                  : _vm._e(),
                 _vm._v(" "),
-                _c(
-                  "button",
-                  {
-                    staticClass: "close",
-                    attrs: { type: "button" },
-                    on: {
-                      click: function($event) {
-                        return _vm.cerrarModal()
-                      }
-                    }
-                  },
-                  [_vm._v("X")]
-                )
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "modal-body" }, [
                 _c("div", { staticClass: "row form-group" }, [
                   _c("label", { staticClass: "col-md-3" }, [
                     _vm._v("Nombre (*)")
@@ -38524,14 +38682,17 @@ var render = function() {
                         }
                       },
                       [
-                        _c("option", { attrs: { value: "0" } }, [
+                        _c("option", { attrs: { value: "0", disabled: "" } }, [
                           _vm._v("seleccione un rol")
                         ]),
                         _vm._v(" "),
                         _vm._l(_vm.SelectRol, function(rol) {
                           return _c("option", {
                             key: rol.id,
-                            domProps: { textContent: _vm._s(rol.nombre) }
+                            domProps: {
+                              value: rol.id,
+                              textContent: _vm._s(rol.nombre)
+                            }
                           })
                         })
                       ],
@@ -38605,53 +38766,38 @@ var render = function() {
                     })
                   ])
                 ])
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "modal-footer" }, [
-                _c(
-                  "button",
-                  {
-                    on: {
-                      click: function($event) {
-                        return _vm.cerrarModal()
-                      }
-                    }
-                  },
-                  [
-                    _vm._v(
-                      "\n                        Cancelar\n                    "
-                    )
-                  ]
-                )
               ])
-            ])
-          : _vm._e(),
+            : _vm._e(),
+          _vm._v(" "),
+          _vm.Modal.numero == 2 ? _c("div") : _vm._e()
+        ]),
         _vm._v(" "),
-        _vm.Modal.numero == 2
-          ? _c("div", [
-              _c("div", { staticClass: "modal-header" }),
-              _vm._v(" "),
-              _c("div", { staticClass: "modal-body" }),
-              _vm._v(" "),
-              _c("div", { staticClass: "modal-footer" }, [
-                _c(
-                  "button",
-                  {
-                    on: {
-                      click: function($event) {
-                        return _vm.cerrarModal()
-                      }
-                    }
-                  },
-                  [
-                    _vm._v(
-                      "\n                        Cerrar Modal \n                    "
-                    )
-                  ]
-                )
-              ])
-            ])
-          : _vm._e()
+        _c("div", { staticClass: "modal-footer" }, [
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-secondary",
+              attrs: { type: "button" },
+              on: {
+                click: function($event) {
+                  return _vm.cerrarModal()
+                }
+              }
+            },
+            [_vm._v("Cancelar")]
+          ),
+          _vm._v(" "),
+          _c("button", {
+            staticClass: "btn btn-primary",
+            attrs: { type: "button" },
+            domProps: { textContent: _vm._s(_vm.Modal.accion) },
+            on: {
+              click: function($event) {
+                return _vm.accionar(_vm.Modal.accion)
+              }
+            }
+          })
+        ])
       ])
     ])
   ])

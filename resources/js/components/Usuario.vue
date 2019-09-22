@@ -113,13 +113,23 @@
         <div class="modal" :class="{'mostrar': Modal.estado}">
             <div class="modal-content modal-dialog modal-lg">
                 
-                <!-- Modal Numero 1 -->
-                <div v-if="Modal.numero==1">
-                    <div class="modal-header">
-                        <h3 v-text="Modal.titulo" class="modal-title"></h3>
-                        <button type="button" @click="cerrarModal()" class="close">X</button>
-                    </div>
-                    <div class="modal-body">
+                <div class="modal-header">
+                    <h3 v-text="Modal.titulo" class="modal-title"></h3>
+                    <button type="button" @click="cerrarModal()" class="close">X</button>
+                </div>
+                
+                <div class="modal-body">
+                    <!-- Modal Numero 1 de AGREGAR-->
+                    <div v-if="Modal.numero==1">
+                        <div v-if="Error.estado" class="row form-group">
+                            <div class="alert alert-danger">
+                                <button type="button" @click="Error.estado=0" class="close" data-dismiss="alert">×</button>
+                                <strong>Corregir los siguentes errores:</strong>
+                                <ul> 
+                                    <li v-for="error in Error.mensaje" :key="error" v-text="error"></li> 
+                                </ul>
+                            </div>
+                        </div>
                         <div class="row form-group">
                             <label class="col-md-3">Nombre (*)</label>
                             <div class="col-md-9">
@@ -136,8 +146,8 @@
                             <label class="col-md-3">Rol</label>
                             <div class="col-md-9">
                                 <select v-model="Usuario.rol_id" class="form-control">
-                                    <option value="0">seleccione un rol</option>
-                                    <option v-for="rol in SelectRol" :key="rol.id" v-text="rol.nombre"></option>
+                                    <option value="0" disabled>seleccione un rol</option>
+                                    <option v-for="rol in SelectRol" :key="rol.id" :value="rol.id" v-text="rol.nombre"></option>
                                 </select>
                             </div>
                         </div>
@@ -154,26 +164,16 @@
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button @click="cerrarModal()">
-                            Cancelar
-                        </button>
-                    </div>
-                </div>
-                <!-- Modal Numero 2 -->
-                <div v-if="Modal.numero==2">
-                    <div class="modal-header">
-                        
-                    </div>
-                    <div class="modal-body">
+                    <!-- Modal Numero 2 -->
+                    <div v-if="Modal.numero==2">
 
                     </div>
-                    <div class="modal-footer">
-                        <button @click="cerrarModal()">
-                            Cerrar Modal 
-                        </button>
-                    </div>
                 </div>
+                <div class="modal-footer">
+                    <button type="button" @click="cerrarModal()" class="btn btn-secondary">Cancelar</button>
+                    <button type="button" @click="accionar(Modal.accion)" class="btn btn-primary" v-text="Modal.accion"></button>
+                </div>
+                
 
             </div>
         </div>
@@ -191,8 +191,6 @@
                     id: 0,
                     usuario: '',
                     password: '',
-                    estado: 0,
-                    persona_id: 0,
                     nombre: '',
                     dni: '',
                     ruc: '',
@@ -202,7 +200,7 @@
                     birthday: '',
                     observacion: '',
                     tipo: '',
-                    rol_id: '',
+                    rol_id: 0,
                 },
                 SelectRol: [],
 
@@ -281,10 +279,34 @@
 
             },
             agregar(){
+                if ( this.validar() ) return;
+                
+                this.Usuario.tipo = this.getTipo(this.Usuario.rol_id);
 
+                let me = this;
+                axios.post('usuario/agregar', {
+                    'usuario' : this.Usuario.usuario,
+                    'password' : this.Usuario.password,
+                    'nombre' : this.Usuario.nombre,
+                    'dni' : this.Usuario.dni,
+                    'ruc' : this.Usuario.ruc,
+                    'direccion' : this.Usuario.direccion,
+                    'birthday' : this.Usuario.birthday,
+                    'telefono' : this.Usuario.telefono,
+                    'email': this.Usuario.email,
+                    'observacion' : this.Usuario.observacion,
+                    'tipo': this.Usuario.tipo,
+                    'rol_id' : this.Usuario.rol_id
+                }).then(function(response){
+                    me.cerrarModal();
+                    me.listar(1);
+                    console.response();
+                }).catch(function(error){
+                    console.log(error);
+                });
             },
             editar(){
-
+                if ( this.validar() ) return;
             },
             activar(){
 
@@ -296,23 +318,70 @@
 
             },
             abrirModalAgregar(){
-                this.abrirModal();
-                
+                this.abrirModal(1);
                 this.Modal.titulo = 'Nuevo Usuario';
+                this.Modal.accion = 'Agregar';
+
+                this.Usuario.usuario = '';
+                this.Usuario.password = '';
+                this.Usuario.nombre = '';
+                this.Usuario.dni = '';
+                this.Usuario.ruc = '';
+                this.Usuario.direccion = '';
+                this.Usuario.telefono = '';
+                this.Usuario.email = '';
+                this.Usuario.birthday = '';
+                this.Usuario.observacion = '';
+                this.Usuario.tipo = '';
+                this.Usuario.rol_id = 0;
+
+                this.selectRol();
             },
             abrirModalEditar(){
-                this.abrirModal();
-
+                this.abrirModal(1);
                 this.Modal.titulo = 'Editar Usuario';
-            },
-            abrirModal(){
-                this.Modal.estado = 1;
+                this.Modal.accion = 'Editar';
+                
                 this.selectRol();
+            },
+            abrirModal(numero){
+                this.Modal.estado = 1;
+                this.Modal.numero = numero;
             },
             cerrarModal(){
                 this.Modal.estado = 0;
+                this.Modal.mensaje = [];
+
+                this.Error.estado = 0;
+                this.Error.mensaje = [];
+
+                this.Usuario.id = 0;
+                this.Usuario.usuario = '';
+                this.Usuario.password = '';
+                this.Usuario.nombre = '';
+                this.Usuario.dni = '';
+                this.Usuario.ruc = '';
+                this.Usuario.direccion = '';
+                this.Usuario.telefono = '';
+                this.Usuario.email = '';
+                this.Usuario.birthday = '';
+                this.Usuario.observacion = '';
+                this.Usuario.tipo = '';
+                this.Usuario.rol_id = 0;
 
                 this.SelectRol = [];
+            },
+            accionar(accion){
+                switch( accion ){
+                    case 'Agregar': {
+                        this.agregar();
+                        break;
+                    }
+                    case 'Editar': {
+                        this.editar();
+                        break;
+                    }
+                }
             },
             selectRol(){
                 var me = this;
@@ -323,6 +392,51 @@
                 }).catch(function(error){
                     console.log(error);
                 });
+            },
+            getRol(id){
+                for (let i = 0; i < this.SelectRol.length; i++) {
+                    if ( this.SelectRol[i].id == id ) return this.SelectRol[i];
+                }
+            },
+            getTipo(rol_id){
+                switch ( this.getRol(rol_id).nombre ) {
+                    case 'Administrador': {
+                        return 'N';
+                    }
+                    case 'Puesto': {
+                        return 'P';
+                    }
+                    case 'Almacen': {
+                        return 'A';
+                    }
+                }
+            },
+            validar(){
+                this.Error.estado = 0;
+                this.Error.mensaje = [];
+
+                //nombre
+                if ( !this.Usuario.nombre ) {
+                    this.Error.mensaje.push("Debe ingresar un nombre");
+                }
+                //rol
+                if ( this.Usuario.rol_id == 0 ) {
+                    this.Error.mensaje.push("Debe seleccionar un rol");
+                }
+                //usuario
+                if ( !this.Usuario.usuario ) {
+                    this.Error.mensaje.push("Debe ingresar un usuario");
+                }
+                //password
+                if ( !this.Usuario.password ) {
+                    this.Error.mensaje.push("Debe ingresar un password");
+                }
+
+                if ( this.Error.mensaje.length ) {
+                    this.Error.estado = 1;
+                }
+
+                return this.Error.estado;
             },
             cambiarPagina(page){
                 if ( page >= 1 && page <= this.Paginacion.lastPage) {

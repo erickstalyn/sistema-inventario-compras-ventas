@@ -9,7 +9,7 @@ class Persona extends Model
     protected $table = 'persona';
 
     protected $fillable = [
-        'nombre','dni', 'nombre_negocio', 'ruc', 'direccion', 'num_telefono', 'num_celular', 'email', 'observacion', 'tipo', 'segundo_tipo', 'birthday'
+        'nombre', 'dni', 'ruc', 'direccion', 'telefono', 'email', 'birthday', 'observacion', 'tipo'
     ];
 
     public function getUsuario(){
