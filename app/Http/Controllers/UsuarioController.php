@@ -8,6 +8,7 @@ use Exception;
 use App\Usuario;
 use App\Persona;
 use App\Rol;
+use DB;
 
 class UsuarioController extends Controller
 {
@@ -20,8 +21,13 @@ class UsuarioController extends Controller
         $items_per_page = 2;
 
         $usuarios = Usuario::join('persona', 'usuario.persona_id', '=', 'persona.id')->join('rol', 'usuario.rol_id', '=', 'rol.id')
-                            ->select('persona.nombre', 'persona.direccion', 'persona.created_at as fecha_creacion', 'persona.updated_at as fecha_actualizacion', 'persona.deleted_at as fecha_eliminacion',
-                                    'usuario.id', 'usuario.estado', 'rol.nombre as rol', 'rol.id as rol_id')
+                            ->select('persona.nombre', 'persona.direccion',
+                                //DB::raw('Date_Format(persona.created_at,\'' .'%d-%M-%Y' . '\') as fecha_creacion'), // para mysql
+                                DB::raw('to_char(persona.created_at,\'' .'DD-Mon-YYYY' . '\') as fecha_creacion'), //para postgresql
+                                //'persona.created_at as fecha_creacion',  
+                             'persona.updated_at as fecha_actualizacion', 
+                             'persona.deleted_at as fecha_eliminacion',
+                             'usuario.id', 'usuario.estado', 'rol.nombre as rol', 'rol.id as rol_id')
                             ->where(function ($query) use ($estado) {
                                 if ( $estado != 2 ) {
                                     $query->where('usuario.estado', '=', $estado);
