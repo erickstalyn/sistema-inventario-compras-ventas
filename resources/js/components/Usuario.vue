@@ -49,13 +49,13 @@
                         <table class="table table-bordered table-striped table-sm text-gray-900">
                             <thead>
                                 <tr>
-                                    <th>Nombre</th>
-                                    <th>Usuario</th>
-                                    <th>Direccion</th>
-                                    <th>Rol</th>
-                                    <th>F.creación</th>
-                                    <th>F.modificación</th>
-                                    <th>F.desactivación</th>
+                                    <th @click="listar(1, 'persona.nombre')">Nombre</th>
+                                    <th @click="listar(1, 'usuario.usuario')">Usuario</th>
+                                    <th @click="listar(1, 'persona.direccion')">Direccion</th>
+                                    <th @click="listar(1, 'rol.nombre')">Rol</th>
+                                    <th @click="listar(1, 'persona.created_at')">F.creación</th>
+                                    <th @click="listar(1, 'persona.updated_at')">F.modificación</th>
+                                    <th @click="listar(1, 'persona.deleted_at')">F.desactivación</th>
                                     <th>Estado</th>
                                     <th>Opciones</th>
                                 </tr>
@@ -419,10 +419,14 @@
             }
         },
         methods: {
-            listar(page){
+            listar(page, ordenarPor = ''){
+                if (ordenarPor != '') {
+                    var url = '/usuario?page='+page+'&estado='+this.Busqueda.estado+'&texto='+this.Busqueda.texto+'&items='+this.Busqueda.items+'&ordenarPor='+ordenarPor;
+                } else {
+                    var url = '/usuario?page='+page+'&estado='+this.Busqueda.estado+'&texto='+this.Busqueda.texto+'&items='+this.Busqueda.items+'&ordenarPor=rol.nombre';
+                }
+                
                 var me = this;
-                var url = '/usuario?page='+page+'&estado='+this.Busqueda.estado+'&texto='+this.Busqueda.texto+'&items='+this.Busqueda.items;
-
                 axios.get(url).then(function (response) {
                     me.ListaUsuario = response.data.usuarios.data;
                     me.Paginacion = response.data.paginacion;

@@ -20,6 +20,7 @@ class UsuarioController extends Controller
         $estado = $request->estado;
         $texto = $request->texto;
         $items_per_page = $request->items;
+        $ordenarPor = $request->ordenarPor;
 
         $usuarios = Usuario::join('persona', 'usuario.persona_id', '=', 'persona.id')->join('rol', 'usuario.rol_id', '=', 'rol.id')
                             ->select('persona.nombre', 'persona.direccion',
@@ -39,7 +40,7 @@ class UsuarioController extends Controller
                                         ->orWhere('persona.nombre', 'like', '%'.$texto.'%');
                                 }
                             })
-                            ->orderBy('rol', 'asc')->paginate($items_per_page);
+                            ->orderBy($ordenarPor, 'asc')->paginate($items_per_page);
 
         return [
             'paginacion' => [

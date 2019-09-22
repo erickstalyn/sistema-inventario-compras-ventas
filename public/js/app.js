@@ -2149,8 +2149,15 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     listar: function listar(page) {
+      var ordenarPor = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
+
+      if (ordenarPor != '') {
+        var url = '/usuario?page=' + page + '&estado=' + this.Busqueda.estado + '&texto=' + this.Busqueda.texto + '&items=' + this.Busqueda.items + '&ordenarPor=' + ordenarPor;
+      } else {
+        var url = '/usuario?page=' + page + '&estado=' + this.Busqueda.estado + '&texto=' + this.Busqueda.texto + '&items=' + this.Busqueda.items + '&ordenarPor=rol.nombre';
+      }
+
       var me = this;
-      var url = '/usuario?page=' + page + '&estado=' + this.Busqueda.estado + '&texto=' + this.Busqueda.texto + '&items=' + this.Busqueda.items;
       axios.get(url).then(function (response) {
         me.ListaUsuario = response.data.usuarios.data;
         me.Paginacion = response.data.paginacion;
@@ -38611,7 +38618,97 @@ var render = function() {
                       "table table-bordered table-striped table-sm text-gray-900"
                   },
                   [
-                    _vm._m(2),
+                    _c("thead", [
+                      _c("tr", [
+                        _c(
+                          "th",
+                          {
+                            on: {
+                              click: function($event) {
+                                return _vm.listar(1, "persona.nombre")
+                              }
+                            }
+                          },
+                          [_vm._v("Nombre")]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "th",
+                          {
+                            on: {
+                              click: function($event) {
+                                return _vm.listar(1, "usuario.usuario")
+                              }
+                            }
+                          },
+                          [_vm._v("Usuario")]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "th",
+                          {
+                            on: {
+                              click: function($event) {
+                                return _vm.listar(1, "persona.direccion")
+                              }
+                            }
+                          },
+                          [_vm._v("Direccion")]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "th",
+                          {
+                            on: {
+                              click: function($event) {
+                                return _vm.listar(1, "rol.nombre")
+                              }
+                            }
+                          },
+                          [_vm._v("Rol")]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "th",
+                          {
+                            on: {
+                              click: function($event) {
+                                return _vm.listar(1, "persona.created_at")
+                              }
+                            }
+                          },
+                          [_vm._v("F.creación")]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "th",
+                          {
+                            on: {
+                              click: function($event) {
+                                return _vm.listar(1, "persona.updated_at")
+                              }
+                            }
+                          },
+                          [_vm._v("F.modificación")]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "th",
+                          {
+                            on: {
+                              click: function($event) {
+                                return _vm.listar(1, "persona.deleted_at")
+                              }
+                            }
+                          },
+                          [_vm._v("F.desactivación")]
+                        ),
+                        _vm._v(" "),
+                        _c("th", [_vm._v("Estado")]),
+                        _vm._v(" "),
+                        _c("th", [_vm._v("Opciones")])
+                      ])
+                    ]),
                     _vm._v(" "),
                     _c(
                       "tbody",
@@ -39413,32 +39510,6 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "col-md-1", attrs: { align: "right" } }, [
       _c("label", [_vm._v("N° filas:")])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("thead", [
-      _c("tr", [
-        _c("th", [_vm._v("Nombre")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Usuario")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Direccion")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Rol")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("F.creación")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("F.modificación")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("F.desactivación")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Estado")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Opciones")])
-      ])
     ])
   }
 ]
