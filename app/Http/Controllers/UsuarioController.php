@@ -4,30 +4,30 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Exception;
+use Illuminate\Support\Facades\Hash;
 use App\Usuario;
 use App\Persona;
 use App\Rol;
-use DB;
 
 class UsuarioController extends Controller
 {
 
-    public function index(Request $request){
+    public function listar(Request $request){
         if ( !$request->ajax() ) return redirect('/') ;
         
         $estado = $request->estado;
         $texto = $request->texto;
-        $items_per_page = 2;
+        $items_per_page = 10;
 
         $usuarios = Usuario::join('persona', 'usuario.persona_id', '=', 'persona.id')->join('rol', 'usuario.rol_id', '=', 'rol.id')
                             ->select('persona.nombre', 'persona.direccion',
-                                //DB::raw('Date_Format(persona.created_at,\'' .'%d-%M-%Y' . '\') as fecha_creacion'), // para mysql
-                                DB::raw('to_char(persona.created_at,\'' .'DD-Mon-YYYY' . '\') as fecha_creacion'), //para postgresql
+                                DB::raw('Date_Format(persona.created_at,\'' .'%d-%M-%Y' . '\') as fecha_creacion'), // para mysql
+                                // DB::raw('to_char(persona.created_at,\'' .'DD-Mon-YYYY' . '\') as fecha_creacion'), //para postgresql
                                 //'persona.created_at as fecha_creacion',  
-                             'persona.updated_at as fecha_actualizacion', 
-                             'persona.deleted_at as fecha_eliminacion',
-                             'usuario.id', 'usuario.estado', 'rol.nombre as rol', 'rol.id as rol_id')
+                             'persona.updated_at as fecha_actualizacion', 'persona.deleted_at as fecha_eliminacion',
+                             'usuario.id', 'usuario.usuario', 'usuario.estado', 'rol.nombre as rol', 'rol.id as rol_id')
                             ->where(function ($query) use ($estado) {
                                 if ( $estado != 2 ) {
                                     $query->where('usuario.estado', '=', $estado);
@@ -40,7 +40,7 @@ class UsuarioController extends Controller
                                 }
                             })
                             ->orderBy('rol', 'asc')->paginate($items_per_page);
-
+                            
         return [
             'paginacion' => [
                 'total' => $usuarios->total(),
@@ -54,7 +54,7 @@ class UsuarioController extends Controller
         ];
     }
 
-    public function create(Request $request){
+    public function agregar(Request $request){
         if ( !$request->ajax() ) return redirect('/');
 
         try {
@@ -64,18 +64,11 @@ class UsuarioController extends Controller
             $persona->nombre = $request->nombre;
             // $persona->dni = $request->dni==''?NULL:$request->dni;
             // $persona->ruc = $request->ruc==''?NULL:$request->ruc;
-            // $persona->direccion = $request->direccion==''?NULL:$request->direccion;
+            $persona->direccion = $request->direccion==''?NULL:$request->direccion;
             // $persona->telefono = $request->telefono==''?NULL:$request->telefono;
             // $persona->email = $request->email==''?NULL:$request->email;
             // $persona->birthday = $request->birthday==''?NULL:$request->birthday;
             // $persona->observacion = $request->observacion==''?NULL:$request->observacion;
-            $persona->dni = $request->dni;
-            $persona->ruc = $request->ruc;
-            $persona->direccion = $request->direccion;
-            $persona->telefono = $request->telefono;
-            $persona->email = $request->email;
-            $persona->birthday = $request->birthday;
-            $persona->observacion = $request->observacion;
             $persona->tipo = $request->tipo;
             $persona->save();
 
@@ -84,12 +77,53 @@ class UsuarioController extends Controller
             $usuario->rol_id = $request->rol_id;
             $usuario->usuario = $request->usuario;
             $usuario->password = bcrypt($request->password);
-            $usuario->estado = 1;
             $usuario->save();
 
             DB::commit();
         } catch(Exception $e) {
             DB::rollback();
+        }
+    }
+
+    public function editar(Request $request){
+        if ( !$request->ajax() ) return redirect('/');
+
+        try {
+            DB::beginTransaction();
+
+            $usuario = Usuario::findOrFail($request->id);
+            $persona = Persona::findOrFail($usuario->persona_id);
+            
+            $persona->nombre = $request->nombre;
+            // $persona->dni = $request->dni==''?NULL:$request->dni;
+            // $persona->ruc = $request->ruc==''?NULL:$request->ruc;
+            $persona->direccion = $request->direccion==''?NULL:$request->direccion;
+            // $persona->telefono = $request->telefono==''?NULL:$request->telefono;
+            // $persona->email = $request->email==''?NULL:$request->email;
+            // $persona->birthday = $request->birthday==''?NULL:$request->birthday;
+            // $persona->observacion = $request->observacion==''?NULL:$request->observacion;
+            $persona->tipo = $request->tipo;
+            $persona->save();
+            
+            $usuario->rol_id = $request->rol_id;
+            if ( $request->usuario != '' ) $usuario->usuario = $request->usuario;
+            if ( $request->password != '' ) $usuario->password = bcrypt($request->password);
+            $usuario->save();
+
+            DB::commit();
+        } catch(Exception $e) {
+            DB::rollback();
+            return $e;
+        }
+    }
+
+    public function comprobar(Request $request){
+        if ( !$request->ajax() ) return redirect('/');
+
+        if ( Hash::check($request->password, Auth::user()->password) ) {
+            return 1;
+        } else {
+            return 0;
         }
     }
 

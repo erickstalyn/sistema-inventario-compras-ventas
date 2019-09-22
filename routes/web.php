@@ -35,9 +35,11 @@ Route::group(['middleware' => ['auth']], function () {
     })->name('main');
 
     Route::group(['middleware' => ['Administrador']], function (){
-        Route::get('/usuario', 'UsuarioController@index');
+        Route::get('/usuario', 'UsuarioController@listar');
+        Route::post('/usuario/agregar', 'UsuarioController@agregar');
+        Route::put('/usuario/editar', 'UsuarioController@editar');
+        Route::get('/usuario/comprobar', 'UsuarioController@comprobar');
         Route::get('/usuario/selectRol', 'UsuarioController@selectRol');
-        Route::post('/usuario/agregar', 'UsuarioController@create');
     });
     Route::group(['middleware' => ['Puesto']], function (){
 

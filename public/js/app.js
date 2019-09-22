@@ -1913,9 +1913,67 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      //datos de administrador
+      Credencial: {
+        password: '',
+        comprobado: 0
+      },
       //datos generales
       ListaUsuario: [],
       Usuario: {
@@ -1923,13 +1981,13 @@ __webpack_require__.r(__webpack_exports__);
         usuario: '',
         password: '',
         nombre: '',
-        dni: '',
-        ruc: '',
+        // dni: '',
+        // ruc: '',
         direccion: '',
-        telefono: '',
-        email: '',
-        birthday: '',
-        observacion: '',
+        // telefono: '',
+        // email: '',
+        // birthday: '',
+        // observacion: '',
         tipo: '',
         rol_id: 0
       },
@@ -2013,25 +2071,53 @@ __webpack_require__.r(__webpack_exports__);
         'usuario': this.Usuario.usuario,
         'password': this.Usuario.password,
         'nombre': this.Usuario.nombre,
-        'dni': this.Usuario.dni,
-        'ruc': this.Usuario.ruc,
+        // 'dni' : this.Usuario.dni,
+        // 'ruc' : this.Usuario.ruc,
         'direccion': this.Usuario.direccion,
-        'birthday': this.Usuario.birthday,
-        'telefono': this.Usuario.telefono,
-        'email': this.Usuario.email,
-        'observacion': this.Usuario.observacion,
+        // 'birthday' : this.Usuario.birthday,
+        // 'telefono' : this.Usuario.telefono,
+        // 'email': this.Usuario.email,
+        // 'observacion' : this.Usuario.observacion,
         'tipo': this.Usuario.tipo,
         'rol_id': this.Usuario.rol_id
       }).then(function (response) {
         me.cerrarModal();
         me.listar(1);
-        console.response();
       })["catch"](function (error) {
         console.log(error);
       });
     },
     editar: function editar() {
       if (this.validar()) return;
+      this.Usuario.tipo = this.getTipo(this.Usuario.rol_id);
+
+      if (this.Credencial.comprobado == 0) {
+        this.Usuario.usuario = '';
+        this.Usuario.password = '';
+      }
+
+      var me = this;
+      axios.put('usuario/editar', {
+        'id': this.Usuario.id,
+        'usuario': this.Usuario.usuario,
+        'password': this.Usuario.password,
+        'nombre': this.Usuario.nombre,
+        // 'dni' : this.Usuario.dni,
+        // 'ruc' : this.Usuario.ruc,
+        'direccion': this.Usuario.direccion,
+        // 'birthday' : this.Usuario.birthday,
+        // 'telefono' : this.Usuario.telefono,
+        // 'email': this.Usuario.email,
+        // 'observacion' : this.Usuario.observacion,
+        'tipo': this.Usuario.tipo,
+        'rol_id': this.Usuario.rol_id
+      }).then(function (response) {
+        me.cerrarModal();
+        me.listar(1);
+        console.log(response.data);
+      })["catch"](function (error) {
+        console.log(error);
+      });
     },
     activar: function activar() {},
     desactivar: function desactivar() {},
@@ -2042,22 +2128,36 @@ __webpack_require__.r(__webpack_exports__);
       this.Modal.accion = 'Agregar';
       this.Usuario.usuario = '';
       this.Usuario.password = '';
-      this.Usuario.nombre = '';
-      this.Usuario.dni = '';
-      this.Usuario.ruc = '';
-      this.Usuario.direccion = '';
-      this.Usuario.telefono = '';
-      this.Usuario.email = '';
-      this.Usuario.birthday = '';
-      this.Usuario.observacion = '';
+      this.Usuario.nombre = ''; // this.Usuario.dni = '';
+      // this.Usuario.ruc = '';
+
+      this.Usuario.direccion = ''; // this.Usuario.telefono = '';
+      // this.Usuario.email = '';
+      // this.Usuario.birthday = '';
+      // this.Usuario.observacion = '';
+
       this.Usuario.tipo = '';
       this.Usuario.rol_id = 0;
       this.selectRol();
     },
     abrirModalEditar: function abrirModalEditar() {
-      this.abrirModal(1);
+      var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+      this.abrirModal(2);
       this.Modal.titulo = 'Editar Usuario';
       this.Modal.accion = 'Editar';
+      this.Usuario.id = data['id'];
+      this.Usuario.usuario = data['usuario'];
+      this.Usuario.password = '';
+      this.Usuario.nombre = data['nombre']; // this.Usuario.dni = data['dni'];
+      // this.Usuario.ruc = data['ruc'];
+
+      this.Usuario.direccion = data['direccion']; // this.Usuario.telefono = data['telefono'];
+      // this.Usuario.email = data['email'];
+      // this.Usuario.birthday = data['birthday'];
+      // this.Usuario.observacion = data['observacion'];
+
+      this.Usuario.tipo = '';
+      this.Usuario.rol_id = data['rol_id'];
       this.selectRol();
     },
     abrirModal: function abrirModal(numero) {
@@ -2069,17 +2169,19 @@ __webpack_require__.r(__webpack_exports__);
       this.Modal.mensaje = [];
       this.Error.estado = 0;
       this.Error.mensaje = [];
+      this.Credencial.password = '';
+      this.Credencial.comprobado = 0;
       this.Usuario.id = 0;
       this.Usuario.usuario = '';
       this.Usuario.password = '';
-      this.Usuario.nombre = '';
-      this.Usuario.dni = '';
-      this.Usuario.ruc = '';
-      this.Usuario.direccion = '';
-      this.Usuario.telefono = '';
-      this.Usuario.email = '';
-      this.Usuario.birthday = '';
-      this.Usuario.observacion = '';
+      this.Usuario.nombre = ''; // this.Usuario.dni = '';
+      // this.Usuario.ruc = '';
+
+      this.Usuario.direccion = ''; // this.Usuario.telefono = '';
+      // this.Usuario.email = '';
+      // this.Usuario.birthday = '';
+      // this.Usuario.observacion = '';
+
       this.Usuario.tipo = '';
       this.Usuario.rol_id = 0;
       this.SelectRol = [];
@@ -2108,6 +2210,15 @@ __webpack_require__.r(__webpack_exports__);
         console.log(error);
       });
     },
+    comprobar: function comprobar() {
+      var me = this;
+      var url = 'usuario/comprobar?password=' + this.Credencial.password;
+      axios.get(url).then(function (response) {
+        me.Credencial.comprobado = response.data;
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
     getRol: function getRol(id) {
       for (var i = 0; i < this.SelectRol.length; i++) {
         if (this.SelectRol[i].id == id) return this.SelectRol[i];
@@ -2125,7 +2236,7 @@ __webpack_require__.r(__webpack_exports__);
             return 'P';
           }
 
-        case 'Almacen':
+        case 'Almacén':
           {
             return 'A';
           }
@@ -2135,29 +2246,18 @@ __webpack_require__.r(__webpack_exports__);
       this.Error.estado = 0;
       this.Error.mensaje = []; //nombre
 
-      if (!this.Usuario.nombre) {
-        this.Error.mensaje.push("Debe ingresar un nombre");
-      } //rol
+      if (!this.Usuario.nombre) this.Error.mensaje.push("Debe ingresar un nombre"); //rol
 
+      if (this.Usuario.rol_id == 0) this.Error.mensaje.push("Debe seleccionar un rol");
 
-      if (this.Usuario.rol_id == 0) {
-        this.Error.mensaje.push("Debe seleccionar un rol");
-      } //usuario
+      if (this.Modal.accion == 'Agregar' || this.Modal.accion == 'Editar' && this.Credencial.comprobado == 1) {
+        //usuario
+        if (!this.Usuario.usuario) this.Error.mensaje.push("Debe ingresar un usuario"); //password
 
-
-      if (!this.Usuario.usuario) {
-        this.Error.mensaje.push("Debe ingresar un usuario");
-      } //password
-
-
-      if (!this.Usuario.password) {
-        this.Error.mensaje.push("Debe ingresar un password");
+        if (!this.Usuario.password) this.Error.mensaje.push("Debe ingresar un password");
       }
 
-      if (this.Error.mensaje.length) {
-        this.Error.estado = 1;
-      }
-
+      if (this.Error.mensaje.length) this.Error.estado = 1;
       return this.Error.estado;
     },
     cambiarPagina: function cambiarPagina(page) {
@@ -38646,7 +38746,7 @@ var render = function() {
                 ]),
                 _vm._v(" "),
                 _c("div", { staticClass: "row form-group" }, [
-                  _c("label", { staticClass: "col-md-3" }, [_vm._v("Rol")]),
+                  _c("label", { staticClass: "col-md-3" }, [_vm._v("Rol (*)")]),
                   _vm._v(" "),
                   _c("div", { staticClass: "col-md-9" }, [
                     _c(
@@ -38769,7 +38869,299 @@ var render = function() {
               ])
             : _vm._e(),
           _vm._v(" "),
-          _vm.Modal.numero == 2 ? _c("div") : _vm._e()
+          _vm.Modal.numero == 2
+            ? _c("div", [
+                _vm.Error.estado
+                  ? _c("div", { staticClass: "row form-group" }, [
+                      _c("div", { staticClass: "alert alert-danger" }, [
+                        _c(
+                          "button",
+                          {
+                            staticClass: "close",
+                            attrs: { type: "button", "data-dismiss": "alert" },
+                            on: {
+                              click: function($event) {
+                                _vm.Error.estado = 0
+                              }
+                            }
+                          },
+                          [_vm._v("×")]
+                        ),
+                        _vm._v(" "),
+                        _c("strong", [
+                          _vm._v("Corregir los siguentes errores:")
+                        ]),
+                        _vm._v(" "),
+                        _c(
+                          "ul",
+                          _vm._l(_vm.Error.mensaje, function(error) {
+                            return _c("li", {
+                              key: error,
+                              domProps: { textContent: _vm._s(error) }
+                            })
+                          }),
+                          0
+                        )
+                      ])
+                    ])
+                  : _vm._e(),
+                _vm._v(" "),
+                _c("div", { staticClass: "row form-group" }, [
+                  _c("label", { staticClass: "col-md-3" }, [
+                    _vm._v("Nombre (*)")
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-md-9" }, [
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.Usuario.nombre,
+                          expression: "Usuario.nombre"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: { type: "text", placeholder: "ingrese el nombre" },
+                      domProps: { value: _vm.Usuario.nombre },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.$set(_vm.Usuario, "nombre", $event.target.value)
+                        }
+                      }
+                    })
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "row form-group" }, [
+                  _c("label", { staticClass: "col-md-3" }, [
+                    _vm._v("Direccion")
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-md-9" }, [
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.Usuario.direccion,
+                          expression: "Usuario.direccion"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: {
+                        type: "text",
+                        placeholder: "ingrese la direccion"
+                      },
+                      domProps: { value: _vm.Usuario.direccion },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.$set(
+                            _vm.Usuario,
+                            "direccion",
+                            $event.target.value
+                          )
+                        }
+                      }
+                    })
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "row form-group" }, [
+                  _c("label", { staticClass: "col-md-3" }, [_vm._v("Rol (*)")]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-md-9" }, [
+                    _c(
+                      "select",
+                      {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.Usuario.rol_id,
+                            expression: "Usuario.rol_id"
+                          }
+                        ],
+                        staticClass: "form-control",
+                        on: {
+                          change: function($event) {
+                            var $$selectedVal = Array.prototype.filter
+                              .call($event.target.options, function(o) {
+                                return o.selected
+                              })
+                              .map(function(o) {
+                                var val = "_value" in o ? o._value : o.value
+                                return val
+                              })
+                            _vm.$set(
+                              _vm.Usuario,
+                              "rol_id",
+                              $event.target.multiple
+                                ? $$selectedVal
+                                : $$selectedVal[0]
+                            )
+                          }
+                        }
+                      },
+                      [
+                        _c("option", { attrs: { value: "0", disabled: "" } }, [
+                          _vm._v("seleccione un rol")
+                        ]),
+                        _vm._v(" "),
+                        _vm._l(_vm.SelectRol, function(rol) {
+                          return _c("option", {
+                            key: rol.id,
+                            domProps: {
+                              value: rol.id,
+                              textContent: _vm._s(rol.nombre)
+                            }
+                          })
+                        })
+                      ],
+                      2
+                    )
+                  ])
+                ]),
+                _vm._v(" "),
+                _vm.Credencial.comprobado == 0
+                  ? _c("div", [
+                      _c("div", { staticClass: "row form-group" }, [
+                        _c("label", { staticClass: "col-md-12" }, [
+                          _vm._v(
+                            "Si desea editar las credenciales, ingrese su contraseña de administrador"
+                          )
+                        ]),
+                        _vm._v(" "),
+                        _c("label", { staticClass: "col-md-3" }, [
+                          _vm._v("Contraseña")
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "col-md-5" }, [
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.Credencial.password,
+                                expression: "Credencial.password"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            attrs: { type: "password" },
+                            domProps: { value: _vm.Credencial.password },
+                            on: {
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.$set(
+                                  _vm.Credencial,
+                                  "password",
+                                  $event.target.value
+                                )
+                              }
+                            }
+                          })
+                        ]),
+                        _vm._v(" "),
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-behance",
+                            attrs: { type: "button" },
+                            on: {
+                              click: function($event) {
+                                return _vm.comprobar()
+                              }
+                            }
+                          },
+                          [_vm._v("Comprobar")]
+                        )
+                      ])
+                    ])
+                  : _c("div", [
+                      _c("div", { staticClass: "row form-group" }, [
+                        _c("label", { staticClass: "col-md-3" }, [
+                          _vm._v("Usuario (*)")
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "col-md-9" }, [
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.Usuario.usuario,
+                                expression: "Usuario.usuario"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            attrs: {
+                              type: "text",
+                              placeholder: "ingrese el usuario"
+                            },
+                            domProps: { value: _vm.Usuario.usuario },
+                            on: {
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.$set(
+                                  _vm.Usuario,
+                                  "usuario",
+                                  $event.target.value
+                                )
+                              }
+                            }
+                          })
+                        ])
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "row form-group" }, [
+                        _c("label", { staticClass: "col-md-3" }, [
+                          _vm._v("Contraseña (*)")
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "col-md-9" }, [
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.Usuario.password,
+                                expression: "Usuario.password"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            attrs: {
+                              type: "password",
+                              placeholder: "ingrese la contraseña"
+                            },
+                            domProps: { value: _vm.Usuario.password },
+                            on: {
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.$set(
+                                  _vm.Usuario,
+                                  "password",
+                                  $event.target.value
+                                )
+                              }
+                            }
+                          })
+                        ])
+                      ])
+                    ])
+              ])
+            : _vm._e()
         ]),
         _vm._v(" "),
         _c("div", { staticClass: "modal-footer" }, [
@@ -51246,7 +51638,7 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! C:\laragon\www\control_inventario\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! E:\Programas\XAMPP\XAMPP\htdocs\EC_ci\resources\js\app.js */"./resources/js/app.js");
 
 
 /***/ })

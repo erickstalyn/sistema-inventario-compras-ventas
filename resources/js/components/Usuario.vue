@@ -143,7 +143,7 @@
                             </div>
                         </div>
                         <div class="row form-group">
-                            <label class="col-md-3">Rol</label>
+                            <label class="col-md-3">Rol (*)</label>
                             <div class="col-md-9">
                                 <select v-model="Usuario.rol_id" class="form-control">
                                     <option value="0" disabled>seleccione un rol</option>
@@ -164,9 +164,62 @@
                             </div>
                         </div>
                     </div>
-                    <!-- Modal Numero 2 -->
+                    <!-- Modal Numero 2 de EDITAR-->
                     <div v-if="Modal.numero==2">
-
+                        <div v-if="Error.estado" class="row form-group">
+                            <div class="alert alert-danger">
+                                <button type="button" @click="Error.estado=0" class="close" data-dismiss="alert">×</button>
+                                <strong>Corregir los siguentes errores:</strong>
+                                <ul> 
+                                    <li v-for="error in Error.mensaje" :key="error" v-text="error"></li> 
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <label class="col-md-3">Nombre (*)</label>
+                            <div class="col-md-9">
+                                <input type="text" v-model="Usuario.nombre" class="form-control" placeholder="ingrese el nombre">
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <label class="col-md-3">Direccion</label>
+                            <div class="col-md-9">
+                                <input type="text" v-model="Usuario.direccion" class="form-control" placeholder="ingrese la direccion">
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <label class="col-md-3">Rol (*)</label>
+                            <div class="col-md-9">
+                                <select v-model="Usuario.rol_id" class="form-control">
+                                    <option value="0" disabled>seleccione un rol</option>
+                                    <option v-for="rol in SelectRol" :key="rol.id" :value="rol.id" v-text="rol.nombre"></option>
+                                </select>
+                            </div>
+                        </div>
+                        <div v-if="Credencial.comprobado==0">
+                            <div class="row form-group">
+                                <label class="col-md-12">Si desea editar las credenciales, ingrese su contraseña de administrador</label>
+                                <label class="col-md-3">Contraseña</label>
+                                <div class="col-md-5">
+                                    <input type="password" v-model="Credencial.password" class="form-control">
+                                </div>
+                                <button type="button" @click="comprobar()" class="btn btn-behance">Comprobar</button>
+                            </div>
+                        </div>
+                        <div v-else>
+                            <div class="row form-group">
+                                <label class="col-md-3">Usuario (*)</label>
+                                <div class="col-md-9">
+                                    <input type="text" v-model="Usuario.usuario" class="form-control" placeholder="ingrese el usuario">
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <label class="col-md-3">Contraseña (*)</label>
+                                <div class="col-md-9">
+                                    <input type="password" v-model="Usuario.password" class="form-control" placeholder="ingrese la contraseña">
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -185,6 +238,12 @@
     export default {
         data(){
             return {
+                //datos de administrador
+                Credencial:{
+                    password: '',
+                    comprobado: 0
+                },
+
                 //datos generales
                 ListaUsuario: [],
                 Usuario: {
@@ -192,13 +251,13 @@
                     usuario: '',
                     password: '',
                     nombre: '',
-                    dni: '',
-                    ruc: '',
+                    // dni: '',
+                    // ruc: '',
                     direccion: '',
-                    telefono: '',
-                    email: '',
-                    birthday: '',
-                    observacion: '',
+                    // telefono: '',
+                    // email: '',
+                    // birthday: '',
+                    // observacion: '',
                     tipo: '',
                     rol_id: 0,
                 },
@@ -283,30 +342,58 @@
                 
                 this.Usuario.tipo = this.getTipo(this.Usuario.rol_id);
 
-                let me = this;
+                var me = this;
                 axios.post('usuario/agregar', {
                     'usuario' : this.Usuario.usuario,
                     'password' : this.Usuario.password,
                     'nombre' : this.Usuario.nombre,
-                    'dni' : this.Usuario.dni,
-                    'ruc' : this.Usuario.ruc,
+                    // 'dni' : this.Usuario.dni,
+                    // 'ruc' : this.Usuario.ruc,
                     'direccion' : this.Usuario.direccion,
-                    'birthday' : this.Usuario.birthday,
-                    'telefono' : this.Usuario.telefono,
-                    'email': this.Usuario.email,
-                    'observacion' : this.Usuario.observacion,
+                    // 'birthday' : this.Usuario.birthday,
+                    // 'telefono' : this.Usuario.telefono,
+                    // 'email': this.Usuario.email,
+                    // 'observacion' : this.Usuario.observacion,
                     'tipo': this.Usuario.tipo,
                     'rol_id' : this.Usuario.rol_id
                 }).then(function(response){
                     me.cerrarModal();
                     me.listar(1);
-                    console.response();
                 }).catch(function(error){
                     console.log(error);
                 });
             },
             editar(){
                 if ( this.validar() ) return;
+
+                this.Usuario.tipo = this.getTipo(this.Usuario.rol_id);
+                if ( this.Credencial.comprobado == 0){
+                    this.Usuario.usuario = '';
+                    this.Usuario.password = '';
+                } 
+
+                var me = this;
+                axios.put('usuario/editar', {
+                    'id' : this.Usuario.id,
+                    'usuario' : this.Usuario.usuario,
+                    'password' : this.Usuario.password,
+                    'nombre' : this.Usuario.nombre,
+                    // 'dni' : this.Usuario.dni,
+                    // 'ruc' : this.Usuario.ruc,
+                    'direccion' : this.Usuario.direccion,
+                    // 'birthday' : this.Usuario.birthday,
+                    // 'telefono' : this.Usuario.telefono,
+                    // 'email': this.Usuario.email,
+                    // 'observacion' : this.Usuario.observacion,
+                    'tipo': this.Usuario.tipo,
+                    'rol_id' : this.Usuario.rol_id
+                }).then(function(response){
+                    me.cerrarModal();
+                    me.listar(1);
+                    console.log(response.data);
+                }).catch(function(error){
+                    console.log(error);
+                });
             },
             activar(){
 
@@ -325,23 +412,37 @@
                 this.Usuario.usuario = '';
                 this.Usuario.password = '';
                 this.Usuario.nombre = '';
-                this.Usuario.dni = '';
-                this.Usuario.ruc = '';
+                // this.Usuario.dni = '';
+                // this.Usuario.ruc = '';
                 this.Usuario.direccion = '';
-                this.Usuario.telefono = '';
-                this.Usuario.email = '';
-                this.Usuario.birthday = '';
-                this.Usuario.observacion = '';
+                // this.Usuario.telefono = '';
+                // this.Usuario.email = '';
+                // this.Usuario.birthday = '';
+                // this.Usuario.observacion = '';
                 this.Usuario.tipo = '';
                 this.Usuario.rol_id = 0;
 
                 this.selectRol();
             },
-            abrirModalEditar(){
-                this.abrirModal(1);
+            abrirModalEditar(data = []){
+                this.abrirModal(2);
                 this.Modal.titulo = 'Editar Usuario';
                 this.Modal.accion = 'Editar';
                 
+                this.Usuario.id = data['id'];
+                this.Usuario.usuario = data['usuario'];
+                this.Usuario.password = '';
+                this.Usuario.nombre = data['nombre'];
+                // this.Usuario.dni = data['dni'];
+                // this.Usuario.ruc = data['ruc'];
+                this.Usuario.direccion = data['direccion'];
+                // this.Usuario.telefono = data['telefono'];
+                // this.Usuario.email = data['email'];
+                // this.Usuario.birthday = data['birthday'];
+                // this.Usuario.observacion = data['observacion'];
+                this.Usuario.tipo = '';
+                this.Usuario.rol_id = data['rol_id'];
+
                 this.selectRol();
             },
             abrirModal(numero){
@@ -355,17 +456,20 @@
                 this.Error.estado = 0;
                 this.Error.mensaje = [];
 
+                this.Credencial.password = '';
+                this.Credencial.comprobado = 0;
+
                 this.Usuario.id = 0;
                 this.Usuario.usuario = '';
                 this.Usuario.password = '';
                 this.Usuario.nombre = '';
-                this.Usuario.dni = '';
-                this.Usuario.ruc = '';
+                // this.Usuario.dni = '';
+                // this.Usuario.ruc = '';
                 this.Usuario.direccion = '';
-                this.Usuario.telefono = '';
-                this.Usuario.email = '';
-                this.Usuario.birthday = '';
-                this.Usuario.observacion = '';
+                // this.Usuario.telefono = '';
+                // this.Usuario.email = '';
+                // this.Usuario.birthday = '';
+                // this.Usuario.observacion = '';
                 this.Usuario.tipo = '';
                 this.Usuario.rol_id = 0;
 
@@ -393,6 +497,16 @@
                     console.log(error);
                 });
             },
+            comprobar(){
+                var me = this;
+                var url = 'usuario/comprobar?password='+this.Credencial.password;
+
+                axios.get(url).then(function(response){
+                    me.Credencial.comprobado = response.data;
+                }).catch(function(error){
+                    console.log(error);
+                });
+            },
             getRol(id){
                 for (let i = 0; i < this.SelectRol.length; i++) {
                     if ( this.SelectRol[i].id == id ) return this.SelectRol[i];
@@ -406,7 +520,7 @@
                     case 'Puesto': {
                         return 'P';
                     }
-                    case 'Almacen': {
+                    case 'Almacén': {
                         return 'A';
                     }
                 }
@@ -416,25 +530,18 @@
                 this.Error.mensaje = [];
 
                 //nombre
-                if ( !this.Usuario.nombre ) {
-                    this.Error.mensaje.push("Debe ingresar un nombre");
-                }
+                if ( !this.Usuario.nombre ) this.Error.mensaje.push("Debe ingresar un nombre");
                 //rol
-                if ( this.Usuario.rol_id == 0 ) {
-                    this.Error.mensaje.push("Debe seleccionar un rol");
-                }
-                //usuario
-                if ( !this.Usuario.usuario ) {
-                    this.Error.mensaje.push("Debe ingresar un usuario");
-                }
-                //password
-                if ( !this.Usuario.password ) {
-                    this.Error.mensaje.push("Debe ingresar un password");
+                if ( this.Usuario.rol_id == 0 ) this.Error.mensaje.push("Debe seleccionar un rol");
+
+                if ( this.Modal.accion == 'Agregar' || (this.Modal.accion == 'Editar' && this.Credencial.comprobado == 1) ) {
+                    //usuario
+                    if ( !this.Usuario.usuario ) this.Error.mensaje.push("Debe ingresar un usuario");
+                    //password
+                    if ( !this.Usuario.password ) this.Error.mensaje.push("Debe ingresar un password");
                 }
 
-                if ( this.Error.mensaje.length ) {
-                    this.Error.estado = 1;
-                }
+                if ( this.Error.mensaje.length ) this.Error.estado = 1;
 
                 return this.Error.estado;
             },

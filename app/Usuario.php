@@ -14,6 +14,7 @@ class Usuario extends Authenticatable
     protected $fillable = [
         'rol_id', 'persona_id', 'usuario', 'password', 'estado'
     ];
+    public $timestamps = false;
 
     protected $hidden = [
         'password'
