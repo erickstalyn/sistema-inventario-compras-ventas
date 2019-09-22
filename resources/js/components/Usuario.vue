@@ -19,6 +19,7 @@
                 <div class="card-body">
                     <!-- Inputs de busqueda -->
                     <div class="row form-group">
+
                         <div class="col-md-8">
                             <div class="input-group">
                                 <select class="col-md-3 form-control text-gray-900" v-model="Busqueda.estado" @click="listar(1)">
@@ -26,11 +27,20 @@
                                     <option value="0">Desactivados</option>
                                     <option value="2">Todos</option>
                                 </select>
-                                <input type="text" class="form-control" v-model="Busqueda.texto" @keyup.enter="listar(1)">
+                                <input type="search" class="form-control" v-model="Busqueda.texto" @keyup.enter="listar(1)">
                                 <button type="button" class="btn btn-primary" @click="listar(1)">
                                     <i class="fa fa-search"></i>&nbsp; Buscar
                                 </button>
                             </div>
+                        </div>
+                        <div class="col-md-2"></div>
+                        <div class="col-md-1" align="right">
+                            <label>N° filas:</label>
+                        </div>
+                        <div class="col-md-1">
+                            <select class="form-control text-gray-900" v-model="Busqueda.items" @click="listar(1)">
+                                <option v-for="item in Items" :key="item" :value="item" v-text="item"></option>
+                            </select>
                         </div>
                     </div>
                     <!-- Listado -->
@@ -74,7 +84,7 @@
                                         <template v-if="usuario.estado">
                                             <button type="button" @click="desactivar(usuario.id)" title="Desactivar" class="btn btn-danger btn-sm">
                                                 <i class="fas fa-user-times"></i>
-                                            </button>        
+                                            </button>
                                         </template>
                                         <template v-else>
                                             <button type="button" @click="activar(usuario.id)" title="Activar" class="btn btn-success btn-sm">
@@ -87,7 +97,7 @@
                         </table>
                         <!-- Barra de navegacion -->
                         <nav class="d-flex justify-content-center">
-                            <ul class="pagination align-content-center">
+                            <ul class="pagination">
                                 <li class="page-item">
                                     <a href="#" @click="cambiarPagina(Paginacion.currentPage-1)" class="page-link">Anterior</a>
                                 </li>
@@ -339,7 +349,8 @@
                 //datos de busqueda y filtracion
                 Busqueda: {
                     texto: '',
-                    estado: 1
+                    estado: 1,
+                    items: 4
                 },
 
                 //datos de modales
@@ -393,12 +404,24 @@
                 }
                 
                 return pagesArray;
+            },
+            Items: function(){
+                var min = 3;
+                var max = 20
+                var items = [];
+
+                while ( min <= max) {
+                    items.push(min);
+                    min++;
+                }
+
+                return items;
             }
         },
         methods: {
             listar(page){
                 var me = this;
-                var url = '/usuario?page='+page+'&estado='+this.Busqueda.estado+'&texto='+this.Busqueda.texto;
+                var url = '/usuario?page='+page+'&estado='+this.Busqueda.estado+'&texto='+this.Busqueda.texto+'&items='+this.Busqueda.items;
 
                 axios.get(url).then(function (response) {
                     me.ListaUsuario = response.data.usuarios.data;

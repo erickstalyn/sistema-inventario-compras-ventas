@@ -19,7 +19,7 @@ class UsuarioController extends Controller
         
         $estado = $request->estado;
         $texto = $request->texto;
-        $items_per_page = 6;
+        $items_per_page = $request->items;
 
         $usuarios = Usuario::join('persona', 'usuario.persona_id', '=', 'persona.id')->join('rol', 'usuario.rol_id', '=', 'rol.id')
                             ->select('persona.nombre', 'persona.direccion',

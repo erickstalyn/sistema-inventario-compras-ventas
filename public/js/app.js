@@ -2039,6 +2039,16 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2068,7 +2078,8 @@ __webpack_require__.r(__webpack_exports__);
       //datos de busqueda y filtracion
       Busqueda: {
         texto: '',
-        estado: 1
+        estado: 1,
+        items: 4
       },
       //datos de modales
       Modal: {
@@ -2122,12 +2133,24 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       return pagesArray;
+    },
+    Items: function Items() {
+      var min = 3;
+      var max = 20;
+      var items = [];
+
+      while (min <= max) {
+        items.push(min);
+        min++;
+      }
+
+      return items;
     }
   },
   methods: {
     listar: function listar(page) {
       var me = this;
-      var url = '/usuario?page=' + page + '&estado=' + this.Busqueda.estado + '&texto=' + this.Busqueda.texto;
+      var url = '/usuario?page=' + page + '&estado=' + this.Busqueda.estado + '&texto=' + this.Busqueda.texto + '&items=' + this.Busqueda.items;
       axios.get(url).then(function (response) {
         me.ListaUsuario = response.data.usuarios.data;
         me.Paginacion = response.data.paginacion;
@@ -38488,7 +38511,7 @@ var render = function() {
                     }
                   ],
                   staticClass: "form-control",
-                  attrs: { type: "text" },
+                  attrs: { type: "search" },
                   domProps: { value: _vm.Busqueda.texto },
                   on: {
                     keyup: function($event) {
@@ -38526,6 +38549,56 @@ var render = function() {
                   ]
                 )
               ])
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "col-md-2" }),
+            _vm._v(" "),
+            _vm._m(1),
+            _vm._v(" "),
+            _c("div", { staticClass: "col-md-1" }, [
+              _c(
+                "select",
+                {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.Busqueda.items,
+                      expression: "Busqueda.items"
+                    }
+                  ],
+                  staticClass: "form-control text-gray-900",
+                  on: {
+                    click: function($event) {
+                      return _vm.listar(1)
+                    },
+                    change: function($event) {
+                      var $$selectedVal = Array.prototype.filter
+                        .call($event.target.options, function(o) {
+                          return o.selected
+                        })
+                        .map(function(o) {
+                          var val = "_value" in o ? o._value : o.value
+                          return val
+                        })
+                      _vm.$set(
+                        _vm.Busqueda,
+                        "items",
+                        $event.target.multiple
+                          ? $$selectedVal
+                          : $$selectedVal[0]
+                      )
+                    }
+                  }
+                },
+                _vm._l(_vm.Items, function(item) {
+                  return _c("option", {
+                    key: item,
+                    domProps: { value: item, textContent: _vm._s(item) }
+                  })
+                }),
+                0
+              )
             ])
           ]),
           _vm._v(" "),
@@ -38538,7 +38611,7 @@ var render = function() {
                       "table table-bordered table-striped table-sm text-gray-900"
                   },
                   [
-                    _vm._m(1),
+                    _vm._m(2),
                     _vm._v(" "),
                     _c(
                       "tbody",
@@ -38671,7 +38744,7 @@ var render = function() {
                 _c("nav", { staticClass: "d-flex justify-content-center" }, [
                   _c(
                     "ul",
-                    { staticClass: "pagination align-content-center" },
+                    { staticClass: "pagination" },
                     [
                       _c("li", { staticClass: "page-item" }, [
                         _c(
@@ -39333,6 +39406,14 @@ var staticRenderFns = [
         _vm._v("  PDF\n                ")
       ]
     )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-md-1", attrs: { align: "right" } }, [
+      _c("label", [_vm._v("N° filas:")])
+    ])
   },
   function() {
     var _vm = this
