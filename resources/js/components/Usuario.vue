@@ -42,9 +42,9 @@
                                     <th>Nombre</th>
                                     <th>Direccion</th>
                                     <th>Rol</th>
-                                    <th>Fecha de creacion</th>
-                                    <th>Fecha de actualizacion</th>
-                                    <th>Fecha de eliminacion</th>
+                                    <th>F.creación</th>
+                                    <th>F.modificación</th>
+                                    <th>F.desactivación</th>
                                     <th>Estado</th>
                                     <th>Opciones</th>
                                 </tr>
