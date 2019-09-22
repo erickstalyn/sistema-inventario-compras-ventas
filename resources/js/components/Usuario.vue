@@ -40,6 +40,7 @@
                             <thead>
                                 <tr>
                                     <th>Nombre</th>
+                                    <th>Usuario</th>
                                     <th>Direccion</th>
                                     <th>Rol</th>
                                     <th>F.creación</th>
@@ -52,6 +53,7 @@
                             <tbody>
                                 <tr v-for="usuario in ListaUsuario" :key="usuario.id" >
                                     <td v-text="usuario.nombre"></td>
+                                    <td v-text="usuario.usuario"></td>
                                     <td v-text="usuario.direccion"></td>
                                     <td v-text="usuario.rol"></td>
                                     <td v-text="usuario.fecha_creacion"></td>
@@ -66,9 +68,6 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <button type="button" @click="abrirModalVer(usuario)" class="btn btn-primary btn-sm">
-                                            <i class="fas fa-user-lock"></i>
-                                        </button>
                                         <button type="button" @click="abrirModalEditar(usuario)" class="btn btn-warning btn-sm">
                                             <i class="fas fa-user-edit"></i>
                                         </button>
@@ -131,6 +130,15 @@
                             </div>
                         </div>
                         <div class="row form-group">
+                            <label class="col-md-3">Rol (*)</label>
+                            <div class="col-md-9">
+                                <select v-model="Usuario.rol_id" class="form-control">
+                                    <option value="0" disabled>seleccione un rol</option>
+                                    <option v-for="rol in SelectRol" :key="rol.id" :value="rol.id" v-text="rol.nombre"></option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row form-group">
                             <label class="col-md-3">Nombre (*)</label>
                             <div class="col-md-9">
                                 <input type="text" v-model="Usuario.nombre" class="form-control" placeholder="ingrese el nombre">
@@ -142,15 +150,44 @@
                                 <input type="text" v-model="Usuario.direccion" class="form-control" placeholder="ingrese la direccion">
                             </div>
                         </div>
-                        <div class="row form-group">
-                            <label class="col-md-3">Rol (*)</label>
+
+                        <!-- <div class="row form-group">
+                            <label class="col-md-3">DNI</label>
                             <div class="col-md-9">
-                                <select v-model="Usuario.rol_id" class="form-control">
-                                    <option value="0" disabled>seleccione un rol</option>
-                                    <option v-for="rol in SelectRol" :key="rol.id" :value="rol.id" v-text="rol.nombre"></option>
-                                </select>
+                                <input type="text" v-model="Usuario.dni" class="form-control" placeholder="ingrese el dni">
                             </div>
                         </div>
+                        <div class="row form-group">
+                            <label class="col-md-3">RUC</label>
+                            <div class="col-md-9">
+                                <input type="text" v-model="Usuario.ruc" class="form-control" placeholder="ingrese el ruc">
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <label class="col-md-3">Telefono</label>
+                            <div class="col-md-9">
+                                <input type="text" v-model="Usuario.telefono" class="form-control" placeholder="ingrese el telefono">
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <label class="col-md-3">Email</label>
+                            <div class="col-md-9">
+                                <input type="text" v-model="Usuario.email" class="form-control" placeholder="ingrese el email">
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <label class="col-md-3">Fecha de cumpleaño</label>
+                            <div class="col-md-9">
+                                <input type="date" v-model="Usuario.birthday" class="form-control" placeholder="seleccione la fecha de cumpleaño">
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <label class="col-md-3">Observacion</label>
+                            <div class="col-md-9">
+                                <input type="text" v-model="Usuario.observacion" class="form-control" placeholder="ingrese la observacion">
+                            </div>
+                        </div> -->
+
                         <div class="row form-group">
                             <label class="col-md-3">Usuario (*)</label>
                             <div class="col-md-9">
@@ -176,6 +213,15 @@
                             </div>
                         </div>
                         <div class="row form-group">
+                            <label class="col-md-3">Rol (*)</label>
+                            <div class="col-md-9">
+                                <select v-model="Usuario.rol_id" class="form-control">
+                                    <option value="0" disabled>seleccione un rol</option>
+                                    <option v-for="rol in SelectRol" :key="rol.id" :value="rol.id" v-text="rol.nombre"></option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row form-group">
                             <label class="col-md-3">Nombre (*)</label>
                             <div class="col-md-9">
                                 <input type="text" v-model="Usuario.nombre" class="form-control" placeholder="ingrese el nombre">
@@ -187,15 +233,44 @@
                                 <input type="text" v-model="Usuario.direccion" class="form-control" placeholder="ingrese la direccion">
                             </div>
                         </div>
-                        <div class="row form-group">
-                            <label class="col-md-3">Rol (*)</label>
+                        
+                        <!-- <div class="row form-group">
+                            <label class="col-md-3">DNI</label>
                             <div class="col-md-9">
-                                <select v-model="Usuario.rol_id" class="form-control">
-                                    <option value="0" disabled>seleccione un rol</option>
-                                    <option v-for="rol in SelectRol" :key="rol.id" :value="rol.id" v-text="rol.nombre"></option>
-                                </select>
+                                <input type="text" v-model="Usuario.dni" class="form-control" placeholder="ingrese el dni">
                             </div>
                         </div>
+                        <div class="row form-group">
+                            <label class="col-md-3">RUC</label>
+                            <div class="col-md-9">
+                                <input type="text" v-model="Usuario.ruc" class="form-control" placeholder="ingrese el ruc">
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <label class="col-md-3">Telefono</label>
+                            <div class="col-md-9">
+                                <input type="text" v-model="Usuario.telefono" class="form-control" placeholder="ingrese el telefono">
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <label class="col-md-3">Email</label>
+                            <div class="col-md-9">
+                                <input type="text" v-model="Usuario.email" class="form-control" placeholder="ingrese el email">
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <label class="col-md-3">Fecha de cumpleaño</label>
+                            <div class="col-md-9">
+                                <input type="date" v-model="Usuario.birthday" class="form-control" placeholder="seleccione la fecha de cumpleaño">
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <label class="col-md-3">Observacion</label>
+                            <div class="col-md-9">
+                                <input type="text" v-model="Usuario.observacion" class="form-control" placeholder="ingrese la observacion">
+                            </div>
+                        </div> -->
+
                         <div v-if="Credencial.comprobado==0">
                             <div class="row form-group">
                                 <label class="col-md-12">Si desea editar las credenciales, ingrese su contraseña de administrador</label>
@@ -224,10 +299,8 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" @click="cerrarModal()" class="btn btn-secondary">Cancelar</button>
-                    <button type="button" @click="accionar(Modal.accion)" class="btn btn-primary" v-text="Modal.accion"></button>
+                    <button type="button" @click="accionar(Modal.accion)" class="btn btn-primary" v-text="Modal.accion"></button>        
                 </div>
-                
-
             </div>
         </div>
 
@@ -334,9 +407,6 @@
                     console.log(error)
                 });
             },
-            ver(){
-
-            },
             agregar(){
                 if ( this.validar() ) return;
                 
@@ -389,20 +459,82 @@
                     'rol_id' : this.Usuario.rol_id
                 }).then(function(response){
                     me.cerrarModal();
-                    me.listar(1);
-                    console.log(response.data);
+                    me.listar(me.Paginacion.currentPage);
                 }).catch(function(error){
                     console.log(error);
                 });
             },
-            activar(){
+            activar(id){
+                const swalWithBootstrapButtons = Swal.mixin({
+                    customClass: {
+                        confirmButton: 'btn btn-success',
+                        cancelButton: 'btn btn-danger'
+                    },
+                    buttonsStyling: false
+                })
 
+                swalWithBootstrapButtons.fire({
+                    title: '¿Esta seguro de ACTIVAR este usuario?',
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Aceptar',
+                    cancelButtonText: 'Cancelar',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.value) {
+                        var me = this;
+                
+                        axios.put('/usuario/activar', {
+                            'id' : id
+                        }).then(function (response) {
+                            me.listar(me.Paginacion.currentPage);
+                            swalWithBootstrapButtons.fire(
+                                'ACTIVADO',
+                                'El usuario se ha activado correctamente',
+                                'success'
+                            )
+                        }).catch(function (error) {
+                            console.log(error);
+                        });
+                    } else if ( result.dismiss === Swal.DismissReason.cancel ) {
+                    }
+                })
             },
-            desactivar(){
+            desactivar(id){
+                const swalWithBootstrapButtons = Swal.mixin({
+                    customClass: {
+                        confirmButton: 'btn btn-success',
+                        cancelButton: 'btn btn-danger'
+                    },
+                    buttonsStyling: false
+                })
 
-            },
-            abrirModalVer(){
-
+                swalWithBootstrapButtons.fire({
+                    title: '¿Esta seguro de DESACTIVAR este usuario?',
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Aceptar',
+                    cancelButtonText: 'Cancelar',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.value) {
+                        var me = this;
+                
+                        axios.put('/usuario/desactivar', {
+                            'id' : id
+                        }).then(function (response) {
+                            me.listar(me.Paginacion.currentPage);
+                            swalWithBootstrapButtons.fire(
+                                'DESACTIVADO',
+                                'El usuario se ha desactivado correctamente',
+                                'success'
+                            )
+                        }).catch(function (error) {
+                            console.log(error);
+                        });
+                    } else if ( result.dismiss === Swal.DismissReason.cancel ) {
+                    }
+                })
             },
             abrirModalAgregar(){
                 this.abrirModal(1);

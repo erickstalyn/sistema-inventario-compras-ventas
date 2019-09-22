@@ -1966,6 +1966,79 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2062,7 +2135,6 @@ __webpack_require__.r(__webpack_exports__);
         console.log(error);
       });
     },
-    ver: function ver() {},
     agregar: function agregar() {
       if (this.validar()) return;
       this.Usuario.tipo = this.getTipo(this.Usuario.rol_id);
@@ -2113,15 +2185,73 @@ __webpack_require__.r(__webpack_exports__);
         'rol_id': this.Usuario.rol_id
       }).then(function (response) {
         me.cerrarModal();
-        me.listar(1);
-        console.log(response.data);
+        me.listar(me.Paginacion.currentPage);
       })["catch"](function (error) {
         console.log(error);
       });
     },
-    activar: function activar() {},
-    desactivar: function desactivar() {},
-    abrirModalVer: function abrirModalVer() {},
+    activar: function activar(id) {
+      var _this = this;
+
+      var swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: 'btn btn-success',
+          cancelButton: 'btn btn-danger'
+        },
+        buttonsStyling: false
+      });
+      swalWithBootstrapButtons.fire({
+        title: '¿Esta seguro de ACTIVAR este usuario?',
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Aceptar',
+        cancelButtonText: 'Cancelar',
+        reverseButtons: true
+      }).then(function (result) {
+        if (result.value) {
+          var me = _this;
+          axios.put('/usuario/activar', {
+            'id': id
+          }).then(function (response) {
+            me.listar(me.Paginacion.currentPage);
+            swalWithBootstrapButtons.fire('ACTIVADO', 'El usuario se ha activado correctamente', 'success');
+          })["catch"](function (error) {
+            console.log(error);
+          });
+        } else if (result.dismiss === Swal.DismissReason.cancel) {}
+      });
+    },
+    desactivar: function desactivar(id) {
+      var _this2 = this;
+
+      var swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: 'btn btn-success',
+          cancelButton: 'btn btn-danger'
+        },
+        buttonsStyling: false
+      });
+      swalWithBootstrapButtons.fire({
+        title: '¿Esta seguro de DESACTIVAR este usuario?',
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Aceptar',
+        cancelButtonText: 'Cancelar',
+        reverseButtons: true
+      }).then(function (result) {
+        if (result.value) {
+          var me = _this2;
+          axios.put('/usuario/desactivar', {
+            'id': id
+          }).then(function (response) {
+            me.listar(me.Paginacion.currentPage);
+            swalWithBootstrapButtons.fire('DESACTIVADO', 'El usuario se ha desactivado correctamente', 'success');
+          })["catch"](function (error) {
+            console.log(error);
+          });
+        } else if (result.dismiss === Swal.DismissReason.cancel) {}
+      });
+    },
     abrirModalAgregar: function abrirModalAgregar() {
       this.abrirModal(1);
       this.Modal.titulo = 'Nuevo Usuario';
@@ -38419,6 +38549,10 @@ var render = function() {
                           }),
                           _vm._v(" "),
                           _c("td", {
+                            domProps: { textContent: _vm._s(usuario.usuario) }
+                          }),
+                          _vm._v(" "),
+                          _c("td", {
                             domProps: { textContent: _vm._s(usuario.direccion) }
                           }),
                           _vm._v(" "),
@@ -38465,20 +38599,6 @@ var render = function() {
                           _c(
                             "td",
                             [
-                              _c(
-                                "button",
-                                {
-                                  staticClass: "btn btn-primary btn-sm",
-                                  attrs: { type: "button" },
-                                  on: {
-                                    click: function($event) {
-                                      return _vm.abrirModalVer(usuario)
-                                    }
-                                  }
-                                },
-                                [_c("i", { staticClass: "fas fa-user-lock" })]
-                              ),
-                              _vm._v(" "),
                               _c(
                                 "button",
                                 {
@@ -38679,6 +38799,62 @@ var render = function() {
                   : _vm._e(),
                 _vm._v(" "),
                 _c("div", { staticClass: "row form-group" }, [
+                  _c("label", { staticClass: "col-md-3" }, [_vm._v("Rol (*)")]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-md-9" }, [
+                    _c(
+                      "select",
+                      {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.Usuario.rol_id,
+                            expression: "Usuario.rol_id"
+                          }
+                        ],
+                        staticClass: "form-control",
+                        on: {
+                          change: function($event) {
+                            var $$selectedVal = Array.prototype.filter
+                              .call($event.target.options, function(o) {
+                                return o.selected
+                              })
+                              .map(function(o) {
+                                var val = "_value" in o ? o._value : o.value
+                                return val
+                              })
+                            _vm.$set(
+                              _vm.Usuario,
+                              "rol_id",
+                              $event.target.multiple
+                                ? $$selectedVal
+                                : $$selectedVal[0]
+                            )
+                          }
+                        }
+                      },
+                      [
+                        _c("option", { attrs: { value: "0", disabled: "" } }, [
+                          _vm._v("seleccione un rol")
+                        ]),
+                        _vm._v(" "),
+                        _vm._l(_vm.SelectRol, function(rol) {
+                          return _c("option", {
+                            key: rol.id,
+                            domProps: {
+                              value: rol.id,
+                              textContent: _vm._s(rol.nombre)
+                            }
+                          })
+                        })
+                      ],
+                      2
+                    )
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "row form-group" }, [
                   _c("label", { staticClass: "col-md-3" }, [
                     _vm._v("Nombre (*)")
                   ]),
@@ -38742,62 +38918,6 @@ var render = function() {
                         }
                       }
                     })
-                  ])
-                ]),
-                _vm._v(" "),
-                _c("div", { staticClass: "row form-group" }, [
-                  _c("label", { staticClass: "col-md-3" }, [_vm._v("Rol (*)")]),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "col-md-9" }, [
-                    _c(
-                      "select",
-                      {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
-                            value: _vm.Usuario.rol_id,
-                            expression: "Usuario.rol_id"
-                          }
-                        ],
-                        staticClass: "form-control",
-                        on: {
-                          change: function($event) {
-                            var $$selectedVal = Array.prototype.filter
-                              .call($event.target.options, function(o) {
-                                return o.selected
-                              })
-                              .map(function(o) {
-                                var val = "_value" in o ? o._value : o.value
-                                return val
-                              })
-                            _vm.$set(
-                              _vm.Usuario,
-                              "rol_id",
-                              $event.target.multiple
-                                ? $$selectedVal
-                                : $$selectedVal[0]
-                            )
-                          }
-                        }
-                      },
-                      [
-                        _c("option", { attrs: { value: "0", disabled: "" } }, [
-                          _vm._v("seleccione un rol")
-                        ]),
-                        _vm._v(" "),
-                        _vm._l(_vm.SelectRol, function(rol) {
-                          return _c("option", {
-                            key: rol.id,
-                            domProps: {
-                              value: rol.id,
-                              textContent: _vm._s(rol.nombre)
-                            }
-                          })
-                        })
-                      ],
-                      2
-                    )
                   ])
                 ]),
                 _vm._v(" "),
@@ -38907,6 +39027,62 @@ var render = function() {
                   : _vm._e(),
                 _vm._v(" "),
                 _c("div", { staticClass: "row form-group" }, [
+                  _c("label", { staticClass: "col-md-3" }, [_vm._v("Rol (*)")]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-md-9" }, [
+                    _c(
+                      "select",
+                      {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.Usuario.rol_id,
+                            expression: "Usuario.rol_id"
+                          }
+                        ],
+                        staticClass: "form-control",
+                        on: {
+                          change: function($event) {
+                            var $$selectedVal = Array.prototype.filter
+                              .call($event.target.options, function(o) {
+                                return o.selected
+                              })
+                              .map(function(o) {
+                                var val = "_value" in o ? o._value : o.value
+                                return val
+                              })
+                            _vm.$set(
+                              _vm.Usuario,
+                              "rol_id",
+                              $event.target.multiple
+                                ? $$selectedVal
+                                : $$selectedVal[0]
+                            )
+                          }
+                        }
+                      },
+                      [
+                        _c("option", { attrs: { value: "0", disabled: "" } }, [
+                          _vm._v("seleccione un rol")
+                        ]),
+                        _vm._v(" "),
+                        _vm._l(_vm.SelectRol, function(rol) {
+                          return _c("option", {
+                            key: rol.id,
+                            domProps: {
+                              value: rol.id,
+                              textContent: _vm._s(rol.nombre)
+                            }
+                          })
+                        })
+                      ],
+                      2
+                    )
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "row form-group" }, [
                   _c("label", { staticClass: "col-md-3" }, [
                     _vm._v("Nombre (*)")
                   ]),
@@ -38970,62 +39146,6 @@ var render = function() {
                         }
                       }
                     })
-                  ])
-                ]),
-                _vm._v(" "),
-                _c("div", { staticClass: "row form-group" }, [
-                  _c("label", { staticClass: "col-md-3" }, [_vm._v("Rol (*)")]),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "col-md-9" }, [
-                    _c(
-                      "select",
-                      {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
-                            value: _vm.Usuario.rol_id,
-                            expression: "Usuario.rol_id"
-                          }
-                        ],
-                        staticClass: "form-control",
-                        on: {
-                          change: function($event) {
-                            var $$selectedVal = Array.prototype.filter
-                              .call($event.target.options, function(o) {
-                                return o.selected
-                              })
-                              .map(function(o) {
-                                var val = "_value" in o ? o._value : o.value
-                                return val
-                              })
-                            _vm.$set(
-                              _vm.Usuario,
-                              "rol_id",
-                              $event.target.multiple
-                                ? $$selectedVal
-                                : $$selectedVal[0]
-                            )
-                          }
-                        }
-                      },
-                      [
-                        _c("option", { attrs: { value: "0", disabled: "" } }, [
-                          _vm._v("seleccione un rol")
-                        ]),
-                        _vm._v(" "),
-                        _vm._l(_vm.SelectRol, function(rol) {
-                          return _c("option", {
-                            key: rol.id,
-                            domProps: {
-                              value: rol.id,
-                              textContent: _vm._s(rol.nombre)
-                            }
-                          })
-                        })
-                      ],
-                      2
-                    )
                   ])
                 ]),
                 _vm._v(" "),
@@ -39215,6 +39335,8 @@ var staticRenderFns = [
     return _c("thead", [
       _c("tr", [
         _c("th", [_vm._v("Nombre")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Usuario")]),
         _vm._v(" "),
         _c("th", [_vm._v("Direccion")]),
         _vm._v(" "),

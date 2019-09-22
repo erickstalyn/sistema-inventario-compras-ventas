@@ -113,8 +113,21 @@ class UsuarioController extends Controller
             DB::commit();
         } catch(Exception $e) {
             DB::rollback();
-            return $e;
         }
+    }
+
+    public function activar(Request $request){
+        $usuario = Usuario::findOrFail($request->id);
+
+        $usuario->estado = 1;
+        $usuario.save();
+    }
+
+    public function desactivar(Request $request){
+        $usuario = Usuario::findOrFail($request->id);
+
+        $usuario->estado = 0;
+        $usuario->save();
     }
 
     public function comprobar(Request $request){
