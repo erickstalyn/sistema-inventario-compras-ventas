@@ -118,198 +118,125 @@
             </div>
         </div>
 
-        <!-- Modales -->
-        <div class="modal" :class="{'mostrar': Modal.estado}">
-            <div class="modal-content modal-dialog modal-lg">
-                
-                <div class="modal-header">
-                    <h3 v-text="Modal.titulo" class="modal-title"></h3>
-                    <button type="button" @click="cerrarModal()" class="close">X</button>
-                </div>
-                
-                <div class="modal-body">
-                    <!-- Modal Numero 1 de AGREGAR-->
-                    <div v-if="Modal.numero==1">
-                        <div v-if="Error.estado" class="row form-group">
-                            <div class="alert alert-danger">
-                                <button type="button" @click="Error.estado=0" class="close" data-dismiss="alert">×</button>
-                                <strong>Corregir los siguentes errores:</strong>
-                                <ul> 
-                                    <li v-for="error in Error.mensaje" :key="error" v-text="error"></li> 
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="row form-group">
-                            <label class="col-md-3">Rol (*)</label>
-                            <div class="col-md-9">
-                                <select v-model="Usuario.rol_id" class="form-control">
-                                    <option value="0" disabled>seleccione un rol</option>
-                                    <option v-for="rol in SelectRol" :key="rol.id" :value="rol.id" v-text="rol.nombre"></option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="row form-group">
-                            <label class="col-md-3">Nombre (*)</label>
-                            <div class="col-md-9">
-                                <input type="text" v-model="Usuario.nombre" class="form-control" placeholder="ingrese el nombre">
-                            </div>
-                        </div>
-                        <div class="row form-group">
-                            <label class="col-md-3">Direccion</label>
-                            <div class="col-md-9">
-                                <input type="text" v-model="Usuario.direccion" class="form-control" placeholder="ingrese la direccion">
-                            </div>
-                        </div>
-
-                        <!-- <div class="row form-group">
-                            <label class="col-md-3">DNI</label>
-                            <div class="col-md-9">
-                                <input type="text" v-model="Usuario.dni" class="form-control" placeholder="ingrese el dni">
-                            </div>
-                        </div>
-                        <div class="row form-group">
-                            <label class="col-md-3">RUC</label>
-                            <div class="col-md-9">
-                                <input type="text" v-model="Usuario.ruc" class="form-control" placeholder="ingrese el ruc">
-                            </div>
-                        </div>
-                        <div class="row form-group">
-                            <label class="col-md-3">Telefono</label>
-                            <div class="col-md-9">
-                                <input type="text" v-model="Usuario.telefono" class="form-control" placeholder="ingrese el telefono">
-                            </div>
-                        </div>
-                        <div class="row form-group">
-                            <label class="col-md-3">Email</label>
-                            <div class="col-md-9">
-                                <input type="text" v-model="Usuario.email" class="form-control" placeholder="ingrese el email">
-                            </div>
-                        </div>
-                        <div class="row form-group">
-                            <label class="col-md-3">Fecha de cumpleaño</label>
-                            <div class="col-md-9">
-                                <input type="date" v-model="Usuario.birthday" class="form-control" placeholder="seleccione la fecha de cumpleaño">
-                            </div>
-                        </div>
-                        <div class="row form-group">
-                            <label class="col-md-3">Observacion</label>
-                            <div class="col-md-9">
-                                <input type="text" v-model="Usuario.observacion" class="form-control" placeholder="ingrese la observacion">
-                            </div>
-                        </div> -->
-
-                        <div class="row form-group">
-                            <label class="col-md-3">Usuario (*)</label>
-                            <div class="col-md-9">
-                                <input type="text" v-model="Usuario.usuario" class="form-control" placeholder="ingrese el usuario">
-                            </div>
-                        </div>
-                        <div class="row form-group">
-                            <label class="col-md-3">Contraseña (*)</label>
-                            <div class="col-md-9">
-                                <input type="password" v-model="Usuario.password" class="form-control" placeholder="ingrese la contraseña">
-                            </div>
-                        </div>
+        <div class="modal text-gray-900" :class="{'mostrar': Modal.estado}">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content modal-lg">
+                    <div class="modal-header">
+                        <h3 v-text="Modal.titulo" class="modal-title" ></h3>
+                        <button type="button" @click="cerrarModal()" class="close">X</button>
                     </div>
-                    <!-- Modal Numero 2 de EDITAR-->
-                    <div v-if="Modal.numero==2">
-                        <div v-if="Error.estado" class="row form-group">
-                            <div class="alert alert-danger">
-                                <button type="button" @click="Error.estado=0" class="close" data-dismiss="alert">×</button>
-                                <strong>Corregir los siguentes errores:</strong>
-                                <ul> 
-                                    <li v-for="error in Error.mensaje" :key="error" v-text="error"></li> 
-                                </ul>
+                    
+                    <div class="modal-body">
+                        <!-- Modal Numero 1 de AGREGAR-->
+                        <div v-if="Modal.numero==1">
+                            <div v-if="Error.estado" class="row d-flex justify-content-center">
+                                <div class="alert alert-danger">
+                                    <button type="button" @click="Error.estado=0" class="close text-primary" data-dismiss="alert">×</button>
+                                    <strong>Corregir los siguentes errores:</strong>
+                                    <ul> 
+                                        <li v-for="error in Error.mensaje" :key="error" v-text="error"></li> 
+                                    </ul>
+                                </div>
                             </div>
-                        </div>
-                        <div class="row form-group">
-                            <label class="col-md-3">Rol (*)</label>
-                            <div class="col-md-9">
-                                <select v-model="Usuario.rol_id" class="form-control">
-                                    <option value="0" disabled>seleccione un rol</option>
-                                    <option v-for="rol in SelectRol" :key="rol.id" :value="rol.id" v-text="rol.nombre"></option>
-                                </select>
+                            <div class="row form-group">
+                                <label class="col-md-3 font-weight-bold" for="nom">Nombre&nbsp;<span class="text-danger">*</span></label>
+                                <div class="col-md-9">
+                                    <input type="text" v-model="Usuario.nombre" class="form-control" placeholder="ingrese el nombre" id="nom" autofocus="">
+                                </div>
                             </div>
-                        </div>
-                        <div class="row form-group">
-                            <label class="col-md-3">Nombre (*)</label>
-                            <div class="col-md-9">
-                                <input type="text" v-model="Usuario.nombre" class="form-control" placeholder="ingrese el nombre">
+                            <div class="row form-group">
+                                <label class="col-md-3 font-weight-bold" for="dir">Direccion</label>
+                                <div class="col-md-9">
+                                    <input type="text" v-model="Usuario.direccion" class="form-control" placeholder="ingrese la direccion" id="dir">
+                                </div>
                             </div>
-                        </div>
-                        <div class="row form-group">
-                            <label class="col-md-3">Direccion</label>
-                            <div class="col-md-9">
-                                <input type="text" v-model="Usuario.direccion" class="form-control" placeholder="ingrese la direccion">
+                            <div class="row form-group">
+                                <label class="col-md-3 font-weight-bold" for="rol">Rol&nbsp;<span class="text-danger">*</span></label>
+                                <div class="col-md-9">
+                                    <select v-model="Usuario.rol_id" class="form-control" id="rol">
+                                        <option value="0" disabled>seleccione un rol</option>
+                                        <option v-for="rol in SelectRol" :key="rol.id" :value="rol.id" v-text="rol.nombre"></option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <label class="col-md-3 font-weight-bold" for="user">Usuario&nbsp;<span class="text-danger">*</span></label>
+                                <div class="col-md-9">
+                                    <input type="text" v-model="Usuario.usuario" class="form-control" placeholder="ingrese el usuario" id="user">
+                                </div>
+                            </div>
+                            <div class="row form-group font-weight-bold">
+                                <label class="col-md-3" for="contra">Contraseña&nbsp;<span class="text-danger">*</span></label>
+                                <div class="col-md-9">
+                                    <input type="password" v-model="Usuario.password" class="form-control" placeholder="ingrese la contraseña" id="contra">
+                                </div>
                             </div>
                         </div>
                         
-                        <!-- <div class="row form-group">
-                            <label class="col-md-3">DNI</label>
-                            <div class="col-md-9">
-                                <input type="text" v-model="Usuario.dni" class="form-control" placeholder="ingrese el dni">
-                            </div>
-                        </div>
-                        <div class="row form-group">
-                            <label class="col-md-3">RUC</label>
-                            <div class="col-md-9">
-                                <input type="text" v-model="Usuario.ruc" class="form-control" placeholder="ingrese el ruc">
-                            </div>
-                        </div>
-                        <div class="row form-group">
-                            <label class="col-md-3">Telefono</label>
-                            <div class="col-md-9">
-                                <input type="text" v-model="Usuario.telefono" class="form-control" placeholder="ingrese el telefono">
-                            </div>
-                        </div>
-                        <div class="row form-group">
-                            <label class="col-md-3">Email</label>
-                            <div class="col-md-9">
-                                <input type="text" v-model="Usuario.email" class="form-control" placeholder="ingrese el email">
-                            </div>
-                        </div>
-                        <div class="row form-group">
-                            <label class="col-md-3">Fecha de cumpleaño</label>
-                            <div class="col-md-9">
-                                <input type="date" v-model="Usuario.birthday" class="form-control" placeholder="seleccione la fecha de cumpleaño">
-                            </div>
-                        </div>
-                        <div class="row form-group">
-                            <label class="col-md-3">Observacion</label>
-                            <div class="col-md-9">
-                                <input type="text" v-model="Usuario.observacion" class="form-control" placeholder="ingrese la observacion">
-                            </div>
-                        </div> -->
-
-                        <div v-if="Credencial.comprobado==0">
-                            <div class="row form-group">
-                                <label class="col-md-12">Si desea editar las credenciales, ingrese su contraseña de administrador</label>
-                                <label class="col-md-3">Contraseña</label>
-                                <div class="col-md-5">
-                                    <input type="password" v-model="Credencial.password" class="form-control">
-                                </div>
-                                <button type="button" @click="comprobar()" class="btn btn-behance">Comprobar</button>
-                            </div>
-                        </div>
-                        <div v-else>
-                            <div class="row form-group">
-                                <label class="col-md-3">Usuario (*)</label>
-                                <div class="col-md-9">
-                                    <input type="text" v-model="Usuario.usuario" class="form-control" placeholder="ingrese el usuario">
+                        <!-- Modal Numero 2 de EDITAR-->
+                        <div v-if="Modal.numero==2">
+                            <div v-if="Error.estado" class="row form-group">
+                                <div class="alert alert-danger">
+                                    <button type="button" @click="Error.estado=0" class="close" data-dismiss="alert">×</button>
+                                    <strong>Corregir los siguentes errores:</strong>
+                                    <ul> 
+                                        <li v-for="error in Error.mensaje" :key="error" v-text="error"></li> 
+                                    </ul>
                                 </div>
                             </div>
                             <div class="row form-group">
-                                <label class="col-md-3">Contraseña (*)</label>
+                                <label class="col-md-3 font-weight-bold" for="nom">Nombre&nbsp;<span class="text-danger">*</span></label>
                                 <div class="col-md-9">
-                                    <input type="password" v-model="Usuario.password" class="form-control" placeholder="ingrese la contraseña">
+                                    <input type="text" v-model="Usuario.nombre" class="form-control" placeholder="ingrese el nombre" id="nom">
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <label class="col-md-3 font-weight-bold" for="dir">Direccion</label>
+                                <div class="col-md-9">
+                                    <input type="text" v-model="Usuario.direccion" class="form-control" placeholder="ingrese la direccion" id="dir">
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <label class="col-md-3 font-weight-bold" for="rol">Rol&nbsp;<span class="text-danger">*</span></label>
+                                <div class="col-md-9">
+                                    <select v-model="Usuario.rol_id" class="form-control" id="rol">
+                                        <option value="0" disabled>seleccione un rol</option>
+                                        <option v-for="rol in SelectRol" :key="rol.id" :value="rol.id" v-text="rol.nombre"></option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div v-if="Credencial.comprobado==0">
+                                <div class="row form-group">
+                                    <label class="col-md-12 alert alert-danger">Si desea editar las credenciales, ingrese su contraseña de administrador</label>
+                                    <label class="col-md-3 font-weight-bold" for="cont">Contraseña</label>
+                                    <div class="col-md-5">
+                                        <input type="password" v-model="Credencial.password" class="form-control" id="cont" @keyup.enter="comprobar()">
+                                    </div>
+                                    <button type="button" @click="comprobar()" class="btn btn-success">Comprobar</button>
+                                </div>
+                            </div>
+                            <div v-else>
+                                <label class="col-md-12 alert alert-success">Tiene acceso a la edición de las credenciales</label>
+                                <div class="row form-group">
+                                    <label class="col-md-3 font-weight-bold" for="user">Usuario&nbsp;<span class="text-danger">*</span></label>
+                                    <div class="col-md-9">
+                                        <input type="text" v-model="Usuario.usuario" class="form-control" placeholder="ingrese el usuario" id="user">
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <label class="col-md-3 font-weight-bold" for="contra">Contraseña&nbsp;<span class="text-danger">*</span></label>
+                                    <div class="col-md-9">
+                                        <input type="password" v-model="Usuario.password" class="form-control" placeholder="ingrese la contraseña" id="contra">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" @click="cerrarModal()" class="btn btn-secondary">Cancelar</button>
-                    <button type="button" @click="accionar(Modal.accion)" class="btn btn-primary" v-text="Modal.accion"></button>        
+                    <div class="modal-footer">
+                        <button type="button" @click="cerrarModal()" class="btn btn-secondary">Cancelar</button>
+                        <button type="button" @click="accionar(Modal.accion)" class="btn btn-primary" v-text="Modal.accion"></button>
+                    </div>
+                
                 </div>
             </div>
         </div>
