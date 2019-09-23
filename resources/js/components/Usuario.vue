@@ -298,7 +298,9 @@
                     lastItem: 0
                 },
                 Navegacion:{
-                    offset: 3
+                    offset: 3,
+                    ordenarPor: '',
+                    orden: '' 
                 },
 
                 //datos de errores
