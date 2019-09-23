@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Exception;
 use Illuminate\Support\Facades\Hash;
+use Carbon\Carbon;
 use App\Usuario;
 use App\Persona;
 use App\Rol;
@@ -25,11 +26,11 @@ class UsuarioController extends Controller
 
         $usuarios = Usuario::join('persona', 'usuario.persona_id', '=', 'persona.id')->join('rol', 'usuario.rol_id', '=', 'rol.id')
                             ->select('persona.nombre', 'persona.direccion',
-                                DB::raw('Date_Format(persona.created_at,\'' .'%d-%M-%Y' . '\') as fecha_creacion'), // para mysql
+                                // DB::raw('Date_Format(persona.created_at,\'' .'%d-%M-%Y' . '\') as fecha_creacion'), // para mysql
                                 // DB::raw('to_char(persona.created_at,\'' .'DD-Mon-YYYY' . '\') as fecha_creacion'), //para postgresql
-                                //'persona.created_at as fecha_creacion',  
-                             'persona.updated_at as fecha_actualizacion', 'persona.deleted_at as fecha_eliminacion',
-                             'usuario.id', 'usuario.usuario', 'usuario.estado', 'rol.nombre as rol', 'rol.id as rol_id')
+                                'persona.created_at as fecha_creacion',  
+                                'persona.updated_at as fecha_actualizacion', 'persona.deleted_at as fecha_eliminacion',
+                                'usuario.id', 'usuario.usuario', 'usuario.estado', 'rol.nombre as rol', 'rol.id as rol_id')
                             ->where(function ($query) use ($estado) {
                                 if ( $estado != 2 ) {
                                     $query->where('usuario.estado', '=', $estado);
@@ -66,12 +67,14 @@ class UsuarioController extends Controller
             $persona->nombre = $request->nombre;
             // $persona->dni = $request->dni==''?NULL:$request->dni;
             // $persona->ruc = $request->ruc==''?NULL:$request->ruc;
-            $persona->direccion = $request->direccion==''?NULL:$request->direccion;
+            $persona->direccion = $request->direccion==NULL?NULL:$request->direccion;
             // $persona->telefono = $request->telefono==''?NULL:$request->telefono;
             // $persona->email = $request->email==''?NULL:$request->email;
             // $persona->birthday = $request->birthday==''?NULL:$request->birthday;
             // $persona->observacion = $request->observacion==''?NULL:$request->observacion;
             $persona->tipo = $request->tipo;
+            $persona->created_at = Carbon::now('America/Lima')->toDateTimeString();
+            $persona->updated_at = NULL;
             $persona->save();
 
             $usuario = new Usuario();
@@ -105,6 +108,7 @@ class UsuarioController extends Controller
             // $persona->birthday = $request->birthday==''?NULL:$request->birthday;
             // $persona->observacion = $request->observacion==''?NULL:$request->observacion;
             $persona->tipo = $request->tipo;
+            $persona->updated_at = Carbon::now('America/Lima')->toDateTimeString();
             $persona->save();
             
             $usuario->rol_id = $request->rol_id;
@@ -119,17 +123,42 @@ class UsuarioController extends Controller
     }
 
     public function activar(Request $request){
-        $usuario = Usuario::findOrFail($request->id);
+        try {
+            DB::beginTransaction();
 
-        $usuario->estado = 1;
-        $usuario->save();
+            $usuario = Usuario::findOrFail($request->id);
+            $usuario->estado = 1;
+            $usuario->save();
+
+            $persona = $usuario->getPersona;
+            $persona->updated_at = Carbon::now('America/Lima')->toDateTimeString();
+            $persona->deleted_at = NULL;
+            $persona->save();
+
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollback();
+            return $e;
+        }
     }
 
     public function desactivar(Request $request){
-        $usuario = Usuario::findOrFail($request->id);
+        try {
+            DB::beginTransaction();
 
-        $usuario->estado = 0;
-        $usuario->save();
+            $usuario = Usuario::findOrFail($request->id);
+            $usuario->estado = 0;
+            $usuario->save();
+
+            $persona = $usuario->getPersona;
+            $persona->updated_at = Carbon::now('America/Lima')->toDateTimeString();
+            $persona->deleted_at = Carbon::now('America/Lima')->toDateTimeString();
+            $persona->save();
+
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollback();
+        }
     }
 
     public function comprobar(Request $request){

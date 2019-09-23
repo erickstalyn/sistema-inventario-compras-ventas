@@ -49,13 +49,7 @@
                         <table class="table table-bordered table-striped table-sm text-gray-900">
                             <thead>
                                 <tr>
-                                    <th @click="listar(1, 'persona.nombre')" class="ec-cursor" v-text="getHeader('Nombre')"></th>
-                                    <th @click="listar(1, 'usuario.usuario')" class="ec-cursor" v-text="getHeader('Usuario')"></th>
-                                    <th @click="listar(1, 'persona.direccion')" class="ec-cursor" v-text="getHeader('Direccion')"></th>
-                                    <th @click="listar(1, 'rol.nombre')" class="ec-cursor" v-text="getHeader('Rol')"></th>
-                                    <th @click="listar(1, 'persona.created_at')" class="ec-cursor" v-text="getHeader('F. Creacion')"></th>
-                                    <th @click="listar(1, 'persona.updated_at')" class="ec-cursor" v-text="getHeader('F. Modificacion')"></th>
-                                    <th @click="listar(1, 'persona.deleted_at')" class="ec-cursor" v-text="getHeader('F. Eliminacion')"></th>
+                                    <th v-for="head in Headers" :key="head.nombre" @click="listar(1, head.nombre)" class="ec-cursor" v-text="getTitulo(head.titulo)"></th>
                                     <th>Estado</th>
                                     <th>Opciones</th>
                                 </tr>
@@ -64,11 +58,11 @@
                                 <tr v-for="usuario in ListaUsuario" :key="usuario.id" >
                                     <td v-text="usuario.nombre"></td>
                                     <td v-text="usuario.usuario"></td>
-                                    <td v-text="usuario.direccion"></td>
+                                    <td v-text="usuario.direccion==null?'-':usuario.direccion"></td>
                                     <td v-text="usuario.rol"></td>
-                                    <td v-text="usuario.fecha_creacion"></td>
-                                    <td v-text="usuario.fecha_actualizacion"></td>
-                                    <td v-text="usuario.fecha_eliminacion"></td>
+                                    <td v-text="usuario.fecha_creacion==null?'-':usuario.fecha_creacion"></td>
+                                    <td v-text="usuario.fecha_actualizacion==null?'-':usuario.fecha_actualizacion"></td>
+                                    <td v-text="usuario.fecha_eliminacion==null?'-':usuario.fecha_eliminacion"></td>
                                     <td>
                                         <div v-if="usuario.estado">
                                             <span class="badge badge-success">Activado</span>
@@ -276,8 +270,8 @@
                 //datos de busqueda y filtracion
                 Busqueda: {
                     texto: '',
-                    estado: 1,
-                    items: 4
+                    estado: 2,
+                    items: 10
                 },
 
                 //datos de modales
@@ -299,7 +293,7 @@
                 },
                 Navegacion:{
                     offset: 3,
-                    ordenarPor: 'rol.nombre',
+                    ordenarPor: '',
                     orden: 'desc' 
                 },
 
@@ -336,7 +330,7 @@
             },
             Items: function(){
                 var min = 3;
-                var max = 20
+                var max = 20;
                 var items = [];
 
                 while ( min <= max) {
@@ -345,6 +339,19 @@
                 }
 
                 return items;
+            },
+            Headers: function(){
+                var headers = [];
+
+                headers.push({titulo: 'Nombre', nombre: 'persona.nombre'});
+                headers.push({titulo: 'Usuario', nombre: 'usuario.usuario'});
+                headers.push({titulo: 'Direccion', nombre: 'persona.direccion'});
+                headers.push({titulo: 'Rol', nombre: 'rol.nombre'});
+                headers.push({titulo: 'F. Creacion', nombre: 'persona.created_at'});
+                headers.push({titulo: 'F. Modificacion', nombre: 'persona.updated_at'});
+                headers.push({titulo: 'F. Eliminacion', nombre: 'persona.deleted_at'});
+
+                return headers;
             }
         },
         methods: {
@@ -352,15 +359,16 @@
                 if ( ordenarPor == this.Navegacion.ordenarPor ) {
                     this.Navegacion.orden = (this.Navegacion.orden == 'asc'?'desc':'asc');
                 } else {
-                    this.Navegacion.ordenarPor = ordenarPor;
+                    this.Navegacion.ordenarPor = ordenarPor!=''?ordenarPor:this.Navegacion.ordenarPor;
                     this.Navegacion.orden = 'asc';
                 }
 
-                if (ordenarPor != '') {
-                    var url = '/usuario?page='+page+'&estado='+this.Busqueda.estado+'&texto='+this.Busqueda.texto+'&items='+this.Busqueda.items+'&ordenarPor='+ordenarPor+'&orden='+this.Navegacion.orden;
-                } else {
-                    var url = '/usuario?page='+page+'&estado='+this.Busqueda.estado+'&texto='+this.Busqueda.texto+'&items='+this.Busqueda.items+'&ordenarPor=rol.nombre'+'&orden='+this.Navegacion.orden;
-                }
+                var url = '/usuario?page='+page
+                        +'&estado='+this.Busqueda.estado
+                        +'&texto='+this.Busqueda.texto
+                        +'&items='+this.Busqueda.items
+                        +'&ordenarPor='+this.Navegacion.ordenarPor
+                        +'&orden='+this.Navegacion.orden;
                 
                 var me = this;
                 axios.get(url).then(function (response) {
@@ -451,6 +459,7 @@
                             'id' : id
                         }).then(function (response) {
                             me.listar(me.Paginacion.currentPage);
+                            console.log(response.data);
                             swalWithBootstrapButtons.fire(
                                 'ACTIVADO',
                                 'El usuario se ha activado correctamente',
@@ -487,6 +496,7 @@
                             'id' : id
                         }).then(function (response) {
                             me.listar(me.Paginacion.currentPage);
+                            console.log(response.data);
                             swalWithBootstrapButtons.fire(
                                 'DESACTIVADO',
                                 'El usuario se ha desactivado correctamente',
@@ -602,42 +612,25 @@
                     console.log(error);
                 });
             },
-            getHeader(header){
+            getTitulo(titulo){
                 var seleccionada = 0;
 
-                switch ( header ) {
-                    case 'Nombre': {
-                        if ( 'persona.nombre' == this.Navegacion.ordenarPor ) seleccionada = 1; break;
-                    }
-                    case 'Usuario': {
-                        if ( 'usuario.usuario' == this.Navegacion.ordenarPor ) seleccionada = 1; break;
-                    }
-                    case 'Direccion': {
-                        if ( 'persona.direccion' == this.Navegacion.ordenarPor ) seleccionada = 1; break;
-                    }
-                    case 'Rol': {
-                        if ( 'rol.nombre' == this.Navegacion.ordenarPor ) seleccionada = 1; break;
-                    }
-                    case 'F. Creacion': {
-                        if ( 'persona.created_at' == this.Navegacion.ordenarPor ) seleccionada = 1; break;
-                    }
-                    case 'F. Modificacion': {
-                        if ( 'persona.updated_at' == this.Navegacion.ordenarPor ) seleccionada = 1; break;
-                    }
-                    case 'F. Eliminacion': {
-                        if ( 'persona.deleted_at' == this.Navegacion.ordenarPor ) seleccionada = 1; break;
+                for (let i = 0; i < this.Headers.length; i++) {
+                    if ( titulo == this.Headers[i].titulo && this.Navegacion.ordenarPor == this.Headers[i].nombre ) {
+                        seleccionada = 1;
+                        break;
                     }
                 }
 
                 if ( seleccionada == 1 ) {
                     if ( this.Navegacion.orden == 'asc' ) {
-                        header = header + ' ^';
+                        titulo = titulo + ' ^';
                     } else {
-                        header = header + ' v';
+                        titulo = titulo + ' v';
                     }
                 }
 
-                return header;
+                return titulo;
             },
             getRol(id){
                 for (let i = 0; i < this.SelectRol.length; i++) {
@@ -691,7 +684,7 @@
             }
         },
         mounted() {
-            this.listar(1);
+            this.listar(1, 'rol.nombre');
         }
     }
 </script>
