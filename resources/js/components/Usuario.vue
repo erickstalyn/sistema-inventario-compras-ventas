@@ -22,10 +22,10 @@
 
                         <div class="col-md-8">
                             <div class="input-group">
-                                <select class="col-md-3 form-control text-gray-900" v-model="Busqueda.estado" @click="listar(1)">
-                                    <option value="1">Activados</option>
-                                    <option value="0">Desactivados</option>
-                                    <option value="2">Todos</option>
+                                <select class="col-md-3 form-control text-gray-900" v-model="Busqueda.estado">
+                                    <option value="1" @click="listar(1)">Activados</option>
+                                    <option value="0" @click="listar(1)">Desactivados</option>
+                                    <option value="2" @click="listar(1)">Todos</option>
                                 </select>
                                 <input type="search" class="form-control" v-model="Busqueda.texto" @keyup.enter="listar(1)">
                                 <button type="button" class="btn btn-primary" @click="listar(1)">
@@ -38,8 +38,8 @@
                             <label>N° filas:</label>
                         </div>
                         <div class="col-md-1">
-                            <select class="form-control text-gray-900" v-model="Busqueda.items" @click="listar(1)">
-                                <option v-for="item in Items" :key="item" :value="item" v-text="item"></option>
+                            <select class="form-control text-gray-900" v-model="Busqueda.items">
+                                <option v-for="item in Items" :key="item" :value="item" v-text="item" @click="listar(1)"></option>
                             </select>
                         </div>
                     </div>
@@ -49,13 +49,13 @@
                         <table class="table table-bordered table-striped table-sm text-gray-900">
                             <thead>
                                 <tr>
-                                    <th @click="listar(1, 'persona.nombre')">Nombre</th>
-                                    <th @click="listar(1, 'usuario.usuario')">Usuario</th>
-                                    <th @click="listar(1, 'persona.direccion')">Direccion</th>
-                                    <th @click="listar(1, 'rol.nombre')">Rol</th>
-                                    <th @click="listar(1, 'persona.created_at')">F.creación</th>
-                                    <th @click="listar(1, 'persona.updated_at')">F.modificación</th>
-                                    <th @click="listar(1, 'persona.deleted_at')">F.desactivación</th>
+                                    <th @click="listar(1, 'persona.nombre')" class="ec-cursor">Nombre</th>
+                                    <th @click="listar(1, 'usuario.usuario')" class="ec-cursor">Usuario</th>
+                                    <th @click="listar(1, 'persona.direccion')" class="ec-cursor">Direccion</th>
+                                    <th @click="listar(1, 'rol.nombre')" class="ec-cursor">Rol</th>
+                                    <th @click="listar(1, 'persona.created_at')" class="ec-cursor">F.creación</th>
+                                    <th @click="listar(1, 'persona.updated_at')" class="ec-cursor">F.modificación</th>
+                                    <th @click="listar(1, 'persona.deleted_at')" class="ec-cursor">F.desactivación</th>
                                     <th>Estado</th>
                                     <th>Opciones</th>
                                 </tr>
@@ -658,5 +658,8 @@
         opacity: 1 !important;
         position: absolute !important;
         background-color: #3c29297a !important;
+    }
+    .ec-cursor{
+        cursor: pointer;
     }
 </style>
