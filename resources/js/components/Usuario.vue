@@ -300,7 +300,7 @@
                 Navegacion:{
                     offset: 3,
                     ordenarPor: '',
-                    orden: '' 
+                    orden: 'desc' 
                 },
 
                 //datos de errores
