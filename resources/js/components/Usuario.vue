@@ -22,10 +22,10 @@
 
                         <div class="col-md-8">
                             <div class="input-group">
-                                <select class="col-md-3 form-control text-gray-900" v-model="Busqueda.estado">
-                                    <option value="1" @click="listar(1)">Activados</option>
-                                    <option value="0" @click="listar(1)">Desactivados</option>
-                                    <option value="2" @click="listar(1)">Todos</option>
+                                <select class="col-md-3 form-control text-gray-900" v-model="Busqueda.estado" @click="listar(1)">
+                                    <option value="1">Activados</option>
+                                    <option value="0">Desactivados</option>
+                                    <option value="2">Todos</option>
                                 </select>
                                 <input type="search" class="form-control" v-model="Busqueda.texto" @keyup.enter="listar(1)">
                                 <button type="button" class="btn btn-primary" @click="listar(1)">
@@ -38,8 +38,8 @@
                             <label>N° filas:</label>
                         </div>
                         <div class="col-md-1">
-                            <select class="form-control text-gray-900" v-model="Busqueda.items">
-                                <option v-for="item in Items" :key="item" :value="item" v-text="item" @click="listar(1)"></option>
+                            <select class="form-control text-gray-900" v-model="Busqueda.items" @click="listar(1)">
+                                <option v-for="item in Items" :key="item" :value="item" v-text="item"></option>
                             </select>
                         </div>
                     </div>
@@ -49,13 +49,13 @@
                         <table class="table table-bordered table-striped table-sm text-gray-900">
                             <thead>
                                 <tr>
-                                    <th @click="listar(1, 'persona.nombre')" class="ec-cursor">Nombre</th>
-                                    <th @click="listar(1, 'usuario.usuario')" class="ec-cursor">Usuario</th>
-                                    <th @click="listar(1, 'persona.direccion')" class="ec-cursor">Direccion</th>
-                                    <th @click="listar(1, 'rol.nombre')" class="ec-cursor">Rol</th>
-                                    <th @click="listar(1, 'persona.created_at')" class="ec-cursor">F.creación</th>
-                                    <th @click="listar(1, 'persona.updated_at')" class="ec-cursor">F.modificación</th>
-                                    <th @click="listar(1, 'persona.deleted_at')" class="ec-cursor">F.desactivación</th>
+                                    <th @click="listar(1, 'persona.nombre')" class="ec-cursor" v-text="getHeader('Nombre')"></th>
+                                    <th @click="listar(1, 'usuario.usuario')" class="ec-cursor" v-text="getHeader('Usuario')"></th>
+                                    <th @click="listar(1, 'persona.direccion')" class="ec-cursor" v-text="getHeader('Direccion')"></th>
+                                    <th @click="listar(1, 'rol.nombre')" class="ec-cursor" v-text="getHeader('Rol')"></th>
+                                    <th @click="listar(1, 'persona.created_at')" class="ec-cursor" v-text="getHeader('F. Creacion')"></th>
+                                    <th @click="listar(1, 'persona.updated_at')" class="ec-cursor" v-text="getHeader('F. Modificacion')"></th>
+                                    <th @click="listar(1, 'persona.deleted_at')" class="ec-cursor" v-text="getHeader('F. Eliminacion')"></th>
                                     <th>Estado</th>
                                     <th>Opciones</th>
                                 </tr>
@@ -299,7 +299,7 @@
                 },
                 Navegacion:{
                     offset: 3,
-                    ordenarPor: '',
+                    ordenarPor: 'rol.nombre',
                     orden: 'desc' 
                 },
 
@@ -349,10 +349,17 @@
         },
         methods: {
             listar(page, ordenarPor = ''){
-                if (ordenarPor != '') {
-                    var url = '/usuario?page='+page+'&estado='+this.Busqueda.estado+'&texto='+this.Busqueda.texto+'&items='+this.Busqueda.items+'&ordenarPor='+ordenarPor;
+                if ( ordenarPor == this.Navegacion.ordenarPor ) {
+                    this.Navegacion.orden = (this.Navegacion.orden == 'asc'?'desc':'asc');
                 } else {
-                    var url = '/usuario?page='+page+'&estado='+this.Busqueda.estado+'&texto='+this.Busqueda.texto+'&items='+this.Busqueda.items+'&ordenarPor=rol.nombre';
+                    this.Navegacion.ordenarPor = ordenarPor;
+                    this.Navegacion.orden = 'asc';
+                }
+
+                if (ordenarPor != '') {
+                    var url = '/usuario?page='+page+'&estado='+this.Busqueda.estado+'&texto='+this.Busqueda.texto+'&items='+this.Busqueda.items+'&ordenarPor='+ordenarPor+'&orden='+this.Navegacion.orden;
+                } else {
+                    var url = '/usuario?page='+page+'&estado='+this.Busqueda.estado+'&texto='+this.Busqueda.texto+'&items='+this.Busqueda.items+'&ordenarPor=rol.nombre'+'&orden='+this.Navegacion.orden;
                 }
                 
                 var me = this;
@@ -594,6 +601,43 @@
                 }).catch(function(error){
                     console.log(error);
                 });
+            },
+            getHeader(header){
+                var seleccionada = 0;
+
+                switch ( header ) {
+                    case 'Nombre': {
+                        if ( 'persona.nombre' == this.Navegacion.ordenarPor ) seleccionada = 1; break;
+                    }
+                    case 'Usuario': {
+                        if ( 'usuario.usuario' == this.Navegacion.ordenarPor ) seleccionada = 1; break;
+                    }
+                    case 'Direccion': {
+                        if ( 'persona.direccion' == this.Navegacion.ordenarPor ) seleccionada = 1; break;
+                    }
+                    case 'Rol': {
+                        if ( 'rol.nombre' == this.Navegacion.ordenarPor ) seleccionada = 1; break;
+                    }
+                    case 'F. Creacion': {
+                        if ( 'persona.created_at' == this.Navegacion.ordenarPor ) seleccionada = 1; break;
+                    }
+                    case 'F. Modificacion': {
+                        if ( 'persona.updated_at' == this.Navegacion.ordenarPor ) seleccionada = 1; break;
+                    }
+                    case 'F. Eliminacion': {
+                        if ( 'persona.deleted_at' == this.Navegacion.ordenarPor ) seleccionada = 1; break;
+                    }
+                }
+
+                if ( seleccionada == 1 ) {
+                    if ( this.Navegacion.orden == 'asc' ) {
+                        header = header + ' ^';
+                    } else {
+                        header = header + ' v';
+                    }
+                }
+
+                return header;
             },
             getRol(id){
                 for (let i = 0; i < this.SelectRol.length; i++) {
