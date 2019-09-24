@@ -97,7 +97,8 @@ class UsuarioController extends Controller
             DB::beginTransaction();
 
             $usuario = Usuario::findOrFail($request->id);
-            $persona->nombre = $request->nombre;
+            $persona = $usuario->getPersona;
+            // $persona->nombre = $request->nombre;
             
             $persona->nombre = $request->nombre;
             // $persona->dni = $request->dni==''?NULL:$request->dni;

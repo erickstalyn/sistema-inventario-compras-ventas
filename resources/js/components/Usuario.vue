@@ -113,7 +113,7 @@
         </div>
 
         <div class="modal text-gray-900" :class="{'mostrar': Modal.estado}">
-            <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-dialog modal-dialog-centered animated bounceIn fast">
                 <div class="modal-content modal-lg">
                     <div class="modal-header">
                         <h3 v-text="Modal.titulo" class="modal-title" ></h3>
@@ -525,10 +525,10 @@
                             title: 'El usuario se ha ACTIVADO correctamente',
                             showConfirmButton: false,
                             timer: 4500,
-                            // animation:false,
-                            // customClass:{
-                            //     popup: 'animated wobble'
-                            // }
+                            animation:false,
+                            customClass:{
+                                popup: 'animated bounceIn fast'
+                            }
                         });
                     }).catch(function (error) {
                         console.log(error);
@@ -556,7 +556,11 @@
                             type: 'success',
                             title: 'El usuario se ha DESACTIVADO correctamente',
                             showConfirmButton: false,
-                            timer: 4500
+                            timer: 4500,
+                            animation:false,
+                            customClass:{
+                                popup: 'animated bounceIn fast'
+                            }
                         });
                     }).catch(function (error) {
                         console.log(error);
