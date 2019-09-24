@@ -76,7 +76,7 @@
                                             <i class="fas fa-user-edit"></i>
                                         </button>
                                         <template v-if="usuario.estado">
-                                            <button type="button" @click="desactivar(usuario.id)" title="Desactivar" class="btn btn-danger btn-sm">
+                                            <button type="button" @click="abrirModalDesactivar(usuario.id)" title="Desactivar" class="btn btn-danger btn-sm">
                                                 <i class="fas fa-user-times"></i>
                                             </button>
                                         </template>
@@ -201,7 +201,7 @@
                             </div>
                             <div v-if="Credencial.comprobado==0">
                                 <div class="row form-group">
-                                    <label class="col-md-12 alert alert-danger">Si desea editar las credenciales, ingrese su contraseña de administrador</label>
+                                    <label class="col-md-12 alert alert-warning">Si desea editar las credenciales, ingrese su contraseña de administrador</label>
                                     <label class="col-md-3 font-weight-bold" for="cont">Contraseña</label>
                                     <div class="col-md-5">
                                         <input type="password" v-model="Credencial.password" class="form-control" id="cont" @keyup.enter="comprobar()">
@@ -228,18 +228,47 @@
 
                         <!-- Modal Numero 3 de ACTIVAR-->
                         <div v-if="Modal.numero==3">
-                            <div class="row form-group">
-                                <label class="col-md-12 alert alert-danger">Para ACTIVAR este usuario, ingrese su contraseña de administrador para su verificacion</label>
+                            <div v-if="Credencial.comprobado==0">
+                                <div class="row form-group">
+                                        <label class="col-md-12 alert alert-success">Si desea ACTIVAR este usuario, ingrese su contraseña de administrador</label>
+                                        <label class="col-md-3 font-weight-bold" for="cont">Contraseña</label>
+                                        <div class="col-md-5">
+                                            <input type="password" v-model="Credencial.password" class="form-control" id="cont" @keyup.enter="comprobar()" autofocus>
+                                        </div>
+                                        <button type="button" @click="comprobar()" class="btn btn-success">Comprobar</button>
+                                </div>
                             </div>
-                            <div class="row form-group">
-                                <div class="col-md-12">
-                                    <input type="password" v-model="Credencial.password" class="form-control" @keyup.enter="accionar(Modal.accion)">
+                            <div v-else>
+                                <label class="col-md-12 alert alert-success">De click en ACTIVAR para confirmar</label>
+                                <div class="d-flex justify-content-around">
+                                    <button type="button" @click="cerrarModal()" class="btn btn-secondary">Cancelar</button>
+                                    <button type="button" @click="accionar(Modal.accion)" class="btn btn-primary" v-text="Modal.accion"></button>
                                 </div>
                             </div>
                         </div>
-
+                        <!-- Modal Numero 4 de DESACTIVAR-->
+                        <div v-if="Modal.numero==4">
+                            <div v-if="Credencial.comprobado==0">
+                                <div class="row form-group">
+                                        <label class="col-md-12 alert alert-danger">Si desea DESACTIVAR este usuario, ingrese su contraseña de administrador</label>
+                                        <label class="col-md-3 font-weight-bold" for="cont">Contraseña</label>
+                                        <div class="col-md-5">
+                                            <input type="password" v-model="Credencial.password" class="form-control" id="cont" @keyup.enter="comprobar()" autofocus>
+                                        </div>
+                                        <button type="button" @click="comprobar()" class="btn btn-success">Comprobar</button>
+                                </div>
+                            </div>
+                            <div v-else>
+                                <label class="col-md-12 alert alert-success">De click en DESACTIVAR para confirmar</label>
+                                <div class="d-flex justify-content-around">
+                                    <button type="button" @click="cerrarModal()" class="btn btn-secondary">Cancelar</button>
+                                    <button type="button" @click="accionar(Modal.accion)" class="btn btn-primary" v-text="Modal.accion"></button>
+                                </div>
+                            </div>
+                        </div>
+                        
                     </div>
-                    <div class="modal-footer">
+                    <div class="modal-footer" v-if="Modal.numero==1 || Modal.numero==2">
                         <button type="button" @click="cerrarModal()" class="btn btn-secondary">Cancelar</button>
                         <button type="button" @click="accionar(Modal.accion)" class="btn btn-primary" v-text="Modal.accion"></button>
                     </div>
@@ -365,7 +394,34 @@
                 headers.push({titulo: 'F. Eliminacion', nombre: 'persona.deleted_at'});
 
                 return headers;
-            }
+            },
+            // comprobarV2: function(){
+                
+            //     //this.Credencial.password;
+            //     // return this.comprobar();
+            //     // return this.Credencial.password;
+
+            //     var me = this;
+            //     var url = 'usuario/comprobar?password='+this.Credencial.password;
+
+            //     axios.get(url).then(function(response){
+            //         me.Credencial.comprobado = response.data;
+            //     }).catch(function(error){
+            //         console.log(error);
+            //     });
+
+            //     return me.Credencial.comprobado;
+
+            //     // this.Credencial.comprobado = axios.get(url).then(function(response){
+            //     //     return response.data;
+            //     // }).catch(function(error){
+            //     //     console.log(error);
+            //     // });
+
+            //     // if(){
+
+            //     // }
+            // },
         },
         methods: {
             listar(page, ordenarPor = ''){
@@ -449,64 +505,96 @@
                 });
             },
             activar(){
-                this.comprobar();
-
                 var me = this;
+                //this.comprobar();
+                // let prueba = this.comprobar();
+                // console.log(prueba);
+
                 if ( this.Credencial.comprobado == 1 ) {
+                    console.log('El comprobado es 1');
                     axios.put('/usuario/activar', {
-                        'id' : me.Usuario.id
+                        'id' : this.Usuario.id
+                        
                     }).then(function (response) {
+                        //console.log(response.data);
                         me.cerrarModal();
                         me.listar(me.Paginacion.currentPage);
-                        // Swal.fire(
-                        //     'ACTIVADO',
-                        //     'El usuario se ha activado correctamente',
-                        //     'success'
-                        // );
+                        Swal.fire({position: 'top-end',
+                            toast: true,
+                            type: 'success',
+                            title: 'El usuario se ha ACTIVADO correctamente',
+                            showConfirmButton: false,
+                            timer: 4500,
+                            // animation:false,
+                            // customClass:{
+                            //     popup: 'animated wobble'
+                            // }
+                        });
                     }).catch(function (error) {
                         console.log(error);
                     });
                 } else {
-                    me.cerrarModal();
-                    // Swal.fire(
-                    //     'ERROR',
-                    //     'La contraseña es incorrecta',
-                    //     'error'
-                    // );
                 }
             },
-            desactivar(id){
-                Swal.fire({
-                    customClass: {
-                        confirmButton: 'btn btn-success',
-                        cancelButton: 'btn btn-danger'
-                    },
-                    buttonsStyling: false,
-                    title: '¿Esta seguro de DESACTIVAR este usuario?',
-                    type: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: 'Aceptar',
-                    cancelButtonText: 'Cancelar',
-                    reverseButtons: true
-                }).then((result) => {
-                    if (result.value) {
-                        var me = this;
-                
-                        axios.put('/usuario/desactivar', {
-                            'id' : id
-                        }).then(function (response) {
-                            me.listar(me.Paginacion.currentPage);
-                            Swal.fire(
-                                'DESACTIVADO',
-                                'El usuario se ha desactivado correctamente',
-                                'success'
-                            )
-                        }).catch(function (error) {
-                            console.log(error);
+            desactivar(){
+                var me = this;
+                //this.comprobar();
+                // let prueba = this.comprobar();
+                // console.log(prueba);
+
+                if ( this.Credencial.comprobado == 1 ) {
+                    console.log('El comprobado es 1');
+                    axios.put('/usuario/desactivar', {
+                        'id' : this.Usuario.id
+                        
+                    }).then(function (response) {
+                        //console.log(response.data);
+                        me.cerrarModal();
+                        me.listar(me.Paginacion.currentPage);
+                        Swal.fire({position: 'top-end',
+                            toast: true,
+                            type: 'success',
+                            title: 'El usuario se ha DESACTIVADO correctamente',
+                            showConfirmButton: false,
+                            timer: 4500
                         });
-                    } else if ( result.dismiss === Swal.DismissReason.cancel ) {
-                    }
-                })
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                } else {
+                }
+
+                // Swal.fire({
+                //     customClass: {
+                //         confirmButton: 'btn btn-success',
+                //         cancelButton: 'btn btn-danger'
+                //     },
+                //     buttonsStyling: false,
+                //     title: '¿Esta seguro de DESACTIVAR este usuario?',
+                //     type: 'warning',
+                //     showCancelButton: true,
+                //     confirmButtonText: 'Aceptar',
+                //     cancelButtonText: 'Cancelar',
+                //     reverseButtons: true
+                // }).then((result) => {
+                //     if (result.value) {
+                //         var me = this;
+                
+                //         axios.put('/usuario/desactivar', {
+                //             'id' : id
+                //         }).then(function (response) {
+                //             me.listar(me.Paginacion.currentPage);
+                //             Swal.fire(
+                //                 'DESACTIVADO',
+                //                 'El usuario se ha desactivado correctamente',
+                //                 'success'
+                //             )
+                //         }).catch(function (error) {
+                //             console.log(error);
+                //         });
+                //     } else if ( result.dismiss === Swal.DismissReason.cancel ) {
+                //     }
+                // })
             },
             abrirModalAgregar(){
                 this.abrirModal(1);
@@ -557,6 +645,14 @@
                 this.Credencial.password = '';
                 this.Usuario.id = id;
             },
+            abrirModalDesactivar(id){
+                this.abrirModal(4);
+                this.Modal.titulo = 'Desactivar Usuario';
+                this.Modal.accion = 'Desactivar';
+
+                this.Credencial.password = '';
+                this.Usuario.id = id;
+            },
             abrirModal(numero){
                 this.Modal.estado = 1;
                 this.Modal.numero = numero;
@@ -598,7 +694,13 @@
                         break;
                     }
                     case 'Activar': {
+                        //this.comprobar();
                         this.activar();
+                        break;
+                    }
+                    case 'Desactivar': {
+                        //this.comprobar();
+                        this.desactivar();
                         break;
                     }
                 }
@@ -614,20 +716,24 @@
                 });
             },
             comprobar(){
+                console.log('Entre al método comprobar');
                 var me = this;
                 var url = 'usuario/comprobar?password='+this.Credencial.password;
 
-                // axios.get(url).then(function(response){
-                //     me.Credencial.comprobado = response.data;
+                axios.get(url).then(function(response){
+                    // let hola = response.data;
+                    me.Credencial.comprobado = response.data;
+                    // return hola;
+                }).catch(function(error){
+                    console.log(error);
+                });
+
+                // this.Credencial.comprobado = axios.get(url).then(function(response){
+                //     return response.data;
                 // }).catch(function(error){
                 //     console.log(error);
                 // });
 
-                this.Credencial.comprobado = axios.get(url).then(function(response){
-                    return response.data;
-                }).catch(function(error){
-                    console.log(error);
-                });
             },
             getTitulo(titulo){
                 var seleccionada = 0;
@@ -699,6 +805,12 @@
                     }
                 }
             }
+        },
+        watch: {
+            // password : function(){
+            //     console.log('cambio el valor del password');
+            //     this.comprobar();
+            // }
         },
         mounted() {
             this.listar(1, 'rol.nombre');
