@@ -81,7 +81,7 @@
                                             </button>
                                         </template>
                                         <template v-else>
-                                            <button type="button" @click="activar(usuario.id)" title="Activar" class="btn btn-success btn-sm">
+                                            <button type="button" @click="abrirModalActivar(usuario.id)" title="Activar" class="btn btn-success btn-sm">
                                                 <i class="fas fa-user-check"></i>
                                             </button>
                                         </template>
@@ -225,6 +225,19 @@
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Modal Numero 3 de ACTIVAR-->
+                        <div v-if="Modal.numero==3">
+                            <div class="row form-group">
+                                <label class="col-md-12 alert alert-danger">Para ACTIVAR este usuario, ingrese su contraseña de administrador para su verificacion</label>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-md-12">
+                                    <input type="password" v-model="Credencial.password" class="form-control" @keyup.enter="accionar(Modal.accion)">
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                     <div class="modal-footer">
                         <button type="button" @click="cerrarModal()" class="btn btn-secondary">Cancelar</button>
@@ -435,53 +448,40 @@
                     console.log(error);
                 });
             },
-            activar(id){
-                const swalWithBootstrapButtons = Swal.mixin({
-                    customClass: {
-                        confirmButton: 'btn btn-success',
-                        cancelButton: 'btn btn-danger'
-                    },
-                    buttonsStyling: false
-                })
+            activar(){
+                this.comprobar();
 
-                swalWithBootstrapButtons.fire({
-                    title: '¿Esta seguro de ACTIVAR este usuario?',
-                    type: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: 'Aceptar',
-                    cancelButtonText: 'Cancelar',
-                    reverseButtons: true
-                }).then((result) => {
-                    if (result.value) {
-                        var me = this;
-                
-                        axios.put('/usuario/activar', {
-                            'id' : id
-                        }).then(function (response) {
-                            me.listar(me.Paginacion.currentPage);
-                            console.log(response.data);
-                            swalWithBootstrapButtons.fire(
-                                'ACTIVADO',
-                                'El usuario se ha activado correctamente',
-                                'success'
-                            )
-                        }).catch(function (error) {
-                            console.log(error);
-                        });
-                    } else if ( result.dismiss === Swal.DismissReason.cancel ) {
-                    }
-                })
+                var me = this;
+                if ( this.Credencial.comprobado == 1 ) {
+                    axios.put('/usuario/activar', {
+                        'id' : me.Usuario.id
+                    }).then(function (response) {
+                        me.cerrarModal();
+                        me.listar(me.Paginacion.currentPage);
+                        // Swal.fire(
+                        //     'ACTIVADO',
+                        //     'El usuario se ha activado correctamente',
+                        //     'success'
+                        // );
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                } else {
+                    me.cerrarModal();
+                    // Swal.fire(
+                    //     'ERROR',
+                    //     'La contraseña es incorrecta',
+                    //     'error'
+                    // );
+                }
             },
             desactivar(id){
-                const swalWithBootstrapButtons = Swal.mixin({
+                Swal.fire({
                     customClass: {
                         confirmButton: 'btn btn-success',
                         cancelButton: 'btn btn-danger'
                     },
-                    buttonsStyling: false
-                })
-
-                swalWithBootstrapButtons.fire({
+                    buttonsStyling: false,
                     title: '¿Esta seguro de DESACTIVAR este usuario?',
                     type: 'warning',
                     showCancelButton: true,
@@ -496,8 +496,7 @@
                             'id' : id
                         }).then(function (response) {
                             me.listar(me.Paginacion.currentPage);
-                            console.log(response.data);
-                            swalWithBootstrapButtons.fire(
+                            Swal.fire(
                                 'DESACTIVADO',
                                 'El usuario se ha desactivado correctamente',
                                 'success'
@@ -550,6 +549,14 @@
 
                 this.selectRol();
             },
+            abrirModalActivar(id){
+                this.abrirModal(3);
+                this.Modal.titulo = 'Activar Usuario';
+                this.Modal.accion = 'Activar';
+
+                this.Credencial.password = '';
+                this.Usuario.id = id;
+            },
             abrirModal(numero){
                 this.Modal.estado = 1;
                 this.Modal.numero = numero;
@@ -590,6 +597,10 @@
                         this.editar();
                         break;
                     }
+                    case 'Activar': {
+                        this.activar();
+                        break;
+                    }
                 }
             },
             selectRol(){
@@ -606,8 +617,14 @@
                 var me = this;
                 var url = 'usuario/comprobar?password='+this.Credencial.password;
 
-                axios.get(url).then(function(response){
-                    me.Credencial.comprobado = response.data;
+                // axios.get(url).then(function(response){
+                //     me.Credencial.comprobado = response.data;
+                // }).catch(function(error){
+                //     console.log(error);
+                // });
+
+                this.Credencial.comprobado = axios.get(url).then(function(response){
+                    return response.data;
                 }).catch(function(error){
                     console.log(error);
                 });
