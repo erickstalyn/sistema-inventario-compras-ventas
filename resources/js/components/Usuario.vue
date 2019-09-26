@@ -3,118 +3,118 @@
 
         <!-- Interfaz Principal -->
         <div class="container-fluid">
-            <div class="card">
-                <!-- Encabezado principal -->
-                <div class="card-header">
-                    <i class="fas fa-map-signs"></i>&nbsp;&nbsp;
-                    <span class="h3 mb-0 text-gray-900">Usuarios</span>
-                    <button type="button" class="btn btn-success" @click="abrirModalAgregar()">
-                        <i class="fas fa-user-plus"></i>&nbsp; Nuevo
-                    </button>
-                    <button type="button" class="btn btn-danger">
-                        <i class="far fa-file-pdf"></i>&nbsp; PDF
-                    </button>
-                </div>
-
-                <div class="card-body">
-                    <!-- Inputs de busqueda -->
-                    <div class="row form-group">
-
-                        <div class="col-md-8">
-                            <div class="input-group">
-                                <select class="col-md-3 form-control text-gray-900" v-model="Busqueda.estado" @click="listar(1)">
-                                    <option value="1">Activados</option>
-                                    <option value="0">Desactivados</option>
-                                    <option value="2">Todos</option>
-                                </select>
-                                <input type="search" class="form-control" v-model="Busqueda.texto" @keyup.enter="listar(1)">
-                                <button type="button" class="btn btn-primary" @click="listar(1)">
-                                    <i class="fa fa-search"></i>&nbsp; Buscar
-                                </button>
-                            </div>
-                        </div>
-                        <div class="col-md-2"></div>
-                        <div class="col-md-1" align="right">
-                            <label>N° filas:</label>
-                        </div>
-                        <div class="col-md-1">
-                            <select class="form-control text-gray-900" v-model="Busqueda.items" @click="listar(1)">
-                                <option v-for="item in Items" :key="item" :value="item" v-text="item"></option>
-                            </select>
-                        </div>
-                    </div>
-                    <!-- Listado -->
-                    <div v-if="ListaUsuario.length" class="table-responsive">
-                        <!-- Tabla -->
-                        <table class="table table-bordered table-striped table-sm text-gray-900">
-                            <thead>
-                                <tr>
-                                    <th v-for="head in Headers" :key="head.nombre" @click="listar(1, head.nombre)" class="ec-cursor" v-text="getTitulo(head.titulo)"></th>
-                                    <th>Estado</th>
-                                    <th>Opciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="usuario in ListaUsuario" :key="usuario.id" >
-                                    <td v-text="usuario.nombre"></td>
-                                    <td v-text="usuario.usuario"></td>
-                                    <td v-text="usuario.direccion==null?'-':usuario.direccion"></td>
-                                    <td v-text="usuario.rol"></td>
-                                    <td v-text="usuario.fecha_creacion==null?'-':usuario.fecha_creacion"></td>
-                                    <td v-text="usuario.fecha_actualizacion==null?'-':usuario.fecha_actualizacion"></td>
-                                    <td v-text="usuario.fecha_eliminacion==null?'-':usuario.fecha_eliminacion"></td>
-                                    <td>
-                                        <div v-if="usuario.estado">
-                                            <span class="badge badge-success">Activado</span>
-                                        </div>
-                                        <div v-else>
-                                            <span class="badge badge-danger">Desactivado</span>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <button type="button" @click="abrirModalEditar(usuario)" title="Editar" class="btn btn-warning btn-sm">
-                                            <i class="fas fa-user-edit"></i>
-                                        </button>
-                                        <template v-if="usuario.estado">
-                                            <button type="button" @click="abrirModalDesactivar(usuario.id)" title="Desactivar" class="btn btn-danger btn-sm">
-                                                <i class="fas fa-user-times"></i>
-                                            </button>
-                                        </template>
-                                        <template v-else>
-                                            <button type="button" @click="abrirModalActivar(usuario.id)" title="Activar" class="btn btn-success btn-sm">
-                                                <i class="fas fa-user-check"></i>
-                                            </button>
-                                        </template>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <!-- Barra de navegacion -->
-                        <nav class="d-flex justify-content-center">
-                            <ul class="pagination">
-                                <li class="page-item">
-                                    <a href="#" @click="cambiarPagina(Paginacion.currentPage-1)" class="page-link">Anterior</a>
-                                </li>
-                                <li class="page-item" v-for="page in Paginas" :key="page" :class="[page==Paginacion.currentPage?'active':'']">
-                                    <a href="#" @click="cambiarPagina(page)" v-text="page" class="page-link"></a>
-                                </li>
-                                <li class="page-item">
-                                    <a href="#" @click="cambiarPagina(Paginacion.currentPage+1)" class="page-link">Siguiente</a>
-                                </li>
-                            </ul>
-                        </nav>
-                    </div>
-                    <div v-else>
-                        <h5>No se han encontrado resultados</h5>
-                    </div>
-                </div>
-
+            
+            <!-- Encabezado principal -->
+            <div class="row form-group">
+                <i class="fas fa-map-signs"></i>&nbsp;&nbsp;
+                <span class="h3 mb-0 text-gray-900">Usuarios</span>
+                <button type="button" class="btn btn-success" @click="abrirModalAgregar()">
+                    <i class="fas fa-user-plus"></i>&nbsp; Nuevo
+                </button>
+                <button type="button" class="btn btn-danger">
+                    <i class="far fa-file-pdf"></i>&nbsp; PDF
+                </button>
             </div>
+
+            <!-- Inputs de busqueda -->
+            <div class="row form-group">
+                <div class="col-md-8">
+                    <div class="input-group">
+                        <select class="col-md-3 form-control text-gray-900" v-model="Busqueda.estado" @click="listar()">
+                            <option value="1">Activados</option>
+                            <option value="0">Desactivados</option>
+                            <option value="2">Todos</option>
+                        </select>
+                        <input type="search" class="form-control" v-model="Busqueda.texto" @keyup.enter="listar()">
+                        <button type="button" class="btn btn-primary" @click="listar()">
+                            <i class="fa fa-search"></i>&nbsp; Buscar
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-2"></div>
+                <div class="col-md-1" align="right">
+                    <label>N° filas:</label>
+                </div>
+                <div class="col-md-1">
+                    <select class="form-control text-gray-900" v-model="Busqueda.items" @click="listar()">
+                        <option v-for="item in Items" :key="item" :value="item" v-text="item"></option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Listado -->
+            <div v-if="ListaUsuario.length" class="table-responsive">
+                <!-- Tabla -->
+                <div id="ec-table">
+                    <table class="table table-bordered table-striped table-sm text-gray-900">
+                        <thead>
+                            <tr>
+                                <th v-for="head in Headers" :key="head.nombre" @click="listar(1, head.nombre)" class="ec-cursor" v-text="getTitulo(head.titulo)"></th>
+                                <th>Estado</th>
+                                <th>Opciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="usuario in ListaUsuario" :key="usuario.id" >
+                                <td v-text="usuario.nombre"></td>
+                                <td v-text="usuario.usuario"></td>
+                                <td v-text="usuario.direccion==null?'-':usuario.direccion"></td>
+                                <td v-text="usuario.rol"></td>
+                                <td v-text="usuario.fecha_creacion==null?'-':usuario.fecha_creacion"></td>
+                                <td v-text="usuario.fecha_actualizacion==null?'-':usuario.fecha_actualizacion"></td>
+                                <td v-text="usuario.fecha_eliminacion==null?'-':usuario.fecha_eliminacion"></td>
+                                <td>
+                                    <div v-if="usuario.estado">
+                                        <span class="badge badge-success">Activado</span>
+                                    </div>
+                                    <div v-else>
+                                        <span class="badge badge-danger">Desactivado</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <button type="button" @click="abrirModalEditar(usuario)" title="Editar" class="btn btn-warning btn-sm">
+                                        <i class="fas fa-user-edit"></i>
+                                    </button>
+                                    <template v-if="usuario.estado">
+                                        <button type="button" @click="abrirModalDesactivar(usuario)" title="Desactivar" class="btn btn-danger btn-sm">
+                                            <i class="fas fa-user-times"></i>
+                                        </button>
+                                    </template>
+                                    <template v-else>
+                                        <button type="button" @click="abrirModalActivar(usuario)" title="Activar" class="btn btn-success btn-sm">
+                                            <i class="fas fa-user-check"></i>
+                                        </button>
+                                    </template>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- Barra de navegacion -->
+                <nav class="d-flex justify-content-center">
+                    <ul class="pagination">
+                        <li class="page-item">
+                            <a href="#" @click="cambiarPagina(Paginacion.currentPage-1)" class="page-link">Anterior</a>
+                        </li>
+                        <li class="page-item" v-for="page in Paginas" :key="page" :class="[page==Paginacion.currentPage?'active':'']">
+                            <a href="#" @click="cambiarPagina(page)" v-text="page" class="page-link"></a>
+                        </li>
+                        <li class="page-item">
+                            <a href="#" @click="cambiarPagina(Paginacion.currentPage+1)" class="page-link">Siguiente</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            <div v-else>
+                <h5>No se han encontrado resultados</h5>
+            </div>
+
         </div>
 
         <div class="modal text-gray-900" :class="{'mostrar': Modal.estado}">
             <div class="modal-dialog modal-dialog-centered animated bounceIn fast">
                 <div class="modal-content modal-lg">
+
                     <div class="modal-header">
                         <h3 v-text="Modal.titulo" class="modal-title" ></h3>
                         <button type="button" @click="cerrarModal()" class="close">X</button>
@@ -135,7 +135,7 @@
                             <div class="row form-group">
                                 <label class="col-md-3 font-weight-bold" for="nom">Nombre&nbsp;<span class="text-danger">*</span></label>
                                 <div class="col-md-9">
-                                    <input type="text" v-model="Usuario.nombre" class="form-control" placeholder="ingrese el nombre" id="nom" autofocus="">
+                                    <input type="text" v-model="Usuario.nombre" class="form-control" placeholder="ingrese el nombre" id="nom">
                                 </div>
                             </div>
                             <div class="row form-group">
@@ -166,10 +166,9 @@
                                 </div>
                             </div>
                         </div>
-                        
                         <!-- Modal Numero 2 de EDITAR-->
                         <div v-if="Modal.numero==2">
-                            <div v-if="Error.estado" class="row form-group">
+                            <div v-if="Error.estado" class="row d-flex justify-content-center">
                                 <div class="alert alert-danger">
                                     <button type="button" @click="Error.estado=0" class="close" data-dismiss="alert">×</button>
                                     <strong>Corregir los siguentes errores:</strong>
@@ -225,52 +224,45 @@
                                 </div>
                             </div>
                         </div>
-
                         <!-- Modal Numero 3 de ACTIVAR-->
                         <div v-if="Modal.numero==3">
                             <div v-if="Credencial.comprobado==0">
                                 <div class="row form-group">
-                                        <label class="col-md-12 alert alert-success">Si desea ACTIVAR este usuario, ingrese su contraseña de administrador</label>
-                                        <label class="col-md-3 font-weight-bold" for="cont">Contraseña</label>
-                                        <div class="col-md-5">
-                                            <input type="password" v-model="Credencial.password" class="form-control" id="cont" @keyup.enter="comprobar()" autofocus>
-                                        </div>
-                                        <button type="button" @click="comprobar()" class="btn btn-success">Comprobar</button>
+                                    <label class="col-md-12 alert alert-success">Si desea ACTIVAR el usuario "{{Usuario.nombre}}", ingrese su contraseña de administrador</label>
+                                    <label class="col-md-3 font-weight-bold" for="cont">Contraseña</label>
+                                    <div class="col-md-5">
+                                        <input type="password" v-model="Credencial.password" class="form-control" id="cont" @keyup.enter="comprobar()">
+                                    </div>
+                                    <button type="button" @click="comprobar()" class="btn btn-success">Comprobar</button>
                                 </div>
                             </div>
                             <div v-else>
-                                <label class="col-md-12 alert alert-success">De click en ACTIVAR para confirmar</label>
-                                <div class="d-flex justify-content-around">
-                                    <button type="button" @click="cerrarModal()" class="btn btn-secondary">Cancelar</button>
-                                    <button type="button" @click="accionar(Modal.accion)" class="btn btn-primary" v-text="Modal.accion"></button>
-                                </div>
+                                <label class="col-md-12 alert alert-success">De click en ACTIVAR para confirmar la activacion del usuario "{{Usuario.nombre}}"</label>
                             </div>
                         </div>
                         <!-- Modal Numero 4 de DESACTIVAR-->
                         <div v-if="Modal.numero==4">
                             <div v-if="Credencial.comprobado==0">
                                 <div class="row form-group">
-                                        <label class="col-md-12 alert alert-danger">Si desea DESACTIVAR este usuario, ingrese su contraseña de administrador</label>
-                                        <label class="col-md-3 font-weight-bold" for="cont">Contraseña</label>
-                                        <div class="col-md-5">
-                                            <input type="password" v-model="Credencial.password" class="form-control" id="cont" @keyup.enter="comprobar()" autofocus>
-                                        </div>
-                                        <button type="button" @click="comprobar()" class="btn btn-success">Comprobar</button>
+                                    <label class="col-md-12 alert alert-danger">Si desea DESACTIVAR el usuario "{{Usuario.nombre}}", ingrese su contraseña de administrador</label>
+                                    <label class="col-md-3 font-weight-bold" for="cont">Contraseña</label>
+                                    <div class="col-md-5">
+                                        <input type="password" v-model="Credencial.password" class="form-control" id="cont" @keyup.enter="comprobar()">
+                                    </div>
+                                    <button type="button" @click="comprobar()" class="btn btn-success">Comprobar</button>
                                 </div>
                             </div>
                             <div v-else>
-                                <label class="col-md-12 alert alert-success">De click en DESACTIVAR para confirmar</label>
-                                <div class="d-flex justify-content-around">
-                                    <button type="button" @click="cerrarModal()" class="btn btn-secondary">Cancelar</button>
-                                    <button type="button" @click="accionar(Modal.accion)" class="btn btn-primary" v-text="Modal.accion"></button>
-                                </div>
+                                <label class="col-md-12 alert alert-success">De click en DESACTIVAR para confirmar la desactivacion del usuario "{{Usuario.nombre}}"</label>
                             </div>
                         </div>
-                        
                     </div>
-                    <div class="modal-footer" v-if="Modal.numero==1 || Modal.numero==2">
-                        <button type="button" @click="cerrarModal()" class="btn btn-secondary">Cancelar</button>
-                        <button type="button" @click="accionar(Modal.accion)" class="btn btn-primary" v-text="Modal.accion"></button>
+
+                    <div class="modal-footer" v-if="permisoModalFooter">
+                        <div class="row form-group col-md-12 d-flex justify-content-around">
+                            <button type="button" @click="cerrarModal()" class="btn btn-secondary">Cancelar</button>
+                            <button type="button" @click="accionar(Modal.accion)" class="btn btn-primary" v-text="Modal.accion"></button>
+                        </div>
                     </div>
                 
                 </div>
@@ -297,13 +289,7 @@
                     usuario: '',
                     password: '',
                     nombre: '',
-                    // dni: '',
-                    // ruc: '',
                     direccion: '',
-                    // telefono: '',
-                    // email: '',
-                    // birthday: '',
-                    // observacion: '',
                     tipo: '',
                     rol_id: 0,
                 },
@@ -313,7 +299,7 @@
                 Busqueda: {
                     texto: '',
                     estado: 2,
-                    items: 10
+                    items: 5
                 },
 
                 //datos de modales
@@ -335,7 +321,7 @@
                 },
                 Navegacion:{
                     offset: 3,
-                    ordenarPor: '',
+                    ordenarPor: 'rol.nombre',
                     orden: 'desc' 
                 },
 
@@ -395,44 +381,26 @@
 
                 return headers;
             },
-            // comprobarV2: function(){
-                
-            //     //this.Credencial.password;
-            //     // return this.comprobar();
-            //     // return this.Credencial.password;
+            permisoModalFooter: function(){
+                if ( this.Modal.numero == 1 ) return true;
+                if ( this.Modal.numero == 2 ) return true;
+                if ( this.Modal.numero == 3 && this.Credencial.comprobado == 1 ) return true;
+                if ( this.Modal.numero == 4 && this.Credencial.comprobado == 1 ) return true;
 
-            //     var me = this;
-            //     var url = 'usuario/comprobar?password='+this.Credencial.password;
-
-            //     axios.get(url).then(function(response){
-            //         me.Credencial.comprobado = response.data;
-            //     }).catch(function(error){
-            //         console.log(error);
-            //     });
-
-            //     return me.Credencial.comprobado;
-
-            //     // this.Credencial.comprobado = axios.get(url).then(function(response){
-            //     //     return response.data;
-            //     // }).catch(function(error){
-            //     //     console.log(error);
-            //     // });
-
-            //     // if(){
-
-            //     // }
-            // },
+                return false;
+            }
         },
         methods: {
-            listar(page, ordenarPor = ''){
+            listar(page = 1, ordenarPor = ''){
                 if ( ordenarPor == this.Navegacion.ordenarPor ) {
                     this.Navegacion.orden = (this.Navegacion.orden == 'asc'?'desc':'asc');
                 } else {
                     this.Navegacion.ordenarPor = ordenarPor!=''?ordenarPor:this.Navegacion.ordenarPor;
                     this.Navegacion.orden = 'asc';
                 }
+                this.Paginacion.currentPage = page==1?1:page;
 
-                var url = '/usuario?page='+page
+                var url = '/usuario?page='+this.Paginacion.currentPage
                         +'&estado='+this.Busqueda.estado
                         +'&texto='+this.Busqueda.texto
                         +'&items='+this.Busqueda.items
@@ -457,18 +425,24 @@
                     'usuario' : this.Usuario.usuario,
                     'password' : this.Usuario.password,
                     'nombre' : this.Usuario.nombre,
-                    // 'dni' : this.Usuario.dni,
-                    // 'ruc' : this.Usuario.ruc,
                     'direccion' : this.Usuario.direccion,
-                    // 'birthday' : this.Usuario.birthday,
-                    // 'telefono' : this.Usuario.telefono,
-                    // 'email': this.Usuario.email,
-                    // 'observacion' : this.Usuario.observacion,
                     'tipo': this.Usuario.tipo,
                     'rol_id' : this.Usuario.rol_id
                 }).then(function(response){
                     me.cerrarModal();
-                    me.listar(1);
+                    me.listar();
+                    Swal.fire({
+                        position: 'top-end',
+                        toast: true,
+                        type: 'success',
+                        title: 'El usuario se ha AGREGADO correctamente',
+                        showConfirmButton: false,
+                        timer: 4500,
+                        animation:false,
+                        customClass:{
+                            popup: 'animated bounceIn fast'
+                        }
+                    });
                 }).catch(function(error){
                     console.log(error);
                 });
@@ -488,38 +462,40 @@
                     'usuario' : this.Usuario.usuario,
                     'password' : this.Usuario.password,
                     'nombre' : this.Usuario.nombre,
-                    // 'dni' : this.Usuario.dni,
-                    // 'ruc' : this.Usuario.ruc,
                     'direccion' : this.Usuario.direccion,
-                    // 'birthday' : this.Usuario.birthday,
-                    // 'telefono' : this.Usuario.telefono,
-                    // 'email': this.Usuario.email,
-                    // 'observacion' : this.Usuario.observacion,
                     'tipo': this.Usuario.tipo,
                     'rol_id' : this.Usuario.rol_id
                 }).then(function(response){
                     me.cerrarModal();
-                    me.listar(me.Paginacion.currentPage);
+                    me.listar();
+                    Swal.fire({
+                        position: 'top-end',
+                        toast: true,
+                        type: 'success',
+                        title: 'El usuario se ha EDITADO correctamente',
+                        showConfirmButton: false,
+                        timer: 4500,
+                        animation:false,
+                        customClass:{
+                            popup: 'animated bounceIn fast'
+                        }
+                    });
                 }).catch(function(error){
                     console.log(error);
                 });
             },
             activar(){
                 var me = this;
-                //this.comprobar();
-                // let prueba = this.comprobar();
-                // console.log(prueba);
 
                 if ( this.Credencial.comprobado == 1 ) {
-                    console.log('El comprobado es 1');
                     axios.put('/usuario/activar', {
                         'id' : this.Usuario.id
                         
                     }).then(function (response) {
-                        //console.log(response.data);
                         me.cerrarModal();
-                        me.listar(me.Paginacion.currentPage);
-                        Swal.fire({position: 'top-end',
+                        me.listar();
+                        Swal.fire({
+                            position: 'top-end',
                             toast: true,
                             type: 'success',
                             title: 'El usuario se ha ACTIVADO correctamente',
@@ -533,25 +509,20 @@
                     }).catch(function (error) {
                         console.log(error);
                     });
-                } else {
                 }
             },
             desactivar(){
                 var me = this;
-                //this.comprobar();
-                // let prueba = this.comprobar();
-                // console.log(prueba);
 
                 if ( this.Credencial.comprobado == 1 ) {
-                    console.log('El comprobado es 1');
                     axios.put('/usuario/desactivar', {
                         'id' : this.Usuario.id
                         
                     }).then(function (response) {
-                        //console.log(response.data);
                         me.cerrarModal();
-                        me.listar(me.Paginacion.currentPage);
-                        Swal.fire({position: 'top-end',
+                        me.listar();
+                        Swal.fire({
+                            position: 'top-end',
                             toast: true,
                             type: 'success',
                             title: 'El usuario se ha DESACTIVADO correctamente',
@@ -565,101 +536,54 @@
                     }).catch(function (error) {
                         console.log(error);
                     });
-                } else {
                 }
-
-                // Swal.fire({
-                //     customClass: {
-                //         confirmButton: 'btn btn-success',
-                //         cancelButton: 'btn btn-danger'
-                //     },
-                //     buttonsStyling: false,
-                //     title: '¿Esta seguro de DESACTIVAR este usuario?',
-                //     type: 'warning',
-                //     showCancelButton: true,
-                //     confirmButtonText: 'Aceptar',
-                //     cancelButtonText: 'Cancelar',
-                //     reverseButtons: true
-                // }).then((result) => {
-                //     if (result.value) {
-                //         var me = this;
-                
-                //         axios.put('/usuario/desactivar', {
-                //             'id' : id
-                //         }).then(function (response) {
-                //             me.listar(me.Paginacion.currentPage);
-                //             Swal.fire(
-                //                 'DESACTIVADO',
-                //                 'El usuario se ha desactivado correctamente',
-                //                 'success'
-                //             )
-                //         }).catch(function (error) {
-                //             console.log(error);
-                //         });
-                //     } else if ( result.dismiss === Swal.DismissReason.cancel ) {
-                //     }
-                // })
             },
             abrirModalAgregar(){
-                this.abrirModal(1);
-                this.Modal.titulo = 'Nuevo Usuario';
-                this.Modal.accion = 'Agregar';
+                this.abrirModal(1, 'Nuevo Usuario', 'Agregar');
 
                 this.Usuario.usuario = '';
                 this.Usuario.password = '';
                 this.Usuario.nombre = '';
-                // this.Usuario.dni = '';
-                // this.Usuario.ruc = '';
                 this.Usuario.direccion = '';
-                // this.Usuario.telefono = '';
-                // this.Usuario.email = '';
-                // this.Usuario.birthday = '';
-                // this.Usuario.observacion = '';
                 this.Usuario.tipo = '';
                 this.Usuario.rol_id = 0;
 
                 this.selectRol();
             },
             abrirModalEditar(data = []){
-                this.abrirModal(2);
-                this.Modal.titulo = 'Editar Usuario';
-                this.Modal.accion = 'Editar';
+                this.abrirModal(2, 'Editar Usuario', 'Editar');
                 
                 this.Usuario.id = data['id'];
                 this.Usuario.usuario = data['usuario'];
                 this.Usuario.password = '';
                 this.Usuario.nombre = data['nombre'];
-                // this.Usuario.dni = data['dni'];
-                // this.Usuario.ruc = data['ruc'];
                 this.Usuario.direccion = data['direccion'];
-                // this.Usuario.telefono = data['telefono'];
-                // this.Usuario.email = data['email'];
-                // this.Usuario.birthday = data['birthday'];
-                // this.Usuario.observacion = data['observacion'];
                 this.Usuario.tipo = '';
                 this.Usuario.rol_id = data['rol_id'];
 
                 this.selectRol();
             },
-            abrirModalActivar(id){
-                this.abrirModal(3);
-                this.Modal.titulo = 'Activar Usuario';
-                this.Modal.accion = 'Activar';
+            abrirModalActivar(data = []){
+                this.abrirModal(3, 'Activar Usuario', 'Activar');
 
                 this.Credencial.password = '';
-                this.Usuario.id = id;
+
+                this.Usuario.id = data['id'];
+                this.Usuario.nombre = data['nombre'];
             },
-            abrirModalDesactivar(id){
-                this.abrirModal(4);
-                this.Modal.titulo = 'Desactivar Usuario';
-                this.Modal.accion = 'Desactivar';
+            abrirModalDesactivar(data = []){
+                this.abrirModal(4, 'Desactivar Usuario', 'Desactivar');
 
                 this.Credencial.password = '';
-                this.Usuario.id = id;
+
+                this.Usuario.id = data['id'];
+                this.Usuario.nombre = data['nombre'];
             },
-            abrirModal(numero){
+            abrirModal(numero, titulo, accion){
                 this.Modal.estado = 1;
                 this.Modal.numero = numero;
+                this.Modal.titulo = titulo;
+                this.Modal.accion = accion;
             },
             cerrarModal(){
                 this.Modal.estado = 0;
@@ -675,13 +599,7 @@
                 this.Usuario.usuario = '';
                 this.Usuario.password = '';
                 this.Usuario.nombre = '';
-                // this.Usuario.dni = '';
-                // this.Usuario.ruc = '';
                 this.Usuario.direccion = '';
-                // this.Usuario.telefono = '';
-                // this.Usuario.email = '';
-                // this.Usuario.birthday = '';
-                // this.Usuario.observacion = '';
                 this.Usuario.tipo = '';
                 this.Usuario.rol_id = 0;
 
@@ -698,12 +616,10 @@
                         break;
                     }
                     case 'Activar': {
-                        //this.comprobar();
                         this.activar();
                         break;
                     }
                     case 'Desactivar': {
-                        //this.comprobar();
                         this.desactivar();
                         break;
                     }
@@ -720,24 +636,14 @@
                 });
             },
             comprobar(){
-                console.log('Entre al método comprobar');
                 var me = this;
                 var url = 'usuario/comprobar?password='+this.Credencial.password;
 
                 axios.get(url).then(function(response){
-                    // let hola = response.data;
                     me.Credencial.comprobado = response.data;
-                    // return hola;
                 }).catch(function(error){
                     console.log(error);
                 });
-
-                // this.Credencial.comprobado = axios.get(url).then(function(response){
-                //     return response.data;
-                // }).catch(function(error){
-                //     console.log(error);
-                // });
-
             },
             getTitulo(titulo){
                 var seleccionada = 0;
@@ -759,13 +665,17 @@
 
                 return titulo;
             },
-            getRol(id){
-                for (let i = 0; i < this.SelectRol.length; i++) {
-                    if ( this.SelectRol[i].id == id ) return this.SelectRol[i];
-                }
-            },
             getTipo(rol_id){
-                switch ( this.getRol(rol_id).nombre ) {
+                var nombre = '';
+
+                for (let i = 0; i < this.SelectRol.length; i++) {
+                    if ( this.SelectRol[i].id == rol_id ){
+                        nombre = this.SelectRol[i].nombre;
+                        break;
+                    }
+                }
+
+                switch ( nombre ) {
                     case 'Administrador': {
                         return 'N';
                     }
@@ -774,6 +684,9 @@
                     }
                     case 'Almacén': {
                         return 'A';
+                    }
+                    default: {
+                        console.log('ERROR: no se encontro el nombre de rol para definir el tipo de usuario');
                     }
                 }
             },
@@ -799,25 +712,12 @@
             },
             cambiarPagina(page){
                 if ( page >= 1 && page <= this.Paginacion.lastPage) {
-                    this.Paginacion.currentPage = page;
                     this.listar(page);
-                } else {
-                    if ( page <= 0 ) {
-                        this.Paginacion.currentPage = 1;
-                    } else {
-                        this.Paginacion.currentPage = this.Paginacion.lastPage;
-                    }
                 }
             }
         },
-        watch: {
-            // password : function(){
-            //     console.log('cambio el valor del password');
-            //     this.comprobar();
-            // }
-        },
         mounted() {
-            this.listar(1, 'rol.nombre');
+            this.listar();
         }
     }
 </script>
@@ -831,5 +731,10 @@
     }
     .ec-cursor{
         cursor: pointer;
+    }
+    #ec-table{
+        overflow: scroll;
+        height: 20rem;
+        width: 100%;
     }
 </style>
