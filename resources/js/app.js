@@ -21,6 +21,7 @@ window.Vue = require('vue');
 
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 Vue.component('usuario', require('./components/Usuario.vue').default);
+Vue.component('categoria', require('./components/Categoria.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -31,6 +32,6 @@ Vue.component('usuario', require('./components/Usuario.vue').default);
 const app = new Vue({
     el: '#app',
     data:{
-        menu: 5
+        menu: 0
     }
 });

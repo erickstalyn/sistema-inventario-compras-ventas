@@ -2,12 +2,12 @@
     <main>
 
         <!-- Interfaz Principal -->
-        <div class="container-fluid">
+        <div class="container-small">
             
             <!-- Encabezado principal -->
             <div class="row form-group">
                 <i class="fas fa-map-signs"></i>&nbsp;&nbsp;
-                <span class="h3 mb-0 text-gray-900">Usuarios</span>
+                <span class="h3 mb-0 text-gray-900">Categoria</span>
                 <button type="button" class="btn btn-success" @click="abrirModalAgregar()">
                     <i class="fas fa-user-plus"></i>&nbsp; Nuevo
                 </button>
@@ -19,11 +19,11 @@
             <!-- Inputs de busqueda -->
             <div class="row form-group">
                 <div class="col-md-8">
-                    <div class="input-group">
+                    <div class="input-group"> 
                         <select class="col-md-3 form-control text-gray-900" v-model="Busqueda.estado" @click="listar()">
+                            <option value="2">Todos</option>
                             <option value="1">Activados</option>
                             <option value="0">Desactivados</option>
-                            <option value="2">Todos</option>
                         </select>
                         <input type="search" class="form-control" v-model="Busqueda.texto" @keyup.enter="listar()">
                         <button type="button" class="btn btn-primary" @click="listar()">
@@ -36,14 +36,14 @@
                     <label>N° filas:</label>
                 </div>
                 <div class="col-md-1">
-                    <select class="form-control text-gray-900" v-model="Busqueda.items" @click="listar()">
-                        <option v-for="item in Items" :key="item" :value="item" v-text="item"></option>
+                    <select class="form-control text-gray-900" v-model="Busqueda.filas" @click="listar()">
+                        <option v-for="item in Filas" :key="item" :value="item" v-text="item"></option>
                     </select>
                 </div>
             </div>
 
             <!-- Listado -->
-            <div v-if="ListaUsuario.length" class="table-responsive">
+            <div v-if="ListaCategoria.length" class="table-responsive">
                 <!-- Tabla -->
                 <div id="ec-table">
                     <table class="table table-bordered table-striped table-sm text-gray-900">
@@ -55,16 +55,15 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="usuario in ListaUsuario" :key="usuario.id" >
-                                <td v-text="usuario.nombre"></td>
-                                <td v-text="usuario.usuario"></td>
-                                <td v-text="usuario.direccion==null?'-':usuario.direccion"></td>
-                                <td v-text="usuario.rol"></td>
-                                <td v-text="usuario.fecha_creacion==null?'-':usuario.fecha_creacion"></td>
-                                <td v-text="usuario.fecha_actualizacion==null?'-':usuario.fecha_actualizacion"></td>
-                                <td v-text="usuario.fecha_eliminacion==null?'-':usuario.fecha_eliminacion"></td>
+                            <tr v-for="categoria in ListaCategoria" :key="categoria.id" >
+                                <td v-text="categoria.nombre"></td>
+                                <td v-text="categoria.descripcion==null?'-':categoria.descripcion"></td>
+                                <td v-text="categoria.cant_productos"></td>
+                                <td v-text="categoria.created_at==null?'-':categoria.created_at"></td>
+                                <td v-text="categoria.updated_at==null?'-':categoria.updated_at"></td>
+                                <td v-text="categoria.deleted_at==null?'-':categoria.deleted_at"></td>
                                 <td>
-                                    <div v-if="usuario.estado">
+                                    <div v-if="categoria.estado">
                                         <span class="badge badge-success">Activado</span>
                                     </div>
                                     <div v-else>
@@ -72,16 +71,16 @@
                                     </div>
                                 </td>
                                 <td>
-                                    <button type="button" @click="abrirModalEditar(usuario)" title="Editar" class="btn btn-warning btn-sm">
+                                    <button type="button" @click="abrirModalEditar(categoria)" title="Editar" class="btn btn-warning btn-sm">
                                         <i class="fas fa-user-edit"></i>
                                     </button>
-                                    <template v-if="usuario.estado">
-                                        <button type="button" @click="abrirModalDesactivar(usuario)" title="Desactivar" class="btn btn-danger btn-sm">
+                                    <template v-if="categoria.estado">
+                                        <button type="button" @click="desactivar(categoria)" title="Desactivar" class="btn btn-danger btn-sm">
                                             <i class="fas fa-user-times"></i>
                                         </button>
                                     </template>
                                     <template v-else>
-                                        <button type="button" @click="abrirModalActivar(usuario)" title="Activar" class="btn btn-success btn-sm">
+                                        <button type="button" @click="activar(categoria)" title="Activar" class="btn btn-success btn-sm">
                                             <i class="fas fa-user-check"></i>
                                         </button>
                                     </template>
@@ -135,34 +134,13 @@
                             <div class="row form-group">
                                 <label class="col-md-3 font-weight-bold" for="nom">Nombre&nbsp;<span class="text-danger">*</span></label>
                                 <div class="col-md-9">
-                                    <input type="text" v-model="Usuario.nombre" class="form-control" placeholder="ingrese el nombre" id="nom">
+                                    <input type="text" v-model="Categoria.nombre" class="form-control" placeholder="ingrese el nombre" id="nom">
                                 </div>
                             </div>
                             <div class="row form-group">
-                                <label class="col-md-3 font-weight-bold" for="dir">Direccion</label>
+                                <label class="col-md-3 font-weight-bold" for="des">Descripcion</label>
                                 <div class="col-md-9">
-                                    <input type="text" v-model="Usuario.direccion" class="form-control" placeholder="ingrese la direccion" id="dir">
-                                </div>
-                            </div>
-                            <div class="row form-group">
-                                <label class="col-md-3 font-weight-bold" for="rol">Rol&nbsp;<span class="text-danger">*</span></label>
-                                <div class="col-md-9">
-                                    <select v-model="Usuario.rol_id" class="form-control" id="rol">
-                                        <option value="0" disabled>seleccione un rol</option>
-                                        <option v-for="rol in SelectRol" :key="rol.id" :value="rol.id" v-text="rol.nombre"></option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="row form-group">
-                                <label class="col-md-3 font-weight-bold" for="user">Usuario&nbsp;<span class="text-danger">*</span></label>
-                                <div class="col-md-9">
-                                    <input type="text" v-model="Usuario.usuario" class="form-control" placeholder="ingrese el usuario" id="user">
-                                </div>
-                            </div>
-                            <div class="row form-group font-weight-bold">
-                                <label class="col-md-3" for="contra">Contraseña&nbsp;<span class="text-danger">*</span></label>
-                                <div class="col-md-9">
-                                    <input type="password" v-model="Usuario.password" class="form-control" placeholder="ingrese la contraseña" id="contra">
+                                    <input type="text" v-model="Categoria.descripcion" class="form-control" placeholder="ingrese la descripcion" id="des">
                                 </div>
                             </div>
                         </div>
@@ -180,80 +158,14 @@
                             <div class="row form-group">
                                 <label class="col-md-3 font-weight-bold" for="nom">Nombre&nbsp;<span class="text-danger">*</span></label>
                                 <div class="col-md-9">
-                                    <input type="text" v-model="Usuario.nombre" class="form-control" placeholder="ingrese el nombre" id="nom">
+                                    <input type="text" v-model="Categoria.nombre" class="form-control" placeholder="ingrese el nombre" id="nom">
                                 </div>
                             </div>
                             <div class="row form-group">
-                                <label class="col-md-3 font-weight-bold" for="dir">Direccion</label>
+                                <label class="col-md-3 font-weight-bold" for="des">Descripcion</label>
                                 <div class="col-md-9">
-                                    <input type="text" v-model="Usuario.direccion" class="form-control" placeholder="ingrese la direccion" id="dir">
+                                    <input type="text" v-model="Categoria.descripcion" class="form-control" placeholder="ingrese la descripcion" id="des">
                                 </div>
-                            </div>
-                            <div class="row form-group">
-                                <label class="col-md-3 font-weight-bold" for="rol">Rol&nbsp;<span class="text-danger">*</span></label>
-                                <div class="col-md-9">
-                                    <select v-model="Usuario.rol_id" class="form-control" id="rol">
-                                        <option value="0" disabled>seleccione un rol</option>
-                                        <option v-for="rol in SelectRol" :key="rol.id" :value="rol.id" v-text="rol.nombre"></option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div v-if="Credencial.comprobado==0">
-                                <div class="row form-group">
-                                    <label class="col-md-12 alert alert-warning">Si desea editar las credenciales, ingrese su contraseña de administrador</label>
-                                    <label class="col-md-3 font-weight-bold" for="cont">Contraseña</label>
-                                    <div class="col-md-5">
-                                        <input type="password" v-model="Credencial.password" class="form-control" id="cont" @keyup.enter="comprobar()">
-                                    </div>
-                                    <button type="button" @click="comprobar()" class="btn btn-success">Comprobar</button>
-                                </div>
-                            </div>
-                            <div v-else>
-                                <label class="col-md-12 alert alert-success">Tiene acceso a la edición de las credenciales</label>
-                                <div class="row form-group">
-                                    <label class="col-md-3 font-weight-bold" for="user">Usuario&nbsp;<span class="text-danger">*</span></label>
-                                    <div class="col-md-9">
-                                        <input type="text" v-model="Usuario.usuario" class="form-control" placeholder="ingrese el usuario" id="user">
-                                    </div>
-                                </div>
-                                <div class="row form-group">
-                                    <label class="col-md-3 font-weight-bold" for="contra">Contraseña&nbsp;<span class="text-danger">*</span></label>
-                                    <div class="col-md-9">
-                                        <input type="password" v-model="Usuario.password" class="form-control" placeholder="ingrese la contraseña" id="contra">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Modal Numero 3 de ACTIVAR-->
-                        <div v-if="Modal.numero==3">
-                            <div v-if="Credencial.comprobado==0">
-                                <div class="row form-group">
-                                    <label class="col-md-12 alert alert-success">Si desea ACTIVAR el usuario "{{Usuario.nombre}}", ingrese su contraseña de administrador</label>
-                                    <label class="col-md-3 font-weight-bold" for="cont">Contraseña</label>
-                                    <div class="col-md-5">
-                                        <input type="password" v-model="Credencial.password" class="form-control" id="cont" @keyup.enter="comprobar()">
-                                    </div>
-                                    <button type="button" @click="comprobar()" class="btn btn-success">Comprobar</button>
-                                </div>
-                            </div>
-                            <div v-else>
-                                <label class="col-md-12 alert alert-success">De click en ACTIVAR para confirmar la activacion del usuario "{{Usuario.nombre}}"</label>
-                            </div>
-                        </div>
-                        <!-- Modal Numero 4 de DESACTIVAR-->
-                        <div v-if="Modal.numero==4">
-                            <div v-if="Credencial.comprobado==0">
-                                <div class="row form-group">
-                                    <label class="col-md-12 alert alert-danger">Si desea DESACTIVAR el usuario "{{Usuario.nombre}}", ingrese su contraseña de administrador</label>
-                                    <label class="col-md-3 font-weight-bold" for="cont">Contraseña</label>
-                                    <div class="col-md-5">
-                                        <input type="password" v-model="Credencial.password" class="form-control" id="cont" @keyup.enter="comprobar()">
-                                    </div>
-                                    <button type="button" @click="comprobar()" class="btn btn-success">Comprobar</button>
-                                </div>
-                            </div>
-                            <div v-else>
-                                <label class="col-md-12 alert alert-success">De click en DESACTIVAR para confirmar la desactivacion del usuario "{{Usuario.nombre}}"</label>
                             </div>
                         </div>
                     </div>
@@ -276,30 +188,21 @@
     export default {
         data(){
             return {
-                //datos de administrador
-                Credencial:{
-                    password: '',
-                    comprobado: 0
-                },
-
                 //datos generales
-                ListaUsuario: [],
-                Usuario: {
+                ListaCategoria: [],
+                Categoria: {
                     id: 0,
-                    usuario: '',
-                    password: '',
+                    // categoria_id: 0,
                     nombre: '',
-                    direccion: '',
-                    tipo: '',
-                    rol_id: 0,
+                    descripcion: '',
+                    estado: ''
                 },
-                SelectRol: [],
 
                 //datos de busqueda y filtracion
                 Busqueda: {
                     texto: '',
                     estado: 2,
-                    items: 5
+                    filas: 5
                 },
 
                 //datos de modales
@@ -321,7 +224,7 @@
                 },
                 Navegacion:{
                     offset: 3,
-                    ordenarPor: 'rol.nombre',
+                    ordenarPor: 'categoria.nombre',
                     orden: 'desc' 
                 },
 
@@ -356,36 +259,33 @@
                 
                 return pagesArray;
             },
-            Items: function(){
+            Filas: function(){
                 var min = 3;
                 var max = 20;
-                var items = [];
+                var filas = [];
 
                 while ( min <= max) {
-                    items.push(min);
+                    filas.push(min);
                     min++;
                 }
 
-                return items;
+                return filas;
             },
             Headers: function(){
                 var headers = [];
 
-                headers.push({titulo: 'Nombre', nombre: 'persona.nombre'});
-                headers.push({titulo: 'Usuario', nombre: 'usuario.usuario'});
-                headers.push({titulo: 'Direccion', nombre: 'persona.direccion'});
-                headers.push({titulo: 'Rol', nombre: 'rol.nombre'});
-                headers.push({titulo: 'F. Creacion', nombre: 'persona.created_at'});
-                headers.push({titulo: 'F. Modificacion', nombre: 'persona.updated_at'});
-                headers.push({titulo: 'F. Eliminacion', nombre: 'persona.deleted_at'});
+                headers.push({titulo: 'Nombre', nombre: 'categoria.nombre'});
+                headers.push({titulo: 'Descripcion', nombre: 'categoria.descripcion'});
+                headers.push({titulo: 'Nro Productos', nombre: 'cant_productos'});
+                headers.push({titulo: 'F. Creacion', nombre: 'categoria.created_at'});
+                headers.push({titulo: 'F. Modificacion', nombre: 'categoria.updated_at'});
+                headers.push({titulo: 'F. Eliminacion', nombre: 'categoria.deleted_at'});
 
                 return headers;
             },
             permisoModalFooter: function(){
                 if ( this.Modal.numero == 1 ) return true;
                 if ( this.Modal.numero == 2 ) return true;
-                if ( this.Modal.numero == 3 && this.Credencial.comprobado == 1 ) return true;
-                if ( this.Modal.numero == 4 && this.Credencial.comprobado == 1 ) return true;
 
                 return false;
             }
@@ -400,16 +300,16 @@
                 }
                 this.Paginacion.currentPage = page==1?1:page;
 
-                var url = '/usuario?page='+this.Paginacion.currentPage
+                var url = '/categoria?page='+this.Paginacion.currentPage
                         +'&estado='+this.Busqueda.estado
                         +'&texto='+this.Busqueda.texto
-                        +'&items='+this.Busqueda.items
+                        +'&filas='+this.Busqueda.filas
                         +'&ordenarPor='+this.Navegacion.ordenarPor
                         +'&orden='+this.Navegacion.orden;
                 
                 var me = this;
                 axios.get(url).then(function (response) {
-                    me.ListaUsuario = response.data.usuarios.data;
+                    me.ListaCategoria = response.data.categorias.data;
                     me.Paginacion = response.data.paginacion;
                 }).catch(function (error) {
                     console.log(error)
@@ -418,16 +318,10 @@
             agregar(){
                 if ( this.validar() ) return;
                 
-                this.Usuario.tipo = this.getTipo(this.Usuario.rol_id);
-
                 var me = this;
-                axios.post('usuario/agregar', {
-                    'usuario' : this.Usuario.usuario,
-                    'password' : this.Usuario.password,
-                    'nombre' : this.Usuario.nombre,
-                    'direccion' : this.Usuario.direccion,
-                    'tipo': this.Usuario.tipo,
-                    'rol_id' : this.Usuario.rol_id
+                axios.post('/categoria/agregar', {
+                    'nombre' : this.Categoria.nombre,
+                    'descripcion' : this.Categoria.descripcion,
                 }).then(function(response){
                     me.cerrarModal();
                     me.listar();
@@ -435,7 +329,7 @@
                         position: 'top-end',
                         toast: true,
                         type: 'success',
-                        title: 'El usuario se ha AGREGADO correctamente',
+                        title: 'La categoria se ha AGREGADO correctamente',
                         showConfirmButton: false,
                         timer: 4500,
                         animation:false,
@@ -450,21 +344,11 @@
             editar(){
                 if ( this.validar() ) return;
 
-                this.Usuario.tipo = this.getTipo(this.Usuario.rol_id);
-                if ( this.Credencial.comprobado == 0){
-                    this.Usuario.usuario = '';
-                    this.Usuario.password = '';
-                } 
-
                 var me = this;
-                axios.put('usuario/editar', {
-                    'id' : this.Usuario.id,
-                    'usuario' : this.Usuario.usuario,
-                    'password' : this.Usuario.password,
-                    'nombre' : this.Usuario.nombre,
-                    'direccion' : this.Usuario.direccion,
-                    'tipo': this.Usuario.tipo,
-                    'rol_id' : this.Usuario.rol_id
+                axios.put('/categoria/editar', {
+                    'id' : this.Categoria.id,
+                    'nombre' : this.Categoria.nombre,
+                    'descripcion' : this.Categoria.descripcion
                 }).then(function(response){
                     me.cerrarModal();
                     me.listar();
@@ -472,7 +356,7 @@
                         position: 'top-end',
                         toast: true,
                         type: 'success',
-                        title: 'El usuario se ha EDITADO correctamente',
+                        title: 'La categoria se ha EDITADO correctamente',
                         showConfirmButton: false,
                         timer: 4500,
                         animation:false,
@@ -484,100 +368,106 @@
                     console.log(error);
                 });
             },
-            activar(){
-                var me = this;
+            activar(categoria = []){
+                this.Categoria.id = categoria['id'];
+                this.Categoria.nombre = categoria['nombre'];
 
-                if ( this.Credencial.comprobado == 1 ) {
-                    axios.put('/usuario/activar', {
-                        'id' : this.Usuario.id
-                        
-                    }).then(function (response) {
-                        me.cerrarModal();
-                        me.listar();
-                        Swal.fire({
-                            position: 'top-end',
-                            toast: true,
-                            type: 'success',
-                            title: 'El usuario se ha ACTIVADO correctamente',
-                            showConfirmButton: false,
-                            timer: 4500,
-                            animation:false,
-                            customClass:{
-                                popup: 'animated bounceIn fast'
-                            }
+                Swal.fire({
+                    title: '¿Esta seguro de ACTIVAR la categoria "'+this.Categoria.nombre+'"?',
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Aceptar',
+                    cancelButtonText: 'Cancelar',
+                    reverseButtons: true,
+                    customClass: {
+                        confirmButton: 'btn btn-success',
+                        cancelButton: 'btn btn-danger'
+                    },
+                    buttonsStyling: false
+                }).then((result) => {
+                    if (result.value) {
+                        var me = this;
+                
+                        axios.put('/categoria/activar', {
+                            'id' : me.Categoria.id
+                        }).then(function (response) {
+                            me.listar();
+                            Swal.fire({
+                                position: 'top-end',
+                                toast: true,
+                                type: 'success',
+                                title: 'La categoria se ha ACTIVADO correctamente',
+                                showConfirmButton: false,
+                                timer: 4500,
+                                animation:false,
+                                customClass:{
+                                    popup: 'animated bounceIn fast'
+                                }
+                            });
+                        }).catch(function (error) {
+                            console.log(error);
                         });
-                    }).catch(function (error) {
-                        console.log(error);
-                    });
-                }
+                    } else if ( result.dismiss === Swal.DismissReason.cancel ) {
+
+                    }
+                });
             },
-            desactivar(){
-                var me = this;
+            desactivar(categoria = []){
+                this.Categoria.id = categoria['id'];
+                this.Categoria.nombre = categoria['nombre'];
 
-                if ( this.Credencial.comprobado == 1 ) {
-                    axios.put('/usuario/desactivar', {
-                        'id' : this.Usuario.id
-                        
-                    }).then(function (response) {
-                        me.cerrarModal();
-                        me.listar();
-                        Swal.fire({
-                            position: 'top-end',
-                            toast: true,
-                            type: 'success',
-                            title: 'El usuario se ha DESACTIVADO correctamente',
-                            showConfirmButton: false,
-                            timer: 4500,
-                            animation:false,
-                            customClass:{
-                                popup: 'animated bounceIn fast'
-                            }
+                Swal.fire({
+                    title: '¿Esta seguro de DESACTIVAR la categoria "'+this.Categoria.nombre+'"?',
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Aceptar',
+                    cancelButtonText: 'Cancelar',
+                    reverseButtons: true,
+                    customClass: {
+                        confirmButton: 'btn btn-success',
+                        cancelButton: 'btn btn-danger'
+                    },
+                    buttonsStyling: false
+                }).then((result) => {
+                    if (result.value) {
+                        var me = this;
+                
+                        axios.put('/categoria/desactivar', {
+                            'id' : me.Categoria.id
+                        }).then(function (response) {
+                            me.listar();
+                            Swal.fire({
+                                position: 'top-end',
+                                toast: true,
+                                type: 'success',
+                                title: 'La categoria se ha DESACTIVADO correctamente',
+                                showConfirmButton: false,
+                                timer: 4500,
+                                animation:false,
+                                customClass:{
+                                    popup: 'animated bounceIn fast'
+                                }
+                            });
+                        }).catch(function (error) {
+                            console.log(error);
                         });
-                    }).catch(function (error) {
-                        console.log(error);
-                    });
-                }
+                    } else if ( result.dismiss === Swal.DismissReason.cancel ) {
+
+                    }
+                });
             },
             abrirModalAgregar(){
-                this.abrirModal(1, 'Nuevo Usuario', 'Agregar');
+                this.abrirModal(1, 'Nueva Categoria', 'Agregar');
 
-                this.Usuario.usuario = '';
-                this.Usuario.password = '';
-                this.Usuario.nombre = '';
-                this.Usuario.direccion = '';
-                this.Usuario.tipo = '';
-                this.Usuario.rol_id = 0;
-
-                this.selectRol();
+                this.Categoria.nombre = '';
+                this.Categoria.descripcion = '';
             },
             abrirModalEditar(data = []){
-                this.abrirModal(2, 'Editar Usuario', 'Editar');
+                this.abrirModal(2, 'Editar Categoria', 'Editar');
                 
-                this.Usuario.id = data['id'];
-                this.Usuario.usuario = data['usuario'];
-                this.Usuario.password = '';
-                this.Usuario.nombre = data['nombre'];
-                this.Usuario.direccion = data['direccion'];
-                this.Usuario.tipo = '';
-                this.Usuario.rol_id = data['rol_id'];
-
-                this.selectRol();
-            },
-            abrirModalActivar(data = []){
-                this.abrirModal(3, 'Activar Usuario', 'Activar');
-
-                this.Credencial.password = '';
-
-                this.Usuario.id = data['id'];
-                this.Usuario.nombre = data['nombre'];
-            },
-            abrirModalDesactivar(data = []){
-                this.abrirModal(4, 'Desactivar Usuario', 'Desactivar');
-
-                this.Credencial.password = '';
-
-                this.Usuario.id = data['id'];
-                this.Usuario.nombre = data['nombre'];
+                this.Categoria.id = data['id'];
+                this.Categoria.nombre = data['nombre'];
+                this.Categoria.descripcion = data['descripcion'];
             },
             abrirModal(numero, titulo, accion){
                 this.Modal.estado = 1;
@@ -592,18 +482,9 @@
                 this.Error.estado = 0;
                 this.Error.mensaje = [];
 
-                this.Credencial.password = '';
-                this.Credencial.comprobado = 0;
-
-                this.Usuario.id = 0;
-                this.Usuario.usuario = '';
-                this.Usuario.password = '';
-                this.Usuario.nombre = '';
-                this.Usuario.direccion = '';
-                this.Usuario.tipo = '';
-                this.Usuario.rol_id = 0;
-
-                this.SelectRol = [];
+                this.Categoria.id = 0;
+                this.Categoria.nombre = '';
+                this.Categoria.descripcion = '';
             },
             accionar(accion){
                 switch( accion ){
@@ -624,26 +505,6 @@
                         break;
                     }
                 }
-            },
-            selectRol(){
-                var me = this;
-                var url = 'usuario/selectRol';
-
-                axios.get(url).then(function(response){
-                    me.SelectRol = response.data;
-                }).catch(function(error){
-                    console.log(error);
-                });
-            },
-            comprobar(){
-                var me = this;
-                var url = 'usuario/comprobar?password='+this.Credencial.password;
-
-                axios.get(url).then(function(response){
-                    me.Credencial.comprobado = response.data;
-                }).catch(function(error){
-                    console.log(error);
-                });
             },
             getTitulo(titulo){
                 var seleccionada = 0;
@@ -695,16 +556,7 @@
                 this.Error.mensaje = [];
 
                 //nombre
-                if ( !this.Usuario.nombre ) this.Error.mensaje.push("Debe ingresar un nombre");
-                //rol
-                if ( this.Usuario.rol_id == 0 ) this.Error.mensaje.push("Debe seleccionar un rol");
-
-                if ( this.Modal.accion == 'Agregar' || (this.Modal.accion == 'Editar' && this.Credencial.comprobado == 1) ) {
-                    //usuario
-                    if ( !this.Usuario.usuario ) this.Error.mensaje.push("Debe ingresar un usuario");
-                    //password
-                    if ( !this.Usuario.password ) this.Error.mensaje.push("Debe ingresar un password");
-                }
+                if ( !this.Categoria.nombre ) this.Error.mensaje.push("Debe ingresar un nombre");
 
                 if ( this.Error.mensaje.length ) this.Error.estado = 1;
 
