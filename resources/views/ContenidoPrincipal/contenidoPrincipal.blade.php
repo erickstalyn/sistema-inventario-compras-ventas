@@ -8,7 +8,7 @@
                 <categoria></categoria>
             </template>
             <template v-if="menu==1">
-                <h1>Contenido de productos</h1>
+                <producto></producto>
             </template>
             <template v-if="menu==5">
                 <usuario></usuario>

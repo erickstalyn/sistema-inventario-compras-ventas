@@ -51,6 +51,14 @@ Route::group(['middleware' => ['auth']], function () {
         Route::put('/categoria/editar', 'CategoriaController@editar');
         Route::put('/categoria/activar', 'CategoriaController@activar');
         Route::put('/categoria/desactivar', 'CategoriaController@desactivar');
+
+        //RUTAS PARA PRODUCTO
+        Route::get('/producto', 'ProductoController@listar'); //metodos generales
+        Route::post('/producto/agregar', 'ProductoController@agregar');
+        Route::put('/producto/editar', 'ProductoController@editar');
+        Route::put('/producto/activar', 'ProductoController@activar');
+        Route::put('/producto/desactivar', 'ProductoController@desactivar');
+        Route::get('/producto/selectCategoria', 'ProductoController@selectCategoria'); //metodos secundarios
     });
     Route::group(['middleware' => ['Puesto']], function (){
         Route::get('/categoria', 'CategoriaController@listar');
