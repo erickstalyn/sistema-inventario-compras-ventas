@@ -45,10 +45,10 @@
             <!-- Listado -->
             <div v-if="ListaCategoria.length" class="table-responsive">
                 <!-- Tabla -->
-                <div class="overflow-auto">
+                <div class="ec-table overflow-auto">
                     <table class="table table-bordered table-striped table-sm text-gray-900">
                         <thead>
-                            <tr>
+                            <tr class="ec-th">
                                 <th v-for="head in Headers" :key="head.nombre" @click="listar(1, head.nombre)" class="ec-cursor" v-text="getTitulo(head.titulo)"></th>
                                 <th>Estado</th>
                                 <th>Opciones</th>
@@ -583,5 +583,12 @@
     }
     .ec-cursor{
         cursor: pointer;
+    }
+    .ec-table{
+        overflow: scroll;
+        height: 20rem;
+    }
+    .ec-th{
+        background-color: skyblue;
     }
 </style>
