@@ -7,7 +7,7 @@
             <!-- Encabezado principal -->
             <div class="row form-group">
                 <i class="fas fa-map-signs"></i>&nbsp;&nbsp;
-                <span class="h3 mb-0 text-gray-900">Categoria</span>
+                <span class="h3 mb-0 text-gray-900">Productos</span>
                 <button type="button" class="btn btn-success" @click="abrirModalAgregar()">
                     <i class="fas fa-user-plus"></i>&nbsp; Nuevo
                 </button>
@@ -19,7 +19,7 @@
             <!-- Inputs de busqueda -->
             <div class="row form-group">
                 <div class="col-md-8">
-                    <div class="input-group"> 
+                    <div class="input-group">
                         <select class="col-md-3 form-control text-gray-900" v-model="Busqueda.estado" @click="listar()">
                             <option value="2">Todos</option>
                             <option value="1">Activados</option>
@@ -37,15 +37,15 @@
                 </div>
                 <div class="col-md-1">
                     <select class="form-control text-gray-900" v-model="Busqueda.filas" @click="listar()">
-                        <option v-for="item in Filas" :key="item" :value="item" v-text="item"></option>
+                        <option v-for="fila in Filas" :key="fila" :value="fila" v-text="fila"></option>
                     </select>
                 </div>
             </div>
 
             <!-- Listado -->
-            <div v-if="ListaCategoria.length" class="table-responsive">
+            <div v-if="ListaProducto.length" class="table-responsive">
                 <!-- Tabla -->
-                <div class="overflow-auto">
+                <div id="ec-table">
                     <table class="table table-bordered table-striped table-sm text-gray-900">
                         <thead>
                             <tr>
@@ -55,15 +55,18 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="categoria in ListaCategoria" :key="categoria.id" >
-                                <td v-text="categoria.nombre"></td>
-                                <td v-text="categoria.descripcion==null?'-':categoria.descripcion"></td>
-                                <td v-text="categoria.cant_productos"></td>
-                                <td v-text="categoria.created_at==null?'-':categoria.created_at"></td>
-                                <td v-text="categoria.updated_at==null?'-':categoria.updated_at"></td>
-                                <td v-text="categoria.deleted_at==null?'-':categoria.deleted_at"></td>
+                            <tr v-for="producto in ListaProducto" :key="producto.id" >
+                                <td v-text="producto.codigo==null?'-':producto.codigo"></td>
+                                <td v-text="producto.nombre"></td>
+                                <td v-text="producto.categoria_nombre"></td>
+                                <td v-text="producto.precio"></td>
+                                <td v-text="producto.stock"></td>
+                                <td v-text="producto.descripcion==null?'-':producto.descripcion"></td>
+                                <td v-text="producto.created_at==null?'-':producto.created_at"></td>
+                                <td v-text="producto.updated_at==null?'-':producto.updated_at"></td>
+                                <td v-text="producto.deleted_at==null?'-':producto.deleted_at"></td>
                                 <td>
-                                    <div v-if="categoria.estado">
+                                    <div v-if="producto.estado">
                                         <span class="badge badge-success">Activado</span>
                                     </div>
                                     <div v-else>
@@ -71,16 +74,16 @@
                                     </div>
                                 </td>
                                 <td>
-                                    <button type="button" @click="abrirModalEditar(categoria)" title="Editar" class="btn btn-warning btn-sm">
+                                    <button type="button" @click="abrirModalEditar(producto)" title="Editar" class="btn btn-warning btn-sm">
                                         <i class="fas fa-user-edit"></i>
                                     </button>
-                                    <template v-if="categoria.estado">
-                                        <button type="button" @click="desactivar(categoria)" title="Desactivar" class="btn btn-danger btn-sm">
+                                    <template v-if="producto.estado">
+                                        <button type="button" @click="desactivar(producto)" title="Desactivar" class="btn btn-danger btn-sm">
                                             <i class="fas fa-user-times"></i>
                                         </button>
                                     </template>
                                     <template v-else>
-                                        <button type="button" @click="activar(categoria)" title="Activar" class="btn btn-success btn-sm">
+                                        <button type="button" @click="activar(producto)" title="Activar" class="btn btn-success btn-sm">
                                             <i class="fas fa-user-check"></i>
                                         </button>
                                     </template>
@@ -132,15 +135,30 @@
                                 </div>
                             </div>
                             <div class="row form-group">
+                                <label class="col-md-3 font-weight-bold" for="cat">Categoria&nbsp;<span class="text-danger">*</span></label>
+                                <div class="col-md-9">
+                                    <select v-model="Producto.categoria_id" class="form-control" id="cat">
+                                        <option value="0" disabled>seleccione una categoria</option>
+                                        <option v-for="categoria in SelectCategoria" :key="categoria.id" :value="categoria.id" v-text="categoria.nombre"></option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row form-group">
                                 <label class="col-md-3 font-weight-bold" for="nom">Nombre&nbsp;<span class="text-danger">*</span></label>
                                 <div class="col-md-9">
-                                    <input type="text" v-model="Categoria.nombre" class="form-control" placeholder="ingrese el nombre" id="nom">
+                                    <input type="text" v-model="Producto.nombre" class="form-control" placeholder="ingrese el nombre" id="nom">
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <label class="col-md-3 font-weight-bold" for="nom">Precio&nbsp;<span class="text-danger">*</span></label>
+                                <div class="col-md-9">
+                                    <input type="text" v-model="Producto.precio" class="form-control" placeholder="ingrese el precio" id="pre">
                                 </div>
                             </div>
                             <div class="row form-group">
                                 <label class="col-md-3 font-weight-bold" for="des">Descripcion</label>
                                 <div class="col-md-9">
-                                    <input type="text" v-model="Categoria.descripcion" class="form-control" placeholder="ingrese la descripcion" id="des">
+                                    <input type="text" v-model="Producto.descripcion" class="form-control" placeholder="ingrese la descripcion" id="des">
                                 </div>
                             </div>
                         </div>
@@ -156,15 +174,30 @@
                                 </div>
                             </div>
                             <div class="row form-group">
+                                <label class="col-md-3 font-weight-bold" for="cat">Categoria&nbsp;<span class="text-danger">*</span></label>
+                                <div class="col-md-9">
+                                    <select v-model="Producto.categoria_id" class="form-control" id="cat">
+                                        <option value="0" disabled>seleccione una categoria</option>
+                                        <option v-for="categoria in SelectCategoria" :key="categoria.id" :value="categoria.id" v-text="categoria.nombre"></option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row form-group">
                                 <label class="col-md-3 font-weight-bold" for="nom">Nombre&nbsp;<span class="text-danger">*</span></label>
                                 <div class="col-md-9">
-                                    <input type="text" v-model="Categoria.nombre" class="form-control" placeholder="ingrese el nombre" id="nom">
+                                    <input type="text" v-model="Producto.nombre" class="form-control" placeholder="ingrese el nombre" id="nom">
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <label class="col-md-3 font-weight-bold" for="nom">Precio&nbsp;<span class="text-danger">*</span></label>
+                                <div class="col-md-9">
+                                    <input type="text" v-model="Producto.precio" class="form-control" placeholder="ingrese el precio" id="pre">
                                 </div>
                             </div>
                             <div class="row form-group">
                                 <label class="col-md-3 font-weight-bold" for="des">Descripcion</label>
                                 <div class="col-md-9">
-                                    <input type="text" v-model="Categoria.descripcion" class="form-control" placeholder="ingrese la descripcion" id="des">
+                                    <input type="text" v-model="Producto.descripcion" class="form-control" placeholder="ingrese la descripcion" id="des">
                                 </div>
                             </div>
                         </div>
@@ -189,14 +222,16 @@
         data(){
             return {
                 //datos generales
-                ListaCategoria: [],
-                Categoria: {
+                ListaProducto: [],
+                Producto: {
                     id: 0,
-                    // categoria_id: 0,
-                    nombre: '',
-                    descripcion: '',
-                    estado: ''
+                    categoria_id: 0,
+                    codigo: '',
+                    precio: 0,
+                    stock: 0,
+                    descripcion: ''
                 },
+                SelectCategoria: [],
 
                 //datos de busqueda y filtracion
                 Busqueda: {
@@ -224,7 +259,7 @@
                 },
                 Navegacion:{
                     offset: 3,
-                    ordenarPor: 'categoria.nombre',
+                    ordenarPor: 'producto.nombre',
                     orden: 'desc' 
                 },
 
@@ -274,12 +309,15 @@
             Headers: function(){
                 var headers = [];
 
-                headers.push({titulo: 'Nombre', nombre: 'categoria.nombre'});
-                headers.push({titulo: 'Descripcion', nombre: 'categoria.descripcion'});
-                headers.push({titulo: 'Nro Productos', nombre: 'cant_productos'});
-                headers.push({titulo: 'F. Creacion', nombre: 'categoria.created_at'});
-                headers.push({titulo: 'F. Modificacion', nombre: 'categoria.updated_at'});
-                headers.push({titulo: 'F. Eliminacion', nombre: 'categoria.deleted_at'});
+                headers.push({titulo: 'Codigo', nombre: 'producto.codigo'});
+                headers.push({titulo: 'Nombre', nombre: 'producto.nombre'});
+                headers.push({titulo: 'Categoria', nombre: 'categoria.nombre'});
+                headers.push({titulo: 'Precio', nombre: 'producto.precio'});
+                headers.push({titulo: 'Stock', nombre: 'producto.stock'});
+                headers.push({titulo: 'Descripcion', nombre: 'producto.descripcion'});
+                headers.push({titulo: 'F. Creacion', nombre: 'producto.created_at'});
+                headers.push({titulo: 'F. Modificacion', nombre: 'producto.updated_at'});
+                headers.push({titulo: 'F. Eliminacion', nombre: 'producto.deleted_at'});
 
                 return headers;
             },
@@ -300,7 +338,7 @@
                 }
                 this.Paginacion.currentPage = page==1?1:page;
 
-                var url = '/categoria?page='+this.Paginacion.currentPage
+                var url = '/producto?page='+this.Paginacion.currentPage
                         +'&estado='+this.Busqueda.estado
                         +'&texto='+this.Busqueda.texto
                         +'&filas='+this.Busqueda.filas
@@ -309,7 +347,7 @@
                 
                 var me = this;
                 axios.get(url).then(function (response) {
-                    me.ListaCategoria = response.data.categorias.data;
+                    me.ListaProducto = response.data.productos.data;
                     me.Paginacion = response.data.paginacion;
                 }).catch(function (error) {
                     console.log(error)
@@ -319,9 +357,13 @@
                 if ( this.validar() ) return;
                 
                 var me = this;
-                axios.post('/categoria/agregar', {
-                    'nombre' : this.Categoria.nombre,
-                    'descripcion' : this.Categoria.descripcion,
+                axios.post('/producto/agregar', {
+                    'codigo' : this.Producto.codigo,
+                    'nombre' : this.Producto.nombre,
+                    'categoria_id' : this.Producto.categoria_id,
+                    'precio' : this.Producto.precio,
+                    'stock': this.Producto.stock,
+                    'descripcion' : this.Producto.descripcion
                 }).then(function(response){
                     me.cerrarModal();
                     me.listar();
@@ -329,7 +371,7 @@
                         position: 'top-end',
                         toast: true,
                         type: 'success',
-                        title: 'La categoria se ha AGREGADO correctamente',
+                        title: 'El producto se ha AGREGADO correctamente',
                         showConfirmButton: false,
                         timer: 4500,
                         animation:false,
@@ -345,10 +387,14 @@
                 if ( this.validar() ) return;
 
                 var me = this;
-                axios.put('/categoria/editar', {
-                    'id' : this.Categoria.id,
-                    'nombre' : this.Categoria.nombre,
-                    'descripcion' : this.Categoria.descripcion
+                axios.put('/producto/editar', {
+                    'id' : this.Producto.id,
+                    'codigo' : this.Producto.codigo,
+                    'nombre' : this.Producto.nombre,
+                    'categoria_id' : this.Producto.categoria_id,
+                    'precio' : this.Producto.precio,
+                    'stock': this.Producto.stock,
+                    'descripcion' : this.Producto.descripcion
                 }).then(function(response){
                     me.cerrarModal();
                     me.listar();
@@ -356,7 +402,7 @@
                         position: 'top-end',
                         toast: true,
                         type: 'success',
-                        title: 'La categoria se ha EDITADO correctamente',
+                        title: 'El producto se ha EDITADO correctamente',
                         showConfirmButton: false,
                         timer: 4500,
                         animation:false,
@@ -368,12 +414,14 @@
                     console.log(error);
                 });
             },
-            activar(categoria = []){
-                this.Categoria.id = categoria['id'];
-                this.Categoria.nombre = categoria['nombre'];
+            activar(producto = []){
+                this.Producto.id = producto['id'];
+                this.Producto.nombre = producto['nombre'];
 
-                Swal.fire({
-                    title: '¿Esta seguro de ACTIVAR la categoria "'+this.Categoria.nombre+'"?',
+                var me = this;
+
+                Swal.fire({ 
+                    title: '¿Esta seguro de ACTIVAR el producto "'+this.Producto.nombre+'"?',
                     type: 'warning',
                     showCancelButton: true,
                     confirmButtonText: 'Aceptar',
@@ -388,15 +436,16 @@
                     if (result.value) {
                         var me = this;
                 
-                        axios.put('/categoria/activar', {
-                            'id' : me.Categoria.id
+                        axios.put('/producto/activar', {
+                            'id' : me.Producto.id
                         }).then(function (response) {
+                            me.cerrarModal();
                             me.listar();
                             Swal.fire({
                                 position: 'top-end',
                                 toast: true,
                                 type: 'success',
-                                title: 'La categoria se ha ACTIVADO correctamente',
+                                title: 'El producto se ha ACTIVADO correctamente',
                                 showConfirmButton: false,
                                 timer: 4500,
                                 animation:false,
@@ -412,12 +461,14 @@
                     }
                 });
             },
-            desactivar(categoria = []){
-                this.Categoria.id = categoria['id'];
-                this.Categoria.nombre = categoria['nombre'];
+            desactivar(producto = []){
+                this.Producto.id = producto['id'];
+                this.Producto.nombre = producto['nombre'];
 
+                var me = this;
+                
                 Swal.fire({
-                    title: '¿Esta seguro de DESACTIVAR la categoria "'+this.Categoria.nombre+'"?',
+                    title: '¿Esta seguro de DESACTIVAR el producto "'+this.Producto.nombre+'"?',
                     type: 'warning',
                     showCancelButton: true,
                     confirmButtonText: 'Aceptar',
@@ -432,15 +483,16 @@
                     if (result.value) {
                         var me = this;
                 
-                        axios.put('/categoria/desactivar', {
-                            'id' : me.Categoria.id
+                        axios.put('/producto/desactivar', {
+                            'id' : me.Producto.id
                         }).then(function (response) {
+                            me.cerrarModal();
                             me.listar();
                             Swal.fire({
                                 position: 'top-end',
                                 toast: true,
                                 type: 'success',
-                                title: 'La categoria se ha DESACTIVADO correctamente',
+                                title: 'El producto se ha ACTIVADO correctamente',
                                 showConfirmButton: false,
                                 timer: 4500,
                                 animation:false,
@@ -457,17 +509,29 @@
                 });
             },
             abrirModalAgregar(){
-                this.abrirModal(1, 'Nueva Categoria', 'Agregar');
+                this.abrirModal(1, 'Nuevo Producto', 'Agregar');
 
-                this.Categoria.nombre = '';
-                this.Categoria.descripcion = '';
+                this.Producto.codigo = '';
+                this.Producto.categoria_id = 0;
+                this.Producto.nombre = '';
+                this.Producto.precio = 0;
+                this.Producto.stock = 0;
+                this.Producto.descripcion = '';
+
+                this.selectCategoria();
             },
             abrirModalEditar(data = []){
-                this.abrirModal(2, 'Editar Categoria', 'Editar');
+                this.abrirModal(2, 'Editar Producto', 'Editar');
                 
-                this.Categoria.id = data['id'];
-                this.Categoria.nombre = data['nombre'];
-                this.Categoria.descripcion = data['descripcion'];
+                this.Producto.id = data['id'];
+                this.Producto.categoria_id = data['categoria_id'];
+                this.Producto.codigo = data['codigo'];
+                this.Producto.nombre = data['nombre'];
+                this.Producto.precio = data['precio'];
+                this.Producto.stock = data['stock'];
+                this.Producto.descripcion = data['descripcion'];
+
+                this.selectCategoria();
             },
             abrirModal(numero, titulo, accion){
                 this.Modal.estado = 1;
@@ -482,9 +546,15 @@
                 this.Error.estado = 0;
                 this.Error.mensaje = [];
 
-                this.Categoria.id = 0;
-                this.Categoria.nombre = '';
-                this.Categoria.descripcion = '';
+                this.Producto.id = 0;
+                this.Producto.categoria_id = 0;
+                this.Producto.codigo = '';
+                this.Producto.nombre = '';
+                this.Producto.precio = 0;
+                this.Producto.stock = 0;
+                this.Producto.descripcion = '';
+
+                this.SelectCategoria = [];
             },
             accionar(accion){
                 switch( accion ){
@@ -506,6 +576,16 @@
                     }
                 }
             },
+            selectCategoria(){
+                var me = this;
+                var url = '/producto/selectCategoria';
+
+                axios.get(url).then(function(response){
+                    me.SelectCategoria = response.data;
+                }).catch(function(error){
+                    console.log(error);
+                });
+            },
             getTitulo(titulo){
                 var seleccionada = 0;
 
@@ -526,37 +606,16 @@
 
                 return titulo;
             },
-            getTipo(rol_id){
-                var nombre = '';
-
-                for (let i = 0; i < this.SelectRol.length; i++) {
-                    if ( this.SelectRol[i].id == rol_id ){
-                        nombre = this.SelectRol[i].nombre;
-                        break;
-                    }
-                }
-
-                switch ( nombre ) {
-                    case 'Administrador': {
-                        return 'N';
-                    }
-                    case 'Puesto': {
-                        return 'P';
-                    }
-                    case 'Almacén': {
-                        return 'A';
-                    }
-                    default: {
-                        console.log('ERROR: no se encontro el nombre de rol para definir el tipo de usuario');
-                    }
-                }
-            },
             validar(){
                 this.Error.estado = 0;
                 this.Error.mensaje = [];
 
                 //nombre
-                if ( !this.Categoria.nombre ) this.Error.mensaje.push("Debe ingresar un nombre");
+                if ( !this.Producto.nombre ) this.Error.mensaje.push("Debe ingresar un nombre");
+                //categoria
+                if ( this.Producto.categoria_id == 0 ) this.Error.mensaje.push("Debe seleccionar una categoria");
+                //precio
+                if ( this.Producto.precio == 0 ) this.Error.mensaje.push("Debe ingresar un precio");
 
                 if ( this.Error.mensaje.length ) this.Error.estado = 1;
 
@@ -583,5 +642,10 @@
     }
     .ec-cursor{
         cursor: pointer;
+    }
+    #ec-table{
+        overflow: scroll;
+        height: 20rem;
+        width: 100%;
     }
 </style>
