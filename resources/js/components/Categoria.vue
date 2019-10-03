@@ -9,7 +9,7 @@
                 <i class="fas fa-map-signs"></i>&nbsp;&nbsp;
                 <span class="h3 mb-0 text-gray-900">Categoria</span>
                 <button type="button" class="btn btn-success" @click="abrirModalAgregar()">
-                    <i class="fas fa-user-plus"></i>&nbsp; git status merge
+                    <i class="fas fa-user-plus"></i>&nbsp; Nuevo
                 </button>
                 <button type="button" class="btn btn-danger">
                     <i class="far fa-file-pdf"></i>&nbsp; PDF
@@ -45,7 +45,7 @@
             <!-- Listado -->
             <div v-if="ListaCategoria.length" class="table-responsive">
                 <!-- Tabla -->
-                <div id="ec-table">
+                <div class="overflow-auto">
                     <table class="table table-bordered table-striped table-sm text-gray-900">
                         <thead>
                             <tr>
@@ -583,10 +583,5 @@
     }
     .ec-cursor{
         cursor: pointer;
-    }
-    #ec-table{
-        overflow: scroll;
-        height: 20rem;
-        width: 100%;
     }
 </style>
