@@ -48,7 +48,7 @@
                 <div class="ec-table overflow-auto">
                     <table class="table table-bordered table-striped table-sm text-gray-900">
                         <thead>
-                            <tr class="ec-th">
+                            <tr class="bg-success">
                                 <th v-for="head in Headers" :key="head.nombre" @click="listar(1, head.nombre)" class="ec-cursor" v-text="getTitulo(head.titulo)"></th>
                                 <th>Estado</th>
                                 <th>Opciones</th>
