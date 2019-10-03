@@ -45,7 +45,7 @@
             <!-- Listado -->
             <div v-if="ListaProducto.length" class="table-responsive">
                 <!-- Tabla -->
-                <div id="ec-table">
+                <div class="overflow-auto">
                     <table class="table table-bordered table-striped table-sm text-gray-900">
                         <thead>
                             <tr>
@@ -642,10 +642,5 @@
     }
     .ec-cursor{
         cursor: pointer;
-    }
-    #ec-table{
-        overflow: scroll;
-        height: 20rem;
-        width: 100%;
     }
 </style>
