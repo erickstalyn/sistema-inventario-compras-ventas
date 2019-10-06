@@ -2,7 +2,6 @@
 
 use Illuminate\Database\Seeder;
 use Carbon\Carbon;
-
 class CategoriaSeeder extends Seeder
 {
     /**
@@ -10,8 +9,8 @@ class CategoriaSeeder extends Seeder
      *
      * @return void
      */
-    public function run() {
-        
+    public function run()
+    {
         $now = Carbon::now('America/Lima')->toDateTimeString();
 
         DB::table('categoria')->insert(array(
@@ -48,6 +47,5 @@ class CategoriaSeeder extends Seeder
             'estado' => 0,
             'created_at' => $now
         ));
-
     }
 }
