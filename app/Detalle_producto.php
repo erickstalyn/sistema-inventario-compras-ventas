@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Detalle_producto extends Model
 {
     protected $table = 'detalle_producto';
-    protected $fillable = ['producto_id', 'usuario_id', 'stock'];
+    protected $fillable = ['producto_id', 'usuario_id', 'substock'];
     public $timestamps = false;
 
     public function getUsuario(){

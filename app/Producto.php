@@ -7,9 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Producto extends Model
 {
     protected $table = 'producto';
-    protected $fillable = [
-        'id','categoria_id','nombre', 'codigo', 'descripcion', 'precio', 'stock', 'estado'
-    ];
+    protected $fillable = ['categoria_id','nombre', 'codigo', 'descripcion', 'precio', 'stock', 'estado'];
 
     //Relación de muchos a muchos con Abasto
     public function getCategoria(){
