@@ -33,7 +33,7 @@ class ProductoController extends Controller {
                             ->where(function ($query) use ($texto) {
                                 if ( $texto != '' ) {
                                     $query->where('producto.nombre', 'like', '%'.$texto.'%')
-                                        ->orWhere('producto.codigo', 'like', '%'.$texto.'%')
+                                        // ->orWhere('producto.codigo', 'like', '%'.$texto.'%')
                                         ->orWhere('producto.precio', 'like', '%'.$texto.'%')
                                         ->orWhere('producto.stock', 'like', '%'.$texto.'%')
                                         ->orWhere('producto.descripcion', 'like', '%'.$texto.'%');
@@ -63,7 +63,6 @@ class ProductoController extends Controller {
             $producto = new Producto();
             $producto->nombre = $request->nombre;
             $producto->categoria_id = $request->categoria_id;
-            $producto->codigo = $request->codigo==''?NULL:$request->codigo;
             $producto->precio = $request->precio;
             $producto->descripcion = $request->descripcion==''?NULL:$request->descripcion;
             $producto->created_at = Carbon::now('America/Lima')->toDateTimeString();
@@ -85,7 +84,7 @@ class ProductoController extends Controller {
             $producto = Producto::findOrFail($request->id);
             $producto->nombre = $request->nombre;
             $producto->categoria_id = $request->categoria_id;
-            $producto->codigo = $request->codigo==''?NULL:$request->codigo;
+            // $producto->codigo = $request->codigo==''?NULL:$request->codigo;
             $producto->precio = $request->precio;
             $producto->descripcion = $request->descripcion==''?NULL:$request->descripcion;
             $producto->updated_at = Carbon::now('America/Lima')->toDateTimeString();

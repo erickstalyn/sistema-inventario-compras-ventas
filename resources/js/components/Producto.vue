@@ -56,7 +56,6 @@
                         </thead>
                         <tbody>
                             <tr v-for="producto in ListaProducto" :key="producto.id" >
-                                <td v-text="producto.codigo==null?'-':producto.codigo"></td>
                                 <td v-text="producto.nombre"></td>
                                 <td v-text="producto.categoria_nombre"></td>
                                 <td v-text="producto.precio"></td>
@@ -226,7 +225,6 @@
                 Producto: {
                     id: 0,
                     categoria_id: 0,
-                    codigo: '',
                     precio: 0,
                     stock: 0,
                     descripcion: ''
@@ -309,7 +307,6 @@
             Headers: function(){
                 var headers = [];
 
-                headers.push({titulo: 'Codigo', nombre: 'producto.codigo'});
                 headers.push({titulo: 'Nombre', nombre: 'producto.nombre'});
                 headers.push({titulo: 'Categoria', nombre: 'categoria.nombre'});
                 headers.push({titulo: 'Precio', nombre: 'producto.precio'});
@@ -358,7 +355,6 @@
                 
                 var me = this;
                 axios.post('/producto/agregar', {
-                    'codigo' : this.Producto.codigo,
                     'nombre' : this.Producto.nombre,
                     'categoria_id' : this.Producto.categoria_id,
                     'precio' : this.Producto.precio,
@@ -389,7 +385,6 @@
                 var me = this;
                 axios.put('/producto/editar', {
                     'id' : this.Producto.id,
-                    'codigo' : this.Producto.codigo,
                     'nombre' : this.Producto.nombre,
                     'categoria_id' : this.Producto.categoria_id,
                     'precio' : this.Producto.precio,
@@ -511,7 +506,6 @@
             abrirModalAgregar(){
                 this.abrirModal(1, 'Nuevo Producto', 'Agregar');
 
-                this.Producto.codigo = '';
                 this.Producto.categoria_id = 0;
                 this.Producto.nombre = '';
                 this.Producto.precio = 0;
@@ -525,7 +519,6 @@
                 
                 this.Producto.id = data['id'];
                 this.Producto.categoria_id = data['categoria_id'];
-                this.Producto.codigo = data['codigo'];
                 this.Producto.nombre = data['nombre'];
                 this.Producto.precio = data['precio'];
                 this.Producto.stock = data['stock'];
@@ -548,7 +541,6 @@
 
                 this.Producto.id = 0;
                 this.Producto.categoria_id = 0;
-                this.Producto.codigo = '';
                 this.Producto.nombre = '';
                 this.Producto.precio = 0;
                 this.Producto.stock = 0;
