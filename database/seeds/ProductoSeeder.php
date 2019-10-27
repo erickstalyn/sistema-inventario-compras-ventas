@@ -22,13 +22,13 @@ class ProductoSeeder extends Seeder
         ));
         DB::table('producto')->insert(array(
             'categoria_id' => 1,
-            'nombre' => 'Maleta de 3 puertas y 3 cajones',
+            'nombre' => 'Maleta de con 3 espacios y 2 bolsillos ocultos',
             'precio' => 200,
             'created_at' => $now
         ));
         DB::table('producto')->insert(array(
             'categoria_id' => 1,
-            'nombre' => 'Maleta Porta roja con stickers',
+            'nombre' => 'Maleta Porta roja con stickers de MARVEL',
             'precio' => 75,
             'created_at' => $now
         ));
@@ -54,7 +54,7 @@ class ProductoSeeder extends Seeder
         ));
         DB::table('producto')->insert(array(
             'categoria_id' => 3,
-            'nombre' => 'Mochila azalea',
+            'nombre' => 'Mochila azalea con brillo naranja',
             'precio' => 500,
             'estado' => 0,
             'created_at' => $now
