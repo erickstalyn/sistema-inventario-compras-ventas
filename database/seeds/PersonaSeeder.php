@@ -14,12 +14,17 @@ class PersonaSeeder extends Seeder {
         $now = Carbon::now('America/Lima')->toDateTimeString();
 
         DB::table('persona')->insert(array(
-            'nombre'=>'Silmar Gutierrez',
+            'nombre'=>'Silmar',
             'created_at' => $now,
             'tipo' => 'N'
         ));
         DB::table('persona')->insert(array(
             'nombre' => 'Mi puesto A',
+            'created_at' => $now,
+            'tipo' => 'P'
+        ));
+        DB::table('persona')->insert(array(
+            'nombre' => 'Mi puesto B',
             'created_at' => $now,
             'tipo' => 'P'
         ));

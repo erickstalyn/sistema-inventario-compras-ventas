@@ -25,14 +25,21 @@ class UsuarioSeeder extends Seeder
             'password'=>bcrypt('puestoa')
         ));
         DB::table('usuario')->insert(array(
+            'rol_id'=> 2,
+            'persona_id'=> 3,
+            'usuario'=>'puestob',
+            'password'=>bcrypt('puestob'),
+            'estado' => false
+        ));
+        DB::table('usuario')->insert(array(
             'rol_id'=> 3,
-            'persona_id'=>3 ,
+            'persona_id'=> 4,
             'usuario'=>'almacen1',
             'password'=>bcrypt('almacen1')
         ));
         DB::table('usuario')->insert(array(
             'rol_id'=> 3,
-            'persona_id'=> 4,
+            'persona_id'=> 5,
             'usuario'=>'almacen2',
             'password'=>bcrypt('almacen2'),
             'estado' => false
