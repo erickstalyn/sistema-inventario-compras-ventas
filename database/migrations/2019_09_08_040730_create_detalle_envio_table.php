@@ -14,13 +14,13 @@ class CreateDetalleEnvioTable extends Migration
     public function up()
     {
         Schema::create('detalle_envio', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->unsignedBigInteger('envio_id');
-            $table->unsignedBigInteger('producto_id');
+            $table->increments('id'); //usa 4 bytes. Maximo valor: 2 147 483 647
+            $table->string('nombre_producto', 65);
+            $table->smallInteger('cantidad'); //-32768 al 32767
 
-            $table->integer('cantidad');
-
+            $table->unsignedMediumInteger('envio_id');
             $table->foreign('envio_id')->references('id')->on('envio');
+            $table->unsignedMediumInteger('producto_id');
             $table->foreign('producto_id')->references('id')->on('producto');
         });
     }

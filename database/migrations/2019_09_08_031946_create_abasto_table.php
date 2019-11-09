@@ -13,14 +13,21 @@ class CreateAbastoTable extends Migration
      */
     public function up(){
         Schema::create('abasto', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->unsignedBigInteger('proveedor_id')->nullable();
+            $table->mediumIncrements('id'); // usa 3 bytes, Cantiada max: 8 388 607
 
-            $table->decimal('total', 11, 2)->nullable();
-            $table->timestamps();
-            $table->softDeletes();
+            $table->decimal('total', 8, 2);
+            $table->boolean('tipo'); // 0: Contado, 1: Credito
 
-            $table->foreign('proveedor_id')->references('id')->on('proveedor');
+            $table->unsignedSmallInteger('proveedor_id')->nullable();
+            $table->foreign('proveedor_id')->references('id')->on('persona');
+            $table->unsignedSmallInteger('administrador_id')->nullable();
+            $table->foreign('administrador_id')->references('id')->on('persona');
+            $table->unsignedTinyInteger('centro_id')->nullable();
+            $table->foreign('centro_id')->references('id')->on('centro');
+
+            $table->date('created_at'); //Fecha de creación manual
+
+            //Abasto tiene una eliminación física, y solo se puede eliminar un abasto si tiene su estado de envio en ENVIADO
         });
     }
 

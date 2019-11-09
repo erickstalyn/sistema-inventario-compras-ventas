@@ -15,49 +15,49 @@ class ProductoSeeder extends Seeder
         $now = Carbon::now('America/Lima')->toDateTimeString();
 
         DB::table('producto')->insert(array(
-            'categoria_id' => 3,
-            'nombre' => 'Mochila roja de 3 bolsillos',
-            'precio' => 55,
+            'superproducto_id' => 1,
+            'nombre' => 'Campera SILMAR R3D grande roja',
+            'descripcion' => 'Ideal para viajeros extranjeros',
+            'size' => 'Grande',
+            'color' => 'Roja',
+            'precio_menor' => 65,
+            'precio_mayor' => 55,
+            'stock' => 0,
             'created_at' => $now
         ));
         DB::table('producto')->insert(array(
-            'categoria_id' => 1,
-            'nombre' => 'Maleta de 3 puertas y 3 cajones',
-            'precio' => 200,
+            'superproducto_id' => 1,
+            'nombre' => 'Campera SILMAR R3D grande amarilla',
+            'descripcion' => 'Ideal para viajeros extranjeros',
+            'size' => 'Grande',
+            'color' => 'Amarilla',
+            'precio_menor' => 65,
+            'precio_mayor' => 55,
+            'stock' => 0,
             'created_at' => $now
         ));
         DB::table('producto')->insert(array(
-            'categoria_id' => 1,
-            'nombre' => 'Maleta Porta roja con stickers',
-            'precio' => 75,
+            'superproducto_id' => 1,
+            'nombre' => 'Campera SILMAR R3D grande azul',
+            'descripcion' => 'Ideal para viajeros extranjeros',
+            'size' => 'Grande',
+            'color' => 'Azul',
+            'precio_menor' => 65,
+            'precio_mayor' => 55,
+            'stock' => 0,
             'created_at' => $now
         ));
         DB::table('producto')->insert(array(
-            'categoria_id' => 3,
-            'nombre' => 'Mochila RipCurl celeste',
-            'precio' => 55,
+            'superproducto_id' => 1,
+            'nombre' => 'Campera SILMAR R3D mediana negra',
+            'descripcion' => 'Ideal para viajeros extranjeros',
+            'size' => 'Mediana',
+            'color' => 'Negra',
+            'precio_menor' => 70,
+            'precio_mayor' => 65,
+            'stock' => 0,
             'created_at' => $now
         ));
-        DB::table('producto')->insert(array(
-            'categoria_id' => 4,
-            'nombre' => 'Cartera belinda con diamantes',
-            'precio' => 87,
-            'estado' => 0,
-            'created_at' => $now
-        ));
-        DB::table('producto')->insert(array(
-            'categoria_id' => 4,
-            'nombre' => 'Cartera americana con cierre Rey',
-            'precio' => 66,
-            'estado' => 0,
-            'created_at' => $now
-        ));
-        DB::table('producto')->insert(array(
-            'categoria_id' => 3,
-            'nombre' => 'Mochila azalea',
-            'precio' => 500,
-            'estado' => 0,
-            'created_at' => $now
-        ));
+        
     }
 }
