@@ -12,7 +12,7 @@ class CentroSeeder extends Seeder
      */
     public function run()
     {
-        $now = Carbon::now('America/Lima')->toDateTimeString();
+        $now = Carbon::now('America/Lima')->toDateString();
         DB::table('centro')->insert(array(
             'nombre' => 'Mi Puesto A',
             'direccion' => 'Chiclayo - Av. Tomas valle #754',

@@ -15,10 +15,10 @@ class CreateProductoMaterialTable extends Migration
     {
         Schema::create('producto_material', function (Blueprint $table) {
             $table->smallIncrements('id'); // usa 2 bytes - máximo 32767 datos
-            $table->decimal('precio_unitario', 8,2);
-            $table->smallInteger('cantidad'); // usa 2 bytes - máximo 32767 datos
             $table->string('unidad',45); //cm, m, gr, kg
-            $table->decimal('subtotal', 8,2); // se hace la conversion si es necesaria y se autocalcula
+            $table->decimal('costo_unitario', 8,2); // se hace la conversion si es necesaria y se autocalcula
+            $table->smallInteger('cantidad'); // usa 2 bytes - máximo 32767 datos
+            $table->decimal('subtotal', 8,2); // es: costo unitario x cantidad
 
             $table->unsignedMediumInteger('producto_id');
             $table->foreign('producto_id')->references('id')->on('producto');

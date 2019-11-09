@@ -12,7 +12,7 @@ class UsuarioSeeder extends Seeder
      */
     public function run()
     {
-        $now = Carbon::now('America/Lima')->toDateTimeString();
+        $now = Carbon::now('America/Lima')->toDateString();
         DB::table('usuario')->insert(array(
             'persona_id'=>1 ,
             'usuario'=>'silmar',

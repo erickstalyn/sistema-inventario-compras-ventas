@@ -12,7 +12,7 @@ class ProductoSeeder extends Seeder
      */
     public function run()
     {
-        $now = Carbon::now('America/Lima')->toDateTimeString();
+        $now = Carbon::now('America/Lima')->toDateString();
 
         DB::table('producto')->insert(array(
             'superproducto_id' => 1,

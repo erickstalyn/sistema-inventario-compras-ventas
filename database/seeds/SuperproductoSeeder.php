@@ -11,7 +11,7 @@ class SuperproductoSeeder extends Seeder
      */
     public function run()
     {
-        $now = Carbon::now('America/Lima')->toDateTimeString();
+        $now = Carbon::now('America/Lima')->toDateString();
         DB::table('superproducto')->insert(array(
             'nombre' => 'Campera SILMAR R3D',
             'descripcion' => 'Ideal para viajeros extranjeros',

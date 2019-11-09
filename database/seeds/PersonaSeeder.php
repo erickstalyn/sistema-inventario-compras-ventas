@@ -11,7 +11,7 @@ class PersonaSeeder extends Seeder {
      */
     public function run()
     {
-        $now = Carbon::now('America/Lima')->toDateTimeString();
+        $now = Carbon::now('America/Lima')->toDateString();
 
         DB::table('persona')->insert(array(
             'nombres'=>'Jose Guzman',
