@@ -14,25 +14,27 @@ class CreatePersonaTable extends Migration
     public function up()
     {
         Schema::create('persona', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->smallIncrements('id'); // usa 2 bytes - máximo 32767 datos
 
-            $table->string('nombre', 60)->unique();
-            $table->char('dni', 8)->nullable();
+            $table->string('nombres', 90)->nullable();
+            $table->string('apellidos', 90)->nullable();
+            $table->string('razon_social', 350)->nullable();
+            $table->char('dni', 8)->nullable(); // charc(8) equivale a 8 byte
             $table->char('ruc', 11)->nullable();
             $table->string('direccion', 120)->nullable();
-            $table->char('telefono', 15)->nullable();
-            $table->string('email', 30)->nullable();
+            $table->char('telefono', 30)->nullable(); //Almacenará como máximo 3 telefonos o celulares
+            $table->string('email', 100)->nullable();
             $table->date('birthday', 30)->nullable();
             $table->text('observacion')->nullable();
-            $table->char('tipo', 1);
+            $table->char('tipo', 1); // P: Persona, E: Empresa
+            $table->boolean('cliente')->nullable();
+            $table->boolean('proveedor')->nullable();
 
-            //N -> persona NATURAL
-            //J -> persona JURIDICA
-            //P -> PUESTO
-            //A -> ALMACEN
+            $table->unsignedSmallInteger('persona_id')->nullable();;
+            $table->foreign('persona_id')->references('id')->on('persona');
 
-            $table->timestamps();
-            $table->softDeletes();
+            $table->date('created_at'); //Fecha de creacion manual
+            $table->softDeletes(); //Fecha de eliminación automática
         });
 
     }

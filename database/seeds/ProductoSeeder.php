@@ -10,54 +10,54 @@ class ProductoSeeder extends Seeder
      *
      * @return void
      */
-    public function run() {
-        
-        $now = Carbon::now('America/Lima')->toDateTimeString();
+    public function run()
+    {
+        $now = Carbon::now('America/Lima')->toDateString();
 
         DB::table('producto')->insert(array(
-            'categoria_id' => 3,
-            'nombre' => 'Mochila roja de 3 bolsillos',
-            'precio' => 55,
+            'superproducto_id' => 1,
+            'nombre' => 'Campera SILMAR R3D grande roja',
+            'descripcion' => 'Ideal para viajeros extranjeros',
+            'size' => 'Grande',
+            'color' => 'Roja',
+            'precio_menor' => 65,
+            'precio_mayor' => 55,
+            'stock' => 0,
             'created_at' => $now
         ));
         DB::table('producto')->insert(array(
-            'categoria_id' => 1,
-            'nombre' => 'Maleta de con 3 espacios y 2 bolsillos ocultos',
-            'precio' => 200,
+            'superproducto_id' => 1,
+            'nombre' => 'Campera SILMAR R3D grande amarilla',
+            'descripcion' => 'Ideal para viajeros extranjeros',
+            'size' => 'Grande',
+            'color' => 'Amarilla',
+            'precio_menor' => 65,
+            'precio_mayor' => 55,
+            'stock' => 0,
             'created_at' => $now
         ));
         DB::table('producto')->insert(array(
-            'categoria_id' => 1,
-            'nombre' => 'Maleta Porta roja con stickers de MARVEL',
-            'precio' => 75,
+            'superproducto_id' => 1,
+            'nombre' => 'Campera SILMAR R3D grande azul',
+            'descripcion' => 'Ideal para viajeros extranjeros',
+            'size' => 'Grande',
+            'color' => 'Azul',
+            'precio_menor' => 65,
+            'precio_mayor' => 55,
+            'stock' => 0,
             'created_at' => $now
         ));
         DB::table('producto')->insert(array(
-            'categoria_id' => 3,
-            'nombre' => 'Mochila RipCurl celeste',
-            'precio' => 55,
+            'superproducto_id' => 1,
+            'nombre' => 'Campera SILMAR R3D mediana negra',
+            'descripcion' => 'Ideal para viajeros extranjeros',
+            'size' => 'Mediana',
+            'color' => 'Negra',
+            'precio_menor' => 70,
+            'precio_mayor' => 65,
+            'stock' => 0,
             'created_at' => $now
         ));
-        DB::table('producto')->insert(array(
-            'categoria_id' => 4,
-            'nombre' => 'Cartera belinda con diamantes',
-            'precio' => 87,
-            'estado' => 0,
-            'created_at' => $now
-        ));
-        DB::table('producto')->insert(array(
-            'categoria_id' => 4,
-            'nombre' => 'Cartera americana con cierre Rey',
-            'precio' => 66,
-            'estado' => 0,
-            'created_at' => $now
-        ));
-        DB::table('producto')->insert(array(
-            'categoria_id' => 3,
-            'nombre' => 'Mochila azalea con brillo naranja',
-            'precio' => 500,
-            'estado' => 0,
-            'created_at' => $now
-        ));
+        
     }
 }
