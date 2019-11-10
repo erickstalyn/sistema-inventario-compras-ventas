@@ -30,11 +30,11 @@
       <!-- BARRA LATERAL DE OPCIONES SEGUN EL TIPO SE USUARIO -->
       
       @if(Auth::check())
-          @if(Auth::user()->rol_id==1)
+          @if(Auth::user()->rol=='M')
               @include('sidebars.sidebaradministrador')
-          @elseif(Auth::user()->rol_id==2)
+          @elseif(Auth::user()->rol=='P')
               @include('sidebars.sidebarpuesto')
-          @elseif(Auth::user()->rol_id==3)
+          @elseif(Auth::user()->rol=='A')
               @include('sidebars.sidebaralmacen')
           @else
 

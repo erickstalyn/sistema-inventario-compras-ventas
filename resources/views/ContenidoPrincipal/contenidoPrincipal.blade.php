@@ -3,7 +3,7 @@
 @section('contenidoPrincipal')
 
     @if(Auth::check())
-        @if(Auth::user()->rol_id==1)
+        @if(Auth::user()->rol=='M')
             <template v-if="menu==0">
                 <categoria></categoria>
             </template>
@@ -14,10 +14,10 @@
                 <usuario></usuario>
             </template>
 
-        @elseif(Auth::user()->rol_id==2)
+        @elseif(Auth::user()->rol=='P')
 
 
-        @elseif(Auth::user()->rol_id==3)
+        @elseif(Auth::user()->rol=='A')
 
         @else
 

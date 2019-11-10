@@ -3,10 +3,10 @@
 
     <!-- Aqui va el Logo con su nombre -->
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="#">
-      <div class="sidebar-brand-icon rotate-n-15">
-          <i class="fab fa-accusoft"></i>
-      </div>
-      <div class="sidebar-brand-text mx-3">Control de inventario</div>
+    <div class="sidebar-brand-icon rotate-n-15">
+        <i class="fab fa-accusoft"></i>
+    </div>
+    <div class="sidebar-brand-text mx-3">Control de inventario</div>
     </a>
 
     <!-- Divisor -->
@@ -14,7 +14,7 @@
 
     <!-- Elemento de navegación: panel de control-->
     <li class="nav-item active">
-      <a class="nav-link" href="#">
+    <a class="nav-link" href="#">
         <i class="fas fa-fw fa-tachometer-alt"></i>
         <span>Panel de control</span></a>
     </li>
@@ -24,41 +24,41 @@
 
     <!-- Elemento de navegación - MENÚ INVENTARIO -->
     <li class="nav-item">
-      <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#inventario" aria-expanded="true" aria-controls="inventario">
-          <i class="fas fa-store-alt"></i>
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#inventario" aria-expanded="true" aria-controls="inventario">
+        <i class="fas fa-store-alt"></i>
         <span>Inventario</span>
-      </a>
-      <div id="inventario" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+    </a>
+    <div id="inventario" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
         <div class="bg-white py-2 collapse-inner rounded">
-          
-          <a class="collapse-item font-weight-bold" href="#" @click="menu=0">Categorias</a>
-          <a class="collapse-item font-weight-bold" href="#" @click="menu=1">Productos</a>
+        
+        <a class="collapse-item font-weight-bold" href="#" @click="menu=0">Categorias</a>
+        <a class="collapse-item font-weight-bold" href="#" @click="menu=1">Productos</a>
         </div>
-      </div>
+    </div>
     </li>
 
     <!-- Elemento de navegación: MENÚ OPERACIONES -->
     <li class="nav-item">
-      <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#operaciones" aria-expanded="true" aria-controls="operaciones">
-          <i class="fas fa-truck-moving"></i>
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#operaciones" aria-expanded="true" aria-controls="operaciones">
+        <i class="fas fa-truck-moving"></i>
         <span>Operaciones</span>
-      </a>
-      <div id="operaciones" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
+    </a>
+    <div id="operaciones" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
         <div class="bg-white py-2 collapse-inner rounded">
-          <a class="collapse-item font-weight-bold" href="#" @click="menu=3">Abastecimiento</a>
-          <h6 class="collapse-header ">Mis proveedores</h6>
-          <a class="collapse-item font-weight-bold" href="#" @click="menu=4">Proveedores</a>
+        <a class="collapse-item font-weight-bold" href="#" @click="menu=3">Abastecimiento</a>
+        <h6 class="collapse-header ">Mis proveedores</h6>
+        <a class="collapse-item font-weight-bold" href="#" @click="menu=4">Proveedores</a>
         </div>
-      </div>
+    </div>
     </li>
 
     <!-- Elemento de navegación: MENÚ CENTROS -->
     <li class="nav-item">
-      <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#centros" aria-expanded="true" aria-controls="centros">
-          <i class="fas fa-warehouse"></i>
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#centros" aria-expanded="true" aria-controls="centros">
+        <i class="fas fa-warehouse"></i>
         <span>Centros</span>
-      </a>
-      <div id="centros" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
+    </a>
+    <div id="centros" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
         <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Mis Puestos</h6>
             <a class="collapse-item font-weight-bold" href="#">Puesto A</a>
@@ -71,23 +71,23 @@
             <a class="collapse-item font-weight-bold" href="#">Almacen 3</a>
             <a class="collapse-item font-weight-bold" href="#">Almacen 4</a>
         </div>
-      </div>
+    </div>
     </li>
 
     <!-- Elemento de navegación: MENÚ USUARIOS -->
     <li class="nav-item">
-      <a class="nav-link collapsed" href="#" @click="menu=5">
-          <i class="fas fa-users"></i>
-          <span>Usuarios</span>
-      </a>
+    <a class="nav-link collapsed" href="#" @click="menu=5">
+        <i class="fas fa-users"></i>
+        <span>Usuarios</span>
+    </a>
     </li>
 
     <!-- Elemento de navegación: MENÚ ESTADISTICAS -->
     <li class="nav-item">
-      <a class="nav-link collapsed" href="#">
-          <i class="fas fa-chart-pie"></i>
+    <a class="nav-link collapsed" href="#">
+        <i class="fas fa-chart-pie"></i>
         <span>Estadisticas</span>
-      </a>
+    </a>
     </li>
 
     <!-- Divisor -->
@@ -95,21 +95,21 @@
 
     <!-- Título -->
     <div class="sidebar-heading">
-      Extras
+    Extras
     </div>
 
     <!-- N  av Item - Pages Collapse Menu -->
     <li class="nav-item">
-      <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#redes" aria-expanded="true" aria-controls="redes">
-          <i class="fas fa-thumbs-up"></i>
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#redes" aria-expanded="true" aria-controls="redes">
+        <i class="fas fa-thumbs-up"></i>
         <span>Nuestras Redes</span>
-      </a>
-      <div id="redes" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+    </a>
+    <div id="redes" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
         <div class="bg-white py-2 collapse-inner rounded">
-          <a class="collapse-item" href="#"><i class="far fa-file"></i>&nbsp;Mi pagina web oficial</a>
-          <a class="collapse-item" href="#"><i class="fab fa-facebook"></i><span>&nbsp;Facebook Oficial</span></a>
+        <a class="collapse-item" href="#"><i class="far fa-file"></i>&nbsp;Mi pagina web oficial</a>
+        <a class="collapse-item" href="#"><i class="fab fa-facebook"></i><span>&nbsp;Facebook Oficial</span></a>
         </div>
-      </div>
+    </div>
     </li>
 
     <!-- Divisor -->
@@ -117,7 +117,7 @@
 
     <!-- BOTON QUE OCULTA EL MENÚ-->
     <div class="text-center d-none d-md-inline">
-      <button class="rounded-circle border-0" id="sidebarToggle"></button>
+    <button class="rounded-circle border-0" id="sidebarToggle"></button>
     </div>
 
 </ul>

@@ -26,6 +26,6 @@ class Administrador
 
     private function permiso(){
         //return session()->get('tipoUsuario') == 1;
-        return Auth::user()->rol_id == 1;
+        return Auth::user()->rol == 'M';
     }
 }
