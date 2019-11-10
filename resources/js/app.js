@@ -33,6 +33,6 @@ Vue.component('producto', require('./components/Producto.vue').default);
 const app = new Vue({
     el: '#app',
     data:{
-        menu: 0
+        menu: 1
     }
 });
