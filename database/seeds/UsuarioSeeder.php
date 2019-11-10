@@ -18,21 +18,18 @@ class UsuarioSeeder extends Seeder
             'usuario'=>'silmar',
             'password'=>bcrypt('silmar'),
             'rol' => 'M',
-            'created_at' => $now
         ));
         DB::table('usuario')->insert(array(
             'centro_id'=>1 ,
             'usuario'=>'puestoa',
             'password'=>bcrypt('puestoa'),
             'rol' => 'P',
-            'created_at' => $now
         ));
         DB::table('usuario')->insert(array(
             'centro_id'=> 4,
             'usuario'=>'almacen1',
             'password'=>bcrypt('almacen1'),
             'rol' => 'A',
-            'created_at' => $now
         ));
         DB::table('usuario')->insert(array(
             'centro_id'=> 5,
@@ -40,7 +37,6 @@ class UsuarioSeeder extends Seeder
             'password'=>bcrypt('almacen2'),
             'rol' => 'A',
             'estado' => false,
-            'created_at' => $now
         ));
     }
 }
