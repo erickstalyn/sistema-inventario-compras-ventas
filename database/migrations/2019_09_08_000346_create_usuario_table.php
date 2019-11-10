@@ -24,13 +24,11 @@ class CreateUsuarioTable extends Migration
                 A: Almacén
             */
             $table->boolean('estado')->default('1'); // 1: Activado, 0: Desactivado
-            $table->date('created_at'); //Fecha de creacion manual
 
             $table->unsignedSmallInteger('persona_id')->nullable();
             $table->foreign('persona_id')->references('id')->on('persona');
             $table->unsignedTinyInteger('centro_id')->nullable();
             $table->foreign('centro_id')->references('id')->on('centro');
-
         });
     }
 
