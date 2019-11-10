@@ -14,13 +14,16 @@ class Usuario extends Authenticatable
     protected $fillable = [
         'rol', 'persona_id', 'centro_id', 'usuario', 'password', 'estado'
     ];
-
+    public $timestamps = false;
     protected $hidden = [
         'password'
     ];
 
     public function getPersona() {
-        return $this->belongsTo('App\Persona');
+        return $this->belongsTo('App\Persona', 'persona_id');
+    }
+    public function getCentro(){
+        return $this->belongsTo('App\Centro', 'centro_id');
     }
 
     public function setSession(){
@@ -32,4 +35,11 @@ class Usuario extends Authenticatable
         // dd($this->getPersona()->get()->nombre);
     }
 
+    public function getNombres(){
+        if ($this->rol == 'M') {
+            return $this->getPersona->nombres.' '.$this->getPersona->apellidos;
+        } else {
+            return $this->getCentro->nombre;
+        }
+    }
 }

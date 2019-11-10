@@ -6,7 +6,9 @@
           <div class="sidebar-brand-icon rotate-n-15">
               <i class="fab fa-accusoft"></i>
           </div>
-        <div class="sidebar-brand-text mx-3">{{ Auth::user()->getPersona->nombre }}</div>
+        <div class="sidebar-brand-text mx-3">
+            {{ Auth::user()->getNombres() }}
+        </div>
         </a>
     
         <!-- Divisor -->
