@@ -26,7 +26,6 @@ class CreateProductoTable extends Migration
             $table->boolean('estado')->default(1);
 
             $table->date('created_at'); //Fecha de creacion manual
-            $table->softDeletes();
 
             $table->unsignedMediumInteger('superproducto_id');
             $table->foreign('superproducto_id')->references('id')->on('superproducto');

@@ -21,7 +21,6 @@ class CreateSuperproductoTable extends Migration
             $table->boolean('estado')->default(1); //Activado: 1, Desactivado: 0
 
             $table->date('created_at'); //Fecha de creacion manual
-            $table->softDeletes(); //Fecha de eliminación automática
         });
     }
 
