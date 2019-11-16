@@ -22,7 +22,6 @@ class CreatePagoTable extends Migration
             $table->foreign('abasto_id')->references('id')->on('abasto');
 
             $table->timestamps(); //Fecha y hora de creacion y actualiación manual
-            $table->softDeletes(); //Fecha y hora de eliminación manual
         });
     }
 

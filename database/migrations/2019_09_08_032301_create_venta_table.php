@@ -21,8 +21,8 @@ class CreateVentaTable extends Migration
                 1 -> VENTA AL CREDITO
                 2 -> VENTA POSTPAGO */
             
-            $table->unsignedSmallInteger('persona_id')->nullable();
-            $table->foreign('persona_id')->references('id')->on('persona');
+            $table->unsignedSmallInteger('cliente_id')->nullable();
+            $table->foreign('cliente_id')->references('id')->on('persona');
             $table->unsignedTinyInteger('centro_id');
             $table->foreign('centro_id')->references('id')->on('centro');
 

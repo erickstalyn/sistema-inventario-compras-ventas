@@ -26,7 +26,6 @@ class CreateValeTable extends Migration
             $table->foreign('venta_generada')->references('id')->on('venta');
 
             $table->timestamps(); //hora y fecha automaticaS
-            $table->softDeletes();
             
         });
     }

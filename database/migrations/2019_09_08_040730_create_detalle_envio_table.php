@@ -15,7 +15,7 @@ class CreateDetalleEnvioTable extends Migration
     {
         Schema::create('detalle_envio', function (Blueprint $table) {
             $table->increments('id'); //usa 4 bytes. Maximo valor: 2 147 483 647
-            $table->string('nombre_producto', 65);
+            $table->string('nombre_producto', 100);
             $table->smallInteger('cantidad'); //-32768 al 32767
 
             $table->unsignedMediumInteger('envio_id');

@@ -14,7 +14,7 @@ class CreateDetalleVentaTable extends Migration
     public function up(){
         Schema::create('detalle_venta', function (Blueprint $table) {
             $table->increments('id'); // usa 4 bytes. Maximo valor: 2 147 483 647
-            $table->string('nombre_producto', 65);
+            $table->string('nombre_producto', 100);
             $table->smallInteger('cantidad'); // usa 2 bytes - máximo 32767 datos
             $table->decimal('precio', 10, 2);
             $table->decimal('subtotal', 10, 2);
