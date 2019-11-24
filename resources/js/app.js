@@ -34,6 +34,6 @@ Vue.component('material', require('./components/Material.vue').default);
 const app = new Vue({
     el: '#app',
     data:{
-        menu: 5
+        menu: 0
     }
 });

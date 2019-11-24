@@ -45,6 +45,11 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/usuario/comprobar', 'UsuarioController@comprobar'); //metodos secundarios
         Route::get('/usuario/selectRol', 'UsuarioController@selectRol');
         
+        //RUTAS PARA MATERIALES
+        Route::get('/material', 'MaterialController@listar'); //métodos generales
+        Route::get('/material/selectTipoUnidad', 'MaterialController@selectTipoUnidad'); //metodos secundarios
+
+
         //RUTAS PARA CATEGORIA
         Route::get('/categoria', 'CategoriaController@listar'); //metodos generales
         Route::post('/categoria/agregar', 'CategoriaController@agregar');

@@ -7,7 +7,7 @@
             <!-- Encabezado principal -->
             <div class="row form-group">
                 <i class="fas fa-map-signs"></i>&nbsp;&nbsp;
-                <span class="h3 mb-0 text-gray-900">Categoria</span>
+                <span class="h3 mb-0 text-gray-900">Materiales&nbsp;</span>
                 <button type="button" class="btn btn-success" @click="abrirModalAgregar()">
                     <i class="fas fa-user-plus"></i>&nbsp; Nuevo
                 </button>
@@ -43,27 +43,25 @@
             </div>
 
             <!-- Listado -->
-            <div v-if="ListaCategoria.length" class="table-responsive">
+            <div v-if="ListaMaterial.length" class="table-responsive">
                 <!-- Tabla -->
                 <div class="ec-table overflow-auto">
                     <table class="table table-bordered table-striped table-sm text-gray-900">
                         <thead>
                             <tr class="ec-th">
                                 <th v-for="head in Headers" :key="head.nombre" @click="listar(1, head.nombre)" class="ec-cursor" v-text="getTitulo(head.titulo)"></th>
+                                <th>Costo Unit.</th>
                                 <th>Estado</th>
                                 <th>Opciones</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="categoria in ListaCategoria" :key="categoria.id" >
-                                <td v-text="categoria.nombre"></td>
-                                <td v-text="categoria.descripcion==null?'-':categoria.descripcion"></td>
-                                <td v-text="categoria.cant_productos"></td>
-                                <td v-text="categoria.created_at==null?'-':categoria.created_at"></td>
-                                <td v-text="categoria.updated_at==null?'-':categoria.updated_at"></td>
-                                <td v-text="categoria.deleted_at==null?'-':categoria.deleted_at"></td>
+                            <tr v-for="material in ListaMaterial" :key="material.id" >
+                                <td v-text="material.nombre"></td>
+                                <td v-text="material.unidad"></td>
+                                <td v-text="material.costo"></td>
                                 <td>
-                                    <div v-if="categoria.estado">
+                                    <div v-if="material.estado">
                                         <span class="badge badge-success">Activado</span>
                                     </div>
                                     <div v-else>
@@ -71,16 +69,16 @@
                                     </div>
                                 </td>
                                 <td>
-                                    <button type="button" @click="abrirModalEditar(categoria)" title="Editar" class="btn btn-warning btn-sm">
+                                    <button type="button" @click="abrirModalEditar(material)" title="Editar" class="btn btn-warning btn-sm">
                                         <i class="fas fa-user-edit"></i>
                                     </button>
-                                    <template v-if="categoria.estado">
-                                        <button type="button" @click="desactivar(categoria)" title="Desactivar" class="btn btn-danger btn-sm">
+                                    <template v-if="material.estado">
+                                        <button type="button" @click="desactivar(material)" title="Desactivar" class="btn btn-danger btn-sm">
                                             <i class="fas fa-user-times"></i>
                                         </button>
                                     </template>
                                     <template v-else>
-                                        <button type="button" @click="activar(categoria)" title="Activar" class="btn btn-success btn-sm">
+                                        <button type="button" @click="activar(material)" title="Activar" class="btn btn-success btn-sm">
                                             <i class="fas fa-user-check"></i>
                                         </button>
                                     </template>
@@ -134,13 +132,16 @@
                             <div class="row form-group">
                                 <label class="col-md-3 font-weight-bold" for="nom">Nombre&nbsp;<span class="text-danger">*</span></label>
                                 <div class="col-md-9">
-                                    <input type="text" v-model="Categoria.nombre" class="form-control" placeholder="ingrese el nombre" id="nom">
+                                    <input type="text" v-model="Material.nombre" class="form-control" placeholder="ingrese el nombre" id="nom">
                                 </div>
                             </div>
                             <div class="row form-group">
-                                <label class="col-md-3 font-weight-bold" for="des">Descripcion</label>
+                                <label class="col-md-3 font-weight-bold" for="des">Unid. Medida</label>
                                 <div class="col-md-9">
-                                    <input type="text" v-model="Categoria.descripcion" class="form-control" placeholder="ingrese la descripcion" id="des">
+                                    <select v-model="Material.unidad" class="form-control" id="cat">
+                                        <option value="0" disabled>seleccione un tipo</option>
+                                        <option v-for="categoria in SelectCategoria" :key="categoria.id" :value="categoria.id" v-text="categoria.nombre"></option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -189,14 +190,18 @@
         data(){
             return {
                 //datos generales
-                ListaCategoria: [],
-                Categoria: {
+                ListaMaterial: [],
+                Categoria:{
+
+                },
+                Material: {
                     id: 0,
-                    // categoria_id: 0,
                     nombre: '',
-                    descripcion: '',
+                    unidad: '',
+                    costo: 0,
                     estado: ''
                 },
+                SelectTipoUnidad: [],
 
                 //datos de busqueda y filtracion
                 Busqueda: {
@@ -224,7 +229,7 @@
                 },
                 Navegacion:{
                     offset: 3,
-                    ordenarPor: 'categoria.nombre',
+                    ordenarPor: 'nombre',
                     orden: 'desc' 
                 },
 
@@ -274,12 +279,8 @@
             Headers: function(){
                 var headers = [];
 
-                headers.push({titulo: 'Nombre', nombre: 'categoria.nombre'});
-                headers.push({titulo: 'Descripcion', nombre: 'categoria.descripcion'});
-                headers.push({titulo: 'Nro Productos', nombre: 'cant_productos'});
-                headers.push({titulo: 'F. Creacion', nombre: 'categoria.created_at'});
-                headers.push({titulo: 'F. Modificacion', nombre: 'categoria.updated_at'});
-                headers.push({titulo: 'F. Eliminacion', nombre: 'categoria.deleted_at'});
+                headers.push({titulo: 'Nombre', nombre: 'nombre'});
+                headers.push({titulo: 'Unid. Medida', nombre: 'unidad'});
 
                 return headers;
             },
@@ -300,7 +301,7 @@
                 }
                 this.Paginacion.currentPage = page==1?1:page;
 
-                var url = '/categoria?page='+this.Paginacion.currentPage
+                var url = '/material?page='+this.Paginacion.currentPage
                         +'&estado='+this.Busqueda.estado
                         +'&texto='+this.Busqueda.texto
                         +'&filas='+this.Busqueda.filas
@@ -309,203 +310,202 @@
                 
                 var me = this;
                 axios.get(url).then(function (response) {
-                    me.ListaCategoria = response.data.categorias.data;
+                    me.ListaMaterial = response.data.materiales.data;
                     me.Paginacion = response.data.paginacion;
                 }).catch(function (error) {
                     console.log(error)
                 });
             },
-            agregar(){
-                if ( this.validar() ) return;
+            // agregar(){
+            //     if ( this.validar() ) return;
                 
-                var me = this;
-                axios.post('/categoria/agregar', {
-                    'nombre' : this.Categoria.nombre,
-                    'descripcion' : this.Categoria.descripcion,
-                }).then(function(response){
-                    me.cerrarModal();
-                    me.listar();
-                    Swal.fire({
-                        position: 'top-end',
-                        toast: true,
-                        type: 'success',
-                        title: 'La categoria se ha AGREGADO correctamente',
-                        showConfirmButton: false,
-                        timer: 4500,
-                        animation:false,
-                        customClass:{
-                            popup: 'animated bounceIn fast'
-                        }
-                    });
-                }).catch(function(error){
-                    console.log(error);
-                });
-            },
-            editar(){
-                if ( this.validar() ) return;
+            //     var me = this;
+            //     axios.post('/categoria/agregar', {
+            //         'nombre' : this.Categoria.nombre,
+            //         'descripcion' : this.Categoria.descripcion,
+            //     }).then(function(response){
+            //         me.cerrarModal();
+            //         me.listar();
+            //         Swal.fire({
+            //             position: 'top-end',
+            //             toast: true,
+            //             type: 'success',
+            //             title: 'La categoria se ha AGREGADO correctamente',
+            //             showConfirmButton: false,
+            //             timer: 4500,
+            //             animation:false,
+            //             customClass:{
+            //                 popup: 'animated bounceIn fast'
+            //             }
+            //         });
+            //     }).catch(function(error){
+            //         console.log(error);
+            //     });
+            // },
+            // editar(){
+            //     if ( this.validar() ) return;
 
-                var me = this;
-                axios.put('/categoria/editar', {
-                    'id' : this.Categoria.id,
-                    'nombre' : this.Categoria.nombre,
-                    'descripcion' : this.Categoria.descripcion
-                }).then(function(response){
-                    me.cerrarModal();
-                    me.listar();
-                    Swal.fire({
-                        position: 'top-end',
-                        toast: true,
-                        type: 'success',
-                        title: 'La categoria se ha EDITADO correctamente',
-                        showConfirmButton: false,
-                        timer: 4500,
-                        animation:false,
-                        customClass:{
-                            popup: 'animated bounceIn fast'
-                        }
-                    });
-                }).catch(function(error){
-                    console.log(error);
-                });
-            },
-            activar(categoria = []){
-                this.Categoria.id = categoria['id'];
-                this.Categoria.nombre = categoria['nombre'];
+            //     var me = this;
+            //     axios.put('/categoria/editar', {
+            //         'id' : this.Categoria.id,
+            //         'nombre' : this.Categoria.nombre,
+            //         'descripcion' : this.Categoria.descripcion
+            //     }).then(function(response){
+            //         me.cerrarModal();
+            //         me.listar();
+            //         Swal.fire({
+            //             position: 'top-end',
+            //             toast: true,
+            //             type: 'success',
+            //             title: 'La categoria se ha EDITADO correctamente',
+            //             showConfirmButton: false,
+            //             timer: 4500,
+            //             animation:false,
+            //             customClass:{
+            //                 popup: 'animated bounceIn fast'
+            //             }
+            //         });
+            //     }).catch(function(error){
+            //         console.log(error);
+            //     });
+            // },
+            // activar(categoria = []){
+            //     this.Categoria.id = categoria['id'];
+            //     this.Categoria.nombre = categoria['nombre'];
 
-                Swal.fire({
-                    title: '¿Esta seguro de ACTIVAR la categoria "'+this.Categoria.nombre+'"?',
-                    type: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: 'Aceptar',
-                    cancelButtonText: 'Cancelar',
-                    reverseButtons: true,
-                    customClass: {
-                        confirmButton: 'btn btn-success',
-                        cancelButton: 'btn btn-danger'
-                    },
-                    buttonsStyling: false
-                }).then((result) => {
-                    if (result.value) {
-                        var me = this;
+            //     Swal.fire({
+            //         title: '¿Esta seguro de ACTIVAR la categoria "'+this.Categoria.nombre+'"?',
+            //         type: 'warning',
+            //         showCancelButton: true,
+            //         confirmButtonText: 'Aceptar',
+            //         cancelButtonText: 'Cancelar',
+            //         reverseButtons: true,
+            //         customClass: {
+            //             confirmButton: 'btn btn-success',
+            //             cancelButton: 'btn btn-danger'
+            //         },
+            //         buttonsStyling: false
+            //     }).then((result) => {
+            //         if (result.value) {
+            //             var me = this;
                 
-                        axios.put('/categoria/activar', {
-                            'id' : me.Categoria.id
-                        }).then(function (response) {
-                            me.listar();
-                            Swal.fire({
-                                position: 'top-end',
-                                toast: true,
-                                type: 'success',
-                                title: 'La categoria se ha ACTIVADO correctamente',
-                                showConfirmButton: false,
-                                timer: 4500,
-                                animation:false,
-                                customClass:{
-                                    popup: 'animated bounceIn fast'
-                                }
-                            });
-                        }).catch(function (error) {
-                            console.log(error);
-                        });
-                    } else if ( result.dismiss === Swal.DismissReason.cancel ) {
+            //             axios.put('/categoria/activar', {
+            //                 'id' : me.Categoria.id
+            //             }).then(function (response) {
+            //                 me.listar();
+            //                 Swal.fire({
+            //                     position: 'top-end',
+            //                     toast: true,
+            //                     type: 'success',
+            //                     title: 'La categoria se ha ACTIVADO correctamente',
+            //                     showConfirmButton: false,
+            //                     timer: 4500,
+            //                     animation:false,
+            //                     customClass:{
+            //                         popup: 'animated bounceIn fast'
+            //                     }
+            //                 });
+            //             }).catch(function (error) {
+            //                 console.log(error);
+            //             });
+            //         } else if ( result.dismiss === Swal.DismissReason.cancel ) {
 
-                    }
-                });
-            },
-            desactivar(categoria = []){
-                this.Categoria.id = categoria['id'];
-                this.Categoria.nombre = categoria['nombre'];
+            //         }
+            //     });
+            // },
+            // desactivar(categoria = []){
+            //     this.Categoria.id = categoria['id'];
+            //     this.Categoria.nombre = categoria['nombre'];
 
-                Swal.fire({
-                    title: '¿Esta seguro de DESACTIVAR la categoria "'+this.Categoria.nombre+'"?',
-                    type: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: 'Aceptar',
-                    cancelButtonText: 'Cancelar',
-                    reverseButtons: true,
-                    customClass: {
-                        confirmButton: 'btn btn-success',
-                        cancelButton: 'btn btn-danger'
-                    },
-                    buttonsStyling: false
-                }).then((result) => {
-                    if (result.value) {
-                        var me = this;
+            //     Swal.fire({
+            //         title: '¿Esta seguro de DESACTIVAR la categoria "'+this.Categoria.nombre+'"?',
+            //         type: 'warning',
+            //         showCancelButton: true,
+            //         confirmButtonText: 'Aceptar',
+            //         cancelButtonText: 'Cancelar',
+            //         reverseButtons: true,
+            //         customClass: {
+            //             confirmButton: 'btn btn-success',
+            //             cancelButton: 'btn btn-danger'
+            //         },
+            //         buttonsStyling: false
+            //     }).then((result) => {
+            //         if (result.value) {
+            //             var me = this;
                 
-                        axios.put('/categoria/desactivar', {
-                            'id' : me.Categoria.id
-                        }).then(function (response) {
-                            me.listar();
-                            Swal.fire({
-                                position: 'top-end',
-                                toast: true,
-                                type: 'success',
-                                title: 'La categoria se ha DESACTIVADO correctamente',
-                                showConfirmButton: false,
-                                timer: 4500,
-                                animation:false,
-                                customClass:{
-                                    popup: 'animated bounceIn fast'
-                                }
-                            });
-                        }).catch(function (error) {
-                            console.log(error);
-                        });
-                    } else if ( result.dismiss === Swal.DismissReason.cancel ) {
+            //             axios.put('/categoria/desactivar', {
+            //                 'id' : me.Categoria.id
+            //             }).then(function (response) {
+            //                 me.listar();
+            //                 Swal.fire({
+            //                     position: 'top-end',
+            //                     toast: true,
+            //                     type: 'success',
+            //                     title: 'La categoria se ha DESACTIVADO correctamente',
+            //                     showConfirmButton: false,
+            //                     timer: 4500,
+            //                     animation:false,
+            //                     customClass:{
+            //                         popup: 'animated bounceIn fast'
+            //                     }
+            //                 });
+            //             }).catch(function (error) {
+            //                 console.log(error);
+            //             });
+            //         } else if ( result.dismiss === Swal.DismissReason.cancel ) {
 
-                    }
-                });
-            },
+            //         }
+            //     });
+            // },
             abrirModalAgregar(){
-                this.abrirModal(1, 'Nueva Categoria', 'Agregar');
+                this.abrirModal(1, 'Nuevo Material', 'Agregar');
 
-                this.Categoria.nombre = '';
-                this.Categoria.descripcion = '';
+                this.Material.nombre = '';
             },
-            abrirModalEditar(data = []){
-                this.abrirModal(2, 'Editar Categoria', 'Editar');
+            // abrirModalEditar(data = []){
+            //     this.abrirModal(2, 'Editar Categoria', 'Editar');
                 
-                this.Categoria.id = data['id'];
-                this.Categoria.nombre = data['nombre'];
-                this.Categoria.descripcion = data['descripcion'];
-            },
+            //     this.Categoria.id = data['id'];
+            //     this.Categoria.nombre = data['nombre'];
+            //     this.Categoria.descripcion = data['descripcion'];
+            // },
             abrirModal(numero, titulo, accion){
                 this.Modal.estado = 1;
                 this.Modal.numero = numero;
                 this.Modal.titulo = titulo;
                 this.Modal.accion = accion;
             },
-            cerrarModal(){
-                this.Modal.estado = 0;
-                this.Modal.mensaje = [];
+            // cerrarModal(){
+            //     this.Modal.estado = 0;
+            //     this.Modal.mensaje = [];
 
-                this.Error.estado = 0;
-                this.Error.mensaje = [];
+            //     this.Error.estado = 0;
+            //     this.Error.mensaje = [];
 
-                this.Categoria.id = 0;
-                this.Categoria.nombre = '';
-                this.Categoria.descripcion = '';
-            },
-            accionar(accion){
-                switch( accion ){
-                    case 'Agregar': {
-                        this.agregar();
-                        break;
-                    }
-                    case 'Editar': {
-                        this.editar();
-                        break;
-                    }
-                    case 'Activar': {
-                        this.activar();
-                        break;
-                    }
-                    case 'Desactivar': {
-                        this.desactivar();
-                        break;
-                    }
-                }
-            },
+            //     this.Categoria.id = 0;
+            //     this.Categoria.nombre = '';
+            //     this.Categoria.descripcion = '';
+            // },
+            // accionar(accion){
+            //     switch( accion ){
+            //         case 'Agregar': {
+            //             this.agregar();
+            //             break;
+            //         }
+            //         case 'Editar': {
+            //             this.editar();
+            //             break;
+            //         }
+            //         case 'Activar': {
+            //             this.activar();
+            //             break;
+            //         }
+            //         case 'Desactivar': {
+            //             this.desactivar();
+            //             break;
+            //         }
+            //     }
+            // },
             getTitulo(titulo){
                 var seleccionada = 0;
 
@@ -526,46 +526,56 @@
 
                 return titulo;
             },
-            getTipo(rol_id){
-                var nombre = '';
+            // getTipo(rol_id){
+            //     var nombre = '';
 
-                for (let i = 0; i < this.SelectRol.length; i++) {
-                    if ( this.SelectRol[i].id == rol_id ){
-                        nombre = this.SelectRol[i].nombre;
-                        break;
-                    }
-                }
+            //     for (let i = 0; i < this.SelectRol.length; i++) {
+            //         if ( this.SelectRol[i].id == rol_id ){
+            //             nombre = this.SelectRol[i].nombre;
+            //             break;
+            //         }
+            //     }
 
-                switch ( nombre ) {
-                    case 'Administrador': {
-                        return 'N';
-                    }
-                    case 'Puesto': {
-                        return 'P';
-                    }
-                    case 'Almacén': {
-                        return 'A';
-                    }
-                    default: {
-                        console.log('ERROR: no se encontro el nombre de rol para definir el tipo de usuario');
-                    }
-                }
-            },
-            validar(){
-                this.Error.estado = 0;
-                this.Error.mensaje = [];
+            //     switch ( nombre ) {
+            //         case 'Administrador': {
+            //             return 'N';
+            //         }
+            //         case 'Puesto': {
+            //             return 'P';
+            //         }
+            //         case 'Almacén': {
+            //             return 'A';
+            //         }
+            //         default: {
+            //             console.log('ERROR: no se encontro el nombre de rol para definir el tipo de usuario');
+            //         }
+            //     }
+            // },
+            // validar(){
+            //     this.Error.estado = 0;
+            //     this.Error.mensaje = [];
 
-                //nombre
-                if ( !this.Categoria.nombre ) this.Error.mensaje.push("Debe ingresar un nombre");
+            //     //nombre
+            //     if ( !this.Categoria.nombre ) this.Error.mensaje.push("Debe ingresar un nombre");
 
-                if ( this.Error.mensaje.length ) this.Error.estado = 1;
+            //     if ( this.Error.mensaje.length ) this.Error.estado = 1;
 
-                return this.Error.estado;
-            },
+            //     return this.Error.estado;
+            // },
             cambiarPagina(page){
                 if ( page >= 1 && page <= this.Paginacion.lastPage) {
                     this.listar(page);
                 }
+            },
+            selectTipoUnidad(){
+                var me = this;
+                var url = '/categoria/selectTipoUnidad';
+
+                axios.get(url).then(function(response){
+                    me.SelectTipoUnidad = response.data;
+                }).catch(function(error){
+                    console.log(error);
+                });
             }
         },
         mounted() {
