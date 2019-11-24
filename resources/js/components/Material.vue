@@ -155,7 +155,7 @@
                             <div class="row form-group">
                                 <label class="col-md-3 font-weight-bold" for="nom">Costo por Unidad&nbsp;<span class="text-danger">*</span></label>
                                 <div class="col-md-5">
-                                    <input type="text" v-model="Material.costo" class="form-control" placeholder="Ingrese el costo">
+                                    <input type="number" v-model="Material.costo" class="form-control" placeholder="Ingrese el costo">
                                 </div>
                             </div>
                         </div>
@@ -173,13 +173,24 @@
                             <div class="row form-group">
                                 <label class="col-md-3 font-weight-bold" for="nom">Nombre&nbsp;<span class="text-danger">*</span></label>
                                 <div class="col-md-9">
-                                    <input type="text" v-model="Categoria.nombre" class="form-control" placeholder="ingrese el nombre" id="nom">
+                                    <input type="text" v-model="Material.nombre" class="form-control" placeholder="ingrese el nombre">
                                 </div>
                             </div>
                             <div class="row form-group">
-                                <label class="col-md-3 font-weight-bold" for="des">Descripcion</label>
-                                <div class="col-md-9">
-                                    <input type="text" v-model="Categoria.descripcion" class="form-control" placeholder="ingrese la descripcion" id="des">
+                                <label class="col-md-3 font-weight-bold" for="des">Unid.Medida&nbsp;<span class="text-danger">*</span></label>
+                                <div class="col-md-4">
+                                    <select v-model="Subtipo" class="form-control" id="cat">
+                                        <option value="" disabled>Tipo</option>
+                                        <option value="L">Longitud</option>
+                                        <option value="P">Peso</option>
+                                        <option value="U">Unidad</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-5">
+                                    <select v-model="Material.unidad" class="form-control" id="cat">
+                                        <option value="" disabled>Subtipo</option>
+                                        <option v-for="unidad in selectUnidadFiltrado" :key="unidad.nombre" :value="unidad.nombre" v-text="unidad.nombre"></option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -347,7 +358,7 @@
                 axios.post('/material/agregar', {
                     'nombre' : this.Material.nombre,
                     'unidad' : this.Material.unidad,
-                    'costo' : this.Material.costo,
+                    'costo' : this.Material.costo
                 }).then(function(response){
                     me.cerrarModal();
                     me.listar();
@@ -367,33 +378,33 @@
                     console.log(error);
                 });
             },
-            // editar(){
-            //     if ( this.validar() ) return;
+            editar(){
+                if ( this.validar() ) return;
 
-            //     var me = this;
-            //     axios.put('/categoria/editar', {
-            //         'id' : this.Categoria.id,
-            //         'nombre' : this.Categoria.nombre,
-            //         'descripcion' : this.Categoria.descripcion
-            //     }).then(function(response){
-            //         me.cerrarModal();
-            //         me.listar();
-            //         Swal.fire({
-            //             position: 'top-end',
-            //             toast: true,
-            //             type: 'success',
-            //             title: 'La categoria se ha EDITADO correctamente',
-            //             showConfirmButton: false,
-            //             timer: 4500,
-            //             animation:false,
-            //             customClass:{
-            //                 popup: 'animated bounceIn fast'
-            //             }
-            //         });
-            //     }).catch(function(error){
-            //         console.log(error);
-            //     });
-            // },
+                var me = this;
+                axios.put('/categoria/editar', {
+                    'id' : this.Categoria.id,
+                    'nombre' : this.Categoria.nombre,
+                    'descripcion' : this.Categoria.descripcion
+                }).then(function(response){
+                    me.cerrarModal();
+                    me.listar();
+                    Swal.fire({
+                        position: 'top-end',
+                        toast: true,
+                        type: 'success',
+                        title: 'La categoria se ha EDITADO correctamente',
+                        showConfirmButton: false,
+                        timer: 4500,
+                        animation:false,
+                        customClass:{
+                            popup: 'animated bounceIn fast'
+                        }
+                    });
+                }).catch(function(error){
+                    console.log(error);
+                });
+            },
             // activar(categoria = []){
             //     this.Categoria.id = categoria['id'];
             //     this.Categoria.nombre = categoria['nombre'];
@@ -488,13 +499,15 @@
                 this.Material.nombre = '';
                 this.selectUnidad();
             },
-            // abrirModalEditar(data = []){
-            //     this.abrirModal(2, 'Editar Categoria', 'Editar');
+            abrirModalEditar(data = []){
+                this.abrirModal(2, 'Editar Material', 'Editar');
                 
-            //     this.Categoria.id = data['id'];
-            //     this.Categoria.nombre = data['nombre'];
-            //     this.Categoria.descripcion = data['descripcion'];
-            // },
+                this.Material.id = data['id'];
+                this.Material.nombre = data['nombre'];
+                this.Material.unidad = data['unidad'];
+                this.Material.costo  = data['costo'];
+
+            },
             abrirModal(numero, titulo, accion){
                 this.Modal.estado = 1;
                 this.Modal.numero = numero;
@@ -520,10 +533,10 @@
                         this.agregar();
                         break;
                     }
-                    // case 'Editar': {
-                    //     this.editar();
-                    //     break;
-                    // }
+                    case 'Editar': {
+                        this.editar();
+                        break;
+                    }
                     // case 'Activar': {
                     //     this.activar();
                     //     break;
@@ -586,7 +599,7 @@
                 //nombre
                 if ( !this.Material.nombre ) this.Error.mensaje.push("Debe ingresar un nombre");
                 if ( !this.Material.unidad ) this.Error.mensaje.push("Debe seleccionar una Unid. Medida");
-                if ( this.Material.costo == 0) this.Error.mensaje.push("Debe ingresar un costo");
+                if ( this.Material.costo == 0 || this.Material.costo < 0) this.Error.mensaje.push("Debe ingresar un costo válido");
 
                 if ( this.Error.mensaje.length ) this.Error.estado = 1;
 
@@ -612,6 +625,7 @@
             this.listar();
         }
     }
+
 </script>
 
 <style>
@@ -632,3 +646,4 @@
         background-color: skyblue;
     }
 </style>
+
