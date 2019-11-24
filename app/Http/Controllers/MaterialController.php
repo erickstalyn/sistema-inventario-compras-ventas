@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\DB;
 use App\Material;
+use App\Data;
 
 class MaterialController extends Controller
 {
@@ -43,11 +44,28 @@ class MaterialController extends Controller
         ];
     }
 
-    public function selectTipoUnidad(Request $request){
-        $categorias = Categoria::select('id', 'nombre')
-                            ->where('estado', '=', 1)
-                            ->orderBy('nombre', 'desc')->get();
+    public function agregar(Request $request){
+        if ( !$request->ajax() ) return redirect('/');
 
-        return $categorias;
+        try {
+            DB::beginTransaction();
+
+            $material = new Material();
+            $material->nombre = $request->nombre;
+            $material->unidad = $request->unidad;
+            $material->costo = $request->costo;
+            $material->save();
+
+            DB::commit();
+        } catch(Exception $e) {
+            DB::rollback();
+        }
+    }
+
+    public function selectUnidad(Request $request){
+        $tipos = Data::select('id', 'tipo', 'subtipo','nombre')
+                            ->where('tipo','=','U')
+                            ->orderBy('nombre', 'desc')->get();
+        return $tipos;
     }
 }

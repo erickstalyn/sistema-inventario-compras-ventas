@@ -25,7 +25,7 @@ class CreateDataTable extends Migration
             /*
                 P -> Peso
                 L -> Longitud
-                U -> unidad propiament dicha :v
+                U -> unidades propiamente dicha :v
             */
             $table->char('nombre', 50);
         });

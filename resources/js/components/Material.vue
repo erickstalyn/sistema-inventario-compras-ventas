@@ -136,12 +136,26 @@
                                 </div>
                             </div>
                             <div class="row form-group">
-                                <label class="col-md-3 font-weight-bold" for="des">Unid. Medida</label>
-                                <div class="col-md-9">
-                                    <select v-model="Material.unidad" class="form-control" id="cat">
-                                        <option value="0" disabled>seleccione un tipo</option>
-                                        <option v-for="categoria in SelectCategoria" :key="categoria.id" :value="categoria.id" v-text="categoria.nombre"></option>
+                                <label class="col-md-3 font-weight-bold" for="des">Unid.Medida&nbsp;<span class="text-danger">*</span></label>
+                                <div class="col-md-4">
+                                    <select v-model="Subtipo" class="form-control" id="cat">
+                                        <option value="" disabled>Tipo</option>
+                                        <option value="L">Longitud</option>
+                                        <option value="P">Peso</option>
+                                        <option value="U">Unidad</option>
                                     </select>
+                                </div>
+                                <div class="col-md-5">
+                                    <select v-model="Material.unidad" class="form-control" id="cat">
+                                        <option value="" disabled>Subtipo</option>
+                                        <option v-for="unidad in selectUnidadFiltrado" :key="unidad.id" :value="unidad.nombre" v-text="unidad.nombre"></option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <label class="col-md-3 font-weight-bold" for="nom">Costo por Unidad&nbsp;<span class="text-danger">*</span></label>
+                                <div class="col-md-5">
+                                    <input type="text" v-model="Material.costo" class="form-control" placeholder="Ingrese el costo">
                                 </div>
                             </div>
                         </div>
@@ -201,8 +215,8 @@
                     costo: 0,
                     estado: ''
                 },
-                SelectTipoUnidad: [],
-
+                SelectUnidad: [],
+                Subtipo: '',
                 //datos de busqueda y filtracion
                 Busqueda: {
                     texto: '',
@@ -289,6 +303,16 @@
                 if ( this.Modal.numero == 2 ) return true;
 
                 return false;
+            },
+            selectUnidadFiltrado: function(){
+                let selectUnidadFiltrado = [];
+                this.SelectUnidad.forEach(unidad => {
+                    if(unidad.subtipo == this.Subtipo){
+                        selectUnidadFiltrado.push(unidad);
+                        // console.log('Ingrese al if');
+                    }
+                });
+                return selectUnidadFiltrado;
             }
         },
         methods: {
@@ -316,32 +340,33 @@
                     console.log(error)
                 });
             },
-            // agregar(){
-            //     if ( this.validar() ) return;
+            agregar(){
+                if ( this.validar() ) return;
                 
-            //     var me = this;
-            //     axios.post('/categoria/agregar', {
-            //         'nombre' : this.Categoria.nombre,
-            //         'descripcion' : this.Categoria.descripcion,
-            //     }).then(function(response){
-            //         me.cerrarModal();
-            //         me.listar();
-            //         Swal.fire({
-            //             position: 'top-end',
-            //             toast: true,
-            //             type: 'success',
-            //             title: 'La categoria se ha AGREGADO correctamente',
-            //             showConfirmButton: false,
-            //             timer: 4500,
-            //             animation:false,
-            //             customClass:{
-            //                 popup: 'animated bounceIn fast'
-            //             }
-            //         });
-            //     }).catch(function(error){
-            //         console.log(error);
-            //     });
-            // },
+                var me = this;
+                axios.post('/material/agregar', {
+                    'nombre' : this.Material.nombre,
+                    'unidad' : this.Material.unidad,
+                    'costo' : this.Material.costo,
+                }).then(function(response){
+                    me.cerrarModal();
+                    me.listar();
+                    Swal.fire({
+                        position: 'top-end',
+                        toast: true,
+                        type: 'success',
+                        title: 'El material se ha AGREGADO correctamente',
+                        showConfirmButton: false,
+                        timer: 4500,
+                        animation:false,
+                        customClass:{
+                            popup: 'animated bounceIn fast'
+                        }
+                    });
+                }).catch(function(error){
+                    console.log(error);
+                });
+            },
             // editar(){
             //     if ( this.validar() ) return;
 
@@ -461,6 +486,7 @@
                 this.abrirModal(1, 'Nuevo Material', 'Agregar');
 
                 this.Material.nombre = '';
+                this.selectUnidad();
             },
             // abrirModalEditar(data = []){
             //     this.abrirModal(2, 'Editar Categoria', 'Editar');
@@ -475,37 +501,39 @@
                 this.Modal.titulo = titulo;
                 this.Modal.accion = accion;
             },
-            // cerrarModal(){
-            //     this.Modal.estado = 0;
-            //     this.Modal.mensaje = [];
+            cerrarModal(){
+                this.Modal.estado = 0;
+                this.Modal.mensaje = [];
 
-            //     this.Error.estado = 0;
-            //     this.Error.mensaje = [];
+                this.Error.estado = 0;
+                this.Error.mensaje = [];
 
-            //     this.Categoria.id = 0;
-            //     this.Categoria.nombre = '';
-            //     this.Categoria.descripcion = '';
-            // },
-            // accionar(accion){
-            //     switch( accion ){
-            //         case 'Agregar': {
-            //             this.agregar();
-            //             break;
-            //         }
-            //         case 'Editar': {
-            //             this.editar();
-            //             break;
-            //         }
-            //         case 'Activar': {
-            //             this.activar();
-            //             break;
-            //         }
-            //         case 'Desactivar': {
-            //             this.desactivar();
-            //             break;
-            //         }
-            //     }
-            // },
+                this.Material.id = 0;
+                this.Material.nombre = '';
+                this.Material.unidad = '';
+                this.Subtipo = '';
+                this.Material.costo = 0;
+            },
+            accionar(accion){
+                switch( accion ){
+                    case 'Agregar': {
+                        this.agregar();
+                        break;
+                    }
+                    // case 'Editar': {
+                    //     this.editar();
+                    //     break;
+                    // }
+                    // case 'Activar': {
+                    //     this.activar();
+                    //     break;
+                    // }
+                    // case 'Desactivar': {
+                    //     this.desactivar();
+                    //     break;
+                    // }
+                }
+            },
             getTitulo(titulo){
                 var seleccionada = 0;
 
@@ -551,28 +579,30 @@
             //         }
             //     }
             // },
-            // validar(){
-            //     this.Error.estado = 0;
-            //     this.Error.mensaje = [];
+            validar(){
+                this.Error.estado = 0;
+                this.Error.mensaje = [];
 
-            //     //nombre
-            //     if ( !this.Categoria.nombre ) this.Error.mensaje.push("Debe ingresar un nombre");
+                //nombre
+                if ( !this.Material.nombre ) this.Error.mensaje.push("Debe ingresar un nombre");
+                if ( !this.Material.unidad ) this.Error.mensaje.push("Debe seleccionar una Unid. Medida");
+                if ( this.Material.costo == 0) this.Error.mensaje.push("Debe ingresar un costo");
 
-            //     if ( this.Error.mensaje.length ) this.Error.estado = 1;
+                if ( this.Error.mensaje.length ) this.Error.estado = 1;
 
-            //     return this.Error.estado;
-            // },
+                return this.Error.estado;
+            },
             cambiarPagina(page){
                 if ( page >= 1 && page <= this.Paginacion.lastPage) {
                     this.listar(page);
                 }
             },
-            selectTipoUnidad(){
+            selectUnidad(){
                 var me = this;
-                var url = '/categoria/selectTipoUnidad';
+                var url = '/material/selectUnidad';
 
                 axios.get(url).then(function(response){
-                    me.SelectTipoUnidad = response.data;
+                    me.SelectUnidad = response.data;
                 }).catch(function(error){
                     console.log(error);
                 });

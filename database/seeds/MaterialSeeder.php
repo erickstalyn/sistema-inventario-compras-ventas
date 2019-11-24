@@ -13,12 +13,12 @@ class MaterialSeeder extends Seeder
     {
         DB::table('material')->insert(array(
             'nombre' => 'Tela R3',
-            'unidad' => 'cm',
+            'unidad' => 'Centímetro',
             'costo' => 8.50
         ));
         DB::table('material')->insert(array(
             'nombre' => 'Cierre Rey grande',
-            'unidad' => 'unidad',
+            'unidad' => 'Unidad (1)',
             'costo' => 2.90
         ));
     }

@@ -41,5 +41,25 @@ class DataSeeder extends Seeder
             'subtipo' => 'P',
             'nombre' => 'Miligramo',
         ));
+        DB::table('data')->insert(array(
+            'tipo' => 'U',
+            'subtipo' => 'U',
+            'nombre' => 'Unidad (1)',
+        ));
+        DB::table('data')->insert(array(
+            'tipo' => 'U',
+            'subtipo' => 'U',
+            'nombre' => 'Decena (10)',
+        ));
+        DB::table('data')->insert(array(
+            'tipo' => 'U',
+            'subtipo' => 'U',
+            'nombre' => 'Centena (100)',
+        ));
+        DB::table('data')->insert(array(
+            'tipo' => 'U',
+            'subtipo' => 'U',
+            'nombre' => 'Docena (12)',
+        ));
     }
 }
