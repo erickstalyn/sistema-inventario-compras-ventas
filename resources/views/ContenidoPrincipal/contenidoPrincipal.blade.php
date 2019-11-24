@@ -5,9 +5,12 @@
     @if(Auth::check())
         @if(Auth::user()->rol=='M')
             <template v-if="menu==0">
-                <categoria></categoria>
+                <material></material>
             </template>
             <template v-if="menu==1">
+                <categoria></categoria>
+            </template>
+            <template v-if="menu==2">
                 <producto></producto>
             </template>
             <template v-if="menu==5">
