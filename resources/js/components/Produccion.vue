@@ -18,21 +18,38 @@
 
             <!-- Inputs de busqueda -->
             <div class="row form-group">
-                <div class="col-md-8">
+                <div class="col-md-2">
                     <div class="input-group"> 
-                        <select class="col-md-3 form-control text-gray-900" v-model="Busqueda.estado">
+                        <select class=" form-control text-gray-900" v-model="Busqueda.estado">
                             <option value="3">Todos</option>
                             <option value="2">Sin iniciar</option>
                             <option value="1">En Proceso</option>
                             <option value="0">Finalizado</option>
                         </select>
-                        <input type="search" class="form-control" v-model="Busqueda.texto" @keyup.enter="listar()">
-                        <button type="button" class="btn btn-primary" @click="listar()">
-                            <i class="fa fa-search"></i>&nbsp; Buscar
-                        </button>
                     </div>
                 </div>
-                <div class="col-md-2"></div>
+                <div class="col-md-1">
+                    <label for="">Fecha</label>
+                </div>
+                <div class="col-md-1">
+                    <select class="form-control text-gray-900" v-model="Busqueda.dia">
+                        <option value="0">Día</option>
+                        <option v-for="item in Filas" :key="item" :value="item" v-text="item"></option>
+                    </select>
+                </div>
+                <div class="col-md-1">
+                    <select class="form-control text-gray-900" v-model="Busqueda.mes">
+                        <option value="0">Mes</option>
+                        <option v-for="item in Filas" :key="item" :value="item" v-text="item"></option>
+                    </select>
+                </div>
+                <div class="col-md-1">
+                    <select class="form-control text-gray-900" v-model="Busqueda.year">
+                        <option value="0">Año</option>
+                        <option v-for="item in Filas" :key="item" :value="item" v-text="item"></option>
+                    </select>
+                </div>
+                <div class="col-md-1"></div>
                 <div class="col-md-1" align="right">
                     <label>N° filas:</label>
                 </div>
@@ -41,6 +58,10 @@
                         <option v-for="item in Filas" :key="item" :value="item" v-text="item"></option>
                     </select>
                 </div>
+                <div class="col-md-1"></div>
+                <button type="button" class="btn btn-primary" @click="listar()">
+                    <i class="fa fa-search"></i>&nbsp; Buscar
+                </button>
             </div>
 
             <!-- Listado -->
@@ -50,7 +71,6 @@
                     <table class="table table-bordered table-striped table-sm text-gray-900">
                         <thead>
                             <tr class="ec-th">
-                                <!-- <th v-for="head in Headers" :key="head.nombre" @click="listar(1, head.nombre)" class="ec-cursor" v-text="getTitulo(head.titulo)"></th> -->
                                 <th>Fecha de inicio</th>
                                 <th>Fecha programada</th>
                                 <th>Fecha finalizada</th>
@@ -138,8 +158,11 @@
                 //datos de busqueda y filtracion
                 Busqueda: {
                     texto: '',
-                    estado: 1,
-                    filas: 5
+                    estado: 3,
+                    filas: 5,
+                    dia: 0,
+                    mes: 0,
+                    year: 0
                 },
 
                 //datos de modales
