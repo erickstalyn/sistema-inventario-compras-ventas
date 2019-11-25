@@ -16,7 +16,10 @@ class ProduccionController extends Controller
         $ordenarPor = $request->ordenarPor;
         $orden = $request->orden;
         $hoy = Carbon::now('America/Lima')->toDateString();
-        // echo("Soy el now: " . $hoy);
+        //Fechas
+        $dia = $request->dia;
+        $mes = $request->mes;
+        $year = $request->year;
 
         $producciones = Produccion::select('id', 'total','fecha_inicio', 'fecha_programada', 'fecha_fin')
                             ->where(function ($query) use ($estado, $hoy) {
@@ -30,9 +33,27 @@ class ProduccionController extends Controller
                                     }
                                 }
                             })
-                            ->where(function ($query) use ($texto) {
-                                if ( $texto != '' ) {
-                                    $query->where('nombre', 'like', '%'.$texto.'%');
+                            ->where(function ($query) use ($dia, $mes, $year) {
+                                if($dia != '' && $mes != '' && $year != ''){//todos los campos llenos
+                                    $query->whereDay('fecha_inicio', $dia)
+                                        ->whereMonth('fecha_inicio', $mes)
+                                        ->whereYear('fecha_inicio', $year);
+                                }else if($dia != '' && $mes != ''){// dia y mes llenos
+                                    $query->whereDay('fecha_inicio', $dia)
+                                        ->whereMonth('fecha_inicio', $mes);
+                                }else if($dia != '' && $year != ''){//dia y año lleno
+                                    $query->whereDay('fecha_inicio', $dia)
+                                        ->whereYear('fecha_inicio', $year);
+                                }else if($mes != '' && $year != ''){//mes y año lleno
+                                    $query->whereMonth('fecha_inicio', $mes)
+                                        ->whereYear('fecha_inicio', $year);
+                                }else if($dia != ''){//dia lleno
+                                    $query->whereDay('fecha_inicio', $dia);
+                                }else if($mes != ''){//mes lleno
+                                    $query->whereMonth('fecha_inicio', $mes);
+                                }else if($year != ''){//año lleno
+                                    $query->whereYear('fecha_inicio', $year);
+                                }else{
                                 }
                             })
                             ->orderBy($ordenarPor, $orden)->paginate($filas);

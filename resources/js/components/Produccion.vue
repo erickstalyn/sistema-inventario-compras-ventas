@@ -29,7 +29,7 @@
                     </div>
                 </div>
                 <div class="col-md-1">
-                    <label for="">Fecha</label>
+                    <label for="">Fecha de inicio</label>
                 </div>
                 <div class="col-md-1">
                     Dia
@@ -165,7 +165,7 @@
                     filas: 5,
                     dia: '',
                     mes: '',
-                    year: ''
+                    year: '2019'
                 },
 
                 //datos de modales
@@ -275,6 +275,9 @@
                         +'&estado='+this.Busqueda.estado
                         +'&texto='+this.Busqueda.texto
                         +'&filas='+this.Busqueda.filas
+                        +'&dia='+this.Busqueda.dia
+                        +'&mes='+this.Busqueda.mes
+                        +'&year='+this.Busqueda.year
                         +'&ordenarPor='+this.Navegacion.ordenarPor
                         +'&orden='+this.Navegacion.orden;
                 
