@@ -132,13 +132,13 @@
                             <div class="row form-group">
                                 <label class="col-md-3 font-weight-bold" for="nom">Nombre&nbsp;<span class="text-danger">*</span></label>
                                 <div class="col-md-9">
-                                    <input type="text" v-model="Material.nombre" class="form-control" placeholder="ingrese el nombre" id="nom">
+                                    <input type="text" v-model="Material.nombre" class="form-control" placeholder="ingrese el nombre">
                                 </div>
                             </div>
                             <div class="row form-group">
                                 <label class="col-md-3 font-weight-bold" for="des">Unid.Medida&nbsp;<span class="text-danger">*</span></label>
                                 <div class="col-md-4">
-                                    <select v-model="Subtipo" class="form-control" id="cat">
+                                    <select v-model="Material.subtipo" class="form-control" id="cat">
                                         <option value="" disabled>Tipo</option>
                                         <option value="L">Longitud</option>
                                         <option value="P">Peso</option>
@@ -154,7 +154,7 @@
                             </div>
                             <div class="row form-group">
                                 <label class="col-md-3 font-weight-bold" for="nom">Costo por Unidad&nbsp;<span class="text-danger">*</span></label>
-                                <div class="col-md-5">
+                                <div class="col-md-4">
                                     <input type="number" v-model="Material.costo" class="form-control" placeholder="Ingrese el costo">
                                 </div>
                             </div>
@@ -179,7 +179,7 @@
                             <div class="row form-group">
                                 <label class="col-md-3 font-weight-bold" for="des">Unid.Medida&nbsp;<span class="text-danger">*</span></label>
                                 <div class="col-md-4">
-                                    <select v-model="Subtipo" class="form-control" id="cat">
+                                    <select v-model="Material.subtipo" class="form-control" id="cat">
                                         <option value="" disabled>Tipo</option>
                                         <option value="L">Longitud</option>
                                         <option value="P">Peso</option>
@@ -189,8 +189,14 @@
                                 <div class="col-md-5">
                                     <select v-model="Material.unidad" class="form-control" id="cat">
                                         <option value="" disabled>Subtipo</option>
-                                        <option v-for="unidad in selectUnidadFiltrado" :key="unidad.nombre" :value="unidad.nombre" v-text="unidad.nombre"></option>
+                                        <option v-for="unidad in selectUnidadFiltrado" :key="unidad.id" :value="unidad.nombre" v-text="unidad.nombre"></option>
                                     </select>
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <label class="col-md-3 font-weight-bold" for="nom">Costo por Unidad&nbsp;<span class="text-danger">*</span></label>
+                                <div class="col-md-4">
+                                    <input type="number" v-model="Material.costo" class="form-control" placeholder="Ingrese el costo">
                                 </div>
                             </div>
                         </div>
@@ -222,12 +228,20 @@
                 Material: {
                     id: 0,
                     nombre: '',
+                    subtipo: '',
                     unidad: '',
                     costo: 0,
                     estado: ''
                 },
+                MaterialOrigen: {
+                    id: 0,
+                    nombre: '',
+                    subtipo: '',
+                    unidad: '',
+                    costo: 0,
+                },
                 SelectUnidad: [],
-                Subtipo: '',
+                // Subtipo: '',
                 //datos de busqueda y filtracion
                 Busqueda: {
                     texto: '',
@@ -318,7 +332,7 @@
             selectUnidadFiltrado: function(){
                 let selectUnidadFiltrado = [];
                 this.SelectUnidad.forEach(unidad => {
-                    if(unidad.subtipo == this.Subtipo){
+                    if(unidad.subtipo == this.Material.subtipo){
                         selectUnidadFiltrado.push(unidad);
                         // console.log('Ingrese al if');
                     }
@@ -357,6 +371,7 @@
                 var me = this;
                 axios.post('/material/agregar', {
                     'nombre' : this.Material.nombre,
+                    'subtipo': this.Material.subtipo,
                     'unidad' : this.Material.unidad,
                     'costo' : this.Material.costo
                 }).then(function(response){
@@ -382,10 +397,12 @@
                 if ( this.validar() ) return;
 
                 var me = this;
-                axios.put('/categoria/editar', {
-                    'id' : this.Categoria.id,
-                    'nombre' : this.Categoria.nombre,
-                    'descripcion' : this.Categoria.descripcion
+                axios.put('/material/editar', {
+                    'id' : this.Material.id,
+                    'nombre' : this.Material.nombre,
+                    'subtipo' : this.Material.subtipo,
+                    'unidad' : this.Material.unidad,
+                    'costo' : this.Material.costo,
                 }).then(function(response){
                     me.cerrarModal();
                     me.listar();
@@ -393,7 +410,7 @@
                         position: 'top-end',
                         toast: true,
                         type: 'success',
-                        title: 'La categoria se ha EDITADO correctamente',
+                        title: 'El Material se ha EDITADO correctamente',
                         showConfirmButton: false,
                         timer: 4500,
                         animation:false,
@@ -496,17 +513,27 @@
             abrirModalAgregar(){
                 this.abrirModal(1, 'Nuevo Material', 'Agregar');
 
-                this.Material.nombre = '';
-                this.selectUnidad();
+                //Verifico si el arreglo SelectUnidad esta vacia
+                if(!this.SelectUnidad.length) this.selectUnidad();
             },
             abrirModalEditar(data = []){
                 this.abrirModal(2, 'Editar Material', 'Editar');
                 
                 this.Material.id = data['id'];
                 this.Material.nombre = data['nombre'];
+                this.Material.subtipo = data['subtipo'];
                 this.Material.unidad = data['unidad'];
                 this.Material.costo  = data['costo'];
 
+                //Lleno los campos de mi Material Original
+                this.MaterialOrigen.id = data['id'];
+                this.MaterialOrigen.nombre = data['nombre'];
+                this.MaterialOrigen.subtipo = data['subtipo'];
+                this.MaterialOrigen.unidad = data['unidad'];
+                this.MaterialOrigen.costo  = data['costo'];
+                
+                //Verifico si el arreglo SelectUnidad esta vacia
+                if(!this.SelectUnidad.length) this.selectUnidad();
             },
             abrirModal(numero, titulo, accion){
                 this.Modal.estado = 1;
@@ -524,7 +551,7 @@
                 this.Material.id = 0;
                 this.Material.nombre = '';
                 this.Material.unidad = '';
-                this.Subtipo = '';
+                this.Material.subtipo = '';
                 this.Material.costo = 0;
             },
             accionar(accion){
@@ -596,13 +623,47 @@
                 this.Error.estado = 0;
                 this.Error.mensaje = [];
 
-                //nombre
-                if ( !this.Material.nombre ) this.Error.mensaje.push("Debe ingresar un nombre");
-                if ( !this.Material.unidad ) this.Error.mensaje.push("Debe seleccionar una Unid. Medida");
-                if ( this.Material.costo == 0 || this.Material.costo < 0) this.Error.mensaje.push("Debe ingresar un costo válido");
+                //Recorrere la lista de Material
+                if(this.Modal.numero == 1){
+                    //Modal agregar
+                    let registrado = false;
+                    for (let i = 0; i < this.ListaMaterial.length; i++) {
+                        if(this.ListaMaterial[i].nombre == this.Material.nombre) {
+                            this.Error.mensaje.push("El material '" + this.Material.nombre + "' ya está registrado");
+                            registrado = true;
+                            break;
+                        }
+                    }
+                    if(!registrado){
+                        if ( !this.Material.nombre ) this.Error.mensaje.push("Debe ingresar un nombre");
+                        if ( !this.Material.unidad ) this.Error.mensaje.push("Debe seleccionar una Unid. Medida");
+                        if ( this.Material.costo == 0 || this.Material.costo < 0) this.Error.mensaje.push("Debe ingresar un costo válido");
+                    }
+                }else{
+                    //Modal editar
+                    if(this.Material.nombre != this.MaterialOrigen.nombre){
+                        for (let i = 0; i < this.ListaMaterial.length; i++) {
+                            if(this.ListaMaterial[i].nombre == this.Material.nombre) {
+                                this.Error.mensaje.push("El material '" + this.Material.nombre + "' ya está registrado");
+                                break;
+                            }
+                        }
+                    }else{
+                        if(this.Material.subtipo == this.MaterialOrigen.subtipo && this.Material.unidad == this.MaterialOrigen.unidad && this.Material.costo == this.MaterialOrigen.costo){
+                            this.Error.mensaje.push("Ningun cambio registrado");
+                        }else{
+                            if ( !this.Material.nombre ) this.Error.mensaje.push("Debe ingresar un nombre");
+                            if ( !this.Material.unidad ) this.Error.mensaje.push("Debe seleccionar una Unid. Medida");
+                            if ( this.Material.costo == 0 || this.Material.costo < 0) this.Error.mensaje.push("Debe ingresar un costo válido");
+                        }
+                    }
+                }
+
+                // if ( !this.Material.nombre ) this.Error.mensaje.push("Debe ingresar un nombre");
+                // if ( !this.Material.unidad ) this.Error.mensaje.push("Debe seleccionar una Unid. Medida");
+                // if ( this.Material.costo == 0 || this.Material.costo < 0) this.Error.mensaje.push("Debe ingresar un costo válido");
 
                 if ( this.Error.mensaje.length ) this.Error.estado = 1;
-
                 return this.Error.estado;
             },
             cambiarPagina(page){

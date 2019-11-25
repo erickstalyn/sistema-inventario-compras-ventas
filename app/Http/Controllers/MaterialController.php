@@ -18,7 +18,7 @@ class MaterialController extends Controller
         $ordenarPor = $request->ordenarPor;
         $orden = $request->orden;
 
-        $materiales = Material::select('id', 'nombre', 'unidad', 'costo', 'estado')
+        $materiales = Material::select('id', 'nombre','subtipo', 'unidad', 'costo', 'estado')
                             ->where(function ($query) use ($estado) {
                                 if ( $estado != 2 ) {
                                     $query->where('estado', '=', $estado);
@@ -52,6 +52,26 @@ class MaterialController extends Controller
 
             $material = new Material();
             $material->nombre = $request->nombre;
+            $material->subtipo = $request->subtipo;
+            $material->unidad = $request->unidad;
+            $material->costo = $request->costo;
+            $material->save();
+
+            DB::commit();
+        } catch(Exception $e) {
+            DB::rollback();
+        }
+    }
+    
+    public function editar(Request $request){
+        if ( !$request->ajax() ) return redirect('/');
+
+        try {
+            DB::beginTransaction();
+
+            $material = Material::findOrFail($request->id);
+            $material->nombre = $request->nombre;
+            $material->subtipo = $request->subtipo;
             $material->unidad = $request->unidad;
             $material->costo = $request->costo;
             $material->save();
@@ -65,7 +85,7 @@ class MaterialController extends Controller
     public function selectUnidad(Request $request){
         $tipos = Data::select('id', 'tipo', 'subtipo','nombre')
                             ->where('tipo','=','U')
-                            ->orderBy('nombre', 'desc')->get();
+                            ->orderBy('id', 'asc')->get();
         return $tipos;
     }
 }

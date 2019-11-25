@@ -48,6 +48,7 @@ Route::group(['middleware' => ['auth']], function () {
         //RUTAS PARA MATERIALES
         Route::get('/material', 'MaterialController@listar'); //métodos generales
         Route::post('/material/agregar', 'MaterialController@agregar');
+        Route::put('/material/editar', 'MaterialController@editar');
         Route::get('/material/selectUnidad', 'MaterialController@selectUnidad'); //metodos secundarios
 
 
