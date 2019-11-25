@@ -14,6 +14,9 @@
                 <producto></producto>
             </template>
             <template v-if="menu==5">
+                <produccion></produccion>
+            </template>
+            <template v-if="menu==6">
                 <usuario></usuario>
             </template>
 

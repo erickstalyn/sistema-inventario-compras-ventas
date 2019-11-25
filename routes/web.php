@@ -53,6 +53,8 @@ Route::group(['middleware' => ['auth']], function () {
         Route::put('/material/desactivar', 'MaterialController@desactivar');
         Route::get('/material/selectUnidad', 'MaterialController@selectUnidad'); //metodos secundarios
 
+        //RUTAS PARA PRODUCCIONES
+        Route::get('/produccion', 'ProduccionController@listar'); //métodos generales
 
         //RUTAS PARA CATEGORIA
         Route::get('/categoria', 'CategoriaController@listar'); //metodos generales
