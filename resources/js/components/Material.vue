@@ -9,8 +9,8 @@
                 <i class="fas fa-map-signs"></i>&nbsp;&nbsp;
                 <span class="h3 mb-0 text-gray-900">Materiales&nbsp;</span>
                 <button type="button" class="btn btn-success" @click="abrirModalAgregar()">
-                    <i class="fas fa-user-plus"></i>&nbsp; Nuevo
-                </button>
+                    <i class="fas fa-hammer"></i>&nbsp; Nuevo
+                </button>&nbsp;
                 <button type="button" class="btn btn-danger">
                     <i class="far fa-file-pdf"></i>&nbsp; PDF
                 </button>
@@ -20,7 +20,7 @@
             <div class="row form-group">
                 <div class="col-md-8">
                     <div class="input-group"> 
-                        <select class="col-md-3 form-control text-gray-900" v-model="Busqueda.estado" @click="listar()">
+                        <select class="col-md-3 form-control text-gray-900" v-model="Busqueda.estado">
                             <option value="2">Todos</option>
                             <option value="1">Activados</option>
                             <option value="0">Desactivados</option>
@@ -36,7 +36,7 @@
                     <label>N° filas:</label>
                 </div>
                 <div class="col-md-1">
-                    <select class="form-control text-gray-900" v-model="Busqueda.filas" @click="listar()">
+                    <select class="form-control text-gray-900" v-model="Busqueda.filas">
                         <option v-for="item in Filas" :key="item" :value="item" v-text="item"></option>
                     </select>
                 </div>
@@ -241,7 +241,6 @@
                     costo: 0,
                 },
                 SelectUnidad: [],
-                // Subtipo: '',
                 //datos de busqueda y filtracion
                 Busqueda: {
                     texto: '',
@@ -268,8 +267,8 @@
                 },
                 Navegacion:{
                     offset: 3,
-                    ordenarPor: 'nombre',
-                    orden: 'desc' 
+                    ordenarPor: 'id',
+                    orden: 'desc'
                 },
 
                 //datos de errores
@@ -343,10 +342,10 @@
         methods: {
             listar(page = 1, ordenarPor = ''){
                 if ( ordenarPor == this.Navegacion.ordenarPor ) {
-                    this.Navegacion.orden = (this.Navegacion.orden == 'asc'?'desc':'asc');
+                    this.Navegacion.orden = (this.Navegacion.orden == 'asc' ? 'desc' : 'asc');
                 } else {
-                    this.Navegacion.ordenarPor = ordenarPor!=''?ordenarPor:this.Navegacion.ordenarPor;
-                    this.Navegacion.orden = 'asc';
+                    this.Navegacion.ordenarPor = (ordenarPor != '' ? ordenarPor: this.Navegacion.ordenarPor);
+                    // this.Navegacion.orden = 'asc';
                 }
                 this.Paginacion.currentPage = page==1?1:page;
 
@@ -422,94 +421,94 @@
                     console.log(error);
                 });
             },
-            // activar(categoria = []){
-            //     this.Categoria.id = categoria['id'];
-            //     this.Categoria.nombre = categoria['nombre'];
+            activar(material = []){
+                this.Material.id = material['id'];
+                this.Material.nombre = material['nombre'];
 
-            //     Swal.fire({
-            //         title: '¿Esta seguro de ACTIVAR la categoria "'+this.Categoria.nombre+'"?',
-            //         type: 'warning',
-            //         showCancelButton: true,
-            //         confirmButtonText: 'Aceptar',
-            //         cancelButtonText: 'Cancelar',
-            //         reverseButtons: true,
-            //         customClass: {
-            //             confirmButton: 'btn btn-success',
-            //             cancelButton: 'btn btn-danger'
-            //         },
-            //         buttonsStyling: false
-            //     }).then((result) => {
-            //         if (result.value) {
-            //             var me = this;
+                Swal.fire({
+                    title: '¿Esta seguro de ACTIVAR el material "'+this.Material.nombre+'"?',
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Aceptar',
+                    cancelButtonText: 'Cancelar',
+                    reverseButtons: true,
+                    customClass: {
+                        confirmButton: 'btn btn-success',
+                        cancelButton: 'btn btn-danger'
+                    },
+                    buttonsStyling: false
+                }).then((result) => {
+                    if (result.value) {
+                        var me = this;
                 
-            //             axios.put('/categoria/activar', {
-            //                 'id' : me.Categoria.id
-            //             }).then(function (response) {
-            //                 me.listar();
-            //                 Swal.fire({
-            //                     position: 'top-end',
-            //                     toast: true,
-            //                     type: 'success',
-            //                     title: 'La categoria se ha ACTIVADO correctamente',
-            //                     showConfirmButton: false,
-            //                     timer: 4500,
-            //                     animation:false,
-            //                     customClass:{
-            //                         popup: 'animated bounceIn fast'
-            //                     }
-            //                 });
-            //             }).catch(function (error) {
-            //                 console.log(error);
-            //             });
-            //         } else if ( result.dismiss === Swal.DismissReason.cancel ) {
+                        axios.put('/material/activar', {
+                            'id' : me.Material.id
+                        }).then(function (response) {
+                            me.listar();
+                            Swal.fire({
+                                position: 'top-end',
+                                toast: true,
+                                type: 'success',
+                                title: 'El material se ha ACTIVADO correctamente',
+                                showConfirmButton: false,
+                                timer: 4500,
+                                animation:false,
+                                customClass:{
+                                    popup: 'animated bounceIn fast'
+                                }
+                            });
+                        }).catch(function (error) {
+                            console.log(error);
+                        });
+                    } else if ( result.dismiss === Swal.DismissReason.cancel ) {
 
-            //         }
-            //     });
-            // },
-            // desactivar(categoria = []){
-            //     this.Categoria.id = categoria['id'];
-            //     this.Categoria.nombre = categoria['nombre'];
+                    }
+                });
+            },
+            desactivar(material = []){
+                this.Material.id = material['id'];
+                this.Material.nombre = material['nombre'];
 
-            //     Swal.fire({
-            //         title: '¿Esta seguro de DESACTIVAR la categoria "'+this.Categoria.nombre+'"?',
-            //         type: 'warning',
-            //         showCancelButton: true,
-            //         confirmButtonText: 'Aceptar',
-            //         cancelButtonText: 'Cancelar',
-            //         reverseButtons: true,
-            //         customClass: {
-            //             confirmButton: 'btn btn-success',
-            //             cancelButton: 'btn btn-danger'
-            //         },
-            //         buttonsStyling: false
-            //     }).then((result) => {
-            //         if (result.value) {
-            //             var me = this;
+                Swal.fire({
+                    title: '¿Esta seguro de DESACTIVAR el material "'+this.Material.nombre+'"?',
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Aceptar',
+                    cancelButtonText: 'Cancelar',
+                    reverseButtons: true,
+                    customClass: {
+                        confirmButton: 'btn btn-success',
+                        cancelButton: 'btn btn-danger'
+                    },
+                    buttonsStyling: false
+                }).then((result) => {
+                    if (result.value) {
+                        var me = this;
                 
-            //             axios.put('/categoria/desactivar', {
-            //                 'id' : me.Categoria.id
-            //             }).then(function (response) {
-            //                 me.listar();
-            //                 Swal.fire({
-            //                     position: 'top-end',
-            //                     toast: true,
-            //                     type: 'success',
-            //                     title: 'La categoria se ha DESACTIVADO correctamente',
-            //                     showConfirmButton: false,
-            //                     timer: 4500,
-            //                     animation:false,
-            //                     customClass:{
-            //                         popup: 'animated bounceIn fast'
-            //                     }
-            //                 });
-            //             }).catch(function (error) {
-            //                 console.log(error);
-            //             });
-            //         } else if ( result.dismiss === Swal.DismissReason.cancel ) {
+                        axios.put('/material/desactivar', {
+                            'id' : me.Material.id
+                        }).then(function (response) {
+                            me.listar();
+                            Swal.fire({
+                                position: 'top-end',
+                                toast: true,
+                                type: 'success',
+                                title: 'El material se ha DESACTIVADO correctamente',
+                                showConfirmButton: false,
+                                timer: 4500,
+                                animation:false,
+                                customClass:{
+                                    popup: 'animated bounceIn fast'
+                                }
+                            });
+                        }).catch(function (error) {
+                            console.log(error);
+                        });
+                    } else if ( result.dismiss === Swal.DismissReason.cancel ) {
 
-            //         }
-            //     });
-            // },
+                    }
+                });
+            },
             abrirModalAgregar(){
                 this.abrirModal(1, 'Nuevo Material', 'Agregar');
 
@@ -564,14 +563,14 @@
                         this.editar();
                         break;
                     }
-                    // case 'Activar': {
-                    //     this.activar();
-                    //     break;
-                    // }
-                    // case 'Desactivar': {
-                    //     this.desactivar();
-                    //     break;
-                    // }
+                    case 'Activar': {
+                        this.activar();
+                        break;
+                    }
+                    case 'Desactivar': {
+                        this.desactivar();
+                        break;
+                    }
                 }
             },
             getTitulo(titulo){
@@ -594,31 +593,6 @@
 
                 return titulo;
             },
-            // getTipo(rol_id){
-            //     var nombre = '';
-
-            //     for (let i = 0; i < this.SelectRol.length; i++) {
-            //         if ( this.SelectRol[i].id == rol_id ){
-            //             nombre = this.SelectRol[i].nombre;
-            //             break;
-            //         }
-            //     }
-
-            //     switch ( nombre ) {
-            //         case 'Administrador': {
-            //             return 'N';
-            //         }
-            //         case 'Puesto': {
-            //             return 'P';
-            //         }
-            //         case 'Almacén': {
-            //             return 'A';
-            //         }
-            //         default: {
-            //             console.log('ERROR: no se encontro el nombre de rol para definir el tipo de usuario');
-            //         }
-            //     }
-            // },
             validar(){
                 this.Error.estado = 0;
                 this.Error.mensaje = [];

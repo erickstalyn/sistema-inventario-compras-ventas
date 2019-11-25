@@ -82,6 +82,34 @@ class MaterialController extends Controller
         }
     }
 
+    public function activar(Request $request){
+        try {
+            DB::beginTransaction();
+            
+            $material = Material::findOrFail($request->id);
+            $material->estado = 1;
+            $material->save();
+
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollback();
+        }
+    }
+
+    public function desactivar(Request $request){
+        try {
+            DB::beginTransaction();
+
+            $material = Material::findOrFail($request->id);
+            $material->estado = 0;
+            $material->save();
+
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollback();
+        }
+    }
+
     public function selectUnidad(Request $request){
         $tipos = Data::select('id', 'tipo', 'subtipo','nombre')
                             ->where('tipo','=','U')
