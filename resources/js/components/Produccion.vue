@@ -32,21 +32,24 @@
                     <label for="">Fecha</label>
                 </div>
                 <div class="col-md-1">
+                    Dia
                     <select class="form-control text-gray-900" v-model="Busqueda.dia">
-                        <option value="0">Día</option>
-                        <option v-for="item in Filas" :key="item" :value="item" v-text="item"></option>
+                        <option value="">Día</option>
+                        <option v-for="item in getDia()" :key="item" :value="item" v-text="item"></option>
                     </select>
                 </div>
                 <div class="col-md-1">
+                    Mes
                     <select class="form-control text-gray-900" v-model="Busqueda.mes">
-                        <option value="0">Mes</option>
-                        <option v-for="item in Filas" :key="item" :value="item" v-text="item"></option>
+                        <option value="">Mes</option>
+                        <option v-for="item in getMes()" :key="item.valor" :value="item.valor" v-text="item.nombre"></option>
                     </select>
                 </div>
                 <div class="col-md-1">
+                    Año
                     <select class="form-control text-gray-900" v-model="Busqueda.year">
-                        <option value="0">Año</option>
-                        <option v-for="item in Filas" :key="item" :value="item" v-text="item"></option>
+                        <option value="">Año</option>
+                        <option v-for="item in getYear(2016)" :key="item" :value="item" v-text="item"></option>
                     </select>
                 </div>
                 <div class="col-md-1"></div>
@@ -160,9 +163,9 @@
                     texto: '',
                     estado: 3,
                     filas: 5,
-                    dia: 0,
-                    mes: 0,
-                    year: 0
+                    dia: '',
+                    mes: '',
+                    year: ''
                 },
 
                 //datos de modales
@@ -231,10 +234,16 @@
 
                 return filas;
             },
-            Headers: function(){
-                var headers = [];
-                return headers;
-            },
+            // Contador: function(min, max){
+            //     // let min = 1;
+            //     // let max = 31;
+            //     let dias = [];
+            //     while(min <= max){
+            //         dias.push(min);
+            //         min++;
+            //     }
+            //     return dias;
+            // },
             permisoModalFooter: function(){
                 if ( this.Modal.numero == 1 ) return true;
                 if ( this.Modal.numero == 2 ) return true;
@@ -584,6 +593,37 @@
                     i = '0' + i;
                 }
                 return i;
+            },
+            getDia(){
+                let min = 1;
+                let max = 31;
+                let lista = [];
+                while(min <= max){
+                    lista.push(this.addCero(min));
+                    min++;
+                }
+                return lista;
+            },
+            getMes(){
+                let nombres = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Setiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+                let min = 1;
+                let max = 12;
+                let lista = [];
+                while(min <= max){
+                    lista.push({nombre: nombres[min-1], valor: this.addCero(min)});
+                    min++;
+                }
+                return lista;
+            },
+            getYear(min){
+                let n =  new Date();
+                let max = n.getFullYear();
+                let lista = [];
+                while(min <= max){
+                    lista.push(min);
+                    min++;
+                }
+                return lista;
             }
         },
         mounted() {

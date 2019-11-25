@@ -275,7 +275,11 @@
                 Error: {
                     estado: 0,
                     mensaje: []
-                }
+                },
+                Headers:[
+                    {titulo: 'Nombre', nombre: 'nombre'},
+                    {titulo: 'Unid. Medida', nombre: 'unidad'}
+                ]
             }
         },
         computed: {
@@ -313,14 +317,6 @@
                 }
 
                 return filas;
-            },
-            Headers: function(){
-                var headers = [];
-
-                headers.push({titulo: 'Nombre', nombre: 'nombre'});
-                headers.push({titulo: 'Unid. Medida', nombre: 'unidad'});
-
-                return headers;
             },
             permisoModalFooter: function(){
                 if ( this.Modal.numero == 1 ) return true;
