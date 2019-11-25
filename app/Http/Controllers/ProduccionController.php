@@ -15,15 +15,19 @@ class ProduccionController extends Controller
         $filas = $request->filas;
         $ordenarPor = $request->ordenarPor;
         $orden = $request->orden;
-        $now = Carbon::now('America/Lima')->toDateString();
-        // echo("Soy el now: " . $now);
+        $hoy = Carbon::now('America/Lima')->toDateString();
+        // echo("Soy el now: " . $hoy);
 
         $producciones = Produccion::select('id', 'total','fecha_inicio', 'fecha_programada', 'fecha_fin')
-                            ->where(function ($query) use ($estado) {
+                            ->where(function ($query) use ($estado, $hoy) {
                                 if ( $estado != 3 ) {
-                                    if($estado == 2) $query->whereDate('fecha_inicio', '>', $now);
-                                    if($estado == 1) $query->whereDate('fecha_fin', 'null');
-                                    if($estado == 0) $query->whereDate('fecha_fin', '<>' ,'null');
+                                    if($estado == 2) {//Sin iniciar
+                                        $query->whereDate('fecha_inicio', '>', $hoy);
+                                    }else if($estado == 1){//En proceso
+                                        $query->where('fecha_fin', null)->whereDate('fecha_inicio', '<=', $hoy);
+                                    }else{//Finalizado
+                                        $query->whereDate('fecha_fin', '<>' ,'null');
+                                    }
                                 }
                             })
                             ->where(function ($query) use ($texto) {

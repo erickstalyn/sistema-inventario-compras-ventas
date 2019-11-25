@@ -65,14 +65,17 @@
                                 <td v-text="produccion.fecha_programada"></td>
                                 <td v-text="produccion.fecha_fin ? produccion.fecha_fin : '----------------'"></td>
                                 <td v-text="produccion.total"></td>
-                                <!-- <td>
-                                    <div v-if="produccion.estado">
-                                        <span class="badge badge-success">Activado</span>
+                                <td>
+                                    <div v-if="produccion.fecha_inicio > getFechaHoy()">
+                                        <span class="badge badge-primary">Sin iniciar</span>
                                     </div>
-                                    <div v-else>
-                                        <span class="badge badge-danger">Desactivado</span>
+                                    <div v-else-if="produccion.fecha_fin">
+                                        <span class="badge badge-danger">Finalizado</span>
                                     </div>
-                                </td> -->
+                                    <div v-else="">
+                                        <span class="badge badge-success">En proceso</span>
+                                    </div>
+                                </td>
                                 <td>
                                     <button type="button" @click="abrirModalEditar(produccion)" title="Editar" class="btn btn-warning btn-sm">
                                         <i class="fas fa-user-edit"></i>
@@ -128,14 +131,14 @@
                     id: 0,
                     fecha_inicio : '',
                     fecha_programada : '',
-                    fecha_inicio: '',
+                    fecha_fin: '',
                     total : 0
                 },
                 SelectUnidad: [],
                 //datos de busqueda y filtracion
                 Busqueda: {
                     texto: '',
-                    estado: 3,
+                    estado: 1,
                     filas: 5
                 },
 
@@ -541,7 +544,24 @@
             //     }).catch(function(error){
             //         console.log(error);
             //     });
-            // }
+            // },
+            getFechaHoy(){
+                let n =  new Date();
+                //Año
+                let y = n.getFullYear();
+                //Mes
+                let m = this.addCero(n.getMonth() + 1);
+                //Día
+                let d = this.addCero(n.getDate());
+                let hoy = y + "-" + m + "-" + d;
+                return hoy;
+            },
+            addCero(i) {
+                if (i < 10) {
+                    i = '0' + i;
+                }
+                return i;
+            }
         },
         mounted() {
             this.listar();
