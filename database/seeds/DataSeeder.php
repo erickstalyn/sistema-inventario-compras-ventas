@@ -13,52 +13,52 @@ class DataSeeder extends Seeder
     {
         DB::table('data')->insert(array(
             'tipo' => 'U',
-            'subtipo' => 'L',
+            'subtipo' => 'Longitud',
             'nombre' => 'Metro',
         ));
         DB::table('data')->insert(array(
             'tipo' => 'U',
-            'subtipo' => 'L',
+            'subtipo' => 'Longitud',
             'nombre' => 'Centímetro',
         ));
         DB::table('data')->insert(array(
             'tipo' => 'U',
-            'subtipo' => 'L',
+            'subtipo' => 'Longitud',
             'nombre' => 'Milímetro',
         ));
         DB::table('data')->insert(array(
             'tipo' => 'U',
-            'subtipo' => 'P',
+            'subtipo' => 'Peso',
             'nombre' => 'Kilogramo',
         ));
         DB::table('data')->insert(array(
             'tipo' => 'U',
-            'subtipo' => 'P',
+            'subtipo' => 'Peso',
             'nombre' => 'Gramo',
         ));
         DB::table('data')->insert(array(
             'tipo' => 'U',
-            'subtipo' => 'P',
+            'subtipo' => 'Peso',
             'nombre' => 'Miligramo',
         ));
         DB::table('data')->insert(array(
             'tipo' => 'U',
-            'subtipo' => 'U',
+            'subtipo' => 'Unidad',
             'nombre' => 'Unidad (1)',
         ));
         DB::table('data')->insert(array(
             'tipo' => 'U',
-            'subtipo' => 'U',
+            'subtipo' => 'Unidad',
             'nombre' => 'Decena (10)',
         ));
         DB::table('data')->insert(array(
             'tipo' => 'U',
-            'subtipo' => 'U',
+            'subtipo' => 'Unidad',
             'nombre' => 'Centena (100)',
         ));
         DB::table('data')->insert(array(
             'tipo' => 'U',
-            'subtipo' => 'U',
+            'subtipo' => 'Unidad',
             'nombre' => 'Docena (12)',
         ));
     }

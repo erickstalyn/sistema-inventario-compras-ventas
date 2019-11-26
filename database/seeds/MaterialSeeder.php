@@ -13,15 +13,21 @@ class MaterialSeeder extends Seeder
     {
         DB::table('material')->insert(array(
             'nombre' => 'Tela R3',
-            'subtipo' => 'L',
+            'subtipo' => 'Longitud',
             'unidad' => 'Centímetro',
             'costo' => 8.50
         ));
         DB::table('material')->insert(array(
             'nombre' => 'Cierre Rey grande',
-            'subtipo' => 'U',
+            'subtipo' => 'Unidad',
             'unidad' => 'Unidad (1)',
             'costo' => 2.90
+        ));
+        DB::table('material')->insert(array(
+            'nombre' => 'Tachuelas 2.0',
+            'subtipo' => 'Unidad',
+            'unidad' => 'Gramo',
+            'costo' => 0.80
         ));
     }
 }

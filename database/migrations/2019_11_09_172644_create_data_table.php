@@ -21,13 +21,13 @@ class CreateDataTable extends Migration
                 T -> tamaño
                 U -> unidad
             */
-            $table->char('subtipo',1)->nullable();
+            $table->string('subtipo',25)->nullable();
             /*
-                P -> Peso
-                L -> Longitud
-                U -> unidades propiamente dicha :v
+                Peso
+                Longitud
+                unidades propiamente dicha :v
             */
-            $table->char('nombre', 50);
+            $table->string('nombre', 20);
         });
     }
 

@@ -323,7 +323,7 @@
 
                 //datos de modales
                 Modal: {
-                    numero: 1,
+                    numero: 0,
                     estado: 0,
                     titulo: '',
                     accion: ''
@@ -617,6 +617,7 @@
                 this.Modal.accion = accion;
             },
             cerrarModal(){
+                this.Modal.numero = 0;
                 this.Modal.estado = 0;
                 this.Modal.mensaje = [];
 

@@ -20,7 +20,7 @@
             <div class="row form-group">
                 <div class="col-md-8">
                     <div class="input-group"> 
-                        <select class="col-md-3 form-control text-gray-900" v-model="Busqueda.estado">
+                        <select class="col-md-3 custom-select text-gray-900" v-model="Busqueda.estado">
                             <option value="2">Todos</option>
                             <option value="1">Activados</option>
                             <option value="0">Desactivados</option>
@@ -138,15 +138,13 @@
                             <div class="row form-group">
                                 <label class="col-md-3 font-weight-bold" for="des">Unid.Medida&nbsp;<span class="text-danger">*</span></label>
                                 <div class="col-md-4">
-                                    <select v-model="Material.subtipo" class="form-control" id="cat">
+                                    <select v-model="Material.subtipo" class="custom-select">
                                         <option value="" disabled>Tipo</option>
-                                        <option value="L">Longitud</option>
-                                        <option value="P">Peso</option>
-                                        <option value="U">Unidad</option>
+                                        <option v-for="item in selectTipoFiltrado()" :key="item" :value="item" v-text="item"></option>
                                     </select>
                                 </div>
                                 <div class="col-md-5">
-                                    <select v-model="Material.unidad" class="form-control" id="cat">
+                                    <select v-model="Material.unidad" class="custom-select" id="cat">
                                         <option value="" disabled>Subtipo</option>
                                         <option v-for="unidad in selectUnidadFiltrado" :key="unidad.id" :value="unidad.nombre" v-text="unidad.nombre"></option>
                                     </select>
@@ -179,15 +177,13 @@
                             <div class="row form-group">
                                 <label class="col-md-3 font-weight-bold" for="des">Unid.Medida&nbsp;<span class="text-danger">*</span></label>
                                 <div class="col-md-4">
-                                    <select v-model="Material.subtipo" class="form-control" id="cat">
+                                    <select v-model="Material.subtipo" class="custom-select" id="cat">
                                         <option value="" disabled>Tipo</option>
-                                        <option value="L">Longitud</option>
-                                        <option value="P">Peso</option>
-                                        <option value="U">Unidad</option>
+                                        <option v-for="item in selectTipoFiltrado()" :key="item" :value="item" v-text="item"></option>
                                     </select>
                                 </div>
                                 <div class="col-md-5">
-                                    <select v-model="Material.unidad" class="form-control" id="cat">
+                                    <select v-model="Material.unidad" class="custom-select" id="cat">
                                         <option value="" disabled>Subtipo</option>
                                         <option v-for="unidad in selectUnidadFiltrado" :key="unidad.id" :value="unidad.nombre" v-text="unidad.nombre"></option>
                                     </select>
@@ -238,6 +234,7 @@
                     costo: 0,
                 },
                 SelectUnidad: [],
+                // SelectTipoFiltrado: [],
                 //datos de busqueda y filtracion
                 Busqueda: {
                     texto: '',
@@ -247,7 +244,7 @@
 
                 //datos de modales
                 Modal: {
-                    numero: 1,
+                    numero: 0,
                     estado: 0,
                     titulo: '',
                     accion: ''
@@ -322,6 +319,7 @@
                 return false;
             },
             selectUnidadFiltrado: function(){
+                // console.log('Soy el computado selectUnidadFiltrado');
                 let selectUnidadFiltrado = [];
                 this.SelectUnidad.forEach(unidad => {
                     if(unidad.subtipo == this.Material.subtipo){
@@ -507,6 +505,8 @@
 
                 //Verifico si el arreglo SelectUnidad esta vacia
                 if(!this.SelectUnidad.length) this.selectUnidad();
+                //Verifico si el arreglo SelectTipoFiltro esta vacia
+                // if(!this.SelectTipoFiltrado.length) this.selectTipoFiltrado();
             },
             abrirModalEditar(data = []){
                 this.abrirModal(2, 'Editar Material', 'Editar');
@@ -526,6 +526,10 @@
                 
                 //Verifico si el arreglo SelectUnidad esta vacia
                 if(!this.SelectUnidad.length) this.selectUnidad();
+                //Verifico si el arreglo SelectTipoFiltro esta vacia
+                // if(!this.SelectTipoFiltrado.length) this.selectTipoFiltrado();
+
+                console.log('Holiii');
             },
             abrirModal(numero, titulo, accion){
                 this.Modal.estado = 1;
@@ -534,6 +538,7 @@
                 this.Modal.accion = accion;
             },
             cerrarModal(){
+                this.Modal.numero = 0;
                 this.Modal.estado = 0;
                 this.Modal.mensaje = [];
 
@@ -626,10 +631,6 @@
                     }
                 }
 
-                // if ( !this.Material.nombre ) this.Error.mensaje.push("Debe ingresar un nombre");
-                // if ( !this.Material.unidad ) this.Error.mensaje.push("Debe seleccionar una Unid. Medida");
-                // if ( this.Material.costo == 0 || this.Material.costo < 0) this.Error.mensaje.push("Debe ingresar un costo válido");
-
                 if ( this.Error.mensaje.length ) this.Error.estado = 1;
                 return this.Error.estado;
             },
@@ -641,12 +642,22 @@
             selectUnidad(){
                 var me = this;
                 var url = '/material/selectUnidad';
-
                 axios.get(url).then(function(response){
                     me.SelectUnidad = response.data;
                 }).catch(function(error){
                     console.log(error);
                 });
+            },
+            selectTipoFiltrado(){
+                let selectTipoFiltrado = [];
+                console.log('Ingrese al metodo selectTipoFiltrado');
+                this.SelectUnidad.forEach(unidad => {
+                    if(!selectTipoFiltrado.includes(unidad.subtipo)){
+                        console.log('ingrese al if del metodo selectTipoFiltrado');
+                        selectTipoFiltrado.push(unidad.subtipo);
+                    }
+                });
+                return selectTipoFiltrado;
             }
         },
         mounted() {
