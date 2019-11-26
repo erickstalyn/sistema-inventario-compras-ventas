@@ -53,18 +53,24 @@
                     </select>
                 </div>
                 <div class="col-md-1"></div>
-                <div class="col-md-1" align="right">
+                <!-- <div class="col-md-1" align="right">
                     <label>N° filas:</label>
-                </div>
+                </div> -->
                 <div class="col-md-1">
+                    N° filas:
                     <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.filas">
                         <option v-for="item in Filas" :key="item" :value="item" v-text="item"></option>
                     </select>
                 </div>
                 <!-- <div class="col-md-1"></div> -->
-                <button type="button" class="btn btn-primary" @click="listar()">
+                <!-- <button type="button" class="btn btn-primary" @click="listar()">
                     <i class="fa fa-search"></i>&nbsp; Buscar
-                </button>
+                </button> -->
+                <div class="col-md-1">
+                    <button type="button" class="btn btn-primary" @click="listar()">
+                        <i class="fa fa-search"></i>&nbsp; Buscar
+                    </button>
+                </div>
             </div>
 
             <!-- Listado -->
@@ -140,7 +146,7 @@
         </div>
 
         <!-- Modales -->
-        <div class="modal text-gray-900 " :class="{'mostrar': Modal.estado}">
+        <div class="modal text-gray-900" :class="{'mostrar': Modal.estado}">
             <div class="modal-dialog modal-dialog-centered animated bounceIn fast modal-xl">
                 <div class="modal-content">
 
@@ -311,8 +317,8 @@
                     estado: 3,
                     filas: 5,
                     dia: '',
-                    mes: '',
-                    year: '2019'
+                    mes: this.getMesActual(),
+                    year: this.getYearActual()
                 },
 
                 //datos de modales
@@ -769,6 +775,16 @@
                     min++;
                 }
                 return lista;
+            },
+            getMesActual(){
+                let n =  new Date();
+                let mes = this.addCero(n.getMonth() + 1);
+                return mes;
+            },
+            getYearActual(){
+                let n =  new Date();
+                let year = n.getFullYear();
+                return year;
             }
         },
         mounted() {
