@@ -20,7 +20,7 @@
             <div class="row form-group">
                 <div class="col-md-2">
                     <div class="input-group"> 
-                        <select class=" form-control text-gray-900" v-model="Busqueda.estado">
+                        <select class="custom-select text-gray-900" v-model="Busqueda.estado">
                             <option value="3">Todos</option>
                             <option value="2">Sin iniciar</option>
                             <option value="1">En Proceso</option>
@@ -33,21 +33,21 @@
                 </div>
                 <div class="col-md-1">
                     Dia
-                    <select class="form-control text-gray-900" v-model="Busqueda.dia">
+                    <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.dia">
                         <option value="">Día</option>
                         <option v-for="item in getDia()" :key="item" :value="item" v-text="item"></option>
                     </select>
                 </div>
                 <div class="col-md-2">
                     Mes
-                    <select class="form-control text-gray-900" v-model="Busqueda.mes">
+                    <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.mes">
                         <option value="">Mes</option>
                         <option v-for="item in getMes()" :key="item.valor" :value="item.valor" v-text="item.nombre"></option>
                     </select>
                 </div>
                 <div class="col-md-1">
                     Año
-                    <select class="form-control text-gray-900" v-model="Busqueda.year">
+                    <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.year">
                         <option value="">Año</option>
                         <option v-for="item in getYear(2016)" :key="item" :value="item" v-text="item"></option>
                     </select>
@@ -57,7 +57,7 @@
                     <label>N° filas:</label>
                 </div>
                 <div class="col-md-1">
-                    <select class="form-control text-gray-900" v-model="Busqueda.filas">
+                    <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.filas">
                         <option v-for="item in Filas" :key="item" :value="item" v-text="item"></option>
                     </select>
                 </div>
@@ -163,13 +163,13 @@
                                     </div>
                                 </div> -->
                                 <div class="row">
-                                    <div class="col-md-4 border border-border-blue">
+                                    <div class="col-md-4">
                                         <div class="row">
                                             <h5>Productos</h5>
                                         </div>
                                         <div class="row">
                                             <div class="input-group"> 
-                                                <input type="search" class="form-control" v-model="Busqueda.texto" @keyup.enter="listar()">
+                                                <input type="search" class="form-control form-control-sm" v-model="Busqueda.texto" @keyup.enter="listar()">
                                                 <button type="button" class="btn btn-sm btn-primary" @click="listar()">
                                                     <i class="fa fa-search"></i>&nbsp; Buscar
                                                 </button>
@@ -199,12 +199,12 @@
                                             </table>
                                         </div>
                                     </div>
-                                    <div class="col-md-8 ml-auto border container">
+                                    <div class="col-md-8 ml-auto container">
                                         <div class="row">
-                                            <h5>Lista de Items</h5>
+                                            <h5>Lista de items</h5>
                                         </div>
-                                        <div class="row form-group ec-table overflow-auto">
-                                            <table class="table table-borderless table-striped table-sm text-gray-900">
+                                        <div class="row form-group ec-table-modal overflow-auto">
+                                            <table class="table tableless table-striped table-sm text-gray-900">
                                                 <thead>
                                                     <tr class="table-success">
                                                         <th>Quitar</th>
@@ -237,9 +237,39 @@
                                                         <td>20</td>
                                                         <td>600</td>
                                                     </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <button type="button" title="Editar" class="btn btn-outline-danger btn-sm">
+                                                                <i class="fas fa-minus"></i>
+                                                            </button>
+                                                        </td>
+                                                        <td>Mochila pequeña Cat verde</td>
+                                                        <td>30</td>
+                                                        <td>20</td>
+                                                        <td>600</td>
+                                                    </tr>
                                                 </tbody>
                                             </table>
                                         </div>
+                                        <div class="row">
+                                            <div class="col-md-8">
+                                            </div>
+                                            <div class="col-md-4">
+                                                Inversión total: s/2450.60
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-3"></div>
+                                    <div class="col-md-4 form-inline">
+                                        Fecha de inicio&nbsp;<span class="text-danger">*</span>
+                                        <input type="date" class="form-control form-control-sm">
+                                    </div>
+                                    <div class="col-md-5 form-inline">
+                                        Fecha prog. finalización&nbsp;<span class="text-danger">*</span>
+                                        <input type="date" class="form-control form-control-sm">
                                     </div>
                                 </div>
                                 
@@ -761,6 +791,10 @@
     .ec-table{
         overflow: scroll;
         height: 20rem;
+    }
+    .ec-table-modal{
+        overflow: scroll;
+        height: 21rem;
     }
     .ec-th{
         background-color: skyblue;
