@@ -222,9 +222,6 @@
             return {
                 //datos generales
                 ListaMaterial: [],
-                Categoria:{
-
-                },
                 Material: {
                     id: 0,
                     nombre: '',

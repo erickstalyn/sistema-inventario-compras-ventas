@@ -38,7 +38,7 @@
                         <option v-for="item in getDia()" :key="item" :value="item" v-text="item"></option>
                     </select>
                 </div>
-                <div class="col-md-1">
+                <div class="col-md-2">
                     Mes
                     <select class="form-control text-gray-900" v-model="Busqueda.mes">
                         <option value="">Mes</option>
@@ -61,7 +61,7 @@
                         <option v-for="item in Filas" :key="item" :value="item" v-text="item"></option>
                     </select>
                 </div>
-                <div class="col-md-1"></div>
+                <!-- <div class="col-md-1"></div> -->
                 <button type="button" class="btn btn-primary" @click="listar()">
                     <i class="fa fa-search"></i>&nbsp; Buscar
                 </button>
@@ -139,7 +139,124 @@
 
         </div>
 
-        
+        <!-- Modales -->
+        <div class="modal text-gray-900 " :class="{'mostrar': Modal.estado}">
+            <div class="modal-dialog modal-dialog-centered animated bounceIn fast modal-xl">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <h3 v-text="Modal.titulo" class="modal-title" ></h3>
+                        <button type="button" @click="cerrarModal()" class="close">X</button>
+                    </div>
+                    
+                    <div class="modal-body">
+                        <div class="container-fluid">
+                        <!-- Modal Numero 1 de AGREGAR-->
+                            <div v-if="Modal.numero==1">
+                                <!-- <div v-if="Error.estado" class="row d-flex justify-content-center">
+                                    <div class="alert alert-danger">
+                                        <button type="button" @click="Error.estado=0" class="close text-primary" data-dismiss="alert">×</button>
+                                        <strong>Corregir los siguentes errores:</strong>
+                                        <ul> 
+                                            <li v-for="error in Error.mensaje" :key="error" v-text="error"></li> 
+                                        </ul>
+                                    </div>
+                                </div> -->
+                                <div class="row">
+                                    <div class="col-md-4 border border-border-blue">
+                                        <div class="row">
+                                            <h5>Productos</h5>
+                                        </div>
+                                        <div class="row">
+                                            <div class="input-group"> 
+                                                <input type="search" class="form-control" v-model="Busqueda.texto" @keyup.enter="listar()">
+                                                <button type="button" class="btn btn-sm btn-primary" @click="listar()">
+                                                    <i class="fa fa-search"></i>&nbsp; Buscar
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <div class="row form-group ec-table overflow-auto">
+                                            <table class="table table-borderless table-striped table-sm text-gray-900">
+                                                <thead>
+                                                    <tr class="table-danger">
+                                                        <th>Agregar</th>
+                                                        <th>Nombre</th>
+                                                        <th>Stock</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>
+                                                            <button type="button" title="Editar" class="btn btn-sm btn-outline-success">
+                                                                <i class="fas fa-plus"></i>
+                                                            </button>
+                                                        </td>
+                                                        <td>Campera grande Silmar roja</td>
+                                                        <td>120</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8 ml-auto border container">
+                                        <div class="row">
+                                            <h5>Lista de Items</h5>
+                                        </div>
+                                        <div class="row form-group ec-table overflow-auto">
+                                            <table class="table table-borderless table-striped table-sm text-gray-900">
+                                                <thead>
+                                                    <tr class="table-success">
+                                                        <th>Quitar</th>
+                                                        <th>Nombre</th>
+                                                        <th>Cant.</th>
+                                                        <th>C. Unitario</th>
+                                                        <th>Subtototal</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>
+                                                            <button type="button" title="Editar" class="btn btn-outline-danger btn-sm">
+                                                                <i class="fas fa-minus"></i>
+                                                            </button>
+                                                        </td>
+                                                        <td>Campera grande Silmar roja</td>
+                                                        <td>30</td>
+                                                        <td>20</td>
+                                                        <td>600</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <button type="button" title="Editar" class="btn btn-outline-danger btn-sm">
+                                                                <i class="fas fa-minus"></i>
+                                                            </button>
+                                                        </td>
+                                                        <td>Mochila pequeña Cat verde</td>
+                                                        <td>30</td>
+                                                        <td>20</td>
+                                                        <td>600</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer" v-if="permisoModalFooter">
+                        <div class="row form-group col-md-12 d-flex justify-content-around">
+                            <button type="button" @click="cerrarModal()" class="btn btn-secondary">Cancelar</button>
+                            <button type="button" @click="accionar(Modal.accion)" class="btn btn-primary" v-text="Modal.accion"></button>
+                        </div>
+                    </div>
+                
+                </div>
+            </div>
+        </div>
 
     </main>
 </template>
@@ -434,12 +551,10 @@
             //         }
             //     });
             // },
-            // abrirModalAgregar(){
-            //     this.abrirModal(1, 'Nuevo Material', 'Agregar');
+            abrirModalAgregar(){
+                this.abrirModal(1, 'Registrar Produccion', 'Agregar');
 
-            //     //Verifico si el arreglo SelectUnidad esta vacia
-            //     if(!this.SelectUnidad.length) this.selectUnidad();
-            // },
+            },
             // abrirModalEditar(data = []){
             //     this.abrirModal(2, 'Editar Material', 'Editar');
                 
@@ -459,25 +574,22 @@
             //     //Verifico si el arreglo SelectUnidad esta vacia
             //     if(!this.SelectUnidad.length) this.selectUnidad();
             // },
-            // abrirModal(numero, titulo, accion){
-            //     this.Modal.estado = 1;
-            //     this.Modal.numero = numero;
-            //     this.Modal.titulo = titulo;
-            //     this.Modal.accion = accion;
-            // },
-            // cerrarModal(){
-            //     this.Modal.estado = 0;
-            //     this.Modal.mensaje = [];
+            abrirModal(numero, titulo, accion){
+                this.Modal.estado = 1;
+                this.Modal.numero = numero;
+                this.Modal.titulo = titulo;
+                this.Modal.accion = accion;
+            },
+            cerrarModal(){
+                this.Modal.estado = 0;
+                this.Modal.mensaje = [];
 
-            //     this.Error.estado = 0;
-            //     this.Error.mensaje = [];
+                this.Error.estado = 0;
+                this.Error.mensaje = [];
 
-            //     this.Material.id = 0;
-            //     this.Material.nombre = '';
-            //     this.Material.unidad = '';
-            //     this.Material.subtipo = '';
-            //     this.Material.costo = 0;
-            // },
+                this.Produccion.id = 0;
+                this.Produccion.fecha_fin = '';
+            },
             // accionar(accion){
             //     switch( accion ){
             //         case 'Agregar': {
