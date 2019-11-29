@@ -559,7 +559,7 @@
                 this.Material.subtipo = '';
                 this.Material.costo = 0;
 
-                this.First = 0;
+                this.YaIngrese = 0;
             },
             accionar(accion){
                 switch( accion ){
