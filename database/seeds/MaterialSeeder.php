@@ -25,7 +25,7 @@ class MaterialSeeder extends Seeder
         ));
         DB::table('material')->insert(array(
             'nombre' => 'Tachuelas 2.0',
-            'subtipo' => 'Unidad',
+            'subtipo' => 'Peso',
             'unidad' => 'Gramo',
             'costo' => 0.80
         ));

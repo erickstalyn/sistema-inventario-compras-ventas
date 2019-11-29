@@ -140,7 +140,7 @@
                                 <div class="col-md-4">
                                     <select v-model="Material.subtipo" class="custom-select">
                                         <option value="" disabled>Tipo</option>
-                                        <option v-for="item in selectTipoFiltrado()" :key="item" :value="item" v-text="item"></option>
+                                        <option v-for="item in SelectTipoFiltrado" :key="item" :value="item" v-text="item"></option>
                                     </select>
                                 </div>
                                 <div class="col-md-5">
@@ -179,7 +179,7 @@
                                 <div class="col-md-4">
                                     <select v-model="Material.subtipo" class="custom-select" id="cat">
                                         <option value="" disabled>Tipo</option>
-                                        <option v-for="item in selectTipoFiltrado()" :key="item" :value="item" v-text="item"></option>
+                                        <option v-for="item in SelectTipoFiltrado" :key="item" :value="item" v-text="item"></option>
                                     </select>
                                 </div>
                                 <div class="col-md-5">
@@ -234,7 +234,8 @@
                     costo: 0,
                 },
                 SelectUnidad: [],
-                // SelectTipoFiltrado: [],
+                SelectTipoFiltrado: [],
+                YaIngrese: 0,
                 //datos de busqueda y filtracion
                 Busqueda: {
                     texto: '',
@@ -321,13 +322,21 @@
             selectUnidadFiltrado: function(){
                 // console.log('Soy el computado selectUnidadFiltrado');
                 let selectUnidadFiltrado = [];
-                this.SelectUnidad.forEach(unidad => {
-                    if(unidad.subtipo == this.Material.subtipo){
-                        selectUnidadFiltrado.push(unidad);
-                        // console.log('Ingrese al if');
+                // console.log('tamaño de SelectUnidad: ' + this.SelectUnidad.length);
+                if(this.SelectUnidad.length){
+                    this.SelectUnidad.forEach(unidad => {
+                        if(unidad.subtipo == this.Material.subtipo){
+                            selectUnidadFiltrado.push(unidad);
+                        }
+                    });
+
+                    if(this.Modal.numero == 1  || this.YaIngrese) {//Es moda nuevo o ya ingrese
+                        this.Material.unidad = '';
+                    }else{
+                        this.YaIngrese = 1;
                     }
-                });
-                return selectUnidadFiltrado;
+                    return selectUnidadFiltrado;
+                }
             }
         },
         methods: {
@@ -507,6 +516,7 @@
                 if(!this.SelectUnidad.length) this.selectUnidad();
                 //Verifico si el arreglo SelectTipoFiltro esta vacia
                 // if(!this.SelectTipoFiltrado.length) this.selectTipoFiltrado();
+                // this.selectTipoFiltrado();
             },
             abrirModalEditar(data = []){
                 this.abrirModal(2, 'Editar Material', 'Editar');
@@ -528,8 +538,6 @@
                 if(!this.SelectUnidad.length) this.selectUnidad();
                 //Verifico si el arreglo SelectTipoFiltro esta vacia
                 // if(!this.SelectTipoFiltrado.length) this.selectTipoFiltrado();
-
-                console.log('Holiii');
             },
             abrirModal(numero, titulo, accion){
                 this.Modal.estado = 1;
@@ -550,6 +558,8 @@
                 this.Material.unidad = '';
                 this.Material.subtipo = '';
                 this.Material.costo = 0;
+
+                this.First = 0;
             },
             accionar(accion){
                 switch( accion ){
@@ -644,20 +654,36 @@
                 var url = '/material/selectUnidad';
                 axios.get(url).then(function(response){
                     me.SelectUnidad = response.data;
-                }).catch(function(error){
+                }).then(function(){
+                    me.selectTipoFiltrado();
+                })
+                .catch(function(error){
                     console.log(error);
                 });
             },
+            // selectTipoFiltrado(){
+            //     let selectTipoFiltrado = [];
+            //     console.log('Ingrese al metodo selectTipoFiltrado');
+            //     this.SelectUnidad.forEach(unidad => {
+            //         if(!selectTipoFiltrado.includes(unidad.subtipo)){
+            //             console.log('ingrese al if del metodo selectTipoFiltrado');
+            //             selectTipoFiltrado.push(unidad.subtipo);
+            //         }
+            //     });
+            //     return selectTipoFiltrado;
+            // }
             selectTipoFiltrado(){
-                let selectTipoFiltrado = [];
+                // let selectTipoFiltrado = [];
                 console.log('Ingrese al metodo selectTipoFiltrado');
+                // console.log("tamaño del SelectUnidad " + this.SelectUnidad.length);
                 this.SelectUnidad.forEach(unidad => {
-                    if(!selectTipoFiltrado.includes(unidad.subtipo)){
-                        console.log('ingrese al if del metodo selectTipoFiltrado');
-                        selectTipoFiltrado.push(unidad.subtipo);
+                    // console.log('Ingrese el foreach');
+                    if(!this.SelectTipoFiltrado.includes(unidad.subtipo)){
+                        // console.log('ingrese al if del metodo selectTipoFiltrado');
+                        this.SelectTipoFiltrado.push(unidad.subtipo);
                     }
                 });
-                return selectTipoFiltrado;
+                // return selectTipoFiltrado;
             }
         },
         mounted() {
