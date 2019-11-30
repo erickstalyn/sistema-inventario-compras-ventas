@@ -36,7 +36,7 @@
                     <label>N° filas:</label>
                 </div>
                 <div class="col-md-1">
-                    <select class="form-control text-gray-900" v-model="Busqueda.filas">
+                    <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.filas">
                         <option v-for="item in Filas" :key="item" :value="item" v-text="item"></option>
                     </select>
                 </div>
@@ -46,11 +46,11 @@
             <div v-if="ListaMaterial.length" class="table-responsive">
                 <!-- Tabla -->
                 <div class="ec-table overflow-auto">
-                    <table class="table table-bordered table-striped table-sm text-gray-900">
+                    <table class="table table-borderless table-sm text-gray-900">
                         <thead>
-                            <tr class="ec-th">
+                            <tr class="table-info">
                                 <th v-for="head in Headers" :key="head.nombre" @click="listar(1, head.nombre)" class="ec-cursor" v-text="getTitulo(head.titulo)"></th>
-                                <th>Costo Unit.</th>
+                                <th >Costo Unit.</th>
                                 <th>Estado</th>
                                 <th>Opciones</th>
                             </tr>
@@ -69,16 +69,16 @@
                                     </div>
                                 </td>
                                 <td>
-                                    <button type="button" @click="abrirModalEditar(material)" title="Editar" class="btn btn-warning btn-sm">
+                                    <button type="button" @click="abrirModalEditar(material)" title="Editar" class="btn btn-outline-warning btn-sm">
                                         <i class="fas fa-user-edit"></i>
                                     </button>
                                     <template v-if="material.estado">
-                                        <button type="button" @click="desactivar(material)" title="Desactivar" class="btn btn-danger btn-sm">
+                                        <button type="button" @click="desactivar(material)" title="Desactivar" class="btn btn-outline-danger btn-sm">
                                             <i class="fas fa-user-times"></i>
                                         </button>
                                     </template>
                                     <template v-else>
-                                        <button type="button" @click="activar(material)" title="Activar" class="btn btn-success btn-sm">
+                                        <button type="button" @click="activar(material)" title="Activar" class="btn btn-outline-success btn-sm">
                                             <i class="fas fa-user-check"></i>
                                         </button>
                                     </template>
@@ -200,8 +200,8 @@
 
                     <div class="modal-footer" v-if="permisoModalFooter">
                         <div class="row form-group col-md-12 d-flex justify-content-around">
+                            <button type="button" @click="accionar(Modal.accion)" class="btn btn-success" v-text="Modal.accion"></button>
                             <button type="button" @click="cerrarModal()" class="btn btn-secondary">Cancelar</button>
-                            <button type="button" @click="accionar(Modal.accion)" class="btn btn-primary" v-text="Modal.accion"></button>
                         </div>
                     </div>
                 
@@ -431,10 +431,11 @@
                     showCancelButton: true,
                     confirmButtonText: 'Aceptar',
                     cancelButtonText: 'Cancelar',
-                    reverseButtons: true,
+                    // reverseButtons: true,
+                    
                     customClass: {
                         confirmButton: 'btn btn-success',
-                        cancelButton: 'btn btn-danger'
+                        cancelButton: 'btn btn-secondary'
                     },
                     buttonsStyling: false
                 }).then((result) => {
@@ -471,14 +472,14 @@
 
                 Swal.fire({
                     title: '¿Esta seguro de DESACTIVAR el material "'+this.Material.nombre+'"?',
-                    type: 'warning',
+                    type: 'error',
                     showCancelButton: true,
                     confirmButtonText: 'Aceptar',
                     cancelButtonText: 'Cancelar',
-                    reverseButtons: true,
+                    // reverseButtons: true,
                     customClass: {
                         confirmButton: 'btn btn-success',
-                        cancelButton: 'btn btn-danger'
+                        cancelButton: 'btn btn-secondary'
                     },
                     buttonsStyling: false
                 }).then((result) => {
