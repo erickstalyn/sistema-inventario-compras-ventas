@@ -13,23 +13,17 @@ class CreateDetalleVentaTable extends Migration
      */
     public function up(){
         Schema::create('detalle_venta', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->unsignedBigInteger('producto_id');
-            $table->unsignedBigInteger('venta_id');
-            $table->unsignedBigInteger('venta_especial_id');
-            
-            $table->integer('cantidad');
-            $table->decimal('precio', 11, 2);
-            $table->decimal('subtotal', 11, 2);
-            $table->integer('cantidad_especial')->nullable();
-            $table->char('tipo', 2)->default('VN');
+            $table->increments('id'); // usa 4 bytes. Maximo valor: 2 147 483 647
+            $table->string('nombre_producto', 100);
+            $table->smallInteger('cantidad'); // usa 2 bytes - máximo 32767 datos
+            $table->decimal('precio', 10, 2);
+            $table->decimal('subtotal', 10, 2);
+            $table->smallInteger('cantidad_defectuosa')->nullable(); // usa 2 bytes - máximo 32767 datos
 
-            //VN -> VENTA NORMAL
-            //CD -> CANCELADO por DEFECTO
-
-            $table->foreign('producto_id')->references('id')->on('producto');
+            $table->unsignedMediumInteger('venta_id');
             $table->foreign('venta_id')->references('id')->on('venta');
-            $table->foreign('venta_especial_id')->references('id')->on('venta');
+            $table->unsignedInteger('detalle_producto_id');
+            $table->foreign('detalle_producto_id')->references('id')->on('detalle_producto');
         });
     }
 

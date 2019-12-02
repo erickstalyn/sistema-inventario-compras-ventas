@@ -12,30 +12,31 @@ class UsuarioSeeder extends Seeder
      */
     public function run()
     {
+        $now = Carbon::now('America/Lima')->toDateString();
         DB::table('usuario')->insert(array(
-            'rol_id'=> 1,
             'persona_id'=>1 ,
             'usuario'=>'silmar',
-            'password'=>bcrypt('silmar')
+            'password'=>bcrypt('silmar'),
+            'rol' => 'M',
         ));
         DB::table('usuario')->insert(array(
-            'rol_id'=> 2,
-            'persona_id'=>2 ,
+            'centro_id'=>1 ,
             'usuario'=>'puestoa',
-            'password'=>bcrypt('puestoa')
+            'password'=>bcrypt('puestoa'),
+            'rol' => 'P',
         ));
         DB::table('usuario')->insert(array(
-            'rol_id'=> 3,
-            'persona_id'=>3 ,
+            'centro_id'=> 4,
             'usuario'=>'almacen1',
-            'password'=>bcrypt('almacen1')
+            'password'=>bcrypt('almacen1'),
+            'rol' => 'A',
         ));
         DB::table('usuario')->insert(array(
-            'rol_id'=> 3,
-            'persona_id'=> 4,
+            'centro_id'=> 5,
             'usuario'=>'almacen2',
             'password'=>bcrypt('almacen2'),
-            'estado' => false
+            'rol' => 'A',
+            'estado' => false,
         ));
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Auth;
 
 class Puesto
 {
@@ -13,16 +14,16 @@ class Puesto
      * @param  \Closure  $next
      * @return mixed
      */
-    public function handle($request, Closure $next)
-    {
-        // if($this->permiso()){
+    public function handle($request, Closure $next){
+        if($this->permiso()){
             return $next($request);
-        // }
-        
+        }else{
+            return redirect('logout');
+        }
     }
 
-    // private function permiso(){
-    //     return session()->get('tipoUsuario') == 2;
-    // }
+    private function permiso(){
+        return Auth::user()->rol == 'P';
+    }
 
 }

@@ -10,14 +10,11 @@ class Persona extends Model
     protected $table = 'persona';
 
     protected $fillable = [
-        'nombre', 'dni', 'ruc', 'direccion', 'telefono', 'email', 'birthday', 'observacion', 'tipo'
+        'nombres', 'apellidos', 'razon_social', 'dni', 'ruc', 'direccion', 'telefono', 'email', 'birthday', 'observacion', 'tipo', 'cliente', 'proveedor', 'persona_id'
     ];
 
     public function getUsuario(){
-        return $this->hasOne('App\Usuario');
+        return $this->hasOne('App\Usuario', 'persona_id');
     }
 
-    public function getProveedor(){
-        return $this->hasOne('App\Proveedor');
-    }
 }

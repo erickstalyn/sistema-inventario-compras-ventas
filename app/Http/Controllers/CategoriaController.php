@@ -36,7 +36,6 @@ class CategoriaController extends Controller
                                         ->orWhere('categoria.descripcion', 'like', '%'.$texto.'%');
                                 }
                             })
-                            ->groupBy('categoria.id', 'categoria.categoria_id', 'categoria.nombre', 'categoria.descripcion', 'categoria.estado', 'categoria.created_at', 'categoria.updated_at', 'categoria.deleted_at')
                             ->orderBy($ordenarPor, $orden)->paginate($filas);
 
         return [

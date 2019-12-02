@@ -6,8 +6,8 @@
             
             <!-- Encabezado principal -->
             <div class="row form-group">
-                <i class="fas fa-map-signs"></i>&nbsp;&nbsp;
-                <span class="h3 mb-0 text-gray-900">Categoria</span>
+                <i class="fas fa-briefcase"></i>&nbsp;&nbsp;
+                <span class="h3 mb-0 text-gray-900">Super Producto</span>&nbsp;&nbsp;
                 <button type="button" class="btn btn-success" @click="abrirModalAgregar()">
                     <i class="fas fa-user-plus"></i>&nbsp; Nuevo
                 </button>
@@ -43,10 +43,10 @@
             </div>
 
             <!-- Listado -->
-            <div v-if="ListaCategoria.length" class="table-responsive">
+            <div v-if="ListaSuperProducto.length" class="table-responsive">
                 <!-- Tabla -->
                 <div class="ec-table overflow-auto">
-                    <table class="table table-bordered table-striped table-sm text-gray-900">
+                    <table class="table table-bordered table-condensed table-striped table-sm text-gray-900">
                         <thead>
                             <tr class="ec-th">
                                 <th v-for="head in Headers" :key="head.nombre" @click="listar(1, head.nombre)" class="ec-cursor" v-text="getTitulo(head.titulo)"></th>
@@ -55,15 +55,12 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="categoria in ListaCategoria" :key="categoria.id" >
-                                <td v-text="categoria.nombre"></td>
-                                <td v-text="categoria.descripcion==null?'-':categoria.descripcion"></td>
-                                <td v-text="categoria.cant_productos"></td>
-                                <td v-text="categoria.created_at==null?'-':categoria.created_at"></td>
-                                <td v-text="categoria.updated_at==null?'-':categoria.updated_at"></td>
-                                <td v-text="categoria.deleted_at==null?'-':categoria.deleted_at"></td>
+                            <tr v-for="superproducto in ListaSuperProducto" :key="superproducto.id" >
+                                <td v-text="superproducto.nombre"></td>
+                                <td v-text="superproducto.descripcion==null?'-':superproducto.descripcion"></td>
+                                <td v-text="superproducto.superstock"></td>
                                 <td>
-                                    <div v-if="categoria.estado">
+                                    <div v-if="superproducto.estado">
                                         <span class="badge badge-success">Activado</span>
                                     </div>
                                     <div v-else>
@@ -71,16 +68,19 @@
                                     </div>
                                 </td>
                                 <td>
-                                    <button type="button" @click="abrirModalEditar(categoria)" title="Editar" class="btn btn-warning btn-sm">
+                                    <button type="button" @click="abrirModalVer(superproducto)" title="VER" class="btn btn-primary btn-sm">
+                                        <span>ver</span>
+                                    </button>
+                                    <button type="button" @click="abrirModalEditar(superproducto)" title="EDITAR" class="btn btn-warning btn-sm">
                                         <i class="fas fa-user-edit"></i>
                                     </button>
-                                    <template v-if="categoria.estado">
-                                        <button type="button" @click="desactivar(categoria)" title="Desactivar" class="btn btn-danger btn-sm">
+                                    <template v-if="superproducto.estado">
+                                        <button type="button" @click="abrirModalSetEstado(superproducto, 0)" title="DESACTIVAR" class="btn btn-danger btn-sm">
                                             <i class="fas fa-user-times"></i>
                                         </button>
                                     </template>
                                     <template v-else>
-                                        <button type="button" @click="activar(categoria)" title="Activar" class="btn btn-success btn-sm">
+                                        <button type="button" @click="abrirModalSetEstado(superproducto, 1)" title="ACTIVAR" class="btn btn-success btn-sm">
                                             <i class="fas fa-user-check"></i>
                                         </button>
                                     </template>
@@ -111,8 +111,8 @@
         </div>
 
         <div class="modal text-gray-900" :class="{'mostrar': Modal.estado}">
-            <div class="modal-dialog modal-dialog-centered animated bounceIn fast">
-                <div class="modal-content modal-lg">
+            <div class="modal-dialog modal-lg modal-dialog-centered animated bounceIn fast">
+                <div class="modal-content">
 
                     <div class="modal-header">
                         <h3 v-text="Modal.titulo" class="modal-title" ></h3>
@@ -132,19 +132,19 @@
                                 </div>
                             </div>
                             <div class="row form-group">
-                                <label class="col-md-3 font-weight-bold" for="nom">Nombre&nbsp;<span class="text-danger">*</span></label>
+                                <label class="col-md-3 font-weight-bold" for="nom">Nombre&nbsp;(<span class="text-danger">*</span>):</label>
                                 <div class="col-md-9">
-                                    <input type="text" v-model="Categoria.nombre" class="form-control" placeholder="ingrese el nombre" id="nom">
+                                    <input type="text" v-model="SuperProducto.nombre" class="form-control" placeholder="ingrese el nombre" id="nom">
                                 </div>
                             </div>
                             <div class="row form-group">
-                                <label class="col-md-3 font-weight-bold" for="des">Descripcion</label>
+                                <label class="col-md-3 font-weight-bold" for="des">Descripcion:</label>
                                 <div class="col-md-9">
-                                    <input type="text" v-model="Categoria.descripcion" class="form-control" placeholder="ingrese la descripcion" id="des">
+                                    <input type="text" v-model="SuperProducto.descripcion" class="form-control" placeholder="ingrese la descripcion" id="des">
                                 </div>
                             </div>
                         </div>
-                        <!-- Modal Numero 2 de EDITAR-->
+                        <!-- Modal Numero 2 de VER-->
                         <div v-if="Modal.numero==2">
                             <div v-if="Error.estado" class="row d-flex justify-content-center">
                                 <div class="alert alert-danger">
@@ -156,15 +156,47 @@
                                 </div>
                             </div>
                             <div class="row form-group">
-                                <label class="col-md-3 font-weight-bold" for="nom">Nombre&nbsp;<span class="text-danger">*</span></label>
-                                <div class="col-md-9">
-                                    <input type="text" v-model="Categoria.nombre" class="form-control" placeholder="ingrese el nombre" id="nom">
+                                <label class="col-md-3 font-weight-bold">Nombre:</label>
+                                <label class="col-md-9 font-weight-bold" v-text="SuperProducto.nombre"></label>
+                            </div>
+                            <div class="row form-group">
+                                <label class="col-md-3 font-weight-bold">Descripcion:</label>
+                                <label class="col-md-9 font-weight-bold" v-text="SuperProducto.descripcion?SuperProducto.descripcion:'-'"></label>
+                            </div>
+                            <div class="row form-group">
+                                <label class="col-md-3 font-weight-bold">Super Stock:</label>
+                                <label class="col-md-9 font-weight-bold" v-text="SuperProducto.superstock"></label>
+                            </div>
+                            <div class="row form-group">
+                                <label class="col-md-3 font-weight-bold">Estado:</label>
+                                <label class="col-md-9 font-weight-bold" v-text="SuperProducto.estado==1?'activado':'desactivado'"></label>
+                            </div>
+                            <div class="row form-group">
+                                <label class="col-md-3 font-weight-bold">Fecha de creacion:</label>
+                                <label class="col-md-9 font-weight-bold" v-text="SuperProducto.created_at"></label>
+                            </div>
+                        </div>
+                        <!-- Modal Numero 3 de EDITAR-->
+                        <div v-if="Modal.numero==3">
+                            <div v-if="Error.estado" class="row d-flex justify-content-center">
+                                <div class="alert alert-danger">
+                                    <button type="button" @click="Error.estado=0" class="close text-primary" data-dismiss="alert">×</button>
+                                    <strong>Corregir los siguentes errores:</strong>
+                                    <ul> 
+                                        <li v-for="error in Error.mensaje" :key="error" v-text="error"></li> 
+                                    </ul>
                                 </div>
                             </div>
                             <div class="row form-group">
-                                <label class="col-md-3 font-weight-bold" for="des">Descripcion</label>
+                                <label class="col-md-3 font-weight-bold" for="nom">Nombre&nbsp;(<span class="text-danger">*</span>):</label>
                                 <div class="col-md-9">
-                                    <input type="text" v-model="Categoria.descripcion" class="form-control" placeholder="ingrese la descripcion" id="des">
+                                    <input type="text" v-model="SuperProducto.nombre" class="form-control" placeholder="ingrese el nombre" id="nom">
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <label class="col-md-3 font-weight-bold" for="des">Descripcion:</label>
+                                <div class="col-md-9">
+                                    <input type="text" v-model="SuperProducto.descripcion" class="form-control" placeholder="ingrese la descripcion" id="des">
                                 </div>
                             </div>
                         </div>
@@ -172,8 +204,12 @@
 
                     <div class="modal-footer" v-if="permisoModalFooter">
                         <div class="row form-group col-md-12 d-flex justify-content-around">
-                            <button type="button" @click="cerrarModal()" class="btn btn-secondary">Cancelar</button>
-                            <button type="button" @click="accionar(Modal.accion)" class="btn btn-primary" v-text="Modal.accion"></button>
+                            <div>
+                                <button type="button" @click="cerrarModal()" class="btn btn-secondary">Cancelar</button>
+                            </div>
+                            <div v-if="Modal.accion">
+                                <button type="button" @click="accionar(Modal.accion)" class="btn btn-primary" v-text="Modal.accion"></button>
+                            </div>
                         </div>
                     </div>
                 
@@ -189,13 +225,14 @@
         data(){
             return {
                 //datos generales
-                ListaCategoria: [],
-                Categoria: {
+                ListaSuperProducto: [],
+                SuperProducto: {
                     id: 0,
-                    // categoria_id: 0,
                     nombre: '',
                     descripcion: '',
-                    estado: ''
+                    superstock: 0,
+                    estado: 0,
+                    created_at: ''
                 },
 
                 //datos de busqueda y filtracion
@@ -207,7 +244,7 @@
 
                 //datos de modales
                 Modal: {
-                    numero: 1,
+                    numero: 0,
                     estado: 0,
                     titulo: '',
                     accion: ''
@@ -224,7 +261,7 @@
                 },
                 Navegacion:{
                     offset: 3,
-                    ordenarPor: 'categoria.nombre',
+                    ordenarPor: 'nombre',
                     orden: 'desc' 
                 },
 
@@ -232,7 +269,10 @@
                 Error: {
                     estado: 0,
                     mensaje: []
-                }
+                },
+
+                //datos de la ruta de consultas
+                Ruta: '/superproducto'
             }
         },
         computed: {
@@ -274,18 +314,16 @@
             Headers: function(){
                 var headers = [];
 
-                headers.push({titulo: 'Nombre', nombre: 'categoria.nombre'});
-                headers.push({titulo: 'Descripcion', nombre: 'categoria.descripcion'});
-                headers.push({titulo: 'Nro Productos', nombre: 'cant_productos'});
-                headers.push({titulo: 'F. Creacion', nombre: 'categoria.created_at'});
-                headers.push({titulo: 'F. Modificacion', nombre: 'categoria.updated_at'});
-                headers.push({titulo: 'F. Eliminacion', nombre: 'categoria.deleted_at'});
+                headers.push({titulo: 'Nombre', nombre: 'nombre'});
+                headers.push({titulo: 'Descripcion', nombre: 'descripcion'});
+                headers.push({titulo: 'Stock total', nombre: 'superstock'});
 
                 return headers;
             },
             permisoModalFooter: function(){
                 if ( this.Modal.numero == 1 ) return true;
                 if ( this.Modal.numero == 2 ) return true;
+                if ( this.Modal.numero == 3 ) return true;
 
                 return false;
             }
@@ -296,11 +334,11 @@
                     this.Navegacion.orden = (this.Navegacion.orden == 'asc'?'desc':'asc');
                 } else {
                     this.Navegacion.ordenarPor = ordenarPor!=''?ordenarPor:this.Navegacion.ordenarPor;
-                    this.Navegacion.orden = 'asc';
                 }
-                this.Paginacion.currentPage = page==1?1:page;
+                this.Paginacion.currentPage = page;
 
-                var url = '/categoria?page='+this.Paginacion.currentPage
+                var url = this.Ruta+'?'
+                        +'page='+this.Paginacion.currentPage
                         +'&estado='+this.Busqueda.estado
                         +'&texto='+this.Busqueda.texto
                         +'&filas='+this.Busqueda.filas
@@ -309,7 +347,7 @@
                 
                 var me = this;
                 axios.get(url).then(function (response) {
-                    me.ListaCategoria = response.data.categorias.data;
+                    me.ListaSuperProducto = response.data.superproductos.data;
                     me.Paginacion = response.data.paginacion;
                 }).catch(function (error) {
                     console.log(error)
@@ -319,17 +357,20 @@
                 if ( this.validar() ) return;
                 
                 var me = this;
-                axios.post('/categoria/agregar', {
-                    'nombre' : this.Categoria.nombre,
-                    'descripcion' : this.Categoria.descripcion,
+                var url = this.Ruta+'/agregar';
+                axios.post(url, {
+                    'nombre' : this.SuperProducto.nombre,
+                    'descripcion' : this.SuperProducto.descripcion
                 }).then(function(response){
                     me.cerrarModal();
                     me.listar();
+                    var estado = response.data.estado;
+                    if ( estado == 0 ) console.log(response.data.error);
                     Swal.fire({
                         position: 'top-end',
                         toast: true,
-                        type: 'success',
-                        title: 'La categoria se ha AGREGADO correctamente',
+                        type: estado==1?'success':'info',
+                        title: estado==1?'El super producto se ha AGREGADO correctamente':'El super producto NO se ha AGREGADO correctamente',
                         showConfirmButton: false,
                         timer: 4500,
                         animation:false,
@@ -345,18 +386,21 @@
                 if ( this.validar() ) return;
 
                 var me = this;
-                axios.put('/categoria/editar', {
-                    'id' : this.Categoria.id,
-                    'nombre' : this.Categoria.nombre,
-                    'descripcion' : this.Categoria.descripcion
+                var url = this.Ruta+'/editar';
+                axios.put(url, {
+                    'id' : this.SuperProducto.id,
+                    'nombre' : this.SuperProducto.nombre,
+                    'descripcion' : this.SuperProducto.descripcion
                 }).then(function(response){
                     me.cerrarModal();
                     me.listar();
+                    var estado = response.data.estado;
+                    if ( estado == 0 ) console.log(response.data.error);
                     Swal.fire({
                         position: 'top-end',
                         toast: true,
-                        type: 'success',
-                        title: 'La categoria se ha EDITADO correctamente',
+                        type: estado==1?'success':'info',
+                        title: estado==1?'El super producto se ha EDITADO correctamente':'El super producto NO se ha EDITADO correctamente',
                         showConfirmButton: false,
                         timer: 4500,
                         animation:false,
@@ -368,108 +412,80 @@
                     console.log(error);
                 });
             },
-            activar(categoria = []){
-                this.Categoria.id = categoria['id'];
-                this.Categoria.nombre = categoria['nombre'];
+            setEstado(){
+                var me = this;
+                var url = this.Ruta+'/setEstado';
 
-                Swal.fire({
-                    title: '¿Esta seguro de ACTIVAR la categoria "'+this.Categoria.nombre+'"?',
-                    type: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: 'Aceptar',
-                    cancelButtonText: 'Cancelar',
-                    reverseButtons: true,
-                    customClass: {
-                        confirmButton: 'btn btn-success',
-                        cancelButton: 'btn btn-danger'
-                    },
-                    buttonsStyling: false
-                }).then((result) => {
-                    if (result.value) {
-                        var me = this;
-                
-                        axios.put('/categoria/activar', {
-                            'id' : me.Categoria.id
-                        }).then(function (response) {
-                            me.listar();
-                            Swal.fire({
-                                position: 'top-end',
-                                toast: true,
-                                type: 'success',
-                                title: 'La categoria se ha ACTIVADO correctamente',
-                                showConfirmButton: false,
-                                timer: 4500,
-                                animation:false,
-                                customClass:{
-                                    popup: 'animated bounceIn fast'
-                                }
-                            });
-                        }).catch(function (error) {
-                            console.log(error);
-                        });
-                    } else if ( result.dismiss === Swal.DismissReason.cancel ) {
-
-                    }
-                });
-            },
-            desactivar(categoria = []){
-                this.Categoria.id = categoria['id'];
-                this.Categoria.nombre = categoria['nombre'];
-
-                Swal.fire({
-                    title: '¿Esta seguro de DESACTIVAR la categoria "'+this.Categoria.nombre+'"?',
-                    type: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: 'Aceptar',
-                    cancelButtonText: 'Cancelar',
-                    reverseButtons: true,
-                    customClass: {
-                        confirmButton: 'btn btn-success',
-                        cancelButton: 'btn btn-danger'
-                    },
-                    buttonsStyling: false
-                }).then((result) => {
-                    if (result.value) {
-                        var me = this;
-                
-                        axios.put('/categoria/desactivar', {
-                            'id' : me.Categoria.id
-                        }).then(function (response) {
-                            me.listar();
-                            Swal.fire({
-                                position: 'top-end',
-                                toast: true,
-                                type: 'success',
-                                title: 'La categoria se ha DESACTIVADO correctamente',
-                                showConfirmButton: false,
-                                timer: 4500,
-                                animation:false,
-                                customClass:{
-                                    popup: 'animated bounceIn fast'
-                                }
-                            });
-                        }).catch(function (error) {
-                            console.log(error);
-                        });
-                    } else if ( result.dismiss === Swal.DismissReason.cancel ) {
-
-                    }
+                axios.put(url, {
+                    'id' : me.SuperProducto.id,
+                    'estado': me.SuperProducto.estado
+                }).then(function (response) {
+                    me.listar();
+                    var estado = response.data.estado;
+                    if ( estado == 0 ) console.log(response.data.error);    
+                    Swal.fire({
+                        position: 'top-end',
+                        toast: true,
+                        type: estado==1?'success':'info',
+                        title: 'El super producto'+ (estado==1?' se ha':' NO se ha') + (me.SuperProducto.estado==1?' ACTIVADO':' DESACTIVADO') +' correctamente',
+                        showConfirmButton: false,
+                        timer: 4500,
+                        animation:false,
+                        customClass:{
+                            popup: 'animated bounceIn fast'
+                        }
+                    });
+                }).catch(function(error){
+                    console.log(error);
                 });
             },
             abrirModalAgregar(){
-                this.abrirModal(1, 'Nueva Categoria', 'Agregar');
+                this.abrirModal(1, 'Nuevo Super Producto', 'Agregar');
 
-                this.Categoria.nombre = '';
-                this.Categoria.descripcion = '';
+                this.SuperProducto.nombre = '';
+                this.SuperProducto.descripcion = '';
+            },
+            abrirModalVer(data = []){
+                this.abrirModal(2, 'Ver Super Producto');
+                
+                this.SuperProducto.nombre = data['nombre'];
+                this.SuperProducto.descripcion = data['descripcion'];
+                this.SuperProducto.superstock = data['superstock'];
+                this.SuperProducto.estado = data['estado'];
+                this.SuperProducto.created_at = data['created_at'];
             },
             abrirModalEditar(data = []){
-                this.abrirModal(2, 'Editar Categoria', 'Editar');
+                this.abrirModal(3, 'Editar Super Producto', 'Editar');
                 
-                this.Categoria.id = data['id'];
-                this.Categoria.nombre = data['nombre'];
-                this.Categoria.descripcion = data['descripcion'];
+                this.SuperProducto.id = data['id'];
+                this.SuperProducto.nombre = data['nombre'];
+                this.SuperProducto.descripcion = data['descripcion'];
             },
-            abrirModal(numero, titulo, accion){
+            abrirModalSetEstado(data = [], estado){
+                this.SuperProducto.id = data['id'];
+                this.SuperProducto.nombre = data['nombre'];
+                this.SuperProducto.estado = estado;
+
+                Swal.fire({
+                    title: '¿Esta seguro de '+ (this.SuperProducto.estado?'ACTIVAR':'DESACTIVAR') +' el super producto "'+this.SuperProducto.nombre+'"?',
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Aceptar',
+                    cancelButtonText: 'Cancelar',
+                    reverseButtons: true,
+                    customClass: {
+                        confirmButton: 'btn btn-success',
+                        cancelButton: 'btn btn-danger'
+                    },
+                    buttonsStyling: false
+                }).then((result) => {
+                    if (result.value) {
+                        this.setEstado();
+                    } else if ( result.dismiss === Swal.DismissReason.cancel ) {
+                    }
+                });
+            },
+            abrirModal(numero, titulo, accion = ''){
                 this.Modal.estado = 1;
                 this.Modal.numero = numero;
                 this.Modal.titulo = titulo;
@@ -482,9 +498,12 @@
                 this.Error.estado = 0;
                 this.Error.mensaje = [];
 
-                this.Categoria.id = 0;
-                this.Categoria.nombre = '';
-                this.Categoria.descripcion = '';
+                this.SuperProducto.id = 0;
+                this.SuperProducto.nombre = '';
+                this.SuperProducto.descripcion = '';
+                this.SuperProducto.superstock = 0;
+                this.SuperProducto.estado = 0;
+                this.SuperProducto.created_at = '';
             },
             accionar(accion){
                 switch( accion ){
@@ -526,37 +545,12 @@
 
                 return titulo;
             },
-            getTipo(rol_id){
-                var nombre = '';
-
-                for (let i = 0; i < this.SelectRol.length; i++) {
-                    if ( this.SelectRol[i].id == rol_id ){
-                        nombre = this.SelectRol[i].nombre;
-                        break;
-                    }
-                }
-
-                switch ( nombre ) {
-                    case 'Administrador': {
-                        return 'N';
-                    }
-                    case 'Puesto': {
-                        return 'P';
-                    }
-                    case 'Almacén': {
-                        return 'A';
-                    }
-                    default: {
-                        console.log('ERROR: no se encontro el nombre de rol para definir el tipo de usuario');
-                    }
-                }
-            },
             validar(){
                 this.Error.estado = 0;
                 this.Error.mensaje = [];
 
                 //nombre
-                if ( !this.Categoria.nombre ) this.Error.mensaje.push("Debe ingresar un nombre");
+                if ( !this.SuperProducto.nombre ) this.Error.mensaje.push("Debe ingresar un nombre");
 
                 if ( this.Error.mensaje.length ) this.Error.estado = 1;
 
@@ -590,5 +584,8 @@
     }
     .ec-th{
         background-color: skyblue;
+    }
+    .modal-length{
+        width: 900px !important;
     }
 </style>

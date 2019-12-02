@@ -7,10 +7,10 @@
             <!-- Encabezado principal -->
             <div class="row form-group">
                 <i class="fas fa-map-signs"></i>&nbsp;&nbsp;
-                <span class="h3 mb-0 text-gray-900">Productos</span>
+                <span class="h3 mb-0 text-gray-900">Materiales&nbsp;</span>
                 <button type="button" class="btn btn-success" @click="abrirModalAgregar()">
-                    <i class="fas fa-user-plus"></i>&nbsp; Nuevo
-                </button>
+                    <i class="fas fa-hammer"></i>&nbsp; Nuevo
+                </button>&nbsp;
                 <button type="button" class="btn btn-danger">
                     <i class="far fa-file-pdf"></i>&nbsp; PDF
                 </button>
@@ -19,8 +19,8 @@
             <!-- Inputs de busqueda -->
             <div class="row form-group">
                 <div class="col-md-8">
-                    <div class="input-group">
-                        <select class="col-md-3 form-control text-gray-900" v-model="Busqueda.estado" @click="listar()">
+                    <div class="input-group"> 
+                        <select class="col-md-3 custom-select text-gray-900" v-model="Busqueda.estado">
                             <option value="2">Todos</option>
                             <option value="1">Activados</option>
                             <option value="0">Desactivados</option>
@@ -36,37 +36,32 @@
                     <label>N° filas:</label>
                 </div>
                 <div class="col-md-1">
-                    <select class="form-control text-gray-900" v-model="Busqueda.filas" @click="listar()">
-                        <option v-for="fila in Filas" :key="fila" :value="fila" v-text="fila"></option>
+                    <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.filas">
+                        <option v-for="item in Filas" :key="item" :value="item" v-text="item"></option>
                     </select>
                 </div>
             </div>
 
             <!-- Listado -->
-            <div v-if="ListaProducto.length" class="table-responsive">
+            <div v-if="ListaMaterial.length" class="table-responsive">
                 <!-- Tabla -->
-                <div id="ec-table">
-                    <table class="table table-bordered table-striped table-sm text-gray-900">
+                <div class="ec-table overflow-auto">
+                    <table class="table table-borderless table-sm text-gray-900">
                         <thead>
-                            <tr>
+                            <tr class="table-info">
                                 <th v-for="head in Headers" :key="head.nombre" @click="listar(1, head.nombre)" class="ec-cursor" v-text="getTitulo(head.titulo)"></th>
+                                <th >Costo Unit.</th>
                                 <th>Estado</th>
                                 <th>Opciones</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="producto in ListaProducto" :key="producto.id" >
-                                <td v-text="producto.codigo==null?'-':producto.codigo"></td>
-                                <td v-text="producto.nombre"></td>
-                                <td v-text="producto.categoria_nombre"></td>
-                                <td v-text="producto.precio"></td>
-                                <td v-text="producto.stock"></td>
-                                <td v-text="producto.descripcion==null?'-':producto.descripcion"></td>
-                                <td v-text="producto.created_at==null?'-':producto.created_at"></td>
-                                <td v-text="producto.updated_at==null?'-':producto.updated_at"></td>
-                                <td v-text="producto.deleted_at==null?'-':producto.deleted_at"></td>
+                            <tr v-for="material in ListaMaterial" :key="material.id" >
+                                <td v-text="material.nombre"></td>
+                                <td v-text="material.unidad"></td>
+                                <td v-text="material.costo"></td>
                                 <td>
-                                    <div v-if="producto.estado">
+                                    <div v-if="material.estado">
                                         <span class="badge badge-success">Activado</span>
                                     </div>
                                     <div v-else>
@@ -74,16 +69,16 @@
                                     </div>
                                 </td>
                                 <td>
-                                    <button type="button" @click="abrirModalEditar(producto)" title="Editar" class="btn btn-warning btn-sm">
+                                    <button type="button" @click="abrirModalEditar(material)" title="Editar" class="btn btn-outline-warning btn-sm">
                                         <i class="fas fa-user-edit"></i>
                                     </button>
-                                    <template v-if="producto.estado">
-                                        <button type="button" @click="desactivar(producto)" title="Desactivar" class="btn btn-danger btn-sm">
+                                    <template v-if="material.estado">
+                                        <button type="button" @click="desactivar(material)" title="Desactivar" class="btn btn-outline-danger btn-sm">
                                             <i class="fas fa-user-times"></i>
                                         </button>
                                     </template>
                                     <template v-else>
-                                        <button type="button" @click="activar(producto)" title="Activar" class="btn btn-success btn-sm">
+                                        <button type="button" @click="activar(material)" title="Activar" class="btn btn-outline-success btn-sm">
                                             <i class="fas fa-user-check"></i>
                                         </button>
                                     </template>
@@ -135,30 +130,30 @@
                                 </div>
                             </div>
                             <div class="row form-group">
-                                <label class="col-md-3 font-weight-bold" for="cat">Categoria&nbsp;<span class="text-danger">*</span></label>
+                                <label class="col-md-3 font-weight-bold" for="nom">Nombre&nbsp;<span class="text-danger">*</span></label>
                                 <div class="col-md-9">
-                                    <select v-model="Producto.categoria_id" class="form-control" id="cat">
-                                        <option value="0" disabled>seleccione una categoria</option>
-                                        <option v-for="categoria in SelectCategoria" :key="categoria.id" :value="categoria.id" v-text="categoria.nombre"></option>
+                                    <input type="text" v-model="Material.nombre" class="form-control" placeholder="ingrese el nombre">
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <label class="col-md-3 font-weight-bold" for="des">Unid.Medida&nbsp;<span class="text-danger">*</span></label>
+                                <div class="col-md-4">
+                                    <select v-model="Material.subtipo" class="custom-select">
+                                        <option value="" disabled>Tipo</option>
+                                        <option v-for="item in SelectTipoFiltrado" :key="item" :value="item" v-text="item"></option>
+                                    </select>
+                                </div>
+                                <div class="col-md-5">
+                                    <select v-model="Material.unidad" class="custom-select" id="cat">
+                                        <option value="" disabled>Subtipo</option>
+                                        <option v-for="unidad in selectUnidadFiltrado" :key="unidad.id" :value="unidad.nombre" v-text="unidad.nombre"></option>
                                     </select>
                                 </div>
                             </div>
                             <div class="row form-group">
-                                <label class="col-md-3 font-weight-bold" for="nom">Nombre&nbsp;<span class="text-danger">*</span></label>
-                                <div class="col-md-9">
-                                    <input type="text" v-model="Producto.nombre" class="form-control" placeholder="ingrese el nombre" id="nom">
-                                </div>
-                            </div>
-                            <div class="row form-group">
-                                <label class="col-md-3 font-weight-bold" for="nom">Precio&nbsp;<span class="text-danger">*</span></label>
-                                <div class="col-md-9">
-                                    <input type="text" v-model="Producto.precio" class="form-control" placeholder="ingrese el precio" id="pre">
-                                </div>
-                            </div>
-                            <div class="row form-group">
-                                <label class="col-md-3 font-weight-bold" for="des">Descripcion</label>
-                                <div class="col-md-9">
-                                    <input type="text" v-model="Producto.descripcion" class="form-control" placeholder="ingrese la descripcion" id="des">
+                                <label class="col-md-3 font-weight-bold" for="nom">Costo por Unidad&nbsp;<span class="text-danger">*</span></label>
+                                <div class="col-md-4">
+                                    <input type="number" v-model="Material.costo" class="form-control" placeholder="Ingrese el costo">
                                 </div>
                             </div>
                         </div>
@@ -174,30 +169,30 @@
                                 </div>
                             </div>
                             <div class="row form-group">
-                                <label class="col-md-3 font-weight-bold" for="cat">Categoria&nbsp;<span class="text-danger">*</span></label>
+                                <label class="col-md-3 font-weight-bold" for="nom">Nombre&nbsp;<span class="text-danger">*</span></label>
                                 <div class="col-md-9">
-                                    <select v-model="Producto.categoria_id" class="form-control" id="cat">
-                                        <option value="0" disabled>seleccione una categoria</option>
-                                        <option v-for="categoria in SelectCategoria" :key="categoria.id" :value="categoria.id" v-text="categoria.nombre"></option>
+                                    <input type="text" v-model="Material.nombre" class="form-control" placeholder="ingrese el nombre">
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <label class="col-md-3 font-weight-bold" for="des">Unid.Medida&nbsp;<span class="text-danger">*</span></label>
+                                <div class="col-md-4">
+                                    <select v-model="Material.subtipo" class="custom-select" id="cat">
+                                        <option value="" disabled>Tipo</option>
+                                        <option v-for="item in SelectTipoFiltrado" :key="item" :value="item" v-text="item"></option>
+                                    </select>
+                                </div>
+                                <div class="col-md-5">
+                                    <select v-model="Material.unidad" class="custom-select" id="cat">
+                                        <option value="" disabled>Subtipo</option>
+                                        <option v-for="unidad in selectUnidadFiltrado" :key="unidad.id" :value="unidad.nombre" v-text="unidad.nombre"></option>
                                     </select>
                                 </div>
                             </div>
                             <div class="row form-group">
-                                <label class="col-md-3 font-weight-bold" for="nom">Nombre&nbsp;<span class="text-danger">*</span></label>
-                                <div class="col-md-9">
-                                    <input type="text" v-model="Producto.nombre" class="form-control" placeholder="ingrese el nombre" id="nom">
-                                </div>
-                            </div>
-                            <div class="row form-group">
-                                <label class="col-md-3 font-weight-bold" for="nom">Precio&nbsp;<span class="text-danger">*</span></label>
-                                <div class="col-md-9">
-                                    <input type="text" v-model="Producto.precio" class="form-control" placeholder="ingrese el precio" id="pre">
-                                </div>
-                            </div>
-                            <div class="row form-group">
-                                <label class="col-md-3 font-weight-bold" for="des">Descripcion</label>
-                                <div class="col-md-9">
-                                    <input type="text" v-model="Producto.descripcion" class="form-control" placeholder="ingrese la descripcion" id="des">
+                                <label class="col-md-3 font-weight-bold" for="nom">Costo por Unidad&nbsp;<span class="text-danger">*</span></label>
+                                <div class="col-md-4">
+                                    <input type="number" v-model="Material.costo" class="form-control" placeholder="Ingrese el costo">
                                 </div>
                             </div>
                         </div>
@@ -205,8 +200,8 @@
 
                     <div class="modal-footer" v-if="permisoModalFooter">
                         <div class="row form-group col-md-12 d-flex justify-content-around">
+                            <button type="button" @click="accionar(Modal.accion)" class="btn btn-success" v-text="Modal.accion"></button>
                             <button type="button" @click="cerrarModal()" class="btn btn-secondary">Cancelar</button>
-                            <button type="button" @click="accionar(Modal.accion)" class="btn btn-primary" v-text="Modal.accion"></button>
                         </div>
                     </div>
                 
@@ -222,17 +217,25 @@
         data(){
             return {
                 //datos generales
-                ListaProducto: [],
-                Producto: {
+                ListaMaterial: [],
+                Material: {
                     id: 0,
-                    categoria_id: 0,
-                    codigo: '',
-                    precio: 0,
-                    stock: 0,
-                    descripcion: ''
+                    nombre: '',
+                    subtipo: '',
+                    unidad: '',
+                    costo: 0,
+                    estado: ''
                 },
-                SelectCategoria: [],
-
+                MaterialOrigen: {
+                    id: 0,
+                    nombre: '',
+                    subtipo: '',
+                    unidad: '',
+                    costo: 0,
+                },
+                SelectUnidad: [],
+                SelectTipoFiltrado: [],
+                YaIngrese: 0,
                 //datos de busqueda y filtracion
                 Busqueda: {
                     texto: '',
@@ -242,7 +245,7 @@
 
                 //datos de modales
                 Modal: {
-                    numero: 1,
+                    numero: 0,
                     estado: 0,
                     titulo: '',
                     accion: ''
@@ -259,15 +262,19 @@
                 },
                 Navegacion:{
                     offset: 3,
-                    ordenarPor: 'producto.nombre',
-                    orden: 'desc' 
+                    ordenarPor: 'id',
+                    orden: 'desc'
                 },
 
                 //datos de errores
                 Error: {
                     estado: 0,
                     mensaje: []
-                }
+                },
+                Headers:[
+                    {titulo: 'Nombre', nombre: 'nombre'},
+                    {titulo: 'Unid. Medida', nombre: 'unidad'}
+                ]
             }
         },
         computed: {
@@ -306,39 +313,43 @@
 
                 return filas;
             },
-            Headers: function(){
-                var headers = [];
-
-                headers.push({titulo: 'Codigo', nombre: 'producto.codigo'});
-                headers.push({titulo: 'Nombre', nombre: 'producto.nombre'});
-                headers.push({titulo: 'Categoria', nombre: 'categoria.nombre'});
-                headers.push({titulo: 'Precio', nombre: 'producto.precio'});
-                headers.push({titulo: 'Stock', nombre: 'producto.stock'});
-                headers.push({titulo: 'Descripcion', nombre: 'producto.descripcion'});
-                headers.push({titulo: 'F. Creacion', nombre: 'producto.created_at'});
-                headers.push({titulo: 'F. Modificacion', nombre: 'producto.updated_at'});
-                headers.push({titulo: 'F. Eliminacion', nombre: 'producto.deleted_at'});
-
-                return headers;
-            },
             permisoModalFooter: function(){
                 if ( this.Modal.numero == 1 ) return true;
                 if ( this.Modal.numero == 2 ) return true;
 
                 return false;
+            },
+            selectUnidadFiltrado: function(){
+                // console.log('Soy el computado selectUnidadFiltrado');
+                let selectUnidadFiltrado = [];
+                // console.log('tamaño de SelectUnidad: ' + this.SelectUnidad.length);
+                if(this.SelectUnidad.length){
+                    this.SelectUnidad.forEach(unidad => {
+                        if(unidad.subtipo == this.Material.subtipo){
+                            selectUnidadFiltrado.push(unidad);
+                        }
+                    });
+
+                    if(this.Modal.numero == 1  || this.YaIngrese) {//Es moda nuevo o ya ingrese
+                        this.Material.unidad = '';
+                    }else{
+                        this.YaIngrese = 1;
+                    }
+                    return selectUnidadFiltrado;
+                }
             }
         },
         methods: {
             listar(page = 1, ordenarPor = ''){
                 if ( ordenarPor == this.Navegacion.ordenarPor ) {
-                    this.Navegacion.orden = (this.Navegacion.orden == 'asc'?'desc':'asc');
+                    this.Navegacion.orden = (this.Navegacion.orden == 'asc' ? 'desc' : 'asc');
                 } else {
-                    this.Navegacion.ordenarPor = ordenarPor!=''?ordenarPor:this.Navegacion.ordenarPor;
-                    this.Navegacion.orden = 'asc';
+                    this.Navegacion.ordenarPor = (ordenarPor != '' ? ordenarPor: this.Navegacion.ordenarPor);
+                    // this.Navegacion.orden = 'asc';
                 }
                 this.Paginacion.currentPage = page==1?1:page;
 
-                var url = '/producto?page='+this.Paginacion.currentPage
+                var url = '/material?page='+this.Paginacion.currentPage
                         +'&estado='+this.Busqueda.estado
                         +'&texto='+this.Busqueda.texto
                         +'&filas='+this.Busqueda.filas
@@ -347,7 +358,7 @@
                 
                 var me = this;
                 axios.get(url).then(function (response) {
-                    me.ListaProducto = response.data.productos.data;
+                    me.ListaMaterial = response.data.materiales.data;
                     me.Paginacion = response.data.paginacion;
                 }).catch(function (error) {
                     console.log(error)
@@ -357,13 +368,11 @@
                 if ( this.validar() ) return;
                 
                 var me = this;
-                axios.post('/producto/agregar', {
-                    'codigo' : this.Producto.codigo,
-                    'nombre' : this.Producto.nombre,
-                    'categoria_id' : this.Producto.categoria_id,
-                    'precio' : this.Producto.precio,
-                    'stock': this.Producto.stock,
-                    'descripcion' : this.Producto.descripcion
+                axios.post('/material/agregar', {
+                    'nombre' : this.Material.nombre,
+                    'subtipo': this.Material.subtipo,
+                    'unidad' : this.Material.unidad,
+                    'costo' : this.Material.costo
                 }).then(function(response){
                     me.cerrarModal();
                     me.listar();
@@ -371,7 +380,7 @@
                         position: 'top-end',
                         toast: true,
                         type: 'success',
-                        title: 'El producto se ha AGREGADO correctamente',
+                        title: 'El material se ha AGREGADO correctamente',
                         showConfirmButton: false,
                         timer: 4500,
                         animation:false,
@@ -387,14 +396,12 @@
                 if ( this.validar() ) return;
 
                 var me = this;
-                axios.put('/producto/editar', {
-                    'id' : this.Producto.id,
-                    'codigo' : this.Producto.codigo,
-                    'nombre' : this.Producto.nombre,
-                    'categoria_id' : this.Producto.categoria_id,
-                    'precio' : this.Producto.precio,
-                    'stock': this.Producto.stock,
-                    'descripcion' : this.Producto.descripcion
+                axios.put('/material/editar', {
+                    'id' : this.Material.id,
+                    'nombre' : this.Material.nombre,
+                    'subtipo' : this.Material.subtipo,
+                    'unidad' : this.Material.unidad,
+                    'costo' : this.Material.costo,
                 }).then(function(response){
                     me.cerrarModal();
                     me.listar();
@@ -402,7 +409,7 @@
                         position: 'top-end',
                         toast: true,
                         type: 'success',
-                        title: 'El producto se ha EDITADO correctamente',
+                        title: 'El Material se ha EDITADO correctamente',
                         showConfirmButton: false,
                         timer: 4500,
                         animation:false,
@@ -414,38 +421,36 @@
                     console.log(error);
                 });
             },
-            activar(producto = []){
-                this.Producto.id = producto['id'];
-                this.Producto.nombre = producto['nombre'];
+            activar(material = []){
+                this.Material.id = material['id'];
+                this.Material.nombre = material['nombre'];
 
-                var me = this;
-
-                Swal.fire({ 
-                    title: '¿Esta seguro de ACTIVAR el producto "'+this.Producto.nombre+'"?',
+                Swal.fire({
+                    title: '¿Esta seguro de ACTIVAR el material "'+this.Material.nombre+'"?',
                     type: 'warning',
                     showCancelButton: true,
                     confirmButtonText: 'Aceptar',
                     cancelButtonText: 'Cancelar',
-                    reverseButtons: true,
+                    // reverseButtons: true,
+                    
                     customClass: {
                         confirmButton: 'btn btn-success',
-                        cancelButton: 'btn btn-danger'
+                        cancelButton: 'btn btn-secondary'
                     },
                     buttonsStyling: false
                 }).then((result) => {
                     if (result.value) {
                         var me = this;
                 
-                        axios.put('/producto/activar', {
-                            'id' : me.Producto.id
+                        axios.put('/material/activar', {
+                            'id' : me.Material.id
                         }).then(function (response) {
-                            me.cerrarModal();
                             me.listar();
                             Swal.fire({
                                 position: 'top-end',
                                 toast: true,
                                 type: 'success',
-                                title: 'El producto se ha ACTIVADO correctamente',
+                                title: 'El material se ha ACTIVADO correctamente',
                                 showConfirmButton: false,
                                 timer: 4500,
                                 animation:false,
@@ -461,38 +466,35 @@
                     }
                 });
             },
-            desactivar(producto = []){
-                this.Producto.id = producto['id'];
-                this.Producto.nombre = producto['nombre'];
+            desactivar(material = []){
+                this.Material.id = material['id'];
+                this.Material.nombre = material['nombre'];
 
-                var me = this;
-                
                 Swal.fire({
-                    title: '¿Esta seguro de DESACTIVAR el producto "'+this.Producto.nombre+'"?',
-                    type: 'warning',
+                    title: '¿Esta seguro de DESACTIVAR el material "'+this.Material.nombre+'"?',
+                    type: 'error',
                     showCancelButton: true,
                     confirmButtonText: 'Aceptar',
                     cancelButtonText: 'Cancelar',
-                    reverseButtons: true,
+                    // reverseButtons: true,
                     customClass: {
                         confirmButton: 'btn btn-success',
-                        cancelButton: 'btn btn-danger'
+                        cancelButton: 'btn btn-secondary'
                     },
                     buttonsStyling: false
                 }).then((result) => {
                     if (result.value) {
                         var me = this;
                 
-                        axios.put('/producto/desactivar', {
-                            'id' : me.Producto.id
+                        axios.put('/material/desactivar', {
+                            'id' : me.Material.id
                         }).then(function (response) {
-                            me.cerrarModal();
                             me.listar();
                             Swal.fire({
                                 position: 'top-end',
                                 toast: true,
                                 type: 'success',
-                                title: 'El producto se ha ACTIVADO correctamente',
+                                title: 'El material se ha DESACTIVADO correctamente',
                                 showConfirmButton: false,
                                 timer: 4500,
                                 animation:false,
@@ -509,29 +511,34 @@
                 });
             },
             abrirModalAgregar(){
-                this.abrirModal(1, 'Nuevo Producto', 'Agregar');
+                this.abrirModal(1, 'Nuevo Material', 'Agregar');
 
-                this.Producto.codigo = '';
-                this.Producto.categoria_id = 0;
-                this.Producto.nombre = '';
-                this.Producto.precio = 0;
-                this.Producto.stock = 0;
-                this.Producto.descripcion = '';
-
-                this.selectCategoria();
+                //Verifico si el arreglo SelectUnidad esta vacia
+                if(!this.SelectUnidad.length) this.selectUnidad();
+                //Verifico si el arreglo SelectTipoFiltro esta vacia
+                // if(!this.SelectTipoFiltrado.length) this.selectTipoFiltrado();
+                // this.selectTipoFiltrado();
             },
             abrirModalEditar(data = []){
-                this.abrirModal(2, 'Editar Producto', 'Editar');
+                this.abrirModal(2, 'Editar Material', 'Editar');
                 
-                this.Producto.id = data['id'];
-                this.Producto.categoria_id = data['categoria_id'];
-                this.Producto.codigo = data['codigo'];
-                this.Producto.nombre = data['nombre'];
-                this.Producto.precio = data['precio'];
-                this.Producto.stock = data['stock'];
-                this.Producto.descripcion = data['descripcion'];
+                this.Material.id = data['id'];
+                this.Material.nombre = data['nombre'];
+                this.Material.subtipo = data['subtipo'];
+                this.Material.unidad = data['unidad'];
+                this.Material.costo  = data['costo'];
 
-                this.selectCategoria();
+                //Lleno los campos de mi Material Original
+                this.MaterialOrigen.id = data['id'];
+                this.MaterialOrigen.nombre = data['nombre'];
+                this.MaterialOrigen.subtipo = data['subtipo'];
+                this.MaterialOrigen.unidad = data['unidad'];
+                this.MaterialOrigen.costo  = data['costo'];
+                
+                //Verifico si el arreglo SelectUnidad esta vacia
+                if(!this.SelectUnidad.length) this.selectUnidad();
+                //Verifico si el arreglo SelectTipoFiltro esta vacia
+                // if(!this.SelectTipoFiltrado.length) this.selectTipoFiltrado();
             },
             abrirModal(numero, titulo, accion){
                 this.Modal.estado = 1;
@@ -540,21 +547,20 @@
                 this.Modal.accion = accion;
             },
             cerrarModal(){
+                this.Modal.numero = 0;
                 this.Modal.estado = 0;
                 this.Modal.mensaje = [];
 
                 this.Error.estado = 0;
                 this.Error.mensaje = [];
 
-                this.Producto.id = 0;
-                this.Producto.categoria_id = 0;
-                this.Producto.codigo = '';
-                this.Producto.nombre = '';
-                this.Producto.precio = 0;
-                this.Producto.stock = 0;
-                this.Producto.descripcion = '';
+                this.Material.id = 0;
+                this.Material.nombre = '';
+                this.Material.unidad = '';
+                this.Material.subtipo = '';
+                this.Material.costo = 0;
 
-                this.SelectCategoria = [];
+                this.YaIngrese = 0;
             },
             accionar(accion){
                 switch( accion ){
@@ -575,16 +581,6 @@
                         break;
                     }
                 }
-            },
-            selectCategoria(){
-                var me = this;
-                var url = '/producto/selectCategoria';
-
-                axios.get(url).then(function(response){
-                    me.SelectCategoria = response.data;
-                }).catch(function(error){
-                    console.log(error);
-                });
             },
             getTitulo(titulo){
                 var seleccionada = 0;
@@ -610,27 +606,92 @@
                 this.Error.estado = 0;
                 this.Error.mensaje = [];
 
-                //nombre
-                if ( !this.Producto.nombre ) this.Error.mensaje.push("Debe ingresar un nombre");
-                //categoria
-                if ( this.Producto.categoria_id == 0 ) this.Error.mensaje.push("Debe seleccionar una categoria");
-                //precio
-                if ( this.Producto.precio == 0 ) this.Error.mensaje.push("Debe ingresar un precio");
+                //Recorrere la lista de Material
+                if(this.Modal.numero == 1){
+                    //Modal agregar
+                    let registrado = false;
+                    for (let i = 0; i < this.ListaMaterial.length; i++) {
+                        if(this.ListaMaterial[i].nombre == this.Material.nombre) {
+                            this.Error.mensaje.push("El material '" + this.Material.nombre + "' ya está registrado");
+                            registrado = true;
+                            break;
+                        }
+                    }
+                    if(!registrado){
+                        if ( !this.Material.nombre ) this.Error.mensaje.push("Debe ingresar un nombre");
+                        if ( !this.Material.unidad ) this.Error.mensaje.push("Debe seleccionar una Unid. Medida");
+                        if ( this.Material.costo == 0 || this.Material.costo < 0) this.Error.mensaje.push("Debe ingresar un costo válido");
+                    }
+                }else{
+                    //Modal editar
+                    if(this.Material.nombre != this.MaterialOrigen.nombre){
+                        for (let i = 0; i < this.ListaMaterial.length; i++) {
+                            if(this.ListaMaterial[i].nombre == this.Material.nombre) {
+                                this.Error.mensaje.push("El material '" + this.Material.nombre + "' ya está registrado");
+                                break;
+                            }
+                        }
+                    }else{
+                        if(this.Material.subtipo == this.MaterialOrigen.subtipo && this.Material.unidad == this.MaterialOrigen.unidad && this.Material.costo == this.MaterialOrigen.costo){
+                            this.Error.mensaje.push("Ningun cambio registrado");
+                        }else{
+                            if ( !this.Material.nombre ) this.Error.mensaje.push("Debe ingresar un nombre");
+                            if ( !this.Material.unidad ) this.Error.mensaje.push("Debe seleccionar una Unid. Medida");
+                            if ( this.Material.costo == 0 || this.Material.costo < 0) this.Error.mensaje.push("Debe ingresar un costo válido");
+                        }
+                    }
+                }
 
                 if ( this.Error.mensaje.length ) this.Error.estado = 1;
-
                 return this.Error.estado;
             },
             cambiarPagina(page){
                 if ( page >= 1 && page <= this.Paginacion.lastPage) {
                     this.listar(page);
                 }
+            },
+            selectUnidad(){
+                var me = this;
+                var url = '/material/selectUnidad';
+                axios.get(url).then(function(response){
+                    me.SelectUnidad = response.data;
+                }).then(function(){
+                    me.selectTipoFiltrado();
+                })
+                .catch(function(error){
+                    console.log(error);
+                });
+            },
+            // selectTipoFiltrado(){
+            //     let selectTipoFiltrado = [];
+            //     console.log('Ingrese al metodo selectTipoFiltrado');
+            //     this.SelectUnidad.forEach(unidad => {
+            //         if(!selectTipoFiltrado.includes(unidad.subtipo)){
+            //             console.log('ingrese al if del metodo selectTipoFiltrado');
+            //             selectTipoFiltrado.push(unidad.subtipo);
+            //         }
+            //     });
+            //     return selectTipoFiltrado;
+            // }
+            selectTipoFiltrado(){
+                // let selectTipoFiltrado = [];
+                console.log('Ingrese al metodo selectTipoFiltrado');
+                // console.log("tamaño del SelectUnidad " + this.SelectUnidad.length);
+                this.SelectUnidad.forEach(unidad => {
+                    // console.log('Ingrese el foreach');
+                    if(!this.SelectTipoFiltrado.includes(unidad.subtipo)){
+                        // console.log('ingrese al if del metodo selectTipoFiltrado');
+                        this.SelectTipoFiltrado.push(unidad.subtipo);
+                    }
+                });
+                // return selectTipoFiltrado;
             }
         },
         mounted() {
             this.listar();
         }
     }
+
 </script>
 
 <style>
@@ -643,9 +704,12 @@
     .ec-cursor{
         cursor: pointer;
     }
-    #ec-table{
+    .ec-table{
         overflow: scroll;
         height: 20rem;
-        width: 100%;
+    }
+    .ec-th{
+        background-color: skyblue;
     }
 </style>
+

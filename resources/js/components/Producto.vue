@@ -607,7 +607,7 @@
                 //categoria
                 if ( this.Producto.categoria_id == 0 ) this.Error.mensaje.push("Debe seleccionar una categoria");
                 //precio
-                if ( this.Producto.precio == 0 ) this.Error.mensaje.push("Debe ingresar un precio");
+                if ( this.Producto.precio == 0) this.Error.mensaje.push("Debe ingresar un precio");
 
                 if ( this.Error.mensaje.length ) this.Error.estado = 1;
 

@@ -45,12 +45,28 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/usuario/comprobar', 'UsuarioController@comprobar'); //metodos secundarios
         Route::get('/usuario/selectRol', 'UsuarioController@selectRol');
         
+        //RUTAS PARA MATERIALES
+        Route::get('/material', 'MaterialController@listar'); //métodos generales
+        Route::post('/material/agregar', 'MaterialController@agregar');
+        Route::put('/material/editar', 'MaterialController@editar');
+        Route::put('/material/activar', 'MaterialController@activar');
+        Route::put('/material/desactivar', 'MaterialController@desactivar');
+        Route::get('/material/selectUnidad', 'MaterialController@selectUnidad'); //metodos secundarios
+
+        //RUTAS PARA PRODUCCIONES
+        Route::get('/produccion', 'ProduccionController@listar'); //métodos generales
+
         //RUTAS PARA CATEGORIA
         Route::get('/categoria', 'CategoriaController@listar'); //metodos generales
         Route::post('/categoria/agregar', 'CategoriaController@agregar');
         Route::put('/categoria/editar', 'CategoriaController@editar');
         Route::put('/categoria/activar', 'CategoriaController@activar');
         Route::put('/categoria/desactivar', 'CategoriaController@desactivar');
+        //RUTAS PARA SUPERPRODUCTO
+        Route::get('/superproducto', 'SuperProductoController@listar'); //metodos generales
+        Route::post('/superproducto/agregar', 'SuperProductoController@agregar');
+        Route::put('/superproducto/editar', 'SuperProductoController@editar');
+        Route::put('/superproducto/setEstado', 'SuperProductoController@setEstado');
 
         //RUTAS PARA PRODUCTO
         Route::get('/producto', 'ProductoController@listar'); //metodos generales
@@ -61,18 +77,10 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/producto/selectCategoria', 'ProductoController@selectCategoria'); //metodos secundarios
     });
     Route::group(['middleware' => ['Puesto']], function (){
-        Route::get('/categoria', 'CategoriaController@listar');
-        Route::post('/categoria/agregar', 'CategoriaController@agregar');
-        Route::put('/categoria/editar', 'CategoriaController@editar');
-        Route::put('/categoria/activar', 'CategoriaController@activar');
-        Route::put('/categoria/desactivar', 'CategoriaController@desactivar');
+
     });
     Route::group(['middleware' => ['Almacen']], function (){
-        Route::get('/categoria', 'CategoriaController@listar');
-        Route::post('/categoria/agregar', 'CategoriaController@agregar');
-        Route::put('/categoria/editar', 'CategoriaController@editar');
-        Route::put('/categoria/activar', 'CategoriaController@activar');
-        Route::put('/categoria/desactivar', 'CategoriaController@desactivar');
+
     });
     
 

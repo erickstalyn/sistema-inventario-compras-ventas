@@ -3,21 +3,27 @@
 @section('contenidoPrincipal')
 
     @if(Auth::check())
-        @if(Auth::user()->rol_id==1)
+        @if(Auth::user()->rol=='M')
             <template v-if="menu==0">
-                <categoria></categoria>
+                <material></material>
             </template>
             <template v-if="menu==1">
+                <superproducto></superproducto>
+            </template>
+            <template v-if="menu==2">
                 <producto></producto>
             </template>
-            <template v-if="menu==5">
+            <template v-if="menu==3">
+                <produccion></produccion>
+            </template>
+            <template v-if="menu==6">
                 <usuario></usuario>
             </template>
 
-        @elseif(Auth::user()->rol_id==2)
+        @elseif(Auth::user()->rol=='P')
 
 
-        @elseif(Auth::user()->rol_id==3)
+        @elseif(Auth::user()->rol=='A')
 
         @else
 
