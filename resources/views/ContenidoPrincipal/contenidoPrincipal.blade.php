@@ -8,7 +8,7 @@
                 <material></material>
             </template>
             <template v-if="menu==1">
-                <categoria></categoria>
+                <superproducto></superproducto>
             </template>
             <template v-if="menu==2">
                 <producto></producto>

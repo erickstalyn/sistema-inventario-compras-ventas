@@ -62,6 +62,11 @@ Route::group(['middleware' => ['auth']], function () {
         Route::put('/categoria/editar', 'CategoriaController@editar');
         Route::put('/categoria/activar', 'CategoriaController@activar');
         Route::put('/categoria/desactivar', 'CategoriaController@desactivar');
+        //RUTAS PARA SUPERPRODUCTO
+        Route::get('/superproducto', 'SuperProductoController@listar'); //metodos generales
+        Route::post('/superproducto/agregar', 'SuperProductoController@agregar');
+        Route::put('/superproducto/editar', 'SuperProductoController@editar');
+        Route::put('/superproducto/setEstado', 'SuperProductoController@setEstado');
 
         //RUTAS PARA PRODUCTO
         Route::get('/producto', 'ProductoController@listar'); //metodos generales
@@ -72,18 +77,10 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/producto/selectCategoria', 'ProductoController@selectCategoria'); //metodos secundarios
     });
     Route::group(['middleware' => ['Puesto']], function (){
-        Route::get('/categoria', 'CategoriaController@listar');
-        Route::post('/categoria/agregar', 'CategoriaController@agregar');
-        Route::put('/categoria/editar', 'CategoriaController@editar');
-        Route::put('/categoria/activar', 'CategoriaController@activar');
-        Route::put('/categoria/desactivar', 'CategoriaController@desactivar');
+
     });
     Route::group(['middleware' => ['Almacen']], function (){
-        Route::get('/categoria', 'CategoriaController@listar');
-        Route::post('/categoria/agregar', 'CategoriaController@agregar');
-        Route::put('/categoria/editar', 'CategoriaController@editar');
-        Route::put('/categoria/activar', 'CategoriaController@activar');
-        Route::put('/categoria/desactivar', 'CategoriaController@desactivar');
+
     });
     
 
