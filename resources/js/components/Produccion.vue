@@ -159,15 +159,7 @@
                         <div class="container-fluid">
                         <!-- Modal Numero 1 de AGREGAR-->
                             <div v-if="Modal.numero==1">
-                                <!-- <div v-if="Error.estado" class="row d-flex justify-content-center">
-                                    <div class="alert alert-danger">
-                                        <button type="button" @click="Error.estado=0" class="close text-primary" data-dismiss="alert">×</button>
-                                        <strong>Corregir los siguentes errores:</strong>
-                                        <ul> 
-                                            <li v-for="error in Error.mensaje" :key="error" v-text="error"></li> 
-                                        </ul>
-                                    </div>
-                                </div> -->
+                                <!-- Filtro de productos -->
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="row">
@@ -175,7 +167,7 @@
                                         </div>
                                         <div class="row">
                                             <div class="input-group"> 
-                                                <input type="search" class="form-control form-control-sm" v-model="Busqueda.texto" @keyup.enter="listar()">
+                                                <input type="search" class="form-control form-control-sm" v-model="BusquedaFiltro.texto" @keyup.enter="listarFiltro()">
                                                 <button type="button" class="btn btn-sm btn-primary" @click="listar()">
                                                     <i class="fa fa-search"></i>&nbsp; Buscar
                                                 </button>
@@ -192,14 +184,14 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr>
+                                                    <tr v-for="producto in ListaProducto" :key="producto.nombre" >
                                                         <td>
                                                             <button type="button" title="Editar" class="btn btn-circle btn-sm btn-outline-success">
                                                                 <i class="fas fa-plus"></i>
                                                             </button>
                                                         </td>
-                                                        <td>Campera grande Silmar roja</td>
-                                                        <td>120</td>
+                                                        <td v-text="producto.nombre"></td>
+                                                        <td v-text="producto.stock"></td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -311,7 +303,7 @@
                     total : 0
                 },
                 SelectUnidad: [],
-                //datos de busqueda y filtracion
+                //datos de busqueda y filtracion general
                 Busqueda: {
                     texto: '',
                     estado: 3,
@@ -348,7 +340,19 @@
                 Error: {
                     estado: 0,
                     mensaje: []
-                }
+                },
+                //datos de agregar una produccion
+                BusquedaFiltro:{
+                    texto: ''
+                },
+                ListaProducto:[
+                    {nombre: 'Camperita Silmar Roja Grande', stock: 56},
+                    {nombre: 'Mochila Porta Verde mediana', stock: 100}
+                ],
+                ListaDetalleProduccion:[
+                    {nombre: 'Camperita Silmar Roja Grande', stock: 56},
+                    {nombre: 'Mochila Porta Verde mediana', stock: 100}
+                ],
             }
         },
         computed: {
@@ -440,6 +444,20 @@
                     me.Paginacion = response.data.paginacion;
                 }).catch(function (error) {
                     console.log(error)
+                });
+            },
+            listarFiltro(){
+                let me = this;
+                let url = '/producto?texto=' + BusquedaFiltro.texto;
+                axios.get(url).then(function(response){
+                    if(response.data.length == 1){//Si solo devuelve un dato es por que escribiste el nombre o codigo exacto
+                        me.ListaDetalleProduccion.push(response.data[0]);
+                    }else{
+                        me.ListaProducto = response.data;
+                    }
+                })
+                .catch(function(error){
+                    console.log(error);
                 });
             },
             // agregar(){
