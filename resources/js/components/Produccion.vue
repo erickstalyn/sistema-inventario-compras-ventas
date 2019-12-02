@@ -34,21 +34,21 @@
                 <div class="col-md-1">
                     Dia
                     <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.dia">
-                        <option value="">Día</option>
+                        <option value="">Todos</option>
                         <option v-for="item in getDia()" :key="item" :value="item" v-text="item"></option>
                     </select>
                 </div>
                 <div class="col-md-2">
                     Mes
                     <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.mes">
-                        <option value="">Mes</option>
+                        <option value="">Todos</option>
                         <option v-for="item in getMes()" :key="item.valor" :value="item.valor" v-text="item.nombre"></option>
                     </select>
                 </div>
                 <div class="col-md-1">
                     Año
                     <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.year">
-                        <option value="">Año</option>
+                        <option value="">Todos</option>
                         <option v-for="item in getYear(2016)" :key="item" :value="item" v-text="item"></option>
                     </select>
                 </div>
@@ -66,7 +66,7 @@
                 <!-- <button type="button" class="btn btn-primary" @click="listar()">
                     <i class="fa fa-search"></i>&nbsp; Buscar
                 </button> -->
-                <div class="col-md-1">
+                <div class="col-md-2">
                     <button type="button" class="btn btn-primary" @click="listar()">
                         <i class="fa fa-search"></i>&nbsp; Buscar
                     </button>
@@ -77,9 +77,9 @@
             <div v-if="ListaProduccion.length" class="table-responsive">
                 <!-- Tabla -->
                 <div class="ec-table overflow-auto">
-                    <table class="table table-bordered table-striped table-sm text-gray-900">
+                    <table class="table table-borderless table-sm text-gray-900">
                         <thead>
-                            <tr class="ec-th">
+                            <tr class="table-info">
                                 <th>Fecha de inicio</th>
                                 <th>Fecha programada</th>
                                 <th>Fecha finalizada</th>
@@ -194,7 +194,7 @@
                                                 <tbody>
                                                     <tr>
                                                         <td>
-                                                            <button type="button" title="Editar" class="btn btn-sm btn-outline-success">
+                                                            <button type="button" title="Editar" class="btn btn-circle btn-sm btn-outline-success">
                                                                 <i class="fas fa-plus"></i>
                                                             </button>
                                                         </td>
@@ -223,7 +223,7 @@
                                                 <tbody>
                                                     <tr>
                                                         <td>
-                                                            <button type="button" title="Editar" class="btn btn-outline-danger btn-sm">
+                                                            <button type="button" title="Editar" class="btn btn-circle btn-outline-danger btn-sm">
                                                                 <i class="fas fa-minus"></i>
                                                             </button>
                                                         </td>
@@ -234,7 +234,7 @@
                                                     </tr>
                                                     <tr>
                                                         <td>
-                                                            <button type="button" title="Editar" class="btn btn-outline-danger btn-sm">
+                                                            <button type="button" title="Editar" class="btn btn-circle btn-outline-danger btn-sm">
                                                                 <i class="fas fa-minus"></i>
                                                             </button>
                                                         </td>
@@ -245,7 +245,7 @@
                                                     </tr>
                                                     <tr>
                                                         <td>
-                                                            <button type="button" title="Editar" class="btn btn-outline-danger btn-sm">
+                                                            <button type="button" title="Editar" class="btn btn-circle btn-outline-danger btn-sm">
                                                                 <i class="fas fa-minus"></i>
                                                             </button>
                                                         </td>
