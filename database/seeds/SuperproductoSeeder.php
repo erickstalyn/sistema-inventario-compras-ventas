@@ -15,7 +15,36 @@ class SuperproductoSeeder extends Seeder
         DB::table('superproducto')->insert(array(
             'nombre' => 'Campera SILMAR R3D',
             'descripcion' => 'Ideal para viajeros extranjeros',
-            'superstock' => 0,
+            'created_at' => $now
+        ));
+        DB::table('superproducto')->insert(array(
+            'nombre' => 'Mochila Porta',
+            'created_at' => $now
+        ));
+        DB::table('superproducto')->insert(array(
+            'nombre' => 'Cartera Azalea',
+            'descripcion' => 'Para damas en los mejores colores y tamaños',
+            'created_at' => $now
+        ));
+        DB::table('superproducto')->insert(array(
+            'nombre' => 'Correa ZOMBRA',
+            'descripcion' => 'Para todo hombre, joven y niño',
+            'created_at' => $now
+        ));
+        DB::table('superproducto')->insert(array(
+            'nombre' => 'Maleta OFICE',
+            'created_at' => $now
+        ));
+        DB::table('superproducto')->insert(array(
+            'nombre' => 'MiniCartera OH',
+            'created_at' => $now
+        ));
+        DB::table('superproducto')->insert(array(
+            'nombre' => 'Cartuchera Fabercastell',
+            'created_at' => $now
+        ));
+        DB::table('superproducto')->insert(array(
+            'nombre' => 'Mochila DELUXE',
             'created_at' => $now
         ));
     }

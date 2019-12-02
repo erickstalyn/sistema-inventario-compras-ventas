@@ -49,6 +49,7 @@ class SuperProductoController extends Controller{
     public function agregar(Request $request){
         if ( !$request->ajax() ) return redirect('/');
 
+        
         try {
             DB::beginTransaction();
 
@@ -59,6 +60,7 @@ class SuperProductoController extends Controller{
             $superproducto->save();
 
             DB::commit();
+            $error = NULL;
         } catch(Exception $e) {
             DB::rollback();
             $error = $e;
@@ -82,7 +84,7 @@ class SuperProductoController extends Controller{
             $superproducto->save();
             
             DB::commit();
-
+            $error = NULL;
         } catch(Exception $e) {
             DB::rollback();
             $error = $e;
@@ -103,6 +105,7 @@ class SuperProductoController extends Controller{
             $superproducto->save();
 
             DB::commit();
+            $error = NULL;
         } catch (Exception $e) {
             DB::rollback();
             $error = $e;
