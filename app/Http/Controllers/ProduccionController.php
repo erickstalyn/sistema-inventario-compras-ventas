@@ -76,10 +76,10 @@ class ProduccionController extends Controller
         if ( !$request->ajax() ) return redirect('/');
         $texto = $request->texto;
 
-        $productos = Producto::select('id','nombre', 'stock', 'costo_produccion')
+        $productos = Producto::select('id','nombre', 'stock', 'costo_produccion', 'codigo')
                             ->where(function ($query) use ($texto) {
                                 if ( $texto != '' ) {
-                                    $query->where('nombre', 'like', '%' . $texto . '%')
+                                    $query->where('nombre', 'like', $texto . '%')
                                         ->orWhere('codigo', '=', $texto);
                                 }
                             })

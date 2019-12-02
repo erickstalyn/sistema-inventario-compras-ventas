@@ -167,7 +167,7 @@
                                         </div>
                                         <div class="row">
                                             <div class="input-group"> 
-                                                <input type="search" class="form-control form-control-sm" v-model="BusquedaFiltro.texto" @keyup.enter="listarFiltro()" id="filtroProducto" autofocus>
+                                                <input type="search" class="form-control form-control-sm" v-model="BusquedaFiltro.texto" @keyup.enter="listarFiltro()" id="filtroProducto" autofocus placeholder="Producto,marca,modelo,tamaño,color">
                                                 <button type="button" class="btn btn-sm btn-primary" @click="listarFiltro()">
                                                     <i class="fa fa-search"></i>&nbsp; Buscar
                                                 </button>
@@ -214,7 +214,7 @@
                                                         <th>Nombre</th>
                                                         <th>Cant.</th>
                                                         <th>Cost. Unitario</th>
-                                                        <th>Subtototal</th>
+                                                        <th>Subtotal</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -226,11 +226,11 @@
                                                         </td>
                                                         <td v-text="detalle.nombre"></td>
                                                         <td>
-                                                            <input type="number" v-model="detalle.cantidad" class="form-control">
+                                                            <input type="number" v-model="detalle.cantidad" class="form-control" min="1">
                                                         </td>
                                                         <td v-text="detalle.costo_produccion"></td>
                                                         <td>
-                                                            $ {{(detalle.costo_produccion * detalle.cantidad).toFixed(2)}}
+                                                            s/ {{(detalle.costo_produccion * detalle.cantidad).toFixed(2)}}
                                                         </td>
                                                     </tr>
                                                 </tbody>
@@ -240,7 +240,7 @@
                                             <div class="col-md-8">
                                             </div>
                                             <div class="col-md-4">
-                                                Inversión total: s/2450.60
+                                                Inversión total: s/ {{getTotal}}
                                             </div>
                                         </div>
                                     </div>
@@ -404,6 +404,14 @@
                     }
                 });
                 return selectUnidadFiltrado;
+            },
+            getTotal: function(){
+                let total = 0.00;
+                this.ListaDetalleProduccion.forEach( detalle => {
+                    // console.log(Number.parseFloat(detalle.costo_produccion * detalle.cantidad).toFixed(2));
+                    total = total + detalle.costo_produccion * detalle.cantidad;
+                });
+                return (total).toFixed(2);
             }
         },
         methods: {
@@ -439,27 +447,8 @@
                     let me = this;
                     let url = '/produccion/getProductoFiltrado?texto=' + this.BusquedaFiltro.texto;
                     axios.get(url).then(function(response){
-                        if(response.data.productos.length == 1){//Si solo devuelve un dato es por que escribiste el nombre o codigo exacto
-                            let incluido = false;
-                            //Verifico si ya esta en la lista de detalle
-                            for (let i = 0; i < me.ListaDetalleProduccion.length; i++) {
-                                if(me.ListaDetalleProduccion[i].id == response.data.productos[0].id){
-                                    incluido = true;
-                                    //adiciono uno más a la cantidad de este producto en la tabla de detalles
-                                    me.ListaDetalleProduccion[i].cantidad ++;
-                                    break;
-                                }
-                            }
-                            if(!incluido){
-                                let producto = {
-                                    id: response.data.productos[0].id,
-                                    nombre: response.data.productos[0].nombre,
-                                    cantidad: 1,
-                                    costo_produccion: response.data.productos[0].costo_produccion,
-                                    // subtotal: 20
-                                };
-                                me.ListaDetalleProduccion.push(producto);
-                            }
+                        if(response.data.productos.length == 1 && me.BusquedaFiltro.texto == response.data.productos[0].codigo){
+                            me.agregarDetalle(response.data.productos[0]);
                             me.BusquedaFiltro.texto = '';
                         }else{
                             me.ListaProducto = response.data.productos;
@@ -679,7 +668,7 @@
 
                 this.Produccion.id = 0;
                 this.Produccion.fecha_fin = '';
-                this.ListaDetalleProduccion = '';
+                this.ListaDetalleProduccion = [];
                 this.BusquedaFiltro.texto = '';
 
             },
