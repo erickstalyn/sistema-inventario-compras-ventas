@@ -167,34 +167,39 @@
                                         </div>
                                         <div class="row">
                                             <div class="input-group"> 
-                                                <input type="search" class="form-control form-control-sm" v-model="BusquedaFiltro.texto" @keyup.enter="listarFiltro()">
-                                                <button type="button" class="btn btn-sm btn-primary" @click="listar()">
+                                                <input type="search" class="form-control form-control-sm" v-model="BusquedaFiltro.texto" @keyup.enter="listarFiltro()" id="filtroProducto" autofocus>
+                                                <button type="button" class="btn btn-sm btn-primary" @click="listarFiltro()">
                                                     <i class="fa fa-search"></i>&nbsp; Buscar
                                                 </button>
                                             </div>
                                         </div>
                                         <br>
                                         <div class="row form-group ec-table overflow-auto">
-                                            <table class="table table-borderless table-striped table-sm text-gray-900">
-                                                <thead>
-                                                    <tr class="table-danger">
-                                                        <th>Agregar</th>
-                                                        <th>Nombre</th>
-                                                        <th>Stock</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr v-for="producto in ListaProducto" :key="producto.nombre" >
-                                                        <td>
-                                                            <button type="button" title="Editar" class="btn btn-circle btn-sm btn-outline-success">
-                                                                <i class="fas fa-plus"></i>
-                                                            </button>
-                                                        </td>
-                                                        <td v-text="producto.nombre"></td>
-                                                        <td v-text="producto.stock"></td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
+                                            <div v-if="ListaProducto.length">
+                                                <table class="table table-borderless table-striped table-sm text-gray-900">
+                                                    <thead>
+                                                        <tr class="table-danger">
+                                                            <th>Agregar</th>
+                                                            <th>Nombre</th>
+                                                            <th>Stock</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr v-for="producto in ListaProducto" :key="producto.id" >
+                                                            <td>
+                                                                <button type="button" title="Editar" class="btn btn-circle btn-sm btn-outline-success" @click="agregarDetalle(producto)">
+                                                                    <i class="fas fa-plus"></i>
+                                                                </button>
+                                                            </td>
+                                                            <td v-text="producto.nombre"></td>
+                                                            <td v-text="producto.stock"></td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div v-else>
+                                                <h5>No se han encontrado resultados</h5>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="col-md-8 ml-auto container">
@@ -208,43 +213,25 @@
                                                         <th>Quitar</th>
                                                         <th>Nombre</th>
                                                         <th>Cant.</th>
-                                                        <th>C. Unitario</th>
+                                                        <th>Cost. Unitario</th>
                                                         <th>Subtototal</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr>
+                                                    <tr v-for="detalle in ListaDetalleProduccion" :key="detalle.id">
                                                         <td>
                                                             <button type="button" title="Editar" class="btn btn-circle btn-outline-danger btn-sm">
                                                                 <i class="fas fa-minus"></i>
                                                             </button>
                                                         </td>
-                                                        <td>Campera grande Silmar roja</td>
-                                                        <td>30</td>
-                                                        <td>20</td>
-                                                        <td>600</td>
-                                                    </tr>
-                                                    <tr>
+                                                        <td v-text="detalle.nombre"></td>
                                                         <td>
-                                                            <button type="button" title="Editar" class="btn btn-circle btn-outline-danger btn-sm">
-                                                                <i class="fas fa-minus"></i>
-                                                            </button>
+                                                            <input type="number" v-model="detalle.cantidad" class="form-control">
                                                         </td>
-                                                        <td>Mochila pequeña Cat verde</td>
-                                                        <td>30</td>
-                                                        <td>20</td>
-                                                        <td>600</td>
-                                                    </tr>
-                                                    <tr>
+                                                        <td v-text="detalle.costo_produccion"></td>
                                                         <td>
-                                                            <button type="button" title="Editar" class="btn btn-circle btn-outline-danger btn-sm">
-                                                                <i class="fas fa-minus"></i>
-                                                            </button>
+                                                            $ {{(detalle.costo_produccion * detalle.cantidad).toFixed(2)}}
                                                         </td>
-                                                        <td>Mochila pequeña Cat verde</td>
-                                                        <td>30</td>
-                                                        <td>20</td>
-                                                        <td>600</td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -291,6 +278,7 @@
 
 <script>
     export default {
+
         data(){
             return {
                 //datos generales
@@ -346,12 +334,12 @@
                     texto: ''
                 },
                 ListaProducto:[
-                    {nombre: 'Camperita Silmar Roja Grande', stock: 56},
-                    {nombre: 'Mochila Porta Verde mediana', stock: 100}
+                    // {nombre: 'Camperita Silmar Roja Grande', stock: 56},
+                    // {nombre: 'Mochila Porta Verde mediana', stock: 100}
                 ],
                 ListaDetalleProduccion:[
-                    {nombre: 'Camperita Silmar Roja Grande', stock: 56},
-                    {nombre: 'Mochila Porta Verde mediana', stock: 100}
+                    // {nombre: 'Camperita Silmar Roja Grande', stock: 56},
+                    // {nombre: 'Mochila Porta Verde mediana', stock: 100}
                 ],
             }
         },
@@ -447,18 +435,64 @@
                 });
             },
             listarFiltro(){
-                let me = this;
-                let url = '/producto?texto=' + BusquedaFiltro.texto;
-                axios.get(url).then(function(response){
-                    if(response.data.length == 1){//Si solo devuelve un dato es por que escribiste el nombre o codigo exacto
-                        me.ListaDetalleProduccion.push(response.data[0]);
-                    }else{
-                        me.ListaProducto = response.data;
+                if(this.BusquedaFiltro.texto != ''){
+                    let me = this;
+                    let url = '/produccion/getProductoFiltrado?texto=' + this.BusquedaFiltro.texto;
+                    axios.get(url).then(function(response){
+                        if(response.data.productos.length == 1){//Si solo devuelve un dato es por que escribiste el nombre o codigo exacto
+                            let incluido = false;
+                            //Verifico si ya esta en la lista de detalle
+                            for (let i = 0; i < me.ListaDetalleProduccion.length; i++) {
+                                if(me.ListaDetalleProduccion[i].id == response.data.productos[0].id){
+                                    incluido = true;
+                                    //adiciono uno más a la cantidad de este producto en la tabla de detalles
+                                    me.ListaDetalleProduccion[i].cantidad ++;
+                                    break;
+                                }
+                            }
+                            if(!incluido){
+                                let producto = {
+                                    id: response.data.productos[0].id,
+                                    nombre: response.data.productos[0].nombre,
+                                    cantidad: 1,
+                                    costo_produccion: response.data.productos[0].costo_produccion,
+                                    // subtotal: 20
+                                };
+                                me.ListaDetalleProduccion.push(producto);
+                            }
+                            me.BusquedaFiltro.texto = '';
+                        }else{
+                            me.ListaProducto = response.data.productos;
+                        }
+                        let inputFiltro = document.getElementById('filtroProducto');
+                        inputFiltro.focus();
+                    })
+                    .catch(function(error){
+                        console.log(error);
+                    });
+                }
+            },
+            agregarDetalle(producto){
+                //Verifico si el producto ya esta en la lista de detalle
+                let incluido = false;
+                for (let i = 0; i < this.ListaDetalleProduccion.length; i++) {
+                    if(this.ListaDetalleProduccion[i].id == producto.id){
+                        incluido = true;
+                        //adiciono uno más a la cantidad de este producto en la tabla de detalles
+                        this.ListaDetalleProduccion[i].cantidad ++;
+                        break;
                     }
-                })
-                .catch(function(error){
-                    console.log(error);
-                });
+                }
+
+                if(!incluido){
+                    let elProducto = {
+                        id: producto.id,
+                        nombre: producto.nombre,
+                        cantidad: 1,
+                        costo_produccion: producto.costo_produccion
+                    }
+                    this.ListaDetalleProduccion.push(elProducto);
+                }
             },
             // agregar(){
             //     if ( this.validar() ) return;
@@ -607,7 +641,8 @@
             // },
             abrirModalAgregar(){
                 this.abrirModal(1, 'Registrar Produccion', 'Agregar');
-
+                // let inputFiltro = document.getElementById('filtroProducto');
+                // inputFiltro.focus();
             },
             // abrirModalEditar(data = []){
             //     this.abrirModal(2, 'Editar Material', 'Editar');
@@ -644,6 +679,9 @@
 
                 this.Produccion.id = 0;
                 this.Produccion.fecha_fin = '';
+                this.ListaDetalleProduccion = '';
+                this.BusquedaFiltro.texto = '';
+
             },
             // accionar(accion){
             //     switch( accion ){
