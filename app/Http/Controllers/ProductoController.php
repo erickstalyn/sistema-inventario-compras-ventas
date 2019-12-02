@@ -6,7 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use App\Producto;
-use App\Categoria;
+use App\SuperProducto;
+use App\Data;
 use Exception;
 
 class ProductoController extends Controller {
@@ -20,23 +21,18 @@ class ProductoController extends Controller {
         $ordenarPor = $request->ordenarPor;
         $orden = $request->orden;
 
-        $productos = Producto::join('categoria', 'producto.categoria_id', '=', 'categoria.id')
-                            ->select('producto.id', 'producto.categoria_id', 'producto.codigo', 'producto.nombre', 'producto.precio', 'producto.stock', 'producto.descripcion', 'producto.estado',
-                                // DB::raw('Date_Format(persona.created_at,\'' .'%d-%M-%Y' . '\') as fecha_creacion'), // para mysql
-                                // DB::raw('to_char(persona.created_at,\'' .'DD-Mon-YYYY' . '\') as fecha_creacion'), //para postgresql
-                                'producto.created_at', 'producto.updated_at', 'producto.deleted_at', 'categoria.nombre as categoria_nombre')
-                            ->where(function ($query) use ($estado) {
+        $productos = Producto::where(function ($query) use ($estado) {
                                 if ( $estado != 2 ) {
-                                    $query->where('producto.estado', '=', $estado);
+                                    $query->where('estado', '=', $estado);
                                 }
                             })
                             ->where(function ($query) use ($texto) {
                                 if ( $texto != '' ) {
-                                    $query->where('producto.nombre', 'like', '%'.$texto.'%')
-                                        // ->orWhere('producto.codigo', 'like', '%'.$texto.'%')
-                                        ->orWhere('producto.precio', 'like', '%'.$texto.'%')
-                                        ->orWhere('producto.stock', 'like', '%'.$texto.'%')
-                                        ->orWhere('producto.descripcion', 'like', '%'.$texto.'%');
+                                    $query->where('nombre', 'like', '%'.$texto.'%')
+                                        ->orWhere('descripcion', 'like', '%'.$texto.'%')
+                                        ->orWhere('codigo', 'like', '%'.$texto.'%')
+                                        ->orWhere('color', 'like', '%'.$texto.'%')
+                                        ->orWhere('size', 'like', '%'.$texto.'%');
                                 }
                             })
                             ->orderBy($ordenarPor, $orden)->paginate($filas);
@@ -60,19 +56,30 @@ class ProductoController extends Controller {
         try {
             DB::beginTransaction();
 
+            $superproducto = SuperProducto::findOrFail($request->superproducto_id);
+            
             $producto = new Producto();
-            $producto->nombre = $request->nombre;
-            $producto->categoria_id = $request->categoria_id;
-            $producto->precio = $request->precio;
+            $producto->superproducto_id = $request->superproducto_id;
+            $producto->nombre = $superproducto->nombre+' '+$request->size+' '+$request->color;
             $producto->descripcion = $request->descripcion==''?NULL:$request->descripcion;
+            $producto->size = $request->size;
+            $producto->color = $request->color;
+            $producto->precio_menor = $request->precio_menor;
+            $producto->precio_mayor = $request->precio_mayor;
             $producto->created_at = Carbon::now('America/Lima')->toDateTimeString();
-            $producto->updated_at = NULL;
             $producto->save();
 
             DB::commit();
+            $error = NULL;
         } catch(Exception $e) {
             DB::rollback();
+            $error = $e;
         }
+
+        return [
+            'estado' => $error==NULL?1:0,
+            'error' => $error
+        ];
     }
 
     public function editar(Request $request){
@@ -129,12 +136,24 @@ class ProductoController extends Controller {
         }
     }
 
-    public function selectCategoria(Request $request){
-        $categorias = Categoria::select('id', 'nombre')
-                            ->where('estado', '=', 1)
-                            ->orderBy('nombre', 'desc')->get();
+    public function selectSuperProducto(Request $request){
+        $superproductos = SuperProducto::select('id', 'nombre')
+                                    ->where('estado', '=', 1)
+                                    ->orderBy('nombre', 'desc')->get();
 
-        return $categorias;
+        return $superproductos;
+    }
+    public function selectSize(Request $request){
+        $tamaños = Data::select('nombre')
+                    ->where('tipo', '=', 'T')->get();
+
+        return $tamaños;
+    }
+    public function selectColor(Request $request){
+        $colores = Data::select('nombre')
+                    ->where('tipo', '=', 'C')->get();
+
+        return $colores;
     }
 
 }

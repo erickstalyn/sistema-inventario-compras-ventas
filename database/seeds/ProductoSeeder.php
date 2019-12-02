@@ -16,7 +16,7 @@ class ProductoSeeder extends Seeder
 
         DB::table('producto')->insert(array(
             'superproducto_id' => 1,
-            'nombre' => 'Campera SILMAR R3D grande roja',
+            'nombre' => 'Campera SILMAR R3D Grande Roja',
             'descripcion' => 'Ideal para viajeros extranjeros',
             'size' => 'Grande',
             'color' => 'Roja',
@@ -27,7 +27,7 @@ class ProductoSeeder extends Seeder
         ));
         DB::table('producto')->insert(array(
             'superproducto_id' => 1,
-            'nombre' => 'Campera SILMAR R3D grande amarilla',
+            'nombre' => 'Campera SILMAR R3D Grande Amarilla',
             'descripcion' => 'Ideal para viajeros extranjeros',
             'size' => 'Grande',
             'color' => 'Amarilla',
@@ -38,7 +38,7 @@ class ProductoSeeder extends Seeder
         ));
         DB::table('producto')->insert(array(
             'superproducto_id' => 1,
-            'nombre' => 'Campera SILMAR R3D grande azul',
+            'nombre' => 'Campera SILMAR R3D Grande Azul',
             'descripcion' => 'Ideal para viajeros extranjeros',
             'size' => 'Grande',
             'color' => 'Azul',
@@ -49,7 +49,7 @@ class ProductoSeeder extends Seeder
         ));
         DB::table('producto')->insert(array(
             'superproducto_id' => 1,
-            'nombre' => 'Campera SILMAR R3D mediana negra',
+            'nombre' => 'Campera SILMAR R3D Mediana Negra',
             'descripcion' => 'Ideal para viajeros extranjeros',
             'size' => 'Mediana',
             'color' => 'Negra',
