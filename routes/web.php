@@ -55,6 +55,7 @@ Route::group(['middleware' => ['auth']], function () {
 
         //RUTAS PARA PRODUCCIONES
         Route::get('/produccion', 'ProduccionController@listar'); //métodos generales
+        Route::post('/produccion/agregar', 'ProduccionController@agregar');
         Route::get('/produccion/getProductoFiltrado', 'ProduccionController@getProductoFiltrado'); //metodos secundarios
 
         //RUTAS PARA SUPERPRODUCTO
@@ -71,6 +72,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/producto/selectSuperProducto', 'ProductoController@selectSuperProducto'); //metodos secundarios
         Route::get('/producto/selectSize', 'ProductoController@selectSize'); 
         Route::get('/producto/selectColor', 'ProductoController@selectColor');
+
     });
     Route::group(['middleware' => ['Puesto']], function (){
 

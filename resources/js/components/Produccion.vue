@@ -147,7 +147,7 @@
 
         <!-- Modales -->
         <div class="modal text-gray-900" :class="{'mostrar': Modal.estado}">
-            <div class="modal-dialog modal-dialog-centered animated bounceIn fast modal-xl">
+            <div class="modal-dialog modal-dialog-scrollable animated bounceIn fast modal-xl">
                 <div class="modal-content">
 
                     <div class="modal-header">
@@ -160,6 +160,15 @@
                         <!-- Modal Numero 1 de AGREGAR-->
                             <div v-if="Modal.numero==1">
                                 <!-- Filtro de productos -->
+                                <div v-if="Error.estado" class="row d-flex justify-content-center">
+                                    <div class="alert alert-danger">
+                                        <button type="button" @click="Error.estado=0" class="close text-primary" data-dismiss="alert">×</button>
+                                        <strong>Corregir los siguentes errores:</strong>
+                                        <ul> 
+                                            <li v-for="error in Error.mensaje" :key="error" v-text="error"></li> 
+                                        </ul>
+                                    </div>
+                                </div>
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="row">
@@ -198,7 +207,7 @@
                                                 </table>
                                             </div>
                                             <div v-else>
-                                                <h5>No se han encontrado resultados</h5>
+                                                <h6>No se han encontrado resultados</h6>
                                             </div>
                                         </div>
                                     </div>
@@ -207,34 +216,40 @@
                                             <h5>Lista de items</h5>
                                         </div>
                                         <div class="row form-group ec-table-modal overflow-auto">
-                                            <table class="table tableless table-striped table-sm text-gray-900">
-                                                <thead>
-                                                    <tr class="table-success">
-                                                        <th>Quitar</th>
-                                                        <th>Nombre</th>
-                                                        <th>Cant.</th>
-                                                        <th>Cost. Unitario</th>
-                                                        <th>Subtotal</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr v-for="detalle in ListaDetalleProduccion" :key="detalle.id">
-                                                        <td>
-                                                            <button type="button" title="Editar" class="btn btn-circle btn-outline-danger btn-sm">
-                                                                <i class="fas fa-minus"></i>
-                                                            </button>
-                                                        </td>
-                                                        <td v-text="detalle.nombre"></td>
-                                                        <td>
-                                                            <input type="number" v-model="detalle.cantidad" class="form-control" min="1">
-                                                        </td>
-                                                        <td v-text="detalle.costo_produccion"></td>
-                                                        <td>
-                                                            s/ {{(detalle.costo_produccion * detalle.cantidad).toFixed(2)}}
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
+                                            <div v-if="ListaDetalleProduccion.length">
+                                                <table class="table tableless table-striped table-sm text-gray-900">
+                                                    <thead>
+                                                        <tr class="table-success">
+                                                            <th>Quitar</th>
+                                                            <th>Nombre</th>
+                                                            <th>Cant.</th>
+                                                            <th>Cost. Unitario</th>
+                                                            <th>Subtotal</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr v-for="(detalle, indice) in ListaDetalleProduccion" :key="detalle.id">
+                                                            <td>
+                                                                <button type="button" title="Editar" class="btn btn-circle btn-outline-danger btn-sm" @click="quitarDetalle(indice)">
+                                                                    <i class="fas fa-minus"></i>
+                                                                </button>
+                                                            </td>
+                                                            <td v-text="detalle.nombre"></td>
+                                                            <td>
+                                                                <input type="number" v-model="detalle.cantidad" class="form-control" min="1">
+                                                            </td>
+                                                            <td v-text="detalle.costo_produccion"></td>
+                                                            <td>
+                                                                s/ {{(detalle.costo_produccion * detalle.cantidad).toFixed(2)}}
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div v-else>
+                                                <br>
+                                                <h5>Sin detalles de producción</h5>
+                                            </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-8">
@@ -250,11 +265,11 @@
                                     <div class="col-md-3"></div>
                                     <div class="col-md-4 form-inline">
                                         Fecha de inicio&nbsp;<span class="text-danger">*</span>
-                                        <input type="date" class="form-control form-control-sm">
+                                        <input type="date" class="form-control form-control-sm" v-model="Produccion.fecha_inicio">
                                     </div>
                                     <div class="col-md-5 form-inline">
                                         Fecha prog. finalización&nbsp;<span class="text-danger">*</span>
-                                        <input type="date" class="form-control form-control-sm">
+                                        <input type="date" class="form-control form-control-sm" v-model="Produccion.fecha_programada">
                                     </div>
                                 </div>
                                 
@@ -288,7 +303,7 @@
                     fecha_inicio : '',
                     fecha_programada : '',
                     fecha_fin: '',
-                    total : 0
+                    total : 0.00
                 },
                 SelectUnidad: [],
                 //datos de busqueda y filtracion general
@@ -329,7 +344,7 @@
                     estado: 0,
                     mensaje: []
                 },
-                //datos de agregar una produccion
+                //DATOS PARA AGREGAR UNA PRODUCCION
                 BusquedaFiltro:{
                     texto: ''
                 },
@@ -379,16 +394,6 @@
 
                 return filas;
             },
-            // Contador: function(min, max){
-            //     // let min = 1;
-            //     // let max = 31;
-            //     let dias = [];
-            //     while(min <= max){
-            //         dias.push(min);
-            //         min++;
-            //     }
-            //     return dias;
-            // },
             permisoModalFooter: function(){
                 if ( this.Modal.numero == 1 ) return true;
                 if ( this.Modal.numero == 2 ) return true;
@@ -406,12 +411,13 @@
                 return selectUnidadFiltrado;
             },
             getTotal: function(){
-                let total = 0.00;
+                this.Produccion.total = 0.00;
                 this.ListaDetalleProduccion.forEach( detalle => {
                     // console.log(Number.parseFloat(detalle.costo_produccion * detalle.cantidad).toFixed(2));
-                    total = total + detalle.costo_produccion * detalle.cantidad;
+                    // this.Produccion.total = this.Produccion.total + detalle.costo_produccion * detalle.cantidad;
+                    this.Produccion.total = this.Produccion.total + detalle.costo_produccion * detalle.cantidad;
                 });
-                return (total).toFixed(2);
+                return (this.Produccion.total).toFixed(2);
             }
         },
         methods: {
@@ -483,34 +489,39 @@
                     this.ListaDetalleProduccion.push(elProducto);
                 }
             },
-            // agregar(){
-            //     if ( this.validar() ) return;
+            quitarDetalle(indice){
+                this.ListaDetalleProduccion.splice(indice,1);
+            },
+            agregar(){
+                if ( this.validar() ) return;
                 
-            //     var me = this;
-            //     axios.post('/material/agregar', {
-            //         'nombre' : this.Material.nombre,
-            //         'subtipo': this.Material.subtipo,
-            //         'unidad' : this.Material.unidad,
-            //         'costo' : this.Material.costo
-            //     }).then(function(response){
-            //         me.cerrarModal();
-            //         me.listar();
-            //         Swal.fire({
-            //             position: 'top-end',
-            //             toast: true,
-            //             type: 'success',
-            //             title: 'El material se ha AGREGADO correctamente',
-            //             showConfirmButton: false,
-            //             timer: 4500,
-            //             animation:false,
-            //             customClass:{
-            //                 popup: 'animated bounceIn fast'
-            //             }
-            //         });
-            //     }).catch(function(error){
-            //         console.log(error);
-            //     });
-            // },
+                var me = this;
+                axios.post('/produccion/agregar', {
+                    //Datos de la produccion
+                    'total' : this.Produccion.total,
+                    'fecha_inicio' : this.Produccion.fecha_inicio,
+                    'fecha_programada' : this.Produccion.fecha_programada,
+                    //Datos del detalle de venta
+                    'listaDetalleProduccion' : this.ListaDetalleProduccion
+                }).then(function(response){
+                    me.cerrarModal();
+                    me.listar();
+                    Swal.fire({
+                        position: 'top-end',
+                        toast: true,
+                        type: 'success',
+                        title: 'La produccion se ha REGISTRADO correctamente',
+                        showConfirmButton: false,
+                        timer: 4500,
+                        animation:false,
+                        customClass:{
+                            popup: 'animated bounceIn fast'
+                        }
+                    });
+                }).catch(function(error){
+                    console.log(error);
+                });
+            },
             // editar(){
             //     if ( this.validar() ) return;
 
@@ -667,31 +678,32 @@
                 this.Error.mensaje = [];
 
                 this.Produccion.id = 0;
+                this.Produccion.total = 0.00;
                 this.Produccion.fecha_fin = '';
                 this.ListaDetalleProduccion = [];
                 this.BusquedaFiltro.texto = '';
 
             },
-            // accionar(accion){
-            //     switch( accion ){
-            //         case 'Agregar': {
-            //             this.agregar();
-            //             break;
-            //         }
-            //         case 'Editar': {
-            //             this.editar();
-            //             break;
-            //         }
-            //         case 'Activar': {
-            //             this.activar();
-            //             break;
-            //         }
-            //         case 'Desactivar': {
-            //             this.desactivar();
-            //             break;
-            //         }
-            //     }
-            // },
+            accionar(accion){
+                switch( accion ){
+                    case 'Agregar': {
+                        this.agregar();
+                        break;
+                    }
+                    case 'Editar': {
+                        this.editar();
+                        break;
+                    }
+                    case 'Activar': {
+                        this.activar();
+                        break;
+                    }
+                    case 'Desactivar': {
+                        this.desactivar();
+                        break;
+                    }
+                }
+            },
             // getTitulo(titulo){
             //     var seleccionada = 0;
 
@@ -712,53 +724,32 @@
 
             //     return titulo;
             // },
-            // validar(){
-            //     this.Error.estado = 0;
-            //     this.Error.mensaje = [];
+            validar(){
+                this.Error.estado = 0;
+                this.Error.mensaje = [];
 
-            //     //Recorrere la lista de Material
-            //     if(this.Modal.numero == 1){
-            //         //Modal agregar
-            //         let registrado = false;
-            //         for (let i = 0; i < this.ListaProduccion.length; i++) {
-            //             if(this.ListaProduccion[i].nombre == this.Material.nombre) {
-            //                 this.Error.mensaje.push("El material '" + this.Material.nombre + "' ya está registrado");
-            //                 registrado = true;
-            //                 break;
-            //             }
-            //         }
-            //         if(!registrado){
-            //             if ( !this.Material.nombre ) this.Error.mensaje.push("Debe ingresar un nombre");
-            //             if ( !this.Material.unidad ) this.Error.mensaje.push("Debe seleccionar una Unid. Medida");
-            //             if ( this.Material.costo == 0 || this.Material.costo < 0) this.Error.mensaje.push("Debe ingresar un costo válido");
-            //         }
-            //     }else{
-            //         //Modal editar
-            //         if(this.Material.nombre != this.MaterialOrigen.nombre){
-            //             for (let i = 0; i < this.ListaProduccion.length; i++) {
-            //                 if(this.ListaProduccion[i].nombre == this.Material.nombre) {
-            //                     this.Error.mensaje.push("El material '" + this.Material.nombre + "' ya está registrado");
-            //                     break;
-            //                 }
-            //             }
-            //         }else{
-            //             if(this.Material.subtipo == this.MaterialOrigen.subtipo && this.Material.unidad == this.MaterialOrigen.unidad && this.Material.costo == this.MaterialOrigen.costo){
-            //                 this.Error.mensaje.push("Ningun cambio registrado");
-            //             }else{
-            //                 if ( !this.Material.nombre ) this.Error.mensaje.push("Debe ingresar un nombre");
-            //                 if ( !this.Material.unidad ) this.Error.mensaje.push("Debe seleccionar una Unid. Medida");
-            //                 if ( this.Material.costo == 0 || this.Material.costo < 0) this.Error.mensaje.push("Debe ingresar un costo válido");
-            //             }
-            //         }
-            //     }
+                //Recorrere la lista de Material
+                if(this.Modal.numero == 1){
+                    //Modal agregar
+                    if ( !this.ListaDetalleProduccion.length ) this.Error.mensaje.push("No existe ningun detalle de producción"); 
+                    if ( !this.Produccion.fecha_inicio || !this.Produccion.fecha_programada){
+                        this.Error.mensaje.push('Debe ingresar una fecha de inicio y una fecha programada de la producción')
+                    }else {
 
-            //     // if ( !this.Material.nombre ) this.Error.mensaje.push("Debe ingresar un nombre");
-            //     // if ( !this.Material.unidad ) this.Error.mensaje.push("Debe seleccionar una Unid. Medida");
-            //     // if ( this.Material.costo == 0 || this.Material.costo < 0) this.Error.mensaje.push("Debe ingresar un costo válido");
-
-            //     if ( this.Error.mensaje.length ) this.Error.estado = 1;
-            //     return this.Error.estado;
-            // },
+                        let arrayfechaInicio = this.Produccion.fecha_inicio.split('-');
+                        let arrayFechaProgramada = this.Produccion.fecha_programada.split('-');
+                        let fecha_inicio = new Date(parseInt(arrayfechaInicio[0]),parseInt(arrayfechaInicio[1]),parseInt(arrayfechaInicio[2]));
+                        let fecha_programada = new Date(parseInt(arrayFechaProgramada[0]),parseInt(arrayFechaProgramada[1]-1),parseInt(arrayFechaProgramada[2]))
+                        if(fecha_inicio >= fecha_programada){
+                            this.Error.mensaje.push('La fecha programada debe ser después que la fecha de inicio de la producción')
+                        }
+                    }
+                }else{
+                    //Modal editar
+                }
+                if ( this.Error.mensaje.length ) this.Error.estado = 1;
+                return this.Error.estado;
+            },
             // cambiarPagina(page){
             //     if ( page >= 1 && page <= this.Paginacion.lastPage) {
             //         this.listar(page);

@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Produccion;
 use App\Producto;
+use App\Exception;
+
 class ProduccionController extends Controller
 {
     public function listar(Request $request){
@@ -70,6 +72,29 @@ class ProduccionController extends Controller
             ],
             'producciones' => $producciones
         ];
+    }
+
+    public function agregar(Request $request){
+        if ( !$request->ajax() ) return redirect('/');
+
+        try {
+            DB::beginTransaction();
+
+            //Agrego la produccion
+            $produccion = new Produccion();
+            $produccion->total = $request->total;
+            $produccion->fecha_inicio = $request->fecha_inicio;
+            $produccion->fecha_programada = $request->fecha_programada;
+            $produccion->save();
+
+            //Insertamos los datos del detalle de produccion
+
+
+            DB::commit();
+        } catch(Exception $e) {
+            DB::rollback();
+        }
+
     }
 
     public function getProductoFiltrado(Request $request){
