@@ -132,7 +132,7 @@
                             <div class="row form-group">
                                 <label class="col-md-3 font-weight-bold" for="nom">Nombre&nbsp;<span class="text-danger">*</span></label>
                                 <div class="col-md-9">
-                                    <input type="text" v-model="Material.nombre" class="form-control" placeholder="ingrese el nombre">
+                                    <input type="text" v-model="Material.nombre" class="form-control" placeholder="ingrese el nombre" autofocus>
                                 </div>
                             </div>
                             <div class="row form-group">
@@ -374,22 +374,28 @@
                     'unidad' : this.Material.unidad,
                     'costo' : this.Material.costo
                 }).then(function(response){
-                    me.cerrarModal();
-                    me.listar();
-                    Swal.fire({
-                        position: 'top-end',
-                        toast: true,
-                        type: 'success',
-                        title: 'El material se ha AGREGADO correctamente',
-                        showConfirmButton: false,
-                        timer: 4500,
-                        animation:false,
-                        customClass:{
-                            popup: 'animated bounceIn fast'
-                        }
-                    });
+                    if(response.data.estado){
+                        me.cerrarModal();
+                        me.listar();
+                        Swal.fire({
+                            position: 'top-end',
+                            toast: true,
+                            type: 'success',
+                            title: 'El material se ha AGREGADO correctamente',
+                            showConfirmButton: false,
+                            timer: 4500,
+                            animation:false,
+                            customClass:{
+                                popup: 'animated bounceIn fast'
+                            }
+                        });
+                    }else{
+                        me.Error.mensaje.push("El material '"+ me.Material.nombre + "' ya se encuentra registrado");
+                        me.Error.estado = 1;
+                    }
+                    
                 }).catch(function(error){
-                    console.log(error);
+                    console.log('soy el error' + error);
                 });
             },
             editar(){
@@ -403,20 +409,25 @@
                     'unidad' : this.Material.unidad,
                     'costo' : this.Material.costo,
                 }).then(function(response){
-                    me.cerrarModal();
-                    me.listar();
-                    Swal.fire({
-                        position: 'top-end',
-                        toast: true,
-                        type: 'success',
-                        title: 'El Material se ha EDITADO correctamente',
-                        showConfirmButton: false,
-                        timer: 4500,
-                        animation:false,
-                        customClass:{
-                            popup: 'animated bounceIn fast'
-                        }
-                    });
+                    if(response.data.estado){
+                        me.cerrarModal();
+                        me.listar();
+                        Swal.fire({
+                            position: 'top-end',
+                            toast: true,
+                            type: 'success',
+                            title: 'El Material se ha EDITADO correctamente',
+                            showConfirmButton: false,
+                            timer: 4500,
+                            animation:false,
+                            customClass:{
+                                popup: 'animated bounceIn fast'
+                            }
+                        });
+                    }else{
+                        me.Error.mensaje.push("Ya existe un material registrado con el nombre '" + me.Material.nombre + "'");
+                        me.Error.estado = 1;
+                    }
                 }).catch(function(error){
                     console.log(error);
                 });
@@ -609,37 +620,27 @@
                 //Recorrere la lista de Material
                 if(this.Modal.numero == 1){
                     //Modal agregar
-                    let registrado = false;
-                    for (let i = 0; i < this.ListaMaterial.length; i++) {
-                        if(this.ListaMaterial[i].nombre == this.Material.nombre) {
-                            this.Error.mensaje.push("El material '" + this.Material.nombre + "' ya está registrado");
-                            registrado = true;
-                            break;
-                        }
-                    }
-                    if(!registrado){
-                        if ( !this.Material.nombre ) this.Error.mensaje.push("Debe ingresar un nombre");
-                        if ( !this.Material.unidad ) this.Error.mensaje.push("Debe seleccionar una Unid. Medida");
-                        if ( this.Material.costo == 0 || this.Material.costo < 0) this.Error.mensaje.push("Debe ingresar un costo válido");
-                    }
+                    if ( !this.Material.nombre ) this.Error.mensaje.push("Debe ingresar un nombre");
+                    if ( !this.Material.unidad ) this.Error.mensaje.push("Debe seleccionar una Unid. Medida");
+                    if ( this.Material.costo == 0 || this.Material.costo < 0) this.Error.mensaje.push("Debe ingresar un costo válido");
                 }else{
                     //Modal editar
-                    if(this.Material.nombre != this.MaterialOrigen.nombre){
-                        for (let i = 0; i < this.ListaMaterial.length; i++) {
-                            if(this.ListaMaterial[i].nombre == this.Material.nombre) {
-                                this.Error.mensaje.push("El material '" + this.Material.nombre + "' ya está registrado");
-                                break;
-                            }
-                        }
-                    }else{
-                        if(this.Material.subtipo == this.MaterialOrigen.subtipo && this.Material.unidad == this.MaterialOrigen.unidad && this.Material.costo == this.MaterialOrigen.costo){
+                    // if(this.Material.nombre != this.MaterialOrigen.nombre){
+                    //     for (let i = 0; i < this.ListaMaterial.length; i++) {
+                    //         if(this.ListaMaterial[i].nombre == this.Material.nombre) {
+                    //             this.Error.mensaje.push("El material '" + this.Material.nombre + "' ya está registrado");
+                    //             break;
+                    //         }
+                    //     }
+                    // }else{
+                        if(this.Material.nombre == this.MaterialOrigen.nombre && this.Material.subtipo == this.MaterialOrigen.subtipo && this.Material.unidad == this.MaterialOrigen.unidad && this.Material.costo == this.MaterialOrigen.costo){
                             this.Error.mensaje.push("Ningun cambio registrado");
-                        }else{
+                        }else{ 
                             if ( !this.Material.nombre ) this.Error.mensaje.push("Debe ingresar un nombre");
                             if ( !this.Material.unidad ) this.Error.mensaje.push("Debe seleccionar una Unid. Medida");
                             if ( this.Material.costo == 0 || this.Material.costo < 0) this.Error.mensaje.push("Debe ingresar un costo válido");
                         }
-                    }
+                    // }
                 }
 
                 if ( this.Error.mensaje.length ) this.Error.estado = 1;

@@ -15,7 +15,7 @@ class CreateMaterialTable extends Migration
     {
         Schema::create('material', function (Blueprint $table) {
             $table->smallIncrements('id'); // usa 2 bytes - máximo 32767 datos
-            $table->string('nombre', 50);
+            $table->string('nombre', 50)->unique();
             $table->string('subtipo', 25);
             $table->string('unidad', 20); //Centimetro, Metro, Gramo, Kilogramo
             $table->decimal('costo', 8, 2); //Es el costo por unidad

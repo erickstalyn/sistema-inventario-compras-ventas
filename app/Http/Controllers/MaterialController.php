@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Material;
 use App\Data;
+use Exception;
 
 class MaterialController extends Controller
 {
@@ -47,6 +48,7 @@ class MaterialController extends Controller
     public function agregar(Request $request){
         if ( !$request->ajax() ) return redirect('/');
 
+        $estado = 1;
         try {
             DB::beginTransaction();
 
@@ -60,7 +62,11 @@ class MaterialController extends Controller
             DB::commit();
         } catch(Exception $e) {
             DB::rollback();
+            if($e != null) $estado = 0;
         }
+        // echo($estado);
+        return ['estado' => $estado];
+
     }
     
     public function editar(Request $request){
