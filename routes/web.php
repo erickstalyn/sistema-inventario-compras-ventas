@@ -57,6 +57,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/produccion', 'ProduccionController@listar'); //métodos generales
         Route::post('/produccion/agregar', 'ProduccionController@agregar');
         Route::get('/produccion/getProductoFiltrado', 'ProduccionController@getProductoFiltrado'); //metodos secundarios
+        Route::get('/produccion/selectAlmacen', 'ProduccionController@selectAlmacen'); //metodos secundarios
 
         //RUTAS PARA SUPERPRODUCTO
         Route::get('/superproducto', 'SuperProductoController@listar'); //metodos generales

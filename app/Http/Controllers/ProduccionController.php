@@ -8,6 +8,7 @@ use App\Produccion;
 use App\Producto;
 use App\Exception;
 use App\Detalle_produccion;
+use App\Centro;
 use DB;
 
 class ProduccionController extends Controller
@@ -97,7 +98,8 @@ class ProduccionController extends Controller
                 $detalle->nombre_producto = $det['nombre'];
                 $detalle->costo_produccion = $det['costo_produccion'];
                 $detalle->cantidad = $det['cantidad'];
-                $detalle->subtotal = floatval($det['cantidad']) * floatval($det['costo_produccion']);
+                // $detalle->subtotal = floatval($det['cantidad']) * floatval($det['costo_produccion']);
+                $detalle->subtotal = $det['subtotal'];
                 $detalle->producto_id = $det['id'];
                 $detalle->produccion_id = $produccion->id;
                 $detalle->save();
@@ -125,5 +127,13 @@ class ProduccionController extends Controller
         return [
             'productos' => $productos
         ];
+    }
+
+    public function selectAlmacen(Request $request){
+        if ( !$request->ajax() ) return redirect('/');
+        $almacenes = Centro::select('id', 'nombre',)
+                            ->where('tipo','=','A')
+                            ->orderBy('nombre', 'asc')->get();
+        return $almacenes;
     }
 }

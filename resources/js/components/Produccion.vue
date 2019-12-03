@@ -106,19 +106,37 @@
                                     </div>
                                 </td>
                                 <td>
-                                    <button type="button" @click="abrirModalEditar(produccion)" title="Editar" class="btn btn-warning btn-sm">
-                                        <i class="fas fa-user-edit"></i>
+                                    <button type="button"  title="Ver" class="btn btn-primary btn-sm">
+                                        <i class="far fa-eye"></i>
                                     </button>
-                                    <template v-if="produccion.estado">
-                                        <button type="button" @click="desactivar(produccion)" title="Desactivar" class="btn btn-danger btn-sm">
-                                            <i class="fas fa-user-times"></i>
+                                    <!-- Sin iniciar -->
+                                    <template v-if="produccion.fecha_inicio > getFechaHoy()">
+                                        <button type="button"  title="Editar" class="btn btn-warning btn-sm">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button type="button"  title="Eliminar" class="btn btn-danger btn-sm">
+                                            <i class="fas fa-trash-alt"></i>
                                         </button>
                                     </template>
-                                    <template v-else>
-                                        <button type="button" @click="activar(produccion)" title="Activar" class="btn btn-success btn-sm">
-                                            <i class="fas fa-user-check"></i>
+                                    <!-- Finalizado -->
+                                    <template v-else-if="produccion.fecha_fin">
+                                        <button type="button" title="Enviar" class="btn btn-secondary btn-sm" @click="abrirModalEnviar()">
+                                            <i class="fas fa-plane"></i>
                                         </button>
                                     </template>
+                                    <!-- En proceso -->
+                                    <template v-else="">
+                                        <button type="button"  title="Editar" class="btn btn-warning btn-sm">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button type="button"  title="Eliminar" class="btn btn-danger btn-sm">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                        <button type="button"  title="Finalizar" class="btn btn-outline-success btn-sm">
+                                            <i class="fas fa-check"></i>
+                                        </button>
+                                    </template>
+                                    
                                 </td>
                             </tr>
                         </tbody>
@@ -145,9 +163,9 @@
 
         </div>
 
-        <!-- Modales -->
+        <!-- Modales de Agregar/Editar -->
         <div class="modal text-gray-900" :class="{'mostrar': Modal.estado}">
-            <div class="modal-dialog modal-dialog-scrollable animated bounceIn fast modal-xl">
+            <div class="modal-dialog modal-dialog-centered animated bounceIn fast" :class="[Modal.numero != 3 ? 'modal-xl modal-dialog-scrollable' : '']">
                 <div class="modal-content">
 
                     <div class="modal-header">
@@ -239,8 +257,9 @@
                                                                 <input type="number" v-model="detalle.cantidad" class="form-control" min="1">
                                                             </td>
                                                             <td v-text="detalle.costo_produccion"></td>
-                                                            <td>
-                                                                s/ {{(detalle.costo_produccion * detalle.cantidad).toFixed(2)}}
+                                                            <td >
+                                                                <!-- s/ {{(detalle.costo_produccion * detalle.cantidad).toFixed(2)}} -->
+                                                                {{detalle.subtotal = (detalle.costo_produccion * detalle.cantidad).toFixed(2)}}
                                                             </td>
                                                         </tr>
                                                     </tbody>
@@ -274,6 +293,26 @@
                                 </div>
                                 
                             </div>
+                            <!-- <div v-if="Modal.numero==3">
+                                <div v-if="Error.estado" class="row d-flex justify-content-center">
+                                    <div class="alert alert-danger">
+                                        <button type="button" @click="Error.estado=0" class="close text-primary" data-dismiss="alert">×</button>
+                                        <strong>Corregir los siguentes errores:</strong>
+                                        <ul> 
+                                            <li v-for="error in Error.mensaje" :key="error" v-text="error"></li> 
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <label class="col-md-5 font-weight-bold" for="des">Seleccione almacén&nbsp;<span class="text-danger">*</span></label>
+                                    <div class="col-md-7">
+                                        <select  class="custom-select">
+                                            <option value="" disabled>Almacen</option>
+                                            <option v-for="item in SelectAlmacen" :key="item.id" :value="item.id" v-text="item.nombre"></option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div> -->
                         </div>
                     </div>
 
@@ -356,6 +395,8 @@
                     // {nombre: 'Camperita Silmar Roja Grande', stock: 56},
                     // {nombre: 'Mochila Porta Verde mediana', stock: 100}
                 ],
+                //DATOS PARA ENVIAR UNA PRODUCCION
+                SelectAlmacen: []
             }
         },
         computed: {
@@ -484,7 +525,8 @@
                         id: producto.id,
                         nombre: producto.nombre,
                         cantidad: 1,
-                        costo_produccion: producto.costo_produccion
+                        costo_produccion: producto.costo_produccion,
+                        subtotal: 0.00
                     }
                     this.ListaDetalleProduccion.push(elProducto);
                 }
@@ -644,6 +686,10 @@
                 // let inputFiltro = document.getElementById('filtroProducto');
                 // inputFiltro.focus();
             },
+            // abrirModalEnviar(){
+            //     this.abrirModal(3, 'Enviar Produccion', 'Enviar');
+            //     if(this.SelectAlmacen == 0) this.selectAlmacen();
+            // },
             // abrirModalEditar(data = []){
             //     this.abrirModal(2, 'Editar Material', 'Editar');
                 
@@ -694,14 +740,18 @@
                         this.editar();
                         break;
                     }
-                    case 'Activar': {
-                        this.activar();
-                        break;
-                    }
-                    case 'Desactivar': {
-                        this.desactivar();
-                        break;
-                    }
+                    // case 'Enviar': {
+                    //     this.enviar();
+                    //     break;
+                    // }
+                    // case 'Activar': {
+                    //     this.activar();
+                    //     break;
+                    // }
+                    // case 'Desactivar': {
+                    //     this.desactivar();
+                    //     break;
+                    // }
                 }
             },
             // getTitulo(titulo){
@@ -822,6 +872,17 @@
                 let n =  new Date();
                 let year = n.getFullYear();
                 return year;
+            },
+            //Metodos de envios
+            selectAlmacen(){
+                var me = this;
+                var url = '/produccion/selectAlmacen';
+
+                axios.get(url).then(function(response){
+                    me.SelectAlmacen = response.data;
+                }).catch(function(error){
+                    console.log(error);
+                });
             }
         },
         mounted() {
