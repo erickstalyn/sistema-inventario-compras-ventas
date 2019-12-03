@@ -738,7 +738,7 @@
 
                         let arrayfechaInicio = this.Produccion.fecha_inicio.split('-');
                         let arrayFechaProgramada = this.Produccion.fecha_programada.split('-');
-                        let fecha_inicio = new Date(parseInt(arrayfechaInicio[0]),parseInt(arrayfechaInicio[1]),parseInt(arrayfechaInicio[2]));
+                        let fecha_inicio = new Date(parseInt(arrayfechaInicio[0]),parseInt(arrayfechaInicio[1]-1),parseInt(arrayfechaInicio[2]));
                         let fecha_programada = new Date(parseInt(arrayFechaProgramada[0]),parseInt(arrayFechaProgramada[1]-1),parseInt(arrayFechaProgramada[2]))
                         if(fecha_inicio >= fecha_programada){
                             this.Error.mensaje.push('La fecha programada debe ser después que la fecha de inicio de la producción')
@@ -750,11 +750,11 @@
                 if ( this.Error.mensaje.length ) this.Error.estado = 1;
                 return this.Error.estado;
             },
-            // cambiarPagina(page){
-            //     if ( page >= 1 && page <= this.Paginacion.lastPage) {
-            //         this.listar(page);
-            //     }
-            // },
+            cambiarPagina(page){
+                if ( page >= 1 && page <= this.Paginacion.lastPage) {
+                    this.listar(page);
+                }
+            },
             // selectUnidad(){
             //     var me = this;
             //     var url = '/material/selectUnidad';

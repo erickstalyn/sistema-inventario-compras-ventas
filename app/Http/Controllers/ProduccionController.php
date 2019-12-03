@@ -7,6 +7,8 @@ use Carbon\Carbon;
 use App\Produccion;
 use App\Producto;
 use App\Exception;
+use App\Detalle_produccion;
+use DB;
 
 class ProduccionController extends Controller
 {
@@ -88,7 +90,18 @@ class ProduccionController extends Controller
             $produccion->save();
 
             //Insertamos los datos del detalle de produccion
+            $listaDetalleProduccion = $request->listaDetalleProduccion;
 
+            foreach($listaDetalleProduccion as $ep => $det){
+                $detalle = new Detalle_produccion();
+                $detalle->nombre_producto = $det['nombre'];
+                $detalle->costo_produccion = $det['costo_produccion'];
+                $detalle->cantidad = $det['cantidad'];
+                $detalle->subtotal = floatval($det['cantidad']) * floatval($det['costo_produccion']);
+                $detalle->producto_id = $det['id'];
+                $detalle->produccion_id = $produccion->id;
+                $detalle->save();
+            }
 
             DB::commit();
         } catch(Exception $e) {
