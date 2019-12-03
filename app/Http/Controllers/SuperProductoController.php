@@ -13,18 +13,12 @@ class SuperProductoController extends Controller{
     public function listar(Request $request){
         if ( !$request->ajax() ) return redirect('/') ;
         
-        $estado = $request->estado;
         $texto = $request->texto;
         $filas = $request->filas;
         $ordenarPor = $request->ordenarPor;
         $orden = $request->orden;
 
-        $superproductos = SuperProducto::select('id', 'nombre', 'descripcion', 'estado', 'superstock', 'created_at')
-                            ->where(function ($query) use ($estado) {
-                                if ( $estado != 2 ) {
-                                    $query->where('estado', '=', $estado);
-                                }
-                            })
+        $superproductos = SuperProducto::select('id', 'nombre', 'descripcion', 'superstock', 'created_at')
                             ->where(function ($query) use ($texto) {
                                 if ( $texto != '' ) {
                                     $query->where('nombre', 'like', '%'.$texto.'%')
@@ -86,27 +80,6 @@ class SuperProductoController extends Controller{
             DB::commit();
             $error = NULL;
         } catch(Exception $e) {
-            DB::rollback();
-            $error = $e;
-        }
-
-        return [
-            'estado' => $error==NULL?1:0,
-            'error' => $error
-        ];
-    }
-
-    public function setEstado(Request $request){
-        try {
-            DB::beginTransaction();
-
-            $superproducto = SuperProducto::findOrFail($request->id);
-            $superproducto->estado = $request->estado;
-            $superproducto->save();
-
-            DB::commit();
-            $error = NULL;
-        } catch (Exception $e) {
             DB::rollback();
             $error = $e;
         }

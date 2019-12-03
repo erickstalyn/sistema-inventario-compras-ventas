@@ -21,18 +21,11 @@ class ProductoController extends Controller {
         $ordenarPor = $request->ordenarPor;
         $orden = $request->orden;
 
-        $productos = Producto::where(function ($query) use ($estado) {
-                                if ( $estado != 2 ) {
-                                    $query->where('estado', '=', $estado);
-                                }
-                            })
-                            ->where(function ($query) use ($texto) {
+        $productos = Producto::where(function ($query) use ($texto) {
                                 if ( $texto != '' ) {
                                     $query->where('nombre', 'like', '%'.$texto.'%')
                                         ->orWhere('descripcion', 'like', '%'.$texto.'%')
-                                        ->orWhere('codigo', 'like', '%'.$texto.'%')
-                                        ->orWhere('color', 'like', '%'.$texto.'%')
-                                        ->orWhere('size', 'like', '%'.$texto.'%');
+                                        ->orWhere('codigo', 'like', '%'.$texto.'%');
                                 }
                             })
                             ->orderBy($ordenarPor, $orden)->paginate($filas);
@@ -55,12 +48,12 @@ class ProductoController extends Controller {
 
         try {
             DB::beginTransaction();
-
+            
             $superproducto = SuperProducto::findOrFail($request->superproducto_id);
             
             $producto = new Producto();
             $producto->superproducto_id = $request->superproducto_id;
-            $producto->nombre = $superproducto->nombre+' '+$request->size+' '+$request->color;
+            $producto->nombre = $superproducto->nombre.' '.$request->size.' '.$request->color;
             $producto->descripcion = $request->descripcion==''?NULL:$request->descripcion;
             $producto->size = $request->size;
             $producto->color = $request->color;
@@ -88,57 +81,33 @@ class ProductoController extends Controller {
         try {
             DB::beginTransaction();
 
+            $superproducto = SuperProducto::findOrFail($request->superproducto_id);
+
             $producto = Producto::findOrFail($request->id);
-            $producto->nombre = $request->nombre;
-            $producto->categoria_id = $request->categoria_id;
-            // $producto->codigo = $request->codigo==''?NULL:$request->codigo;
-            $producto->precio = $request->precio;
+            $producto->superproducto_id = $request->superproducto_id;
+            $producto->nombre = $superproducto->nombre.' '.$request->size.' '.$request->color;
             $producto->descripcion = $request->descripcion==''?NULL:$request->descripcion;
-            $producto->updated_at = Carbon::now('America/Lima')->toDateTimeString();
+            $producto->size = $request->size;
+            $producto->color = $request->color;
+            $producto->precio_menor = $request->precio_menor;
+            $producto->precio_mayor = $request->precio_mayor;
             $producto->save();
 
             DB::commit();
+            $error = NULL;
         } catch(Exception $e) {
             DB::rollback();
+            $error = $e;
         }
-    }
 
-    public function activar(Request $request){
-        try {
-            DB::beginTransaction();
-
-            $producto = Producto::findOrFail($request->id);
-            $producto->estado = 1;
-            $producto->updated_at = Carbon::now('America/Lima')->toDateTimeString();
-            $producto->deleted_at = NULL;
-            $producto->save();
-
-            DB::commit();
-        } catch (Exception $e) {
-            DB::rollback();
-            return $e;
-        }
-    }
-
-    public function desactivar(Request $request){
-        try {
-            DB::beginTransaction();
-
-            $producto = Producto::findOrFail($request->id);
-            $producto->estado = 0;
-            $producto->updated_at = Carbon::now('America/Lima')->toDateTimeString();
-            $producto->deleted_at = Carbon::now('America/Lima')->toDateTimeString();
-            $producto->save();
-
-            DB::commit();
-        } catch (Exception $e) {
-            DB::rollback();
-        }
+        return [
+            'estado' => $error==NULL?1:0,
+            'error' => $error
+        ];
     }
 
     public function selectSuperProducto(Request $request){
         $superproductos = SuperProducto::select('id', 'nombre')
-                                    ->where('estado', '=', 1)
                                     ->orderBy('nombre', 'desc')->get();
 
         return $superproductos;

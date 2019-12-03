@@ -18,7 +18,6 @@ class CreateSuperproductoTable extends Migration
             $table->string('nombre', 100)->unique();
             $table->string('descripcion', 60)->nullable();
             $table->smallInteger('superstock')->default(0); // usa 2 bytes - máximo 32767 datos
-            $table->boolean('estado')->default(1); //Activado: 1, Desactivado: 0
             
             $table->date('created_at'); //Fecha de creacion manual
         });

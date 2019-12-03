@@ -7,17 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 class Producto extends Model
 {
     protected $table = 'producto';
-    protected $fillable = ['categoria_id','nombre', 'codigo', 'descripcion', 'precio', 'stock', 'estado'];
-
+    protected $fillable = [
+        'superproducto_id','nombre', 'codigo', 'descripcion', 'size', 'color', 'costo_produccion', 'precio_menor', 'precio_mayor', 'stock', 'estado', 'created_at'
+    ];
+    public $timestamps = false;
+    
     //Relación de muchos a muchos con Abasto
-    public function getCategoria(){
-        return $this->belongsTo('App\Categoria');
-    }
     public function getEnvios(){
         return $this->belongsToMany('App\Envio', 'detalle_envio')->withPivot('cantidad')->as('detalle_envio');
-    }
-    public function getUsuarios(){
-        return $this->belongsToMany('App\Usuario', 'detalle_producto')->withPivot('stock')->as('detalle_producto');
     }
     //Relación de muchos a muchos con Abasto
     public function getAbastos(){
