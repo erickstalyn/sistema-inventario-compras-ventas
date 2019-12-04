@@ -19,5 +19,23 @@ class PersonaSeeder extends Seeder {
             'created_at' => $now,
             'tipo' => 'P'
         ));
+        DB::table('persona')->insert(array(
+            'nombres' => 'Jose Anderson',
+            'apellidos' => 'Cespedes Diaz',
+            'created_at' => $now,
+            'tipo' => 'P'
+        ));
+        DB::table('persona')->insert(array(
+            'razon_social' => 'Gloria SAA',
+            'ruc' => '27136842916',
+            'created_at' => $now,
+            'tipo' => 'P'
+        ));
+        DB::table('persona')->insert(array(
+            'razon_social' => 'EasyCode SAC',
+            'ruc' => '85721696932',
+            'created_at' => $now,
+            'tipo' => 'P'
+        ));
     }
 }
