@@ -70,6 +70,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/producto/selectSuperProducto', 'ProductoController@selectSuperProducto'); //metodos secundarios
         Route::get('/producto/selectSize', 'ProductoController@selectSize'); 
         Route::get('/producto/selectColor', 'ProductoController@selectColor'); 
+        Route::get('/producto/selectMaterial', 'ProductoController@selectMaterial'); 
     });
     Route::group(['middleware' => ['Puesto']], function (){
 

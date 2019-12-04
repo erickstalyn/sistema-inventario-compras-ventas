@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use App\Producto;
 use App\SuperProducto;
 use App\Data;
+use App\Material;
 use Exception;
 
 class ProductoController extends Controller {
@@ -123,6 +124,10 @@ class ProductoController extends Controller {
                     ->where('tipo', '=', 'C')->get();
 
         return $colores;
+    }
+    public function selectMaterial(Request $request){
+        $materiales = Material::orderBy('nombre', 'desc')->get();
+        return $materiales;
     }
 
 }
