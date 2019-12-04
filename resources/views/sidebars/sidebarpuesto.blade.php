@@ -24,6 +24,21 @@
         <!-- Divider -->
         <hr class="sidebar-divider">
     
+        <!-- Elemento de navegación: MENÚ INVENTARIO -->
+        <li class="nav-item">
+          <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#inventario" aria-expanded="true" aria-controls="inventario">
+              <i class="fas fa-store-alt"></i>
+            <span>Inventario</span>
+          </a>
+          <div id="inventario" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+              {{-- <a class="collapse-item font-weight-bold" href="#">Categorías</a> --}}
+              <a class="collapse-item font-weight-bold" href="#" @click="menu=0">Productos</a>
+              
+            </div>
+          </div>
+        </li>
+
         <!-- Elemento de navegación - MENÚ VENTAS -->
         <li class="nav-item">
           <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#ventas" aria-expanded="true" aria-controls="ventas">
@@ -35,21 +50,6 @@
               <a class="collapse-item font-weight-bold" href="#">Al contado</a>
               <a class="collapse-item font-weight-bold" href="#">Al crédito</a>
               <a class="collapse-item font-weight-bold" href="#">Especiales</a>
-            </div>
-          </div>
-        </li>
-    
-        <!-- Elemento de navegación: MENÚ INVENTARIO -->
-        <li class="nav-item">
-          <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#inventario" aria-expanded="true" aria-controls="inventario">
-              <i class="fas fa-store-alt"></i>
-            <span>Inventario</span>
-          </a>
-          <div id="inventario" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-              <a class="collapse-item font-weight-bold" href="#">Categorías</a>
-              <a class="collapse-item font-weight-bold" href="#">Productos</a>
-              
             </div>
           </div>
         </li>

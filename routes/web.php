@@ -77,6 +77,16 @@ Route::group(['middleware' => ['auth']], function () {
     });
     Route::group(['middleware' => ['Puesto']], function (){
 
+        //RUTAS PARA PRODUCTO
+        Route::get('/producto', 'ProductoController@listar'); //metodos generales
+        Route::post('/producto/agregar', 'ProductoController@agregar');
+        Route::put('/producto/editar', 'ProductoController@editar');
+        Route::put('/producto/setEstado', 'ProductoController@setEstado');
+        Route::get('/producto/selectSuperProducto', 'ProductoController@selectSuperProducto'); //metodos secundarios
+        Route::get('/producto/selectSize', 'ProductoController@selectSize'); 
+        Route::get('/producto/selectColor', 'ProductoController@selectColor'); 
+        Route::get('/producto/selectMaterial', 'ProductoController@selectMaterial'); 
+
     });
     Route::group(['middleware' => ['Almacen']], function (){
 

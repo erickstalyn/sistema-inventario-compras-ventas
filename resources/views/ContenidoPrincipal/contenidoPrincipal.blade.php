@@ -21,7 +21,9 @@
             </template>
 
         @elseif(Auth::user()->rol=='P')
-
+            <template v-if="menu==0">
+                <producto></producto>
+            </template>
 
         @elseif(Auth::user()->rol=='A')
             <template v-if="menu==1">
