@@ -339,7 +339,8 @@
                     fecha_inicio : '',
                     fecha_programada : '',
                     fecha_fin: '',
-                    total : 0.00
+                    total : 0.00,
+                    almacen_id: document.getElementById('idCentro').value
                 },
                 SelectUnidad: [],
                 //datos de busqueda y filtracion general
@@ -394,8 +395,6 @@
                 ],
                 //DATOS PARA ENVIAR UNA PRODUCCION
                 SelectAlmacen: [],
-                //Id del centro
-                idCentro: document.getElementById('idCentro').value,
             }
         },
         computed: {
@@ -542,6 +541,7 @@
                     'total' : this.Produccion.total,
                     'fecha_inicio' : this.Produccion.fecha_inicio,
                     'fecha_programada' : this.Produccion.fecha_programada,
+                    'almacen_id': this.Produccion.almacen_id,
                     //Datos del detalle de venta
                     'listaDetalleProduccion' : this.ListaDetalleProduccion
                 }).then(function(response){

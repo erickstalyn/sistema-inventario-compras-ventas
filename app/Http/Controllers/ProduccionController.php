@@ -88,6 +88,7 @@ class ProduccionController extends Controller
             $produccion->total = $request->total;
             $produccion->fecha_inicio = $request->fecha_inicio;
             $produccion->fecha_programada = $request->fecha_programada;
+            $produccion->almacen_id = $request->almacen_id;
             $produccion->save();
 
             //Insertamos los datos del detalle de produccion
