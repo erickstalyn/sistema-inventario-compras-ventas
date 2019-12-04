@@ -15,6 +15,7 @@ class CreateProductoMaterialTable extends Migration
     {
         Schema::create('producto_material', function (Blueprint $table) {
             $table->smallIncrements('id'); // usa 2 bytes - máximo 32767 datos
+            $table->string('nombre', 50); 
             $table->string('unidad',45); //cm, m, gr, kg
             $table->decimal('costo_unitario', 8,2); // se hace la conversion si es necesaria y se autocalcula
             $table->smallInteger('cantidad'); // usa 2 bytes - máximo 32767 datos

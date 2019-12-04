@@ -57,14 +57,14 @@
                                 <td v-text="producto.stock"></td>
                                 <td>
                                     <button type="button" @click="abrirModalVer(producto)" title="VER" class="btn btn-primary btn-sm">
-                                        <span>Ver</span>
+                                        <i class="far fa-eye"></i>
                                     </button>
                                     <button type="button" @click="abrirModalEditar(producto)" title="EDITAR" class="btn btn-warning btn-sm">
-                                        <i class="fas fa-user-edit"></i>
+                                        <i class="fas fa-edit"></i>
                                     </button>
-                                    <button type="button" @click="abrirModalMaterial(producto)" title="Agregar Material" class="btn btn-secondary btn-sm">
+                                    <!-- <button type="button" @click="abrirModalMaterial(producto)" title="Agregar Material" class="btn btn-secondary btn-sm">
                                         <span>Material</span>
-                                    </button>
+                                    </button> -->
                                 </td>
                             </tr>
                         </tbody>
@@ -92,8 +92,8 @@
         </div>
 
         <div class="modal text-gray-900" :class="{'mostrar': Modal.estado}">
-            <div class="modal-dialog modal-lg modal-dialog-centered animated bounceIn fast">
-                <div class="modal-content modal-lg">
+            <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable animated bounceIn fast">
+                <div class="modal-content">
 
                     <div class="modal-header">
                         <h3 v-text="Modal.titulo" class="modal-title" ></h3>
@@ -250,6 +250,73 @@
                                 </div>
                             </div>
                         </div>
+                        <!-- Modal Numero 4 de MATERIALES-->
+                        <div v-if="Modal.numero==4">
+                            <div class="row">
+                                <div class="col-md-4 container-fluid">
+                                    <div class="row">
+                                        <label class="col-md-12 font-weight-bold">AGREGAR MATERIAL</label>
+                                    </div>
+                                    <div class="row form-group">
+                                        <label class="col-md-4 font-weight-bold">Material:</label>
+                                        <select v-model="ProductoMaterial.material_id" class="col-md-8 form-control-sm" @click="actualizarProductoMaterial()">
+                                            <option value="0" disabled>seleccione</option>
+                                            <option v-for="material in SelectMaterial" :key="material.id" :value="material.id" v-text="material.nombre"></option>
+                                        </select>
+                                    </div>
+                                    <div class="row form-group">
+                                        <label class="col-md-4 font-weight-bold">Unidad:</label>
+                                        <label class="col-md-8 font-weight-bold" v-text="ProductoMaterial.unidad"></label>
+                                    </div>
+                                    <div class="row form-group">
+                                        <label class="col-md-4 font-weight-bold">P/U:</label>
+                                        <label class="col-md-8 font-weight-bold" v-text="ProductoMaterial.costo_unitario"></label>
+                                    </div>
+                                    <div class="row form-group">
+                                        <label class="col-md-4 font-weight-bold">Cantidad:</label>
+                                        <input type="number" v-model="ProductoMaterial.cantidad" class="col-md-8 form-control-sm" @keyup="actualizarProductoMaterial()" placeholder="ingrese la cantidad">
+                                    </div>
+                                    <div class="row form-group">
+                                        <label class="col-md-4 font-weight-bold">Subtotal:</label>
+                                        <label class="col-md-8 font-weight-bold" v-text="ProductoMaterial.subtotal"></label>
+                                    </div>
+                                    <div class="row form-group col-md-12 d-flex justify-content-around">
+                                        <button type="button" @click="agregarProductoMaterial()" class="btn btn-success">Agregar Material</button>        
+                                    </div>
+                                </div>
+                                <div class="col-md-8 container-fluid">
+                                    <div class="row">
+                                        <label class="col-md-12 font-weight-bold">LISTA DE MATERIALES</label>
+                                    </div>
+                                    <div class="row form-group">
+                                        <table class="table table-bordered table-striped table-sm text-gray-900">
+                                            <thead>
+                                                <tr class="bg-success">
+                                                    <th>Quitar</th>
+                                                    <th>Material</th>
+                                                    <th>Unidad</th>
+                                                    <th>Costo Unitario</th>
+                                                    <th>Cantidad</th>
+                                                    <th>SubTotal</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="(material, indice) in ListaProductoMaterial" :key="material.id" >
+                                                    <td>
+                                                        <button type="button" class="btn btn-primary" @click="quitarProductoMaterial(indice)">X</button>
+                                                    </td>
+                                                    <td v-text="material.nombre"></td>
+                                                    <td v-text="material.unidad"></td>
+                                                    <td v-text="material.costo_unitario"></td>
+                                                    <td v-text="material.cantidad"></td>
+                                                    <td v-text="material.subtotal"></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="modal-footer" v-if="permisoModalFooter">
@@ -293,6 +360,23 @@
                 SelectSuperProducto: [],
                 SelectSize: [],
                 SelectColor:[],
+
+                //datos de materiales
+                ListaMaterial: [],
+                SelectMaterial: [],
+
+                //datos del producto_material
+                ListaProductoMaterial: [],
+                ProductoMaterial: {
+                    id: 0,
+                    producto_id: 0,
+                    material_id: 0,
+                    nombre: '',
+                    unidad: '',
+                    costo_unitario: 0,
+                    cantidad: 0,
+                    subtotal: 0
+                },
 
                 //datos de busqueda y filtracion
                 Busqueda: {
@@ -481,6 +565,27 @@
                     console.log(error);
                 });
             },
+            agregarProductoMaterial(){
+                let producto_material = {
+                    'material_id': this.ProductoMaterial.material_id,
+                    'nombre': this.ProductoMaterial.nombre,
+                    'unidad': this.ProductoMaterial.unidad,
+                    'costo_unitario': this.ProductoMaterial.costo_unitario,
+                    'cantidad': this.ProductoMaterial.cantidad,
+                    'subtotal': this.ProductoMaterial.subtotal
+                };
+                this.ListaProductoMaterial.push(producto_material);
+
+                this.ProductoMaterial.material_id = 0;
+                this.ProductoMaterial.nombre = '';
+                this.ProductoMaterial.unidad = '-';
+                this.ProductoMaterial.costo_unitario = 0;
+                this.ProductoMaterial.cantidad = 0;
+                this.ProductoMaterial.subtotal = 0;
+            },
+            quitarProductoMaterial(indice){
+                this.ListaProductoMaterial.splice(indice,1);
+            },
             abrirModalAgregar(){
                 this.abrirModal(1, 'Nuevo Producto', 'Agregar');
 
@@ -522,6 +627,22 @@
                 this.selectSize();
                 this.selectColor();
             },
+            abrirModalMaterial(data = []){
+                this.abrirModal(4, 'Materiales del Producto', 'Guardar Materiales');
+                
+                this.Producto.id = data['id'];
+                this.Producto.nombre = data['nombre'];
+
+                this.ProductoMaterial.producto_id = this.Producto.id;
+                this.ProductoMaterial.material_id = 0;
+                this.ProductoMaterial.nombre = '';
+                this.ProductoMaterial.unidad = '-';
+                this.ProductoMaterial.costo_unitario = 0;
+                this.ProductoMaterial.cantidad = 0;
+                this.ProductoMaterial.subtotal = 0;
+
+                this.selectMaterial();
+            },
             abrirModal(numero, titulo, accion = ''){
                 this.Modal.estado = 1;
                 this.Modal.numero = numero;
@@ -553,6 +674,19 @@
                 this.SelectSuperProducto = [];
                 this.SelectSize = [];
                 this.SelectColor = [];
+
+                this.ListaMaterial = [];
+                this.ListaProductoMaterial = [];
+
+                this.ProductoMaterial.producto_id = 0;
+                this.ProductoMaterial.material_id = 0;
+                this.ProductoMaterial.nombre = '';
+                this.ProductoMaterial.unidad = '';
+                this.ProductoMaterial.costo_unitario = 0;
+                this.ProductoMaterial.cantidad = 0;
+                this.ProductoMaterial.subtotal = 0;
+                
+                this.SelectMaterial = [];
             },
             accionar(accion){
                 switch( accion ){
@@ -562,14 +696,6 @@
                     }
                     case 'Editar': {
                         this.editar();
-                        break;
-                    }
-                    case 'Activar': {
-                        this.activar();
-                        break;
-                    }
-                    case 'Desactivar': {
-                        this.desactivar();
                         break;
                     }
                 }
@@ -604,6 +730,16 @@
                     console.log(error);
                 });
             },
+            selectMaterial(){
+                var me = this;
+                var url = this.Ruta+'/selectMaterial';
+
+                axios.get(url).then(function(response){
+                    me.SelectMaterial = response.data;
+                }).catch(function(error){
+                    console.log(error);
+                });
+            },
             getTitulo(titulo){
                 var seleccionada = 0;
 
@@ -623,6 +759,17 @@
                 }
 
                 return titulo;
+            },
+            actualizarProductoMaterial(){
+                for (let i = 0; i < this.SelectMaterial.length; i++) {
+                    if ( this.SelectMaterial[i].id == this.ProductoMaterial.material_id ) {
+                        this.ProductoMaterial.nombre = this.SelectMaterial[i].nombre;
+                        this.ProductoMaterial.unidad = this.SelectMaterial[i].unidad;
+                        this.ProductoMaterial.costo_unitario = this.SelectMaterial[i].costo;
+                        this.ProductoMaterial.subtotal = (this.ProductoMaterial.costo_unitario * this.ProductoMaterial.cantidad).toFixed(2);
+                        break;
+                    }
+                }
             },
             validar(){
                 this.Error.estado = 0;
