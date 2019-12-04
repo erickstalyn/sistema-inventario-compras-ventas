@@ -57,14 +57,14 @@
                                 <td v-text="producto.stock"></td>
                                 <td>
                                     <button type="button" @click="abrirModalVer(producto)" title="VER" class="btn btn-primary btn-sm">
-                                        <span>Ver</span>
+                                        <i class="far fa-eye"></i>
                                     </button>
                                     <button type="button" @click="abrirModalEditar(producto)" title="EDITAR" class="btn btn-warning btn-sm">
-                                        <i class="fas fa-user-edit"></i>
+                                        <i class="fas fa-edit"></i>
                                     </button>
-                                    <button type="button" @click="abrirModalMaterial(producto)" title="Agregar Material" class="btn btn-secondary btn-sm">
+                                    <!-- <button type="button" @click="abrirModalMaterial(producto)" title="Agregar Material" class="btn btn-secondary btn-sm">
                                         <span>Material</span>
-                                    </button>
+                                    </button> -->
                                 </td>
                             </tr>
                         </tbody>
@@ -92,8 +92,8 @@
         </div>
 
         <div class="modal text-gray-900" :class="{'mostrar': Modal.estado}">
-            <div class="modal-dialog modal-lg modal-dialog-centered animated bounceIn fast">
-                <div class="modal-content modal-lg">
+            <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable animated bounceIn fast">
+                <div class="modal-content">
 
                     <div class="modal-header">
                         <h3 v-text="Modal.titulo" class="modal-title" ></h3>
@@ -253,13 +253,9 @@
                         <!-- Modal Numero 4 de MATERIALES-->
                         <div v-if="Modal.numero==4">
                             <div class="row">
-                                <label class="col-md-3 font-weight-bold">Nombre del producto:</label>
-                                <label class="col-md-9 font-weight-bold" v-text="Producto.nombre"></label>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-4 container-fuid">
+                                <div class="col-md-4 container-fluid">
                                     <div class="row">
-                                        <label class="col-md-12 font-weight-bold">Agregar Material</label>
+                                        <label class="col-md-12 font-weight-bold">AGREGAR MATERIAL</label>
                                     </div>
                                     <div class="row form-group">
                                         <label class="col-md-4 font-weight-bold">Material:</label>
@@ -278,7 +274,7 @@
                                     </div>
                                     <div class="row form-group">
                                         <label class="col-md-4 font-weight-bold">Cantidad:</label>
-                                        <input type="text" v-model="ProductoMaterial.cantidad" class="col-md-8 form-control-sm" @keyup="actualizarProductoMaterial()" placeholder="ingrese la cantidad">
+                                        <input type="number" v-model="ProductoMaterial.cantidad" class="col-md-8 form-control-sm" @keyup="actualizarProductoMaterial()" placeholder="ingrese la cantidad">
                                     </div>
                                     <div class="row form-group">
                                         <label class="col-md-4 font-weight-bold">Subtotal:</label>
@@ -290,7 +286,7 @@
                                 </div>
                                 <div class="col-md-8 container-fluid">
                                     <div class="row">
-                                        <label class="col-md-12 font-weight-bold">Agregar Material</label>
+                                        <label class="col-md-12 font-weight-bold">LISTA DE MATERIALES</label>
                                     </div>
                                     <div class="row form-group">
                                         <table class="table table-bordered table-striped table-sm text-gray-900">
@@ -298,20 +294,20 @@
                                                 <tr class="bg-success">
                                                     <th>Quitar</th>
                                                     <th>Material</th>
-                                                    <th>Costo Unitario</th>
                                                     <th>Unidad</th>
+                                                    <th>Costo Unitario</th>
                                                     <th>Cantidad</th>
                                                     <th>SubTotal</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr v-for="(indice, material) in ListaProductoMaterial" :key="material.id" >
+                                                <tr v-for="(material, indice) in ListaProductoMaterial" :key="material.id" >
                                                     <td>
                                                         <button type="button" class="btn btn-primary" @click="quitarProductoMaterial(indice)">X</button>
                                                     </td>
                                                     <td v-text="material.nombre"></td>
-                                                    <td v-text="material.costo_unitario"></td>
                                                     <td v-text="material.unidad"></td>
+                                                    <td v-text="material.costo_unitario"></td>
                                                     <td v-text="material.cantidad"></td>
                                                     <td v-text="material.subtotal"></td>
                                                 </tr>
@@ -367,12 +363,6 @@
 
                 //datos de materiales
                 ListaMaterial: [],
-                Material: {
-                    nombre: '',
-                    costo: 0,
-                    unidad: '',
-                    estado: 0
-                },
                 SelectMaterial: [],
 
                 //datos del producto_material
@@ -576,7 +566,7 @@
                 });
             },
             agregarProductoMaterial(){
-                let material = {
+                let producto_material = {
                     'material_id': this.ProductoMaterial.material_id,
                     'nombre': this.ProductoMaterial.nombre,
                     'unidad': this.ProductoMaterial.unidad,
@@ -584,12 +574,7 @@
                     'cantidad': this.ProductoMaterial.cantidad,
                     'subtotal': this.ProductoMaterial.subtotal
                 };
-                this.ListaProductoMaterial.push(material);
-
-                this.Material.id = 0;
-                this.Material.nombre = '';
-                this.Material.costo = 0;
-                this.Material.unidad = '';
+                this.ListaProductoMaterial.push(producto_material);
 
                 this.ProductoMaterial.material_id = 0;
                 this.ProductoMaterial.nombre = '';
@@ -599,20 +584,6 @@
                 this.ProductoMaterial.subtotal = 0;
             },
             quitarProductoMaterial(indice){
-                
-
-                this.Material.id = 0;
-                this.Material.nombre = '';
-                this.Material.costo = 0;
-                this.Material.unidad = '';
-
-                this.ProductoMaterial.material_id = 0;
-                this.ProductoMaterial.nombre = '';
-                this.ProductoMaterial.unidad = '-';
-                this.ProductoMaterial.costo_unitario = 0;
-                this.ProductoMaterial.cantidad = 0;
-                this.ProductoMaterial.subtotal = 0;
-                
                 this.ListaProductoMaterial.splice(indice,1);
             },
             abrirModalAgregar(){
@@ -657,15 +628,10 @@
                 this.selectColor();
             },
             abrirModalMaterial(data = []){
-                this.abrirModal(4, 'Materiales del Producto');
+                this.abrirModal(4, 'Materiales del Producto', 'Guardar Materiales');
                 
                 this.Producto.id = data['id'];
                 this.Producto.nombre = data['nombre'];
-
-                this.Material.id = 0;
-                this.Material.nombre = '';
-                this.Material.costo = 0;
-                this.Material.unidad = '';
 
                 this.ProductoMaterial.producto_id = this.Producto.id;
                 this.ProductoMaterial.material_id = 0;
@@ -705,16 +671,21 @@
                 this.Producto.stock = 0;
                 this.Producto.created_at = '';
 
-                this.ListaMaterial = [];
-                this.Material.id = 0;
-                this.Material.nombre = '';
-                this.Material.costo = 0;
-                this.Material.unidad = '';
-                this.Material.estado = 0;
-
                 this.SelectSuperProducto = [];
                 this.SelectSize = [];
                 this.SelectColor = [];
+
+                this.ListaMaterial = [];
+                this.ListaProductoMaterial = [];
+
+                this.ProductoMaterial.producto_id = 0;
+                this.ProductoMaterial.material_id = 0;
+                this.ProductoMaterial.nombre = '';
+                this.ProductoMaterial.unidad = '';
+                this.ProductoMaterial.costo_unitario = 0;
+                this.ProductoMaterial.cantidad = 0;
+                this.ProductoMaterial.subtotal = 0;
+                
                 this.SelectMaterial = [];
             },
             accionar(accion){
