@@ -19,6 +19,9 @@ class CreateProduccionTable extends Migration
             $table->date('fecha_inicio'); //Fecha en la que se iniciará la produccion
             $table->date('fecha_programada'); //Fecha en la que esta programada su culminacion
             $table->date('fecha_fin')->nullable(); //Fecha en la que se terminó, con esta fecha sabré si se culminó o no una produccion
+
+            $table->unsignedTinyInteger('almacen_id');
+            $table->foreign('almacen_id')->references('id')->on('centro');
             //Los estados que tiene es: Sin Iniciar, En Proceso, Finalizado
             //Las producciones tiene un eliminado fisico
         });

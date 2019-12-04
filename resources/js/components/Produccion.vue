@@ -74,7 +74,7 @@
             </div>
 
             <!-- Listado -->
-            <div v-if="ListaProduccion.length" class="table-responsive">
+            <div v-if="ListaProduccion.length" class="">
                 <!-- Tabla -->
                 <div class="ec-table overflow-auto">
                     <table class="table table-borderless table-sm text-gray-900">
@@ -85,7 +85,7 @@
                                 <th>Fecha finalizada</th>
                                 <th>Inversión en materiales</th>
                                 <th>Estado</th>
-                                <th>Opciones</th>
+                                <th class="text-center">Opciones</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -105,7 +105,7 @@
                                         <span class="badge badge-success">En proceso</span>
                                     </div>
                                 </td>
-                                <td>
+                                <td class="text-center">
                                     <button type="button"  title="Ver" class="btn btn-primary btn-sm">
                                         <i class="far fa-eye"></i>
                                     </button>
@@ -120,9 +120,9 @@
                                     </template>
                                     <!-- Finalizado -->
                                     <template v-else-if="produccion.fecha_fin">
-                                        <button type="button" title="Enviar" class="btn btn-secondary btn-sm" @click="abrirModalEnviar()">
+                                        <!-- <button type="button" title="Enviar" class="btn btn-secondary btn-sm" @click="abrirModalEnviar()">
                                             <i class="fas fa-plane"></i>
-                                        </button>
+                                        </button> -->
                                     </template>
                                     <!-- En proceso -->
                                     <template v-else="">
@@ -326,13 +326,10 @@
                 </div>
             </div>
         </div>
-
     </main>
 </template>
-
 <script>
     export default {
-
         data(){
             return {
                 //datos generales
@@ -396,7 +393,9 @@
                     // {nombre: 'Mochila Porta Verde mediana', stock: 100}
                 ],
                 //DATOS PARA ENVIAR UNA PRODUCCION
-                SelectAlmacen: []
+                SelectAlmacen: [],
+                //Id del centro
+                idCentro: document.getElementById('idCentro').value,
             }
         },
         computed: {
@@ -783,15 +782,25 @@
                     //Modal agregar
                     if ( !this.ListaDetalleProduccion.length ) this.Error.mensaje.push("No existe ningun detalle de producción"); 
                     if ( !this.Produccion.fecha_inicio || !this.Produccion.fecha_programada){
-                        this.Error.mensaje.push('Debe ingresar una fecha de inicio y una fecha programada de la producción')
+                        this.Error.mensaje.push('Debe ingresar una fecha de inicio y una fecha programada de la producción');
                     }else {
 
                         let arrayfechaInicio = this.Produccion.fecha_inicio.split('-');
                         let arrayFechaProgramada = this.Produccion.fecha_programada.split('-');
                         let fecha_inicio = new Date(parseInt(arrayfechaInicio[0]),parseInt(arrayfechaInicio[1]-1),parseInt(arrayfechaInicio[2]));
-                        let fecha_programada = new Date(parseInt(arrayFechaProgramada[0]),parseInt(arrayFechaProgramada[1]-1),parseInt(arrayFechaProgramada[2]))
-                        if(fecha_inicio >= fecha_programada){
-                            this.Error.mensaje.push('La fecha programada debe ser después que la fecha de inicio de la producción')
+                        let fecha_programada = new Date(parseInt(arrayFechaProgramada[0]),parseInt(arrayFechaProgramada[1]-1),parseInt(arrayFechaProgramada[2]));
+
+                        let hoyBase =  new Date();
+                        // console.log(hoy.getFullYear());
+                        // console.log(hoy.getMonth()+1);
+                        // console.log(hoy.getDate());
+
+                        let hoyFirme = new Date(hoyBase.getFullYear(), hoyBase.getMonth(), hoyBase.getDate());
+
+                        if(fecha_inicio <  hoyFirme){//Aqui me quede
+                            this.Error.mensaje.push('La fecha de inicio es incorrecta');
+                        }else if(fecha_inicio >= fecha_programada){
+                            this.Error.mensaje.push('La fecha programada debe ser después que la fecha de inicio de la producción');
                         }
                     }
                 }else{

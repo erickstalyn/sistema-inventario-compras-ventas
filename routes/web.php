@@ -80,6 +80,12 @@ Route::group(['middleware' => ['auth']], function () {
     });
     Route::group(['middleware' => ['Almacen']], function (){
 
+        //RUTAS PARA PRODUCCIONES
+        Route::get('/produccion', 'ProduccionController@listar'); //métodos generales
+        Route::post('/produccion/agregar', 'ProduccionController@agregar');
+        Route::get('/produccion/getProductoFiltrado', 'ProduccionController@getProductoFiltrado'); //metodos secundarios
+        Route::get('/produccion/selectAlmacen', 'ProduccionController@selectAlmacen'); //metodos secundarios
+        
     });
     
 

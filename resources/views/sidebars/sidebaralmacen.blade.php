@@ -23,11 +23,32 @@
     
         <!-- Divider -->
         <hr class="sidebar-divider">
-        <!-- Elemento de navegación - MENÚ ENVÍOS -->
+
+        <!-- Elemento de navegación: MENÚ INVENTARIO -->
+        <li class="nav-item">
+          <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#inventario" aria-expanded="true" aria-controls="inventario">
+              <i class="fas fa-store-alt"></i>
+            <span>Inventario</span>
+          </a>
+          <div id="inventario" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+              <a class="collapse-item font-weight-bold" href="#" @click="menu=0">Productos</a>
+            </div>
+          </div>
+        </li>
+
+        <!-- Elemento de navegación - MENÚ PRODUCCIONES -->
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" @click="menu=1">
+                <i class="fas fa-plane"></i>
+                <span >Producciones</span>
+            </a>
+        </li>
+        <!-- Elemento de navegación - MENÚ ENVIOS -->
         <li class="nav-item">
             <a class="nav-link collapsed" href="#">
                 <i class="fas fa-plane"></i>
-                <span >Envios</span>
+                <span >Envíos</span>
             </a>
         </li>
     
@@ -45,34 +66,6 @@
           </div>
         </li>
     
-        <!-- Elemento de navegación: MENÚ INVENTARIO -->
-        <li class="nav-item">
-          <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#inventario" aria-expanded="true" aria-controls="inventario">
-              <i class="fas fa-store-alt"></i>
-            <span>Inventario</span>
-          </a>
-          <div id="inventario" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-              <a class="collapse-item font-weight-bold" href="#">Categorías</a>
-              <a class="collapse-item font-weight-bold" href="#">Productos</a>
-              
-            </div>
-          </div>
-        </li>
-    
-        <!-- Elemento de navegación: MENÚ REGISTROS -->
-        <li class="nav-item">
-          <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#registros" aria-expanded="true" aria-controls="registros">
-              <i class="far fa-clipboard"></i>
-            <span>Registros</span>
-          </a>
-          <div id="registros" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item font-weight-bold" href="#">Mis envíos</a>
-                <a class="collapse-item font-weight-bold" href="#">Mis ventas</a>
-            </div>
-          </div>
-        </li>
     
         <!-- Divisor -->
         <hr class="sidebar-divider">

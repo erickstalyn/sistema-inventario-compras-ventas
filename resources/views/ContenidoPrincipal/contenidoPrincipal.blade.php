@@ -24,7 +24,9 @@
 
 
         @elseif(Auth::user()->rol=='A')
-
+            <template v-if="menu==1">
+                <produccion></produccion>
+            </template>
         @else
 
         @endif
