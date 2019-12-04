@@ -74,7 +74,7 @@
             </div>
 
             <!-- Listado -->
-            <div v-if="ListaProduccion.length" class="table-responsive">
+            <div v-if="ListaProduccion.length" class="">
                 <!-- Tabla -->
                 <div class="ec-table overflow-auto">
                     <table class="table table-borderless table-sm text-gray-900">
@@ -85,7 +85,7 @@
                                 <th>Fecha finalizada</th>
                                 <th>Inversión en materiales</th>
                                 <th>Estado</th>
-                                <th>Opciones</th>
+                                <th class="text-center">Opciones</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -105,20 +105,38 @@
                                         <span class="badge badge-success">En proceso</span>
                                     </div>
                                 </td>
-                                <td>
-                                    <button type="button" @click="abrirModalEditar(produccion)" title="Editar" class="btn btn-warning btn-sm">
-                                        <i class="fas fa-user-edit"></i>
+                                <td class="text-center">
+                                    <button type="button"  title="Ver" class="btn btn-primary btn-sm">
+                                        <i class="far fa-eye"></i>
                                     </button>
-                                    <template v-if="produccion.estado">
-                                        <button type="button" @click="desactivar(produccion)" title="Desactivar" class="btn btn-danger btn-sm">
-                                            <i class="fas fa-user-times"></i>
+                                    <!-- Sin iniciar -->
+                                    <template v-if="produccion.fecha_inicio > getFechaHoy()">
+                                        <button type="button"  title="Editar" class="btn btn-warning btn-sm">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button type="button"  title="Eliminar" class="btn btn-danger btn-sm">
+                                            <i class="fas fa-trash-alt"></i>
                                         </button>
                                     </template>
-                                    <template v-else>
-                                        <button type="button" @click="activar(produccion)" title="Activar" class="btn btn-success btn-sm">
-                                            <i class="fas fa-user-check"></i>
+                                    <!-- Finalizado -->
+                                    <template v-else-if="produccion.fecha_fin">
+                                        <!-- <button type="button" title="Enviar" class="btn btn-secondary btn-sm" @click="abrirModalEnviar()">
+                                            <i class="fas fa-plane"></i>
+                                        </button> -->
+                                    </template>
+                                    <!-- En proceso -->
+                                    <template v-else="">
+                                        <button type="button"  title="Editar" class="btn btn-warning btn-sm">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button type="button"  title="Eliminar" class="btn btn-danger btn-sm">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                        <button type="button"  title="Finalizar" class="btn btn-outline-success btn-sm">
+                                            <i class="fas fa-check"></i>
                                         </button>
                                     </template>
+                                    
                                 </td>
                             </tr>
                         </tbody>
@@ -145,9 +163,9 @@
 
         </div>
 
-        <!-- Modales -->
+        <!-- Modales de Agregar/Editar -->
         <div class="modal text-gray-900" :class="{'mostrar': Modal.estado}">
-            <div class="modal-dialog modal-dialog-centered animated bounceIn fast modal-xl">
+            <div class="modal-dialog modal-dialog-centered animated bounceIn fast" :class="[Modal.numero != 3 ? 'modal-xl modal-dialog-scrollable' : '']">
                 <div class="modal-content">
 
                     <div class="modal-header">
@@ -160,6 +178,15 @@
                         <!-- Modal Numero 1 de AGREGAR-->
                             <div v-if="Modal.numero==1">
                                 <!-- Filtro de productos -->
+                                <div v-if="Error.estado" class="row d-flex justify-content-center">
+                                    <div class="alert alert-danger">
+                                        <button type="button" @click="Error.estado=0" class="close text-primary" data-dismiss="alert">×</button>
+                                        <strong>Corregir los siguentes errores:</strong>
+                                        <ul> 
+                                            <li v-for="error in Error.mensaje" :key="error" v-text="error"></li> 
+                                        </ul>
+                                    </div>
+                                </div>
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="row">
@@ -167,34 +194,39 @@
                                         </div>
                                         <div class="row">
                                             <div class="input-group"> 
-                                                <input type="search" class="form-control form-control-sm" v-model="BusquedaFiltro.texto" @keyup.enter="listarFiltro()">
-                                                <button type="button" class="btn btn-sm btn-primary" @click="listar()">
+                                                <input type="search" class="form-control form-control-sm" v-model="BusquedaFiltro.texto" @keyup.enter="listarFiltro()" id="filtroProducto" autofocus placeholder="Producto,marca,modelo,tamaño,color">
+                                                <button type="button" class="btn btn-sm btn-primary" @click="listarFiltro()">
                                                     <i class="fa fa-search"></i>&nbsp; Buscar
                                                 </button>
                                             </div>
                                         </div>
                                         <br>
                                         <div class="row form-group ec-table overflow-auto">
-                                            <table class="table table-borderless table-striped table-sm text-gray-900">
-                                                <thead>
-                                                    <tr class="table-danger">
-                                                        <th>Agregar</th>
-                                                        <th>Nombre</th>
-                                                        <th>Stock</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr v-for="producto in ListaProducto" :key="producto.nombre" >
-                                                        <td>
-                                                            <button type="button" title="Editar" class="btn btn-circle btn-sm btn-outline-success">
-                                                                <i class="fas fa-plus"></i>
-                                                            </button>
-                                                        </td>
-                                                        <td v-text="producto.nombre"></td>
-                                                        <td v-text="producto.stock"></td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
+                                            <div v-if="ListaProducto.length">
+                                                <table class="table table-borderless table-striped table-sm text-gray-900">
+                                                    <thead>
+                                                        <tr class="table-danger">
+                                                            <th>Agregar</th>
+                                                            <th>Nombre</th>
+                                                            <th>Stock</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr v-for="producto in ListaProducto" :key="producto.id" >
+                                                            <td>
+                                                                <button type="button" title="Editar" class="btn btn-circle btn-sm btn-outline-success" @click="agregarDetalle(producto)">
+                                                                    <i class="fas fa-plus"></i>
+                                                                </button>
+                                                            </td>
+                                                            <td v-text="producto.nombre"></td>
+                                                            <td v-text="producto.stock"></td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div v-else>
+                                                <h6>No se han encontrado resultados</h6>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="col-md-8 ml-auto container">
@@ -202,58 +234,47 @@
                                             <h5>Lista de items</h5>
                                         </div>
                                         <div class="row form-group ec-table-modal overflow-auto">
-                                            <table class="table tableless table-striped table-sm text-gray-900">
-                                                <thead>
-                                                    <tr class="table-success">
-                                                        <th>Quitar</th>
-                                                        <th>Nombre</th>
-                                                        <th>Cant.</th>
-                                                        <th>C. Unitario</th>
-                                                        <th>Subtototal</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td>
-                                                            <button type="button" title="Editar" class="btn btn-circle btn-outline-danger btn-sm">
-                                                                <i class="fas fa-minus"></i>
-                                                            </button>
-                                                        </td>
-                                                        <td>Campera grande Silmar roja</td>
-                                                        <td>30</td>
-                                                        <td>20</td>
-                                                        <td>600</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            <button type="button" title="Editar" class="btn btn-circle btn-outline-danger btn-sm">
-                                                                <i class="fas fa-minus"></i>
-                                                            </button>
-                                                        </td>
-                                                        <td>Mochila pequeña Cat verde</td>
-                                                        <td>30</td>
-                                                        <td>20</td>
-                                                        <td>600</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            <button type="button" title="Editar" class="btn btn-circle btn-outline-danger btn-sm">
-                                                                <i class="fas fa-minus"></i>
-                                                            </button>
-                                                        </td>
-                                                        <td>Mochila pequeña Cat verde</td>
-                                                        <td>30</td>
-                                                        <td>20</td>
-                                                        <td>600</td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
+                                            <div v-if="ListaDetalleProduccion.length">
+                                                <table class="table tableless table-striped table-sm text-gray-900">
+                                                    <thead>
+                                                        <tr class="table-success">
+                                                            <th>Quitar</th>
+                                                            <th>Nombre</th>
+                                                            <th>Cant.</th>
+                                                            <th>Cost. Unitario</th>
+                                                            <th>Subtotal</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr v-for="(detalle, indice) in ListaDetalleProduccion" :key="detalle.id">
+                                                            <td>
+                                                                <button type="button" title="Editar" class="btn btn-circle btn-outline-danger btn-sm" @click="quitarDetalle(indice)">
+                                                                    <i class="fas fa-minus"></i>
+                                                                </button>
+                                                            </td>
+                                                            <td v-text="detalle.nombre"></td>
+                                                            <td>
+                                                                <input type="number" v-model="detalle.cantidad" class="form-control" min="1">
+                                                            </td>
+                                                            <td v-text="detalle.costo_produccion"></td>
+                                                            <td >
+                                                                <!-- s/ {{(detalle.costo_produccion * detalle.cantidad).toFixed(2)}} -->
+                                                                {{detalle.subtotal = (detalle.costo_produccion * detalle.cantidad).toFixed(2)}}
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div v-else>
+                                                <br>
+                                                <h5>Sin detalles de producción</h5>
+                                            </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-8">
                                             </div>
                                             <div class="col-md-4">
-                                                Inversión total: s/2450.60
+                                                Inversión total: s/ {{getTotal}}
                                             </div>
                                         </div>
                                     </div>
@@ -263,15 +284,35 @@
                                     <div class="col-md-3"></div>
                                     <div class="col-md-4 form-inline">
                                         Fecha de inicio&nbsp;<span class="text-danger">*</span>
-                                        <input type="date" class="form-control form-control-sm">
+                                        <input type="date" class="form-control form-control-sm" v-model="Produccion.fecha_inicio">
                                     </div>
                                     <div class="col-md-5 form-inline">
                                         Fecha prog. finalización&nbsp;<span class="text-danger">*</span>
-                                        <input type="date" class="form-control form-control-sm">
+                                        <input type="date" class="form-control form-control-sm" v-model="Produccion.fecha_programada">
                                     </div>
                                 </div>
                                 
                             </div>
+                            <!-- <div v-if="Modal.numero==3">
+                                <div v-if="Error.estado" class="row d-flex justify-content-center">
+                                    <div class="alert alert-danger">
+                                        <button type="button" @click="Error.estado=0" class="close text-primary" data-dismiss="alert">×</button>
+                                        <strong>Corregir los siguentes errores:</strong>
+                                        <ul> 
+                                            <li v-for="error in Error.mensaje" :key="error" v-text="error"></li> 
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <label class="col-md-5 font-weight-bold" for="des">Seleccione almacén&nbsp;<span class="text-danger">*</span></label>
+                                    <div class="col-md-7">
+                                        <select  class="custom-select">
+                                            <option value="" disabled>Almacen</option>
+                                            <option v-for="item in SelectAlmacen" :key="item.id" :value="item.id" v-text="item.nombre"></option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div> -->
                         </div>
                     </div>
 
@@ -285,10 +326,8 @@
                 </div>
             </div>
         </div>
-
     </main>
 </template>
-
 <script>
     export default {
         data(){
@@ -300,7 +339,7 @@
                     fecha_inicio : '',
                     fecha_programada : '',
                     fecha_fin: '',
-                    total : 0
+                    total : 0.00
                 },
                 SelectUnidad: [],
                 //datos de busqueda y filtracion general
@@ -341,18 +380,22 @@
                     estado: 0,
                     mensaje: []
                 },
-                //datos de agregar una produccion
+                //DATOS PARA AGREGAR UNA PRODUCCION
                 BusquedaFiltro:{
                     texto: ''
                 },
                 ListaProducto:[
-                    {nombre: 'Camperita Silmar Roja Grande', stock: 56},
-                    {nombre: 'Mochila Porta Verde mediana', stock: 100}
+                    // {nombre: 'Camperita Silmar Roja Grande', stock: 56},
+                    // {nombre: 'Mochila Porta Verde mediana', stock: 100}
                 ],
                 ListaDetalleProduccion:[
-                    {nombre: 'Camperita Silmar Roja Grande', stock: 56},
-                    {nombre: 'Mochila Porta Verde mediana', stock: 100}
+                    // {nombre: 'Camperita Silmar Roja Grande', stock: 56},
+                    // {nombre: 'Mochila Porta Verde mediana', stock: 100}
                 ],
+                //DATOS PARA ENVIAR UNA PRODUCCION
+                SelectAlmacen: [],
+                //Id del centro
+                idCentro: document.getElementById('idCentro').value,
             }
         },
         computed: {
@@ -391,16 +434,6 @@
 
                 return filas;
             },
-            // Contador: function(min, max){
-            //     // let min = 1;
-            //     // let max = 31;
-            //     let dias = [];
-            //     while(min <= max){
-            //         dias.push(min);
-            //         min++;
-            //     }
-            //     return dias;
-            // },
             permisoModalFooter: function(){
                 if ( this.Modal.numero == 1 ) return true;
                 if ( this.Modal.numero == 2 ) return true;
@@ -416,6 +449,15 @@
                     }
                 });
                 return selectUnidadFiltrado;
+            },
+            getTotal: function(){
+                this.Produccion.total = 0.00;
+                this.ListaDetalleProduccion.forEach( detalle => {
+                    // console.log(Number.parseFloat(detalle.costo_produccion * detalle.cantidad).toFixed(2));
+                    // this.Produccion.total = this.Produccion.total + detalle.costo_produccion * detalle.cantidad;
+                    this.Produccion.total = this.Produccion.total + detalle.costo_produccion * detalle.cantidad;
+                });
+                return (this.Produccion.total).toFixed(2);
             }
         },
         methods: {
@@ -447,47 +489,80 @@
                 });
             },
             listarFiltro(){
-                let me = this;
-                let url = '/producto?texto=' + BusquedaFiltro.texto;
-                axios.get(url).then(function(response){
-                    if(response.data.length == 1){//Si solo devuelve un dato es por que escribiste el nombre o codigo exacto
-                        me.ListaDetalleProduccion.push(response.data[0]);
-                    }else{
-                        me.ListaProducto = response.data;
+                if(this.BusquedaFiltro.texto != ''){
+                    let me = this;
+                    let url = '/produccion/getProductoFiltrado?texto=' + this.BusquedaFiltro.texto;
+                    axios.get(url).then(function(response){
+                        if(response.data.productos.length == 1 && me.BusquedaFiltro.texto == response.data.productos[0].codigo){
+                            me.agregarDetalle(response.data.productos[0]);
+                            me.BusquedaFiltro.texto = '';
+                        }else{
+                            me.ListaProducto = response.data.productos;
+                        }
+                        let inputFiltro = document.getElementById('filtroProducto');
+                        inputFiltro.focus();
+                    })
+                    .catch(function(error){
+                        console.log(error);
+                    });
+                }
+            },
+            agregarDetalle(producto){
+                //Verifico si el producto ya esta en la lista de detalle
+                let incluido = false;
+                for (let i = 0; i < this.ListaDetalleProduccion.length; i++) {
+                    if(this.ListaDetalleProduccion[i].id == producto.id){
+                        incluido = true;
+                        //adiciono uno más a la cantidad de este producto en la tabla de detalles
+                        this.ListaDetalleProduccion[i].cantidad ++;
+                        break;
                     }
-                })
-                .catch(function(error){
+                }
+
+                if(!incluido){
+                    let elProducto = {
+                        id: producto.id,
+                        nombre: producto.nombre,
+                        cantidad: 1,
+                        costo_produccion: producto.costo_produccion,
+                        subtotal: 0.00
+                    }
+                    this.ListaDetalleProduccion.push(elProducto);
+                }
+            },
+            quitarDetalle(indice){
+                this.ListaDetalleProduccion.splice(indice,1);
+            },
+            agregar(){
+                if ( this.validar() ) return;
+                
+                var me = this;
+                axios.post('/produccion/agregar', {
+                    //Datos de la produccion
+                    'total' : this.Produccion.total,
+                    'fecha_inicio' : this.Produccion.fecha_inicio,
+                    'fecha_programada' : this.Produccion.fecha_programada,
+                    //Datos del detalle de venta
+                    'listaDetalleProduccion' : this.ListaDetalleProduccion
+                }).then(function(response){
+                    me.cerrarModal();
+                    me.listar();
+                    Swal.fire({
+                        position: 'top-end',
+                        toast: true,
+                        type: 'success',
+                        title: 'La produccion se ha REGISTRADO correctamente',
+                        showConfirmButton: false,
+                        timer: 4500,
+                        animation:false,
+                        customClass:{
+                            popup: 'animated bounceIn fast'
+                        }
+                    });
+                }).catch(function(error){
                     console.log(error);
                 });
             },
-            // agregar(){
-            //     if ( this.validar() ) return;
-                
-            //     var me = this;
-            //     axios.post('/material/agregar', {
-            //         'nombre' : this.Material.nombre,
-            //         'subtipo': this.Material.subtipo,
-            //         'unidad' : this.Material.unidad,
-            //         'costo' : this.Material.costo
-            //     }).then(function(response){
-            //         me.cerrarModal();
-            //         me.listar();
-            //         Swal.fire({
-            //             position: 'top-end',
-            //             toast: true,
-            //             type: 'success',
-            //             title: 'El material se ha AGREGADO correctamente',
-            //             showConfirmButton: false,
-            //             timer: 4500,
-            //             animation:false,
-            //             customClass:{
-            //                 popup: 'animated bounceIn fast'
-            //             }
-            //         });
-            //     }).catch(function(error){
-            //         console.log(error);
-            //     });
-            // },
             // editar(){
             //     if ( this.validar() ) return;
 
@@ -607,8 +682,13 @@
             // },
             abrirModalAgregar(){
                 this.abrirModal(1, 'Registrar Produccion', 'Agregar');
-
+                // let inputFiltro = document.getElementById('filtroProducto');
+                // inputFiltro.focus();
             },
+            // abrirModalEnviar(){
+            //     this.abrirModal(3, 'Enviar Produccion', 'Enviar');
+            //     if(this.SelectAlmacen == 0) this.selectAlmacen();
+            // },
             // abrirModalEditar(data = []){
             //     this.abrirModal(2, 'Editar Material', 'Editar');
                 
@@ -643,28 +723,36 @@
                 this.Error.mensaje = [];
 
                 this.Produccion.id = 0;
+                this.Produccion.total = 0.00;
                 this.Produccion.fecha_fin = '';
+                this.ListaDetalleProduccion = [];
+                this.BusquedaFiltro.texto = '';
+
             },
-            // accionar(accion){
-            //     switch( accion ){
-            //         case 'Agregar': {
-            //             this.agregar();
-            //             break;
-            //         }
-            //         case 'Editar': {
-            //             this.editar();
-            //             break;
-            //         }
-            //         case 'Activar': {
-            //             this.activar();
-            //             break;
-            //         }
-            //         case 'Desactivar': {
-            //             this.desactivar();
-            //             break;
-            //         }
-            //     }
-            // },
+            accionar(accion){
+                switch( accion ){
+                    case 'Agregar': {
+                        this.agregar();
+                        break;
+                    }
+                    case 'Editar': {
+                        this.editar();
+                        break;
+                    }
+                    // case 'Enviar': {
+                    //     this.enviar();
+                    //     break;
+                    // }
+                    // case 'Activar': {
+                    //     this.activar();
+                    //     break;
+                    // }
+                    // case 'Desactivar': {
+                    //     this.desactivar();
+                    //     break;
+                    // }
+                }
+            },
             // getTitulo(titulo){
             //     var seleccionada = 0;
 
@@ -685,58 +773,47 @@
 
             //     return titulo;
             // },
-            // validar(){
-            //     this.Error.estado = 0;
-            //     this.Error.mensaje = [];
+            validar(){
+                this.Error.estado = 0;
+                this.Error.mensaje = [];
 
-            //     //Recorrere la lista de Material
-            //     if(this.Modal.numero == 1){
-            //         //Modal agregar
-            //         let registrado = false;
-            //         for (let i = 0; i < this.ListaProduccion.length; i++) {
-            //             if(this.ListaProduccion[i].nombre == this.Material.nombre) {
-            //                 this.Error.mensaje.push("El material '" + this.Material.nombre + "' ya está registrado");
-            //                 registrado = true;
-            //                 break;
-            //             }
-            //         }
-            //         if(!registrado){
-            //             if ( !this.Material.nombre ) this.Error.mensaje.push("Debe ingresar un nombre");
-            //             if ( !this.Material.unidad ) this.Error.mensaje.push("Debe seleccionar una Unid. Medida");
-            //             if ( this.Material.costo == 0 || this.Material.costo < 0) this.Error.mensaje.push("Debe ingresar un costo válido");
-            //         }
-            //     }else{
-            //         //Modal editar
-            //         if(this.Material.nombre != this.MaterialOrigen.nombre){
-            //             for (let i = 0; i < this.ListaProduccion.length; i++) {
-            //                 if(this.ListaProduccion[i].nombre == this.Material.nombre) {
-            //                     this.Error.mensaje.push("El material '" + this.Material.nombre + "' ya está registrado");
-            //                     break;
-            //                 }
-            //             }
-            //         }else{
-            //             if(this.Material.subtipo == this.MaterialOrigen.subtipo && this.Material.unidad == this.MaterialOrigen.unidad && this.Material.costo == this.MaterialOrigen.costo){
-            //                 this.Error.mensaje.push("Ningun cambio registrado");
-            //             }else{
-            //                 if ( !this.Material.nombre ) this.Error.mensaje.push("Debe ingresar un nombre");
-            //                 if ( !this.Material.unidad ) this.Error.mensaje.push("Debe seleccionar una Unid. Medida");
-            //                 if ( this.Material.costo == 0 || this.Material.costo < 0) this.Error.mensaje.push("Debe ingresar un costo válido");
-            //             }
-            //         }
-            //     }
+                //Recorrere la lista de Material
+                if(this.Modal.numero == 1){
+                    //Modal agregar
+                    if ( !this.ListaDetalleProduccion.length ) this.Error.mensaje.push("No existe ningun detalle de producción"); 
+                    if ( !this.Produccion.fecha_inicio || !this.Produccion.fecha_programada){
+                        this.Error.mensaje.push('Debe ingresar una fecha de inicio y una fecha programada de la producción');
+                    }else {
 
-            //     // if ( !this.Material.nombre ) this.Error.mensaje.push("Debe ingresar un nombre");
-            //     // if ( !this.Material.unidad ) this.Error.mensaje.push("Debe seleccionar una Unid. Medida");
-            //     // if ( this.Material.costo == 0 || this.Material.costo < 0) this.Error.mensaje.push("Debe ingresar un costo válido");
+                        let arrayfechaInicio = this.Produccion.fecha_inicio.split('-');
+                        let arrayFechaProgramada = this.Produccion.fecha_programada.split('-');
+                        let fecha_inicio = new Date(parseInt(arrayfechaInicio[0]),parseInt(arrayfechaInicio[1]-1),parseInt(arrayfechaInicio[2]));
+                        let fecha_programada = new Date(parseInt(arrayFechaProgramada[0]),parseInt(arrayFechaProgramada[1]-1),parseInt(arrayFechaProgramada[2]));
 
-            //     if ( this.Error.mensaje.length ) this.Error.estado = 1;
-            //     return this.Error.estado;
-            // },
-            // cambiarPagina(page){
-            //     if ( page >= 1 && page <= this.Paginacion.lastPage) {
-            //         this.listar(page);
-            //     }
-            // },
+                        let hoyBase =  new Date();
+                        // console.log(hoy.getFullYear());
+                        // console.log(hoy.getMonth()+1);
+                        // console.log(hoy.getDate());
+
+                        let hoyFirme = new Date(hoyBase.getFullYear(), hoyBase.getMonth(), hoyBase.getDate());
+
+                        if(fecha_inicio <  hoyFirme){//Aqui me quede
+                            this.Error.mensaje.push('La fecha de inicio es incorrecta');
+                        }else if(fecha_inicio >= fecha_programada){
+                            this.Error.mensaje.push('La fecha programada debe ser después que la fecha de inicio de la producción');
+                        }
+                    }
+                }else{
+                    //Modal editar
+                }
+                if ( this.Error.mensaje.length ) this.Error.estado = 1;
+                return this.Error.estado;
+            },
+            cambiarPagina(page){
+                if ( page >= 1 && page <= this.Paginacion.lastPage) {
+                    this.listar(page);
+                }
+            },
             // selectUnidad(){
             //     var me = this;
             //     var url = '/material/selectUnidad';
@@ -804,6 +881,17 @@
                 let n =  new Date();
                 let year = n.getFullYear();
                 return year;
+            },
+            //Metodos de envios
+            selectAlmacen(){
+                var me = this;
+                var url = '/produccion/selectAlmacen';
+
+                axios.get(url).then(function(response){
+                    me.SelectAlmacen = response.data;
+                }).catch(function(error){
+                    console.log(error);
+                });
             }
         },
         mounted() {

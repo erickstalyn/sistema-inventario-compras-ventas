@@ -22,7 +22,7 @@
 <body id="page-top">
 
   <div id="app">
-
+  <input type="hidden" value="{{ Auth::user()->centro_id }}" id="idCentro">
   
     <!-- Page Wrapper -->
     <div id="wrapper">

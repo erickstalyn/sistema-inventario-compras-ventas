@@ -5,6 +5,12 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Produccion;
+use App\Producto;
+use App\Exception;
+use App\Detalle_produccion;
+use App\Centro;
+use DB;
+
 class ProduccionController extends Controller
 {
     public function listar(Request $request){
@@ -69,5 +75,65 @@ class ProduccionController extends Controller
             ],
             'producciones' => $producciones
         ];
+    }
+
+    public function agregar(Request $request){
+        if ( !$request->ajax() ) return redirect('/');
+
+        try {
+            DB::beginTransaction();
+
+            //Agrego la produccion
+            $produccion = new Produccion();
+            $produccion->total = $request->total;
+            $produccion->fecha_inicio = $request->fecha_inicio;
+            $produccion->fecha_programada = $request->fecha_programada;
+            $produccion->save();
+
+            //Insertamos los datos del detalle de produccion
+            $listaDetalleProduccion = $request->listaDetalleProduccion;
+
+            foreach($listaDetalleProduccion as $ep => $det){
+                $detalle = new Detalle_produccion();
+                $detalle->nombre_producto = $det['nombre'];
+                $detalle->costo_produccion = $det['costo_produccion'];
+                $detalle->cantidad = $det['cantidad'];
+                // $detalle->subtotal = floatval($det['cantidad']) * floatval($det['costo_produccion']);
+                $detalle->subtotal = $det['subtotal'];
+                $detalle->producto_id = $det['id'];
+                $detalle->produccion_id = $produccion->id;
+                $detalle->save();
+            }
+
+            DB::commit();
+        } catch(Exception $e) {
+            DB::rollback();
+        }
+
+    }
+
+    public function getProductoFiltrado(Request $request){
+        if ( !$request->ajax() ) return redirect('/');
+        $texto = $request->texto;
+
+        $productos = Producto::select('id','nombre', 'stock', 'costo_produccion', 'codigo')
+                            ->where(function ($query) use ($texto) {
+                                if ( $texto != '' ) {
+                                    $query->where('nombre', 'like', $texto . '%')
+                                        ->orWhere('codigo', '=', $texto);
+                                }
+                            })
+                            ->orderBy('nombre', 'asc')->get();
+        return [
+            'productos' => $productos
+        ];
+    }
+
+    public function selectAlmacen(Request $request){
+        if ( !$request->ajax() ) return redirect('/');
+        $almacenes = Centro::select('id', 'nombre',)
+                            ->where('tipo','=','A')
+                            ->orderBy('nombre', 'asc')->get();
+        return $almacenes;
     }
 }

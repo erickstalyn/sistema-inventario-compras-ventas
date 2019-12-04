@@ -36,7 +36,7 @@ class UsuarioSeeder extends Seeder
             'usuario'=>'almacen2',
             'password'=>bcrypt('almacen2'),
             'rol' => 'A',
-            'estado' => false,
+            // 'estado' => false,
         ));
     }
 }
