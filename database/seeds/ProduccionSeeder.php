@@ -37,5 +37,12 @@ class ProduccionSeeder extends Seeder
             'fecha_programada' => '2019/12/02',
             'fecha_fin' => '2019/12/02'
         ));
+        DB::table('produccion')->insert(array(
+            'almacen_id' => 2,
+            'total'=>159.80,
+            'fecha_inicio' => '2019/12/01',
+            'fecha_programada' => '2019/12/02',
+            'fecha_fin' => '2019/12/02'
+        ));
     }
 }
