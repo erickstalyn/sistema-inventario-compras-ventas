@@ -166,98 +166,146 @@
                                         </ul>
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="col-md-4">
+                                <div class="row card border border-left-danger" style="height: 6.5rem;">
+                                    <div class="card-body">
+                                        <div class="row form-group ">
+                                            <div class="col-md-2">
+                                                <span class="font-weight-bold">Proveedor</span>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="input-group"> 
+                                                    RUC/DNI&nbsp;<span class="text-danger">*</span>&nbsp;
+                                                    <input type="text" class="form-control form-control-sm">
+                                                    <button type="button" class="btn btn-sm btn-primary">
+                                                        <i class="fas fa-sync-alt"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <span>No se encontraron resultados</span>
+                                            </div>
+                                        </div>
                                         <div class="row">
-                                            <h5>Productos</h5>
-                                        </div>
-                                        <div class="row">
-                                            <div class="input-group"> 
-                                                <input type="search" class="form-control form-control-sm" v-model="BusquedaFiltro.texto" @keyup.enter="listarFiltro()" id="filtroProducto" autofocus placeholder="Producto,marca,modelo,tamaño,color">
-                                                <button type="button" class="btn btn-sm btn-primary" @click="listarFiltro()">
-                                                    <i class="fa fa-search"></i>&nbsp; Buscar
-                                                </button>
+                                            <div class="col-md-2">
+                                                <div class="input-group"> 
+                                                    DNI&nbsp;
+                                                    <input type="text" class="form-control form-control-sm">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="input-group">
+                                                    <label >Nombres</label>&nbsp;
+                                                    <input type="text" class="form-control form-control-sm">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="input-group">
+                                                    <label >Apellidos</label>&nbsp;
+                                                    <input type="text" class="form-control form-control-sm">
+                                                </div>
                                             </div>
                                         </div>
-                                        <br>
-                                        <div class="row form-group ec-table overflow-auto">
-                                            <div v-if="ListaProducto.length">
-                                                <table class="table table-borderless table-striped table-sm text-gray-900">
-                                                    <thead>
-                                                        <tr class="table-danger">
-                                                            <th>Agregar</th>
-                                                            <th>Nombre</th>
-                                                            <th>Stock</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr v-for="producto in ListaProducto" :key="producto.id" >
-                                                            <td>
-                                                                <button type="button" title="Editar" class="btn btn-circle btn-sm btn-outline-success" @click="agregarDetalle(producto)">
-                                                                    <i class="fas fa-plus"></i>
-                                                                </button>
-                                                            </td>
-                                                            <td v-text="producto.nombre"></td>
-                                                            <td v-text="producto.stock"></td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                            <div v-else>
-                                                <h6>No se han encontrado resultados</h6>
-                                            </div>
-                                        </div>
+                                        
                                     </div>
-                                    <div class="col-md-8 ml-auto container">
+                                    
+                                </div>
+                                <div class="row card shadow bg-white rounded">
+                                    <div class="card-body">
                                         <div class="row">
-                                            <h5>Lista de items</h5>
-                                        </div>
-                                        <div class="row form-group ec-table-modal overflow-auto">
-                                            <div v-if="ListaDetalleAbasto.length">
-                                                <table class="table tableless table-striped table-sm text-gray-900">
-                                                    <thead>
-                                                        <tr class="table-success">
-                                                            <th>Quitar</th>
-                                                            <th>Nombre</th>
-                                                            <th>Cant.</th>
-                                                            <th>Precio Unit.</th>
-                                                            <th>Subtotal</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr v-for="(detalle, indice) in ListaDetalleAbasto" :key="detalle.id">
-                                                            <td>
-                                                                <button type="button" title="Editar" class="btn btn-circle btn-outline-danger btn-sm" @click="quitarDetalle(indice)">
-                                                                    <i class="fas fa-minus"></i>
-                                                                </button>
-                                                            </td>
-                                                            <td v-text="detalle.nombre"></td>
-                                                            <td>
-                                                                <input type="number" v-model="detalle.cantidad" class="form-control form-control-sm" min="1">
-                                                            </td>
-                                                            <td>
-                                                                <input type="number" v-model="detalle.costo_abasto" class="form-control form-control-sm" min="0">
-                                                            </td>
-                                                            <td>
-                                                                <!-- s/ {{(detalle.costo_produccion * detalle.cantidad).toFixed(2)}} -->
-                                                                {{detalle.subtotal = (detalle.costo_abasto * detalle.cantidad).toFixed(2)}}
-                                                            </td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                            <div v-else>
-                                                <br>
-                                                <h5>Sin detalles de abasto</h5>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-8">
-                                            </div>
                                             <div class="col-md-4">
-                                                <!-- Inversión total: s/ {{getTotal}} -->
+                                                <div class="row">
+                                                    <h5 class="font-weight-bold">Productos</h5>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="input-group"> 
+                                                        <input type="search" class="form-control form-control-sm" v-model="BusquedaFiltro.texto" @keyup.enter="listarFiltro()" id="filtroProducto" autofocus placeholder="Producto,marca,modelo,tamaño,color">
+                                                        <button type="button" class="btn btn-sm btn-primary" @click="listarFiltro()">
+                                                            <i class="fa fa-search"></i>&nbsp; Buscar
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                <br>
+                                                <div class="row form-group ec-table overflow-auto">
+                                                    <div v-if="ListaProducto.length">
+                                                        <table class="table table-borderless table-striped table-sm text-gray-900">
+                                                            <thead>
+                                                                <tr class="table-danger">
+                                                                    <th class="text-center" style="width: 3rem;">Agregar</th>
+                                                                    <th>Nombre</th>
+                                                                    <th>Stock</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr v-for="producto in ListaProducto" :key="producto.id" >
+                                                                    <td class="text-center">
+                                                                        <button type="button" title="Editar" class="btn btn-circle btn-sm btn-outline-success" @click="agregarDetalle(producto)">
+                                                                            <i class="fas fa-plus"></i>
+                                                                        </button>
+                                                                    </td>
+                                                                    <td v-text="producto.nombre"></td>
+                                                                    <td v-text="producto.stock"></td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                    <div v-else>
+                                                        <p>No se han encontrado resultados</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-8 ml-auto container">
+                                                <div class="row">
+                                                    <h5 class="font-weight-bold">Lista de items</h5>
+                                                </div>
+                                                <div class="row form-group ec-table-modal overflow-auto">
+                                                    <div v-if="ListaDetalleAbasto.length">
+                                                        <table class="table tableless table-striped table-sm text-gray-900">
+                                                            <thead>
+                                                                <tr class="table-success">
+                                                                    <th class="text-center" style="width: 3rem;">Quitar</th>
+                                                                    <th>Nombre</th>
+                                                                    <th style="width: 5rem;">Cant.</th>
+                                                                    <th style="width: 5rem;">P. Unit.</th>
+                                                                    <th>Subtotal</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr v-for="(detalle, indice) in ListaDetalleAbasto" :key="detalle.id">
+                                                                    <td class="text-center">
+                                                                        <button type="button" title="Editar" class="btn btn-circle btn-outline-danger btn-sm" @click="quitarDetalle(indice)">
+                                                                            <i class="fas fa-minus"></i>
+                                                                        </button>
+                                                                    </td>
+                                                                    <td v-text="detalle.nombre"></td>
+                                                                    <td >
+                                                                        <input type="number" v-model="detalle.cantidad" class="form-control form-control-sm" min="1">
+                                                                    </td>
+                                                                    <td>
+                                                                        <input type="number" v-model="detalle.costo_abasto" class="form-control form-control-sm" min="0">
+                                                                    </td>
+                                                                    <td>
+                                                                        <!-- s/ {{(detalle.costo_produccion * detalle.cantidad).toFixed(2)}} -->
+                                                                        {{detalle.subtotal = (detalle.costo_abasto * detalle.cantidad).toFixed(2)}}
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                    <div v-else>
+                                                        <br>
+                                                        <p>Sin detalles de abasto</p>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-8">
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <!-- Inversión total: s/ {{getTotal}} -->
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
+                                        
                                     </div>
                                 </div>
                                 
@@ -299,8 +347,8 @@
 
                     <div class="modal-footer" v-if="permisoModalFooter">
                         <div class="row form-group col-md-12 d-flex justify-content-around">
+                            <button type="button" @click="accionar(Modal.accion)" class="btn btn-success" v-text="Modal.accion"></button>
                             <button type="button" @click="cerrarModal()" class="btn btn-secondary">Cancelar</button>
-                            <button type="button" @click="accionar(Modal.accion)" class="btn btn-primary" v-text="Modal.accion"></button>
                         </div>
                     </div>
                 
