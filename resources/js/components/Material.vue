@@ -153,7 +153,7 @@
                             <div class="row form-group">
                                 <label class="col-md-3 font-weight-bold" for="nom">Costo por Unidad&nbsp;<span class="text-danger">*</span></label>
                                 <div class="col-md-4">
-                                    <input type="number" v-model="Material.costo" class="form-control" placeholder="Ingrese el costo">
+                                    <input type="number" v-model="Material.costo" class="form-control" min="0">
                                 </div>
                             </div>
                         </div>
@@ -192,7 +192,7 @@
                             <div class="row form-group">
                                 <label class="col-md-3 font-weight-bold" for="nom">Costo por Unidad&nbsp;<span class="text-danger">*</span></label>
                                 <div class="col-md-4">
-                                    <input type="number" v-model="Material.costo" class="form-control" placeholder="Ingrese el costo">
+                                    <input type="number" v-model="Material.costo" class="form-control" min="0">
                                 </div>
                             </div>
                         </div>

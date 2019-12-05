@@ -33,6 +33,16 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/main', function () {
         return view('contenidoPrincipal.contenidoPrincipal');
     })->name('main');
+    
+    //RUTAS PARA PRODUCTO
+    Route::get('/producto', 'ProductoController@listar'); //metodos generales
+    Route::post('/producto/agregar', 'ProductoController@agregar');
+    Route::put('/producto/editar', 'ProductoController@editar');
+    Route::put('/producto/setEstado', 'ProductoController@setEstado');
+    Route::get('/producto/selectSuperProducto', 'ProductoController@selectSuperProducto'); //metodos secundarios
+    Route::get('/producto/selectSize', 'ProductoController@selectSize'); 
+    Route::get('/producto/selectColor', 'ProductoController@selectColor'); 
+    Route::get('/producto/selectMaterial', 'ProductoController@selectMaterial'); 
 
     Route::group(['middleware' => ['Administrador']], function (){
         
@@ -58,6 +68,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('/produccion/agregar', 'ProduccionController@agregar');
         Route::get('/produccion/getProductoFiltrado', 'ProduccionController@getProductoFiltrado'); //metodos secundarios
         Route::get('/produccion/selectAlmacen', 'ProduccionController@selectAlmacen'); //metodos secundarios
+        Route::put('/produccion/finalizar', 'ProduccionController@finalizar'); //metodos secundarios
 
         //RUTAS PARA SUPERPRODUCTO
         Route::get('/superproducto', 'SuperProductoController@listar'); //metodos generales
@@ -65,36 +76,48 @@ Route::group(['middleware' => ['auth']], function () {
         Route::put('/superproducto/editar', 'SuperProductoController@editar');
         Route::put('/superproducto/setEstado', 'SuperProductoController@setEstado');
 
-        //RUTAS PARA PRODUCTO
-        Route::get('/producto', 'ProductoController@listar'); //metodos generales
-        Route::post('/producto/agregar', 'ProductoController@agregar');
-        Route::put('/producto/editar', 'ProductoController@editar');
-        Route::put('/producto/setEstado', 'ProductoController@setEstado');
-        Route::get('/producto/selectSuperProducto', 'ProductoController@selectSuperProducto'); //metodos secundarios
-        Route::get('/producto/selectSize', 'ProductoController@selectSize'); 
-        Route::get('/producto/selectColor', 'ProductoController@selectColor'); 
-        Route::get('/producto/selectMaterial', 'ProductoController@selectMaterial'); 
+        // //RUTAS PARA PRODUCTO
+        // Route::get('/producto', 'ProductoController@listar'); //metodos generales
+        // Route::post('/producto/agregar', 'ProductoController@agregar');
+        // Route::put('/producto/editar', 'ProductoController@editar');
+        // Route::put('/producto/setEstado', 'ProductoController@setEstado');
+        // Route::get('/producto/selectSuperProducto', 'ProductoController@selectSuperProducto'); //metodos secundarios
+        // Route::get('/producto/selectSize', 'ProductoController@selectSize'); 
+        // Route::get('/producto/selectColor', 'ProductoController@selectColor'); 
+        // Route::get('/producto/selectMaterial', 'ProductoController@selectMaterial'); 
     });
     Route::group(['middleware' => ['Puesto']], function (){
 
         //RUTAS PARA PRODUCTO
-        Route::get('/producto', 'ProductoController@listar'); //metodos generales
-        Route::post('/producto/agregar', 'ProductoController@agregar');
-        Route::put('/producto/editar', 'ProductoController@editar');
-        Route::put('/producto/setEstado', 'ProductoController@setEstado');
-        Route::get('/producto/selectSuperProducto', 'ProductoController@selectSuperProducto'); //metodos secundarios
-        Route::get('/producto/selectSize', 'ProductoController@selectSize'); 
-        Route::get('/producto/selectColor', 'ProductoController@selectColor'); 
-        Route::get('/producto/selectMaterial', 'ProductoController@selectMaterial'); 
+        // Route::get('/producto', 'ProductoController@listar'); //metodos generales
+        // Route::post('/producto/agregar', 'ProductoController@agregar');
+        // Route::put('/producto/editar', 'ProductoController@editar');
+        // Route::put('/producto/setEstado', 'ProductoController@setEstado');
+        // Route::get('/producto/selectSuperProducto', 'ProductoController@selectSuperProducto'); //metodos secundarios
+        // Route::get('/producto/selectSize', 'ProductoController@selectSize'); 
+        // Route::get('/producto/selectColor', 'ProductoController@selectColor'); 
+        // Route::get('/producto/selectMaterial', 'ProductoController@selectMaterial'); 
 
     });
     Route::group(['middleware' => ['Almacen']], function (){
 
-        //RUTAS PARA PRODUCCIONES
+        //RUTAS PARA PRODUCTO
+        // Route::get('/producto', 'ProductoController@listar'); //metodos generales
+        // Route::post('/producto/agregar', 'ProductoController@agregar');
+        // Route::put('/producto/editar', 'ProductoController@editar');
+        // Route::put('/producto/setEstado', 'ProductoController@setEstado');
+        // Route::get('/producto/selectSuperProducto', 'ProductoController@selectSuperProducto'); //metodos secundarios
+        // Route::get('/producto/selectSize', 'ProductoController@selectSize'); 
+        // Route::get('/producto/selectColor', 'ProductoController@selectColor'); 
+        // Route::get('/producto/selectMaterial', 'ProductoController@selectMaterial');
+
+        // RUTAS PARA PRODUCCIONES
         Route::get('/produccion', 'ProduccionController@listar'); //métodos generales
         Route::post('/produccion/agregar', 'ProduccionController@agregar');
         Route::get('/produccion/getProductoFiltrado', 'ProduccionController@getProductoFiltrado'); //metodos secundarios
         Route::get('/produccion/selectAlmacen', 'ProduccionController@selectAlmacen'); //metodos secundarios
+        Route::put('/produccion/finalizar', 'ProduccionController@finalizar'); //metodos secundarios
+
         
     });
     

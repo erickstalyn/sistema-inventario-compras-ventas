@@ -132,7 +132,7 @@
                                         <button type="button"  title="Eliminar" class="btn btn-danger btn-sm">
                                             <i class="fas fa-trash-alt"></i>
                                         </button>
-                                        <button type="button"  title="Finalizar" class="btn btn-outline-success btn-sm">
+                                        <button type="button"  title="Finalizar" class="btn btn-outline-success btn-sm" @click="finalizar(produccion)">
                                             <i class="fas fa-check"></i>
                                         </button>
                                     </template>
@@ -340,7 +340,8 @@
                     fecha_programada : '',
                     fecha_fin: '',
                     total : 0.00,
-                    almacen_id: document.getElementById('idCentro').value
+                    // almacen_id: document.getElementById('idCentro').value
+                    almacen_id: $('meta[name="idCentro"]').attr('content')
                 },
                 SelectUnidad: [],
                 //datos de busqueda y filtracion general
@@ -680,6 +681,47 @@
             //         }
             //     });
             // },
+            finalizar(produccion = []){
+                this.Produccion.id = produccion['id'];
+                Swal.fire({
+                    title: '¿Esta seguro de FINALIZAR la producción ',
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Si, finalizar',
+                    cancelButtonText: 'Cancelar',
+                    customClass: {
+                        confirmButton: 'btn btn-success',
+                        cancelButton: 'btn btn-danger'
+                    },
+                    buttonsStyling: false
+                }).then((result) => {
+                    if (result.value) {
+                        var me = this;
+                
+                        axios.put('/produccion/finalizar', {
+                            'id' : me.Produccion.id
+                        }).then(function (response) {
+                            me.listar();
+                            Swal.fire({
+                                position: 'top-end',
+                                toast: true,
+                                type: 'success',
+                                title: 'La producción se ha FINALIZADO correctamente',
+                                showConfirmButton: false,
+                                timer: 4500,
+                                animation:false,
+                                customClass:{
+                                    popup: 'animated bounceIn fast'
+                                }
+                            });
+                        }).catch(function (error) {
+                            console.log(error);
+                        });
+                    } else if ( result.dismiss === Swal.DismissReason.cancel ) {
+
+                    }
+                });
+            },
             abrirModalAgregar(){
                 this.abrirModal(1, 'Registrar Produccion', 'Agregar');
                 // let inputFiltro = document.getElementById('filtroProducto');
@@ -724,7 +766,9 @@
 
                 this.Produccion.id = 0;
                 this.Produccion.total = 0.00;
-                this.Produccion.fecha_fin = '';
+                this.Produccion.fecha_inicio = '';
+                this.Produccion.fecha_programada = '';
+
                 this.ListaDetalleProduccion = [];
                 this.BusquedaFiltro.texto = '';
 
@@ -739,10 +783,10 @@
                         this.editar();
                         break;
                     }
-                    // case 'Enviar': {
-                    //     this.enviar();
-                    //     break;
-                    // }
+                    case 'Finalizar': {
+                        this.finalizar();
+                        break;
+                    }
                     // case 'Activar': {
                     //     this.activar();
                     //     break;

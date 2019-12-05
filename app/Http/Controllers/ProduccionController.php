@@ -137,4 +137,18 @@ class ProduccionController extends Controller
                             ->orderBy('nombre', 'asc')->get();
         return $almacenes;
     }
+
+    public function finalizar(Request $request){
+        try {
+            DB::beginTransaction();
+
+            $produccion = Produccion::findOrFail($request->id);
+            $produccion->fecha_fin = Carbon::now('America/Lima')->toDateTimeString();
+            $produccion->save();
+
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollback();
+        }
+    }
 }
