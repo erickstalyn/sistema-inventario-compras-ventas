@@ -13,10 +13,7 @@
             <template v-if="menu==2">
                 <producto></producto>
             </template>
-            <template v-if="menu==3">
-                <produccion></produccion>
-            </template>
-            <template v-if="menu==6">
+            <template v-if="menu==5">
                 <usuario></usuario>
             </template>
 
@@ -32,7 +29,6 @@
             <template v-if="menu==1">
                 <produccion></produccion>
             </template>
-
         @else
 
         @endif
