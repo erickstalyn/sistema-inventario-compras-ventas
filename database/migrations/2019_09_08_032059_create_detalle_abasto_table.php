@@ -16,7 +16,7 @@ class CreateDetalleAbastoTable extends Migration
             $table->mediumIncrements('id'); // usa 3 bytes, Cantiada max: 8 388 607
             $table->string('nombre_producto',100);
             $table->smallInteger('cantidad'); //-32768 al 32767
-            $table->decimal('costo_abasto', 8, 2); // Aqui ira el valor del costo del abasto
+            $table->decimal('costo_abasto', 8, 2); // Aqui ira el valor del costo del producto por unidad, se ingresa manualmente
             $table->decimal('subtotal', 8, 2);
 
             $table->unsignedMediumInteger('producto_id')->nullable();

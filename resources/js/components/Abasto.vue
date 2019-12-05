@@ -142,6 +142,171 @@
 
         </div>
 
+        <!-- Modales de Agregar/Editar -->
+        <div class="modal text-gray-900" :class="{'mostrar': Modal.estado}">
+            <div class="modal-dialog modal-dialog-centered animated bounceIn fast" :class="[Modal.numero != 3 ? 'modal-xl modal-dialog-scrollable' : '']">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <h3 v-text="Modal.titulo" class="modal-title" ></h3>
+                        <button type="button" @click="cerrarModal()" class="close">X</button>
+                    </div>
+                    
+                    <div class="modal-body">
+                        <div class="container-fluid">
+                        <!-- Modal Numero 1 de AGREGAR-->
+                            <div v-if="Modal.numero==1">
+                                <!-- Filtro de productos -->
+                                <div v-if="Error.estado" class="row d-flex justify-content-center">
+                                    <div class="alert alert-danger">
+                                        <button type="button" @click="Error.estado=0" class="close text-primary" data-dismiss="alert">×</button>
+                                        <strong>Corregir los siguentes errores:</strong>
+                                        <ul> 
+                                            <li v-for="error in Error.mensaje" :key="error" v-text="error"></li> 
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="row">
+                                            <h5>Productos</h5>
+                                        </div>
+                                        <div class="row">
+                                            <div class="input-group"> 
+                                                <input type="search" class="form-control form-control-sm" v-model="BusquedaFiltro.texto" @keyup.enter="listarFiltro()" id="filtroProducto" autofocus placeholder="Producto,marca,modelo,tamaño,color">
+                                                <button type="button" class="btn btn-sm btn-primary" @click="listarFiltro()">
+                                                    <i class="fa fa-search"></i>&nbsp; Buscar
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <div class="row form-group ec-table overflow-auto">
+                                            <div v-if="ListaProducto.length">
+                                                <table class="table table-borderless table-striped table-sm text-gray-900">
+                                                    <thead>
+                                                        <tr class="table-danger">
+                                                            <th>Agregar</th>
+                                                            <th>Nombre</th>
+                                                            <th>Stock</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr v-for="producto in ListaProducto" :key="producto.id" >
+                                                            <td>
+                                                                <button type="button" title="Editar" class="btn btn-circle btn-sm btn-outline-success" @click="agregarDetalle(producto)">
+                                                                    <i class="fas fa-plus"></i>
+                                                                </button>
+                                                            </td>
+                                                            <td v-text="producto.nombre"></td>
+                                                            <td v-text="producto.stock"></td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div v-else>
+                                                <h6>No se han encontrado resultados</h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8 ml-auto container">
+                                        <div class="row">
+                                            <h5>Lista de items</h5>
+                                        </div>
+                                        <div class="row form-group ec-table-modal overflow-auto">
+                                            <div v-if="ListaDetalleAbasto.length">
+                                                <table class="table tableless table-striped table-sm text-gray-900">
+                                                    <thead>
+                                                        <tr class="table-success">
+                                                            <th>Quitar</th>
+                                                            <th>Nombre</th>
+                                                            <th>Cant.</th>
+                                                            <th>Precio Unit.</th>
+                                                            <th>Subtotal</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr v-for="(detalle, indice) in ListaDetalleAbasto" :key="detalle.id">
+                                                            <td>
+                                                                <button type="button" title="Editar" class="btn btn-circle btn-outline-danger btn-sm" @click="quitarDetalle(indice)">
+                                                                    <i class="fas fa-minus"></i>
+                                                                </button>
+                                                            </td>
+                                                            <td v-text="detalle.nombre"></td>
+                                                            <td>
+                                                                <input type="number" v-model="detalle.cantidad" class="form-control form-control-sm" min="1">
+                                                            </td>
+                                                            <td>
+                                                                <input type="number" v-model="detalle.costo_abasto" class="form-control form-control-sm" min="0">
+                                                            </td>
+                                                            <td>
+                                                                <!-- s/ {{(detalle.costo_produccion * detalle.cantidad).toFixed(2)}} -->
+                                                                {{detalle.subtotal = (detalle.costo_abasto * detalle.cantidad).toFixed(2)}}
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div v-else>
+                                                <br>
+                                                <h5>Sin detalles de abasto</h5>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-8">
+                                            </div>
+                                            <div class="col-md-4">
+                                                <!-- Inversión total: s/ {{getTotal}} -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-3"></div>
+                                    <div class="col-md-4 form-inline">
+                                        Fecha de inicio&nbsp;<span class="text-danger">*</span>
+                                        <input type="date" class="form-control form-control-sm" >
+                                    </div>
+                                    <div class="col-md-5 form-inline">
+                                        Fecha prog. finalización&nbsp;<span class="text-danger">*</span>
+                                        <input type="date" class="form-control form-control-sm" >
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            <!-- <div v-if="Modal.numero==3">
+                                <div v-if="Error.estado" class="row d-flex justify-content-center">
+                                    <div class="alert alert-danger">
+                                        <button type="button" @click="Error.estado=0" class="close text-primary" data-dismiss="alert">×</button>
+                                        <strong>Corregir los siguentes errores:</strong>
+                                        <ul> 
+                                            <li v-for="error in Error.mensaje" :key="error" v-text="error"></li> 
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <label class="col-md-5 font-weight-bold" for="des">Seleccione almacén&nbsp;<span class="text-danger">*</span></label>
+                                    <div class="col-md-7">
+                                        <select  class="custom-select">
+                                            <option value="" disabled>Almacen</option>
+                                            <option v-for="item in SelectAlmacen" :key="item.id" :value="item.id" v-text="item.nombre"></option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div> -->
+                        </div>
+                    </div>
+
+                    <div class="modal-footer" v-if="permisoModalFooter">
+                        <div class="row form-group col-md-12 d-flex justify-content-around">
+                            <button type="button" @click="cerrarModal()" class="btn btn-secondary">Cancelar</button>
+                            <button type="button" @click="accionar(Modal.accion)" class="btn btn-primary" v-text="Modal.accion"></button>
+                        </div>
+                    </div>
+                
+                </div>
+            </div>
+        </div>
     </main>
 </template>
 <script>
@@ -206,7 +371,7 @@
                     // {nombre: 'Camperita Silmar Roja Grande', stock: 56},
                     // {nombre: 'Mochila Porta Verde mediana', stock: 100}
                 ],
-                ListaDetalleProduccion:[
+                ListaDetalleAbasto:[
                     // {nombre: 'Camperita Silmar Roja Grande', stock: 56},
                     // {nombre: 'Mochila Porta Verde mediana', stock: 100}
                 ],
@@ -304,51 +469,51 @@
                     console.log(error)
                 });
             },
-            // listarFiltro(){
-            //     if(this.BusquedaFiltro.texto != ''){
-            //         let me = this;
-            //         let url = '/produccion/getProductoFiltrado?texto=' + this.BusquedaFiltro.texto;
-            //         axios.get(url).then(function(response){
-            //             if(response.data.productos.length == 1 && me.BusquedaFiltro.texto == response.data.productos[0].codigo){
-            //                 me.agregarDetalle(response.data.productos[0]);
-            //                 me.BusquedaFiltro.texto = '';
-            //             }else{
-            //                 me.ListaProducto = response.data.productos;
-            //             }
-            //             let inputFiltro = document.getElementById('filtroProducto');
-            //             inputFiltro.focus();
-            //         })
-            //         .catch(function(error){
-            //             console.log(error);
-            //         });
-            //     }
-            // },
-            // agregarDetalle(producto){
-            //     //Verifico si el producto ya esta en la lista de detalle
-            //     let incluido = false;
-            //     for (let i = 0; i < this.ListaDetalleProduccion.length; i++) {
-            //         if(this.ListaDetalleProduccion[i].id == producto.id){
-            //             incluido = true;
-            //             //adiciono uno más a la cantidad de este producto en la tabla de detalles
-            //             this.ListaDetalleProduccion[i].cantidad ++;
-            //             break;
-            //         }
-            //     }
+            listarFiltro(){
+                if(this.BusquedaFiltro.texto != ''){
+                    let me = this;
+                    let url = '/libreria/getProductoFiltrado?texto=' + this.BusquedaFiltro.texto;
+                    axios.get(url).then(function(response){
+                        if(response.data.productos.length == 1 && me.BusquedaFiltro.texto == response.data.productos[0].codigo){
+                            me.agregarDetalle(response.data.productos[0]);
+                            me.BusquedaFiltro.texto = '';
+                        }else{
+                            me.ListaProducto = response.data.productos;
+                        }
+                        let inputFiltro = document.getElementById('filtroProducto');
+                        inputFiltro.focus();
+                    })
+                    .catch(function(error){
+                        console.log(error);
+                    });
+                }
+            },
+            agregarDetalle(producto){
+                //Verifico si el producto ya esta en la lista de detalle
+                let incluido = false;
+                for (let i = 0; i < this.ListaDetalleAbasto.length; i++) {
+                    if(this.ListaDetalleAbasto[i].id == producto.id){
+                        incluido = true;
+                        //adiciono uno más a la cantidad de este producto en la tabla de detalles
+                        this.ListaDetalleAbasto[i].cantidad ++;
+                        break;
+                    }
+                }
 
-            //     if(!incluido){
-            //         let elProducto = {
-            //             id: producto.id,
-            //             nombre: producto.nombre,
-            //             cantidad: 1,
-            //             costo_produccion: producto.costo_produccion,
-            //             subtotal: 0.00
-            //         }
-            //         this.ListaDetalleProduccion.push(elProducto);
-            //     }
-            // },
-            // quitarDetalle(indice){
-            //     this.ListaDetalleProduccion.splice(indice,1);
-            // },
+                if(!incluido){
+                    let elProducto = {
+                        id: producto.id,
+                        nombre: producto.nombre,
+                        cantidad: 1,
+                        costo_abasto: 0.00,
+                        subtotal: 0.00
+                    }
+                    this.ListaDetalleAbasto.push(elProducto);
+                }
+            },
+            quitarDetalle(indice){
+                this.ListaDetalleAbasto.splice(indice,1);
+            },
             // agregar(){
             //     if ( this.validar() ) return;
                 
@@ -409,140 +574,11 @@
             //         console.log(error);
             //     });
             // },
-            // activar(material = []){
-            //     this.Material.id = material['id'];
-            //     this.Material.nombre = material['nombre'];
-
-            //     Swal.fire({
-            //         title: '¿Esta seguro de ACTIVAR el material "'+this.Material.nombre+'"?',
-            //         type: 'warning',
-            //         showCancelButton: true,
-            //         confirmButtonText: 'Aceptar',
-            //         cancelButtonText: 'Cancelar',
-            //         reverseButtons: true,
-            //         customClass: {
-            //             confirmButton: 'btn btn-success',
-            //             cancelButton: 'btn btn-danger'
-            //         },
-            //         buttonsStyling: false
-            //     }).then((result) => {
-            //         if (result.value) {
-            //             var me = this;
-                
-            //             axios.put('/material/activar', {
-            //                 'id' : me.Material.id
-            //             }).then(function (response) {
-            //                 me.listar();
-            //                 Swal.fire({
-            //                     position: 'top-end',
-            //                     toast: true,
-            //                     type: 'success',
-            //                     title: 'El material se ha ACTIVADO correctamente',
-            //                     showConfirmButton: false,
-            //                     timer: 4500,
-            //                     animation:false,
-            //                     customClass:{
-            //                         popup: 'animated bounceIn fast'
-            //                     }
-            //                 });
-            //             }).catch(function (error) {
-            //                 console.log(error);
-            //             });
-            //         } else if ( result.dismiss === Swal.DismissReason.cancel ) {
-
-            //         }
-            //     });
-            // },
-            // desactivar(material = []){
-            //     this.Material.id = material['id'];
-            //     this.Material.nombre = material['nombre'];
-
-            //     Swal.fire({
-            //         title: '¿Esta seguro de DESACTIVAR el material "'+this.Material.nombre+'"?',
-            //         type: 'warning',
-            //         showCancelButton: true,
-            //         confirmButtonText: 'Aceptar',
-            //         cancelButtonText: 'Cancelar',
-            //         reverseButtons: true,
-            //         customClass: {
-            //             confirmButton: 'btn btn-success',
-            //             cancelButton: 'btn btn-danger'
-            //         },
-            //         buttonsStyling: false
-            //     }).then((result) => {
-            //         if (result.value) {
-            //             var me = this;
-                
-            //             axios.put('/material/desactivar', {
-            //                 'id' : me.Material.id
-            //             }).then(function (response) {
-            //                 me.listar();
-            //                 Swal.fire({
-            //                     position: 'top-end',
-            //                     toast: true,
-            //                     type: 'success',
-            //                     title: 'El material se ha DESACTIVADO correctamente',
-            //                     showConfirmButton: false,
-            //                     timer: 4500,
-            //                     animation:false,
-            //                     customClass:{
-            //                         popup: 'animated bounceIn fast'
-            //                     }
-            //                 });
-            //             }).catch(function (error) {
-            //                 console.log(error);
-            //             });
-            //         } else if ( result.dismiss === Swal.DismissReason.cancel ) {
-
-            //         }
-            //     });
-            // },
-            // finalizar(produccion = []){
-            //     this.Produccion.id = produccion['id'];
-            //     Swal.fire({
-            //         title: '¿Esta seguro de FINALIZAR la producción ',
-            //         type: 'warning',
-            //         showCancelButton: true,
-            //         confirmButtonText: 'Si, finalizar',
-            //         cancelButtonText: 'Cancelar',
-            //         customClass: {
-            //             confirmButton: 'btn btn-success',
-            //             cancelButton: 'btn btn-danger'
-            //         },
-            //         buttonsStyling: false
-            //     }).then((result) => {
-            //         if (result.value) {
-            //             var me = this;
-                
-            //             axios.put('/produccion/finalizar', {
-            //                 'id' : me.Produccion.id
-            //             }).then(function (response) {
-            //                 me.listar();
-            //                 Swal.fire({
-            //                     position: 'top-end',
-            //                     toast: true,
-            //                     type: 'success',
-            //                     title: 'La producción se ha FINALIZADO correctamente',
-            //                     showConfirmButton: false,
-            //                     timer: 4500,
-            //                     animation:false,
-            //                     customClass:{
-            //                         popup: 'animated bounceIn fast'
-            //                     }
-            //                 });
-            //             }).catch(function (error) {
-            //                 console.log(error);
-            //             });
-            //         } else if ( result.dismiss === Swal.DismissReason.cancel ) {
-
-            //         }
-            //     });
-            // },
-            // abrirModalAgregar(){
-            //     this.abrirModal(1, 'Registrar Produccion', 'Agregar');
-            //     // let inputFiltro = document.getElementById('filtroProducto');
-            //     // inputFiltro.focus();
-            // },
+            abrirModalAgregar(){
+                this.abrirModal(1, 'Registrar Abasto', 'Agregar');
+                // let inputFiltro = document.getElementById('filtroProducto');
+                // inputFiltro.focus();
+            },
             // abrirModalEnviar(){
             //     this.abrirModal(3, 'Enviar Produccion', 'Enviar');
             //     if(this.SelectAlmacen == 0) this.selectAlmacen();
@@ -572,23 +608,21 @@
                 this.Modal.titulo = titulo;
                 this.Modal.accion = accion;
             },
-            // cerrarModal(){
-            //     this.Modal.numero = 0;
-            //     this.Modal.estado = 0;
-            //     this.Modal.mensaje = [];
+            cerrarModal(){
+                this.Modal.numero = 0;
+                this.Modal.estado = 0;
+                this.Modal.mensaje = [];
 
-            //     this.Error.estado = 0;
-            //     this.Error.mensaje = [];
+                this.Error.estado = 0;
+                this.Error.mensaje = [];
 
-            //     this.Produccion.id = 0;
-            //     this.Produccion.total = 0.00;
-            //     this.Produccion.fecha_inicio = '';
-            //     this.Produccion.fecha_programada = '';
+                this.Abasto.id = 0;
+                this.Abasto.total = 0.00;
 
-            //     this.ListaDetalleProduccion = [];
-            //     this.BusquedaFiltro.texto = '';
+                this.ListaDetalleAbasto = [];
+                this.BusquedaFiltro.texto = '';
 
-            // },
+            },
             accionar(accion){
                 switch( accion ){
                     case 'Agregar': {

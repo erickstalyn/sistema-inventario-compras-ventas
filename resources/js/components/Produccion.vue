@@ -241,7 +241,7 @@
                                                             <th>Quitar</th>
                                                             <th>Nombre</th>
                                                             <th>Cant.</th>
-                                                            <th>Cost. Unitario</th>
+                                                            <th>Costo Unit.</th>
                                                             <th>Subtotal</th>
                                                         </tr>
                                                     </thead>
@@ -491,7 +491,7 @@
             listarFiltro(){
                 if(this.BusquedaFiltro.texto != ''){
                     let me = this;
-                    let url = '/produccion/getProductoFiltrado?texto=' + this.BusquedaFiltro.texto;
+                    let url = '/libreria/getProductoFiltrado?texto=' + this.BusquedaFiltro.texto;
                     axios.get(url).then(function(response){
                         if(response.data.productos.length == 1 && me.BusquedaFiltro.texto == response.data.productos[0].codigo){
                             me.agregarDetalle(response.data.productos[0]);
@@ -591,94 +591,6 @@
             //         });
             //     }).catch(function(error){
             //         console.log(error);
-            //     });
-            // },
-            // activar(material = []){
-            //     this.Material.id = material['id'];
-            //     this.Material.nombre = material['nombre'];
-
-            //     Swal.fire({
-            //         title: '¿Esta seguro de ACTIVAR el material "'+this.Material.nombre+'"?',
-            //         type: 'warning',
-            //         showCancelButton: true,
-            //         confirmButtonText: 'Aceptar',
-            //         cancelButtonText: 'Cancelar',
-            //         reverseButtons: true,
-            //         customClass: {
-            //             confirmButton: 'btn btn-success',
-            //             cancelButton: 'btn btn-danger'
-            //         },
-            //         buttonsStyling: false
-            //     }).then((result) => {
-            //         if (result.value) {
-            //             var me = this;
-                
-            //             axios.put('/material/activar', {
-            //                 'id' : me.Material.id
-            //             }).then(function (response) {
-            //                 me.listar();
-            //                 Swal.fire({
-            //                     position: 'top-end',
-            //                     toast: true,
-            //                     type: 'success',
-            //                     title: 'El material se ha ACTIVADO correctamente',
-            //                     showConfirmButton: false,
-            //                     timer: 4500,
-            //                     animation:false,
-            //                     customClass:{
-            //                         popup: 'animated bounceIn fast'
-            //                     }
-            //                 });
-            //             }).catch(function (error) {
-            //                 console.log(error);
-            //             });
-            //         } else if ( result.dismiss === Swal.DismissReason.cancel ) {
-
-            //         }
-            //     });
-            // },
-            // desactivar(material = []){
-            //     this.Material.id = material['id'];
-            //     this.Material.nombre = material['nombre'];
-
-            //     Swal.fire({
-            //         title: '¿Esta seguro de DESACTIVAR el material "'+this.Material.nombre+'"?',
-            //         type: 'warning',
-            //         showCancelButton: true,
-            //         confirmButtonText: 'Aceptar',
-            //         cancelButtonText: 'Cancelar',
-            //         reverseButtons: true,
-            //         customClass: {
-            //             confirmButton: 'btn btn-success',
-            //             cancelButton: 'btn btn-danger'
-            //         },
-            //         buttonsStyling: false
-            //     }).then((result) => {
-            //         if (result.value) {
-            //             var me = this;
-                
-            //             axios.put('/material/desactivar', {
-            //                 'id' : me.Material.id
-            //             }).then(function (response) {
-            //                 me.listar();
-            //                 Swal.fire({
-            //                     position: 'top-end',
-            //                     toast: true,
-            //                     type: 'success',
-            //                     title: 'El material se ha DESACTIVADO correctamente',
-            //                     showConfirmButton: false,
-            //                     timer: 4500,
-            //                     animation:false,
-            //                     customClass:{
-            //                         popup: 'animated bounceIn fast'
-            //                     }
-            //                 });
-            //             }).catch(function (error) {
-            //                 console.log(error);
-            //             });
-            //         } else if ( result.dismiss === Swal.DismissReason.cancel ) {
-
-            //         }
             //     });
             // },
             finalizar(produccion = []){
