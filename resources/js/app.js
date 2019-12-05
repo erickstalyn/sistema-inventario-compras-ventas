@@ -24,6 +24,7 @@ Vue.component('superproducto', require('./components/SuperProducto.vue').default
 Vue.component('producto', require('./components/Producto.vue').default);
 Vue.component('material', require('./components/Material.vue').default);
 Vue.component('produccion', require('./components/Produccion.vue').default);
+Vue.component('abasto', require('./components/Abasto.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -34,6 +35,6 @@ Vue.component('produccion', require('./components/Produccion.vue').default);
 const app = new Vue({
     el: '#app',
     data:{
-        menu: 1,
+        menu: 3,
     }
 });

@@ -254,7 +254,7 @@
                                                             </td>
                                                             <td v-text="detalle.nombre"></td>
                                                             <td>
-                                                                <input type="number" v-model="detalle.cantidad" class="form-control" min="1">
+                                                                <input type="number" v-model="detalle.cantidad" class="form-control form-control-sm" min="1">
                                                             </td>
                                                             <td v-text="detalle.costo_produccion"></td>
                                                             <td >

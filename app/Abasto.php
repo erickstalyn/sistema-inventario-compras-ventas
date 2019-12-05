@@ -8,7 +8,7 @@ class Abasto extends Model
 {
     protected $table= 'abasto';
     protected $fillable = [
-        'id_usuario','id_proveedor', 'total', 'estado'
+        'total', 'tipo', 'proveedor_id', 'administrador_id', 'centro_id', 'created_at'
     ];
 
     //Relación de uno a muchos con Envio
