@@ -86,8 +86,9 @@
 
         </div>
 
+        <!-- Modal: Agregar, Ver, Editar -->
         <div class="modal text-gray-900" :class="{'mostrar': Modal.estado}">
-            <div class="modal-dialog modal-lg modal-dialog-centered animated bounceIn fast">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable animated bounceIn fast" :class="Modal.tamaño">
                 <div class="modal-content">
 
                     <div class="modal-header">
@@ -98,9 +99,9 @@
                     <div class="modal-body">
                         <!-- Modal Numero 1 de AGREGAR-->
                         <div v-if="Modal.numero==1">
-                            <div v-if="Error.estado" class="row d-flex justify-content-center">
+                            <div v-if="Error.estado && Error.numero==1" class="row d-flex justify-content-center">
                                 <div class="alert alert-danger">
-                                    <button type="button" @click="Error.estado=0" class="close text-primary" data-dismiss="alert">×</button>
+                                    <button type="button" @click="closeError()" class="close text-primary" data-dismiss="alert">×</button>
                                     <strong>Corregir los siguentes errores:</strong>
                                     <ul> 
                                         <li v-for="error in Error.mensaje" :key="error" v-text="error"></li> 
@@ -108,15 +109,93 @@
                                 </div>
                             </div>
                             <div class="row form-group">
-                                <label class="col-md-3 font-weight-bold" for="nom">Nombre&nbsp;(<span class="text-danger">*</span>):</label>
-                                <div class="col-md-9">
-                                    <input type="text" v-model="SuperProducto.nombre" class="form-control" placeholder="ingrese el nombre" id="nom">
+                                <div class="col-md-4 input-group">
+                                    <label class="col-md-4" for="nom">Nombre&nbsp;<span class="text-danger">*</span></label>
+                                    <input type="text" class="col-md-8 form-control form-control-sm" v-model="SuperProducto.nombre" placeholder="Ingrese el nombre" id="nom">   
+                                </div>
+                                <div class="col-md-8 input-group">
+                                    <label class="col-md-2" for="des">Descripción</label>
+                                    <input type="text" class="col-md-10 form-control form-control-sm" v-model="SuperProducto.descripcion" placeholder="Ingrese la descripcion" id="des">
                                 </div>
                             </div>
                             <div class="row form-group">
-                                <label class="col-md-3 font-weight-bold" for="des">Descripcion:</label>
-                                <div class="col-md-9">
-                                    <input type="text" v-model="SuperProducto.descripcion" class="form-control" placeholder="ingrese la descripcion" id="des">
+                                <div class="col-md-4">
+                                    <div v-if="Error.estado && Error.numero==2" class="row d-flex justify-content-center">
+                                        <div class="alert alert-danger">
+                                            <button type="button" @click="closeError()" class="close text-primary" data-dismiss="alert">×</button>
+                                            <strong>Corregir los siguentes errores:</strong>
+                                            <ul> 
+                                                <li v-for="error in Error.mensaje" :key="error" v-text="error"></li> 
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <label class="col-md-12 font-weight-bold">AGREGAR PRODUCTO</label>
+                                    </div>
+                                    <div class="row form-group">
+                                        <label class="col-md-6" for="tam">Tamaño&nbsp;<span class="text-danger">*</span></label>
+                                        <select class="col-md-6 custom-select custom-select-sm" v-model="Producto.size" id="tam">
+                                            <option value="" disabled>Seleccione</option>
+                                            <option v-for="size in SelectSize" :key="size.nombre" :value="size.nombre" v-text="size.nombre"></option>
+                                        </select>
+                                    </div>
+                                    <div class="row form-group">
+                                        <label class="col-md-6" for="col">Color&nbsp;<span class="text-danger">*</span></label>
+                                        <select class="col-md-6 custom-select custom-select-sm" v-model="Producto.color" id="col">
+                                            <option value="" disabled>Seleccione</option>
+                                            <option v-for="color in SelectColor" :key="color.nombre" :value="color.nombre" v-text="color.nombre"></option>
+                                        </select>
+                                    </div>
+                                    <div class="row form-group">
+                                        <label class="col-md-6" for="pme">Precio al por menor&nbsp;<span class="text-danger">*</span></label>
+                                        <input type="number" class="col-md-6 form-control form-control-sm" min="0" v-model="Producto.precio_menor" placeholder="Ingrese el precio al por menor" id="pme">
+                                    </div>
+                                    <div class="row form-group">
+                                        <label class="col-md-6" for="pma">Precio al por mayor&nbsp;<span class="text-danger">*</span></label>
+                                        <input type="number" class="col-md-6 form-control form-control-sm" min="0" v-model="Producto.precio_mayor" placeholder="Ingrese el precio al por mayor" id="pma">
+                                    </div>
+                                    <div class="row d-flex justify-content-center">
+                                        <button type="button" class="btn btn-sm btn-primary btn-icon-split" @click="agregarProducto()">
+                                            <span class="icon text-white-50"><i class="fas fa-plus"></i></span>
+                                            <span class="text font-weight-bold">Agregar</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="row col-md-12">
+                                        <label class="font-weight-bold">LISTA DE PRODUCTOS</label>
+                                    </div>
+                                    <div class="row col-md-12">
+                                        <div v-if="ListaProducto.length" class="col-md-12">
+                                            <table class="table table-bordered table-striped table-sm text-gray-900">
+                                                <thead>
+                                                    <tr class="table-primary">
+                                                        <th>Quitar</th>
+                                                        <th>Tamaño</th>
+                                                        <th>Color</th>
+                                                        <th>Precio al por menor</th>
+                                                        <th>Precio al por mayor</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr v-for="(producto, indice) in ListaProducto" :key="producto.id" >
+                                                        <td>
+                                                            <button type="button" class="btn btn-circle btn-outline-danger btn-sm" @click="eliminarProducto(indice)" title="QUITAR">
+                                                                <i class="fas fa-minus"></i>
+                                                            </button>
+                                                        </td>
+                                                        <td v-text="producto.size"></td>
+                                                        <td v-text="producto.color"></td>
+                                                        <td v-text="producto.precio_menor"></td>
+                                                        <td v-text="producto.precio_mayor"></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div v-else>
+                                            <label class="col-md-12 text text-danger">Sin productos</label>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -181,10 +260,10 @@
                     <div class="modal-footer" v-if="permisoModalFooter">
                         <div class="row form-group col-md-12 d-flex justify-content-around">
                             <div v-if="Modal.accion">
-                                <button type="button" @click="accionar(Modal.accion)" class="btn btn-success" v-text="Modal.accion"></button>
+                                <button type="button" @click="accionar()" class="btn btn-success font-weight-bold" v-text="Modal.accion"></button>
                             </div>
                             <div>
-                                <button type="button" @click="cerrarModal()" class="btn btn-secondary">Cancelar</button>
+                                <button type="button" @click="cerrarModal()" class="btn btn-secondary font-weight-bold">Cancelar</button>
                             </div>
                         </div>
                     </div>
@@ -200,7 +279,7 @@
     export default {
         data(){
             return {
-                //datos generales
+                //datos de superproducto
                 ListaSuperProducto: [],
                 SuperProducto: {
                     id: 0,
@@ -209,6 +288,18 @@
                     superstock: 0,
                     created_at: ''
                 },
+
+                //datos de producto
+                ListaProducto: [],
+                Producto : {
+                    id: 0,
+                    size: '',
+                    color: '',
+                    precio_menor: 0,
+                    precio_mayor: 0,
+                },
+                SelectSize: [],
+                SelectColor: [],
 
                 //datos de busqueda y filtracion
                 Busqueda: {
@@ -222,7 +313,8 @@
                     numero: 0,
                     estado: 0,
                     titulo: '',
-                    accion: ''
+                    accion: '',
+                    tamaño: ''
                 },
 
                 //datos de paginacion
@@ -243,11 +335,15 @@
                 //datos de errores
                 Error: {
                     estado: 0,
+                    numero: 0,
                     mensaje: []
                 },
 
                 //datos de la ruta de consultas
-                Ruta: '/superproducto'
+                Ruta: {
+                    superproducto: '/superproducto',
+                    data: '/data'
+                }
             }
         },
         computed: {
@@ -312,7 +408,7 @@
                 }
                 this.Paginacion.currentPage = page;
 
-                var url = this.Ruta+'?'
+                var url = this.Ruta.superproducto+'?'
                         +'page='+this.Paginacion.currentPage
                         +'&texto='+this.Busqueda.texto
                         +'&filas='+this.Busqueda.filas
@@ -328,10 +424,10 @@
                 });
             },
             agregar(){
-                if ( this.validar() ) return;
+                if ( this.validar(1) ) return;
                 
                 var me = this;
-                var url = this.Ruta+'/agregar';
+                var url = this.Ruta.superproducto+'/agregar';
                 axios.post(url, {
                     'nombre' : this.SuperProducto.nombre,
                     'descripcion' : this.SuperProducto.descripcion
@@ -357,10 +453,10 @@
                 });
             },
             editar(){
-                if ( this.validar() ) return;
+                if ( this.validar(1) ) return;
 
                 var me = this;
-                var url = this.Ruta+'/editar';
+                var url = this.Ruta.superproducto+'/editar';
                 axios.put(url, {
                     'id' : this.SuperProducto.id,
                     'nombre' : this.SuperProducto.nombre,
@@ -385,6 +481,27 @@
                 }).catch(function(error){
                     console.log(error);
                 });
+            },
+            agregarProducto(){
+                if ( this.validar(2) ) return;
+
+                let producto = {
+                    id: 0,
+                    size: this.Producto.size,
+                    color: this.Producto.color,
+                    precio_menor: this.Producto.precio_menor,
+                    precio_mayor: this.Producto.precio_mayor
+                };
+                
+                this.ListaProducto.push(producto);
+
+                this.Producto.size = '';
+                this.Producto.color = '';
+                this.Producto.precio_menor = 0;
+                this.Producto.precio_mayor = 0;
+            },
+            eliminarProducto(indice){
+                this.ListaProducto.splice(indice, 1);
             },
             // setEstado(){
             //     var me = this;
@@ -414,13 +531,24 @@
             //     });
             // },
             abrirModalAgregar(){
-                this.abrirModal(1, 'Nuevo Super Producto', 'Agregar');
+                this.abrirModal(1, 'Nuevo Super Producto', 'modal-xl', 'Agregar Super Producto');
 
                 this.SuperProducto.nombre = '';
                 this.SuperProducto.descripcion = '';
+
+                this.Producto.id = 0;
+                this.Producto.size = '';
+                this.Producto.color = '';
+                this.Producto.precio_menor = 0;
+                this.Producto.precio_mayor = 0;
+
+                this.ListaProducto = [];
+
+                this.selectSize();
+                this.selectColor();
             },
             abrirModalVer(data = []){
-                this.abrirModal(2, 'Ver Super Producto');
+                this.abrirModal(2, 'Ver Super Producto', 'modal-lg');
                 
                 this.SuperProducto.nombre = data['nombre'];
                 this.SuperProducto.descripcion = data['descripcion'];
@@ -429,7 +557,7 @@
                 this.SuperProducto.created_at = data['created_at'];
             },
             abrirModalEditar(data = []){
-                this.abrirModal(3, 'Editar Super Producto', 'Editar');
+                this.abrirModal(3, 'Editar Super Producto', 'modal-sm', 'Editar');
                 
                 this.SuperProducto.id = data['id'];
                 this.SuperProducto.nombre = data['nombre'];
@@ -459,17 +587,22 @@
             //         }
             //     });
             // },
-            abrirModal(numero, titulo, accion = ''){
+            abrirModal(numero, titulo, tamaño, accion = ''){
                 this.Modal.estado = 1;
                 this.Modal.numero = numero;
                 this.Modal.titulo = titulo;
+                this.Modal.tamaño = tamaño;
                 this.Modal.accion = accion;
             },
             cerrarModal(){
                 this.Modal.estado = 0;
-                this.Modal.mensaje = [];
+                this.Modal.numero = 0;
+                this.Modal.titulo = '';
+                this.Modal.accion = '';
+                this.Modal.tamaño = '';
 
                 this.Error.estado = 0;
+                this.Error.numero = 0;
                 this.Error.mensaje = [];
 
                 this.SuperProducto.id = 0;
@@ -477,14 +610,45 @@
                 this.SuperProducto.descripcion = '';
                 this.SuperProducto.superstock = 0;
                 this.SuperProducto.created_at = '';
+
+                this.Producto.id = 0;
+                this.Producto.size = '';
+                this.Producto.color = '';
+                this.Producto.precio_menor = 0;
+                this.Producto.precio_mayor = 0;
+
+                this.SelectSize = [];
+                this.SelectColor = [];
+
+                this.ListaProducto = [];
             },
-            accionar(accion){
-                switch( accion ){
-                    case 'Agregar': {
+            selectSize(){
+                var me = this;
+                var url = this.Ruta.data+'/selectSize';
+
+                axios.get(url).then(function (response) {
+                    me.SelectSize = response.data;
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            },
+            selectColor(){
+                var me = this;
+                var url = this.Ruta.data+'/selectColor';
+
+                axios.get(url).then(function(response){
+                    me.SelectColor = response.data;
+                }).catch(function(error){
+                    console.log(error);
+                });
+            },
+            accionar(){
+                switch( this.Modal.numero ){
+                    case 1: {
                         this.agregar();
                         break;
                     }
-                    case 'Editar': {
+                    case 3: {
                         this.editar();
                         break;
                     }
@@ -510,16 +674,37 @@
 
                 return titulo;
             },
-            validar(){
+            validar(numero){
                 this.Error.estado = 0;
+                this.Error.numero = 0;
                 this.Error.mensaje = [];
 
-                //nombre
-                if ( !this.SuperProducto.nombre ) this.Error.mensaje.push("Debe ingresar un nombre");
+                if ( numero == 1 ) {
+                    if ( !this.SuperProducto.nombre ) this.Error.mensaje.push("Debe ingresar un nombre");                       //nombre
+                } else if ( numero == 2 ) {
+                    var found = 0;
+                    for (let i = 0; i < this.ListaProducto.length; i++) {
+                        if ( this.Producto.size == this.ListaProducto[i].size && this.Producto.color == this.ListaProducto[i].color ) {found = 1; break;}
+                    }
+
+                    if ( !this.Producto.size ) this.Error.mensaje.push("Debe seleccionar un tamaño");                           //size
+                    if ( !this.Producto.color ) this.Error.mensaje.push("Debe seleccionar un color");                           //color
+                    if ( !this.Producto.precio_menor ) this.Error.mensaje.push("Debe ingresar un precio al por menor");         //precio_menor
+                    if ( this.Producto.precio_menor < 0 ) this.Error.mensaje.push("El precio al por menor debe ser positivo");  //precio_menor
+                    if ( !this.Producto.precio_mayor ) this.Error.mensaje.push("Debe ingresar un precio al por mayor");         //precio_mayor
+                    if ( this.Producto.precio_mayor < 0 ) this.Error.mensaje.push("El precio al por mayor debe ser positivo");  //precio_mayor
+                    if ( found ) this.Error.mensaje.push("Ese producto ya se encuentra en lista");                              //producto repetido
+                }
 
                 if ( this.Error.mensaje.length ) this.Error.estado = 1;
+                this.Error.numero = numero;
 
                 return this.Error.estado;
+            },
+            closeError(){
+                this.Error.estado = 0;
+                this.Error.numero = 0;
+                this.Error.mensaje = [];
             },
             cambiarPagina(page){
                 if ( page >= 1 && page <= this.Paginacion.lastPage) {

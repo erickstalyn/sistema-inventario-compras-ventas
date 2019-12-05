@@ -91,8 +91,9 @@
 
         </div>
 
+        <!-- Modales: Agregar, Ver, Editar, Materiales -->
         <div class="modal text-gray-900" :class="{'mostrar': Modal.estado}">
-            <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable animated bounceIn fast">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable animated bounceIn fast" :class="Modal.tamaño">
                 <div class="modal-content">
 
                     <div class="modal-header">
@@ -390,7 +391,8 @@
                     numero: 0,
                     estado: 0,
                     titulo: '',
-                    accion: ''
+                    accion: '',
+                    tamaño: ''
                 },
 
                 //datos de paginacion
@@ -587,7 +589,7 @@
                 this.ListaProductoMaterial.splice(indice,1);
             },
             abrirModalAgregar(){
-                this.abrirModal(1, 'Nuevo Producto', 'Agregar');
+                this.abrirModal(1, 'Nuevo Producto', 'Agregar', 'modal-xl');
 
                 this.Producto.superproducto_id = 0;
                 this.Producto.descripcion = '';
@@ -601,7 +603,7 @@
                 this.selectColor();
             },
             abrirModalVer(data = []){
-                this.abrirModal(2, 'Ver Producto');
+                this.abrirModal(2, 'Ver Producto', '', 'modal-lg');
                 
                 this.Producto.nombre = data['nombre'];
                 this.Producto.codigo = data['codigo'];
@@ -613,7 +615,7 @@
                 this.Producto.created_at = data['created_at'];
             },
             abrirModalEditar(data = []){
-                this.abrirModal(3, 'Editar Producto', 'Editar');
+                this.abrirModal(3, 'Editar Producto', 'Editar', 'modal-sm');
                 
                 this.Producto.id = data['id'];
                 this.Producto.superproducto_id = data['superproducto_id'];
@@ -628,7 +630,7 @@
                 this.selectColor();
             },
             abrirModalMaterial(data = []){
-                this.abrirModal(4, 'Materiales del Producto', 'Guardar Materiales');
+                this.abrirModal(4, 'Materiales del Producto', 'Guardar Materiales', 'modal-xl');
                 
                 this.Producto.id = data['id'];
                 this.Producto.nombre = data['nombre'];
@@ -643,16 +645,18 @@
 
                 this.selectMaterial();
             },
-            abrirModal(numero, titulo, accion = ''){
+            abrirModal(numero, titulo, accion = '', tamaño){
                 this.Modal.estado = 1;
                 this.Modal.numero = numero;
                 this.Modal.titulo = titulo;
                 this.Modal.accion = accion;
+                this.Modal.tamaño = tamaño;
             },
             cerrarModal(){
                 this.Modal.numero = 0;
                 this.Modal.estado = 0;
                 this.Modal.titulo = '';
+                this.Modal.tamaño = '';
                 this.Modal.accion = '';
 
                 this.Error.estado = 0;

@@ -5,29 +5,29 @@
     @if(Auth::check())
         @if(Auth::user()->rol=='M')
             <template v-if="menu==0">
-                <material></material>
+                <adm-material></adm-material>
             </template>
             <template v-if="menu==1">
-                <superproducto></superproducto>
+                <adm-superproducto></adm-superproducto>
             </template>
             <template v-if="menu==2">
-                <producto></producto>
+                <adm-producto></adm-producto>
             </template>
             <template v-if="menu==5">
-                <usuario></usuario>
+                <adm-usuario></adm-usuario>
             </template>
 
         @elseif(Auth::user()->rol=='P')
             <template v-if="menu==0">
-                <producto></producto>
+                <pue-producto></pue-producto>
             </template>
 
         @elseif(Auth::user()->rol=='A')
             <template v-if="menu==0">
-                <producto></producto>
+                <alm-producto></alm-producto>
             </template>
             <template v-if="menu==1">
-                <produccion></produccion>
+                <alm-produccion></alm-produccion>
             </template>
         @else
 
