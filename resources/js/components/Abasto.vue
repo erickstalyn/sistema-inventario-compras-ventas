@@ -181,11 +181,6 @@
                                                     </button>
                                                 </div>
                                             </div>
-                                            <!-- <div class="col-md-3" :class="DatosServicio.alert">
-                                                <span role="status" :class="Carga.clase">
-                                                </span>&nbsp;
-                                                <span v-text="DatosServicio.mensaje"></span>
-                                            </div> -->
                                             <div class="col-md-3">
                                                 <h5>
                                                     <span role="status" :class="Carga.clase">
@@ -202,13 +197,13 @@
                                                         <input type="text" class="form-control form-control-sm" readonly v-model="DatosProveedor.dni">
                                                     </div>
                                                 </div>
-                                                <div class="col-md-3">
+                                                <div class="" :class="Modal.numero == 2 ? 'col-md-3': 'col-md-4'">
                                                     <div class="input-group">
                                                         <label >Nombres</label>&nbsp;
                                                         <input type="text" class="form-control form-control-sm" v-model="DatosProveedor.nombres">
                                                     </div>
                                                 </div>
-                                                <div class="col-md-3">
+                                                <div class="" :class="Modal.numero == 2 ? 'col-md-3': 'col-md-6'">
                                                     <div class="input-group">
                                                         <label >Apellidos</label>&nbsp;
                                                         <input type="text" class="form-control form-control-sm" v-model="DatosProveedor.apellidos">
@@ -224,7 +219,7 @@
                                                         <input type="text" class="form-control form-control-sm" readonly v-model="DatosProveedor.ruc">
                                                     </div>
                                                 </div>
-                                                <div class="col-md-6">
+                                                <div class="" :class="Modal.numero == 2 ? 'col-md-6': 'col-md-10'">
                                                     <div class="input-group">
                                                         <label >Razón social</label>&nbsp;
                                                         <input type="text" class="form-control form-control-sm" v-model="DatosProveedor.razon_social">
@@ -278,7 +273,20 @@
                                     </div>
                                     <div class="col-md-8 ml-auto container">
                                         <div class="row">
-                                            <h5 class="font-weight-bold">Lista de items</h5>
+                                            <div class="col-md-3 p-0">
+                                                <h5 class="font-weight-bold">Lista de items</h5>
+                                            </div>
+                                            <div class="col-md-6"></div>
+                                            <div class="col-md-3">
+                                                <div class="input-group">
+                                                    <label for="tipo">Tipo</label>&nbsp;
+                                                    <select v-model="Abasto.tipo" class="custom-select custom-select-sm" id="tipo">
+                                                        <option value="-1">Seleccione</option>
+                                                        <option value="0">Contado</option>
+                                                        <option value="1">Credito</option>
+                                                    </select>
+                                                </div>
+                                            </div>
                                         </div>
                                         <div class="row form-group ec-table-modal overflow-auto">
                                             <div v-if="ListaDetalleAbasto.length">
@@ -289,7 +297,7 @@
                                                             <th>Nombre</th>
                                                             <th style="width: 5rem;">Cant.</th>
                                                             <th style="width: 5rem;">P. Unit.</th>
-                                                            <th>Subtotal</th>
+                                                            <th class="text-center">Subtotal</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -306,8 +314,7 @@
                                                             <td>
                                                                 <input type="number" v-model="detalle.costo_abasto" class="form-control form-control-sm" min="0">
                                                             </td>
-                                                            <td>
-                                                                <!-- s/ {{(detalle.costo_produccion * detalle.cantidad).toFixed(2)}} -->
+                                                            <td class="text-right pr-3">
                                                                 {{detalle.subtotal = (detalle.costo_abasto * detalle.cantidad).toFixed(2)}}
                                                             </td>
                                                         </tr>
@@ -319,19 +326,20 @@
                                                 <p>Sin detalles de abasto</p>
                                             </div>
                                         </div>
-                                        <div class="row form-group">
+                                        <div class="row">
                                             <div class="col-md-4">
-                                                <div class="input-group" style="width: 11.2rem;"> 
+                                                <div class="input-group" style="width: 11.2rem;" v-if="Abasto.tipo == '1'"> 
                                                     <label for="">Pago inicial</label>&nbsp;
-                                                    <input type="number" class="form-control form-control-sm">
+                                                    <input type="number" class="form-control form-control-sm" v-model="Abasto.pagoInicial">
                                                 </div>
                                             </div>
                                             <div class="col-md-3">
                                             </div>
                                             <div class="col-md-5">
-                                                <div class="input-group"> 
-                                                    <label for="">Desembolso total: s/ 1573.00 </label>
-                                                </div>
+                                                <!-- <div class="input-group pr-3">  -->
+                                                    <!-- <label for="">Desembolso total: s/ {{getDesembolso}}</label> -->
+                                                    <p class="text-right pr-1">Desembolso total: s/ {{getDesembolso}}</p>
+                                                <!-- </div> -->
                                             </div>
                                         </div>
                                         <div class="row">
@@ -407,11 +415,10 @@
                 Abasto: {
                     id: 0,
                     total: 0.00,
-                    tipo: 0,
-                    proveedor_id: 0,
-                    administrador_id: 0,
-                    centro_id: 0,
+                    tipo: -1, // 0: Contado, 1: Credito
+                    centro_to_id: 0, //Almacén donde se enviará el abasto
                     created_at : '',
+                    pagoInicial: '',
                 },
                 DatosProveedor:{
                     id: 0,
@@ -434,7 +441,7 @@
 
                 //datos de modales
                 Modal: {
-                    numero: 0,
+                    numero: 0, // 1: Agregar, 2: Ver, 3: Pagar
                     estado: 0,
                     titulo: '',
                     accion: ''
@@ -538,15 +545,13 @@
             //     });
             //     return selectUnidadFiltrado;
             // },
-            // getTotal: function(){
-            //     this.Produccion.total = 0.00;
-            //     this.ListaDetalleProduccion.forEach( detalle => {
-            //         // console.log(Number.parseFloat(detalle.costo_produccion * detalle.cantidad).toFixed(2));
-            //         // this.Produccion.total = this.Produccion.total + detalle.costo_produccion * detalle.cantidad;
-            //         this.Produccion.total = this.Produccion.total + detalle.costo_produccion * detalle.cantidad;
-            //     });
-            //     return (this.Produccion.total).toFixed(2);
-            // }
+            getDesembolso: function(){
+                this.Abasto.total = 0.00;
+                this.ListaDetalleAbasto.forEach( detalle => {
+                    this.Abasto.total = this.Abasto.total + detalle.costo_abasto * detalle.cantidad;
+                });
+                return (this.Abasto.total).toFixed(2);
+            }
         },
         methods: {
             listar(page = 1, ordenarPor = ''){
@@ -843,6 +848,7 @@
 
                 this.Abasto.id = 0;
                 this.Abasto.total = 0.00;
+                this.Abasto.pagoInicial = '';
 
                 this.ListaDetalleAbasto = [];
                 this.BusquedaFiltro.texto = '';
