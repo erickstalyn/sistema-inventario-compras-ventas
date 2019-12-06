@@ -23,4 +23,5 @@ class LibreriaController extends Controller
             'productos' => $productos
         ];
     }
+
 }

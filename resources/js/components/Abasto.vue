@@ -170,56 +170,68 @@
                                     <div class="card-body">
                                         <div class="row form-group ">
                                             <div class="col-md-2">
-                                                <span class="font-weight-bold">Proveedor</span>
+                                                <span class="font-weight-bold">PROVEEDOR</span>
                                             </div>
                                             <div class="col-md-3">
                                                 <div class="input-group"> 
                                                     RUC/DNI&nbsp;<span class="text-danger">*</span>&nbsp;
-                                                    <input type="text" class="form-control form-control-sm">
-                                                    <button type="button" class="btn btn-sm btn-primary">
+                                                    <input type="text" class="form-control form-control-sm" v-model="DatosServicio.documento">
+                                                    <button type="button" class="btn btn-sm btn-primary" @click="consultar()">
                                                         <i class="fas fa-sync-alt"></i>
                                                     </button>
                                                 </div>
                                             </div>
+                                            <!-- <div class="col-md-3" :class="DatosServicio.alert">
+                                                <span role="status" :class="Carga.clase">
+                                                </span>&nbsp;
+                                                <span v-text="DatosServicio.mensaje"></span>
+                                            </div> -->
                                             <div class="col-md-3">
-                                                <span>No se encontraron resultados</span>
+                                                <h5>
+                                                    <span role="status" :class="Carga.clase">
+                                                    </span>&nbsp;
+                                                    <span v-text="DatosServicio.mensaje" :class="DatosServicio.alert"></span>
+                                                </h5>
                                             </div>
                                         </div>
-                                        <div class="row">
-                                            <div class="col-md-2">
-                                                <div class="input-group"> 
-                                                    DNI&nbsp;
-                                                    <input type="text" class="form-control form-control-sm" readonly>
+                                        <div v-if="DatosServicio.tipo == 1">
+                                            <div class="row">
+                                                <div class="col-md-2">
+                                                    <div class="input-group"> 
+                                                        DNI&nbsp;
+                                                        <input type="text" class="form-control form-control-sm" readonly>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-md-3">
-                                                <div class="input-group">
-                                                    <label >Nombres</label>&nbsp;
-                                                    <input type="text" class="form-control form-control-sm">
+                                                <div class="col-md-3">
+                                                    <div class="input-group">
+                                                        <label >Nombres</label>&nbsp;
+                                                        <input type="text" class="form-control form-control-sm" >
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-md-3">
-                                                <div class="input-group">
-                                                    <label >Apellidos</label>&nbsp;
-                                                    <input type="text" class="form-control form-control-sm">
+                                                <div class="col-md-3">
+                                                    <div class="input-group">
+                                                        <label >Apellidos</label>&nbsp;
+                                                        <input type="text" class="form-control form-control-sm">
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <!-- Si es una empresa -->
-                                        <!-- <div class="row">
-                                            <div class="col-md-2">
-                                                <div class="input-group"> 
-                                                    RUC&nbsp;
-                                                    <input type="text" class="form-control form-control-sm" readonly>
+                                        <div v-else-if="DatosServicio.tipo == 2">
+                                            <div class="row">
+                                                <div class="col-md-2">
+                                                    <div class="input-group"> 
+                                                        RUC&nbsp;
+                                                        <input type="text" class="form-control form-control-sm" readonly v-model="DatosProveedor.ruc">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="input-group">
+                                                        <label >Razón social</label>&nbsp;
+                                                        <input type="text" class="form-control form-control-sm" v-model="DatosProveedor.razon_social">
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-6">
-                                                <div class="input-group">
-                                                    <label >Razón social</label>&nbsp;
-                                                    <input type="text" class="form-control form-control-sm">
-                                                </div>
-                                            </div>
-                                        </div> -->
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="row shadow bg-white rounded p-2">
@@ -401,6 +413,14 @@
                     centro_id: 0,
                     created_at : '',
                 },
+                DatosProveedor:{
+                    id: 0,
+                    dni: '',
+                    nombres: '',
+                    apellidos: '',
+                    ruc: '',
+                    razon_social: ''
+                },
                 SelectUnidad: [],
                 //datos de busqueda y filtracion general
                 Busqueda: {
@@ -454,6 +474,16 @@
                 ],
                 //DATOS PARA ENVIAR UNA PRODUCCION
                 SelectAlmacen: [],
+                //DATOS PARA CONSULTA SUNAT Y RENIEC
+                DatosServicio: {
+                    documento: '',
+                    tipo: 0, //1->PERSONA, 2-> EMPRESA
+                    mensaje: '',
+                    alert: ''
+                },
+                Carga: {
+                    clase: ''
+                }
             }
         },
         computed: {
@@ -590,6 +620,51 @@
             },
             quitarDetalle(indice){
                 this.ListaDetalleAbasto.splice(indice,1);
+            },
+            consultar(){
+                this.DatosServicio.alert = '';
+                this.DatosServicio.mensaje = '';
+                switch (this.DatosServicio.documento.length) {
+                    case 0:
+                        this.DatosServicio.alert = 'badge badge-warning';
+                        this.DatosServicio.mensaje = 'Ingrese un DNI o RUC';
+                        break;
+                    case 8:
+                        
+                        break;
+                    case 11:
+                        this.consultarRUC();
+                        break;
+                    default:
+                        // this.DatosServicio.alert = 'alert alert-danger';
+                        this.DatosServicio.alert = 'badge badge-danger';
+                        this.DatosServicio.mensaje = 'Documento inválido'
+                        break;
+                }
+            },
+            consultarRUC(){
+                let me = this;
+                let ruc = me.DatosServicio.documento;
+                $.ajax({
+                    type: 'GET',
+                    url: "http://localhost:80/SunatPHP/demo.php",
+                    data: "ruc="+ruc,
+                    beforeSend(){
+                        me.Carga.clase = 'spinner-border spinner-border-sm text-primary';
+                        me.DatosServicio.alert = 'badge badge-info';
+                        me.DatosServicio.mensaje = 'Consultado...';
+                    },
+                    success: function (data, textStatus, jqXHR) {
+                        me.DatosServicio.documento = '';
+                        me.Carga.clase = '';
+                        me.DatosServicio.alert = '';
+                        me.DatosServicio.mensaje = '';
+                        me.DatosServicio.tipo = 2;
+                        me.DatosProveedor.ruc = data.RUC;
+                        me.DatosProveedor.razon_social = data.RazonSocial;
+                    }
+                }).fail(function(){
+                });
             },
             // agregar(){
             //     if ( this.validar() ) return;
