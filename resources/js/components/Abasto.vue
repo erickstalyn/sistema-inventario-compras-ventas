@@ -199,19 +199,19 @@
                                                 <div class="col-md-2">
                                                     <div class="input-group"> 
                                                         DNI&nbsp;
-                                                        <input type="text" class="form-control form-control-sm" readonly>
+                                                        <input type="text" class="form-control form-control-sm" readonly v-model="DatosProveedor.dni">
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="input-group">
                                                         <label >Nombres</label>&nbsp;
-                                                        <input type="text" class="form-control form-control-sm" >
+                                                        <input type="text" class="form-control form-control-sm" v-model="DatosProveedor.nombres">
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="input-group">
                                                         <label >Apellidos</label>&nbsp;
-                                                        <input type="text" class="form-control form-control-sm">
+                                                        <input type="text" class="form-control form-control-sm" v-model="DatosProveedor.apellidos">
                                                     </div>
                                                 </div>
                                             </div>
@@ -629,18 +629,58 @@
                         this.DatosServicio.alert = 'badge badge-warning';
                         this.DatosServicio.mensaje = 'Ingrese un DNI o RUC';
                         break;
-                    case 8:
-                        
+                    case 8: case 11:
+                        this.consultarDB();
                         break;
-                    case 11:
-                        this.consultarRUC();
-                        break;
+                    // case 11:
+                    //     this.consultarRUC();
+                    //     break;
                     default:
                         // this.DatosServicio.alert = 'alert alert-danger';
-                        this.DatosServicio.alert = 'badge badge-danger';
+                        this.DatosServicio.alert = 'badge badge-primary';
                         this.DatosServicio.mensaje = 'Documento inválido'
                         break;
                 }
+            },
+            consultarDB(){
+                var me = this;
+                var url = '/libreria/getPersona';
+
+                me.DatosServicio.alert = 'badge badge-info';
+                me.DatosServicio.mensaje = 'Consultado...';
+                me.Carga.clase = 'spinner-border spinner-border-sm text-success';
+                axios.get(url,{
+                    params: {
+                        'documento': me.DatosServicio.documento
+                    }
+                }).then(function(response){
+                    console.log(response.data.persona.length);
+                    if(response.data.persona.length){//Si existe la persona en la db
+                        me.DatosServicio.alert = '';
+                        me.DatosServicio.mensaje = '';
+                        me.Carga.clase = '';
+
+                        const persona = response.data.persona[0];
+                        if(persona.razon_social){//Es una EMPRESA
+                            me.DatosServicio.tipo = 2;
+                            me.DatosProveedor.ruc = me.DatosServicio.documento;
+                            me.DatosProveedor.razon_social = persona.razon_social;
+                        }else{//Es una PERSONA
+                            me.DatosServicio.tipo = 1;
+                            me.DatosProveedor.dni = me.DatosServicio.documento;
+                            me.DatosProveedor.nombres = persona.nombres;
+                            me.DatosProveedor.apellidos = persona.apellidos;
+                        }
+                    }else{//No esxiste la persona en la db
+                        if(me.DatosServicio.documento.length == 8){//Consultar DNI
+                            
+                        }else{//Consultar RUC
+                            me.consultarRUC();
+                        }
+                    }
+                }).catch(function(error){
+                    console.log(error);
+                });
             },
             consultarRUC(){
                 let me = this;
@@ -655,15 +695,21 @@
                         me.DatosServicio.mensaje = 'Consultado...';
                     },
                     success: function (data, textStatus, jqXHR) {
-                        me.DatosServicio.documento = '';
+                        if(data.RazonSocial){
+                            me.DatosServicio.documento = '';
+                            me.DatosServicio.alert = '';
+                            me.DatosServicio.mensaje = '';
+                            me.DatosServicio.tipo = 2;
+                            me.DatosProveedor.ruc = data.RUC;
+                            me.DatosProveedor.razon_social = data.RazonSocial;
+                        }else{
+                            me.DatosServicio.alert = 'badge badge-primary';
+                            me.DatosServicio.mensaje = 'El RUC no existe';
+                        }
                         me.Carga.clase = '';
-                        me.DatosServicio.alert = '';
-                        me.DatosServicio.mensaje = '';
-                        me.DatosServicio.tipo = 2;
-                        me.DatosProveedor.ruc = data.RUC;
-                        me.DatosProveedor.razon_social = data.RazonSocial;
                     }
                 }).fail(function(){
+                    console.log('no existe');
                 });
             },
             // agregar(){

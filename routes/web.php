@@ -46,6 +46,7 @@ Route::group(['middleware' => ['auth']], function () {
 
     //RUTAS PARA FUNCIONES COMUNES
     Route::get('/libreria/getProductoFiltrado', 'LibreriaController@getProductoFiltrado');
+    Route::get('/libreria/getPersona', 'LibreriaController@getPersona');
 
 
     Route::group(['middleware' => ['Administrador']], function (){

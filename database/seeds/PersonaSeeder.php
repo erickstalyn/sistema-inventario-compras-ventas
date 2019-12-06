@@ -29,6 +29,14 @@ class PersonaSeeder extends Seeder {
         DB::table('persona')->insert(array(
             'nombres' => 'Amelia Sofía',
             'apellidos' => 'Rojas Cordova',
+            'dni' => '12345678',
+            'created_at' => $now,
+            'tipo' => 'P'
+        ));
+        DB::table('persona')->insert(array(
+            'nombres' => 'Erick Stalyn',
+            'apellidos' => 'Pacherrez Puyén',
+            'dni' => '74757559',
             'created_at' => $now,
             'tipo' => 'P'
         ));

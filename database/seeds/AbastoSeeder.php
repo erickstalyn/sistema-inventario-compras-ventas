@@ -23,8 +23,8 @@ class AbastoSeeder extends Seeder
         DB::table('abasto')->insert(array(//2
             'total' => '590',
             'tipo' => 1, 
-            'proveedor_id' => 2,
-            'proveedor_nombre' => 'Jose Anderson Cespedes Diaz',
+            'proveedor_id' => 3,
+            'proveedor_nombre' => 'Amelia Sofía Rojas Cordova',
             'administrador_id' => 1, //Persona que realizó el abasto
             'created_at' => $now
         ));
