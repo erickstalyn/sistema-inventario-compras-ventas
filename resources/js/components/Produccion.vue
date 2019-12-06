@@ -187,10 +187,10 @@
                                         </ul>
                                     </div>
                                 </div>
-                                <div class="row">
+                                <div class="row shadow bg-white rounded p-2">
                                     <div class="col-md-4">
                                         <div class="row">
-                                            <h5>Productos</h5>
+                                            <h5 class="font-weight-bold">Productos</h5>
                                         </div>
                                         <div class="row">
                                             <div class="input-group"> 
@@ -206,14 +206,14 @@
                                                 <table class="table table-borderless table-striped table-sm text-gray-900">
                                                     <thead>
                                                         <tr class="table-danger">
-                                                            <th>Agregar</th>
+                                                            <th class="text-center" style="width: 3rem;">Agregar</th>
                                                             <th>Nombre</th>
                                                             <th>Stock</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                         <tr v-for="producto in ListaProducto" :key="producto.id" >
-                                                            <td>
+                                                            <td class="text-center">
                                                                 <button type="button" title="Editar" class="btn btn-circle btn-sm btn-outline-success" @click="agregarDetalle(producto)">
                                                                     <i class="fas fa-plus"></i>
                                                                 </button>
@@ -225,29 +225,29 @@
                                                 </table>
                                             </div>
                                             <div v-else>
-                                                <h6>No se han encontrado resultados</h6>
+                                                <p>No se han encontrado resultados</p>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-md-8 ml-auto container">
                                         <div class="row">
-                                            <h5>Lista de items</h5>
+                                            <h5 class="font-weight-bold">Lista de items</h5>
                                         </div>
                                         <div class="row form-group ec-table-modal overflow-auto">
                                             <div v-if="ListaDetalleProduccion.length">
                                                 <table class="table tableless table-striped table-sm text-gray-900">
                                                     <thead>
                                                         <tr class="table-success">
-                                                            <th>Quitar</th>
+                                                            <th class="text-center" style="width: 3rem;">Quitar</th>
                                                             <th>Nombre</th>
-                                                            <th>Cant.</th>
+                                                            <th style="width: 5rem;">Cant.</th>
                                                             <th>Costo Unit.</th>
                                                             <th>Subtotal</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                         <tr v-for="(detalle, indice) in ListaDetalleProduccion" :key="detalle.id">
-                                                            <td>
+                                                            <td class="text-center">
                                                                 <button type="button" title="Editar" class="btn btn-circle btn-outline-danger btn-sm" @click="quitarDetalle(indice)">
                                                                     <i class="fas fa-minus"></i>
                                                                 </button>
@@ -318,8 +318,8 @@
 
                     <div class="modal-footer" v-if="permisoModalFooter">
                         <div class="row form-group col-md-12 d-flex justify-content-around">
+                            <button type="button" @click="accionar(Modal.accion)" class="btn btn-success" v-text="Modal.accion"></button>
                             <button type="button" @click="cerrarModal()" class="btn btn-secondary">Cancelar</button>
-                            <button type="button" @click="accionar(Modal.accion)" class="btn btn-primary" v-text="Modal.accion"></button>
                         </div>
                     </div>
                 
