@@ -189,7 +189,7 @@
                                             <div class="col-md-2">
                                                 <div class="input-group"> 
                                                     DNI&nbsp;
-                                                    <input type="text" class="form-control form-control-sm">
+                                                    <input type="text" class="form-control form-control-sm" readonly>
                                                 </div>
                                             </div>
                                             <div class="col-md-3">
@@ -205,9 +205,22 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        
+                                        <!-- Si es una empresa -->
+                                        <!-- <div class="row">
+                                            <div class="col-md-2">
+                                                <div class="input-group"> 
+                                                    RUC&nbsp;
+                                                    <input type="text" class="form-control form-control-sm" readonly>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="input-group">
+                                                    <label >Razón social</label>&nbsp;
+                                                    <input type="text" class="form-control form-control-sm">
+                                                </div>
+                                            </div>
+                                        </div> -->
                                     </div>
-                                    
                                 </div>
                                 <div class="row shadow bg-white rounded p-2">
                                     <div class="col-md-4">
@@ -294,17 +307,38 @@
                                                 <p>Sin detalles de abasto</p>
                                             </div>
                                         </div>
-                                        <div class="row">
-                                            <div class="col-md-8">
-                                            </div>
+                                        <div class="row form-group">
                                             <div class="col-md-4">
-                                                <!-- Inversión total: s/ {{getTotal}} -->
+                                                <div class="input-group" style="width: 11.2rem;"> 
+                                                    <label for="">Pago inicial</label>&nbsp;
+                                                    <input type="number" class="form-control form-control-sm">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                            </div>
+                                            <div class="col-md-5">
+                                                <div class="input-group"> 
+                                                    <label for="">Desembolso total: s/ 1573.00 </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="input-group"> 
+                                                    <label for="">Enviar a</label>&nbsp;
+                                                    <select class="custom-select custom-select-sm text-gray-900">
+                                                        <option value="">Seleccione</option>
+                                                        <option value="">Almacén 1</option>
+                                                        <option value="">Almacén 2</option>
+                                                        <option value="">Almacén 3</option>
+                                                    </select>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 
-                                <div class="row">
+                                <!-- <div class="row">
                                     <div class="col-md-3"></div>
                                     <div class="col-md-4 form-inline">
                                         Fecha de inicio&nbsp;<span class="text-danger">*</span>
@@ -314,7 +348,7 @@
                                         Fecha prog. finalización&nbsp;<span class="text-danger">*</span>
                                         <input type="date" class="form-control form-control-sm" >
                                     </div>
-                                </div>
+                                </div> -->
                                 
                             </div>
                             <!-- <div v-if="Modal.numero==3">
