@@ -632,9 +632,6 @@
                     case 8: case 11:
                         this.consultarDB();
                         break;
-                    // case 11:
-                    //     this.consultarRUC();
-                    //     break;
                     default:
                         // this.DatosServicio.alert = 'alert alert-danger';
                         this.DatosServicio.alert = 'badge badge-primary';
@@ -654,7 +651,6 @@
                         'documento': me.DatosServicio.documento
                     }
                 }).then(function(response){
-                    console.log(response.data.persona.length);
                     if(response.data.persona.length){//Si existe la persona en la db
                         me.DatosServicio.alert = '';
                         me.DatosServicio.mensaje = '';
@@ -673,7 +669,7 @@
                         }
                     }else{//No esxiste la persona en la db
                         if(me.DatosServicio.documento.length == 8){//Consultar DNI
-                            
+                            me.consultarDNI();
                         }else{//Consultar RUC
                             me.consultarRUC();
                         }
@@ -695,6 +691,7 @@
                         me.DatosServicio.mensaje = 'Consultado...';
                     },
                     success: function (data, textStatus, jqXHR) {
+                        console.log(data);
                         if(data.RazonSocial){
                             me.DatosServicio.documento = '';
                             me.DatosServicio.alert = '';
@@ -709,7 +706,37 @@
                         me.Carga.clase = '';
                     }
                 }).fail(function(){
-                    console.log('no existe');
+                });
+            },
+            consultarDNI(){
+                let me = this;
+                let dni = me.DatosServicio.documento;
+                $.ajax({
+                    type: 'GET',
+                    url: "http://localhost:80/Reniec/demo.php",
+                    data: "dni="+dni,
+                    beforeSend(){
+                        me.Carga.clase = 'spinner-border spinner-border-sm text-primary';
+                        me.DatosServicio.alert = 'badge badge-info';
+                        me.DatosServicio.mensaje = 'Consultado...';
+                    },
+                    success: function (data, textStatus, jqXHR) {
+                        let persona = JSON.parse(data);
+                        if(persona.estado == true){
+                            me.DatosServicio.documento = '';
+                            me.DatosServicio.alert = '';
+                            me.DatosServicio.mensaje = '';
+                            me.DatosServicio.tipo = 1;
+                            me.DatosProveedor.dni = persona.dni;
+                            me.DatosProveedor.nombres = persona.nombres;
+                            me.DatosProveedor.apellidos = persona.apellidos;
+                        }else{
+                            me.DatosServicio.alert = 'badge badge-primary';
+                            me.DatosServicio.mensaje = 'El DNI no existe';
+                        }
+                        me.Carga.clase = '';
+                    }
+                }).fail(function(){
                 });
             },
             // agregar(){
