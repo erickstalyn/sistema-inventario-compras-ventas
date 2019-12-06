@@ -838,17 +838,7 @@
                 let year = n.getFullYear();
                 return year;
             },
-            //Metodos de envios
-            selectAlmacen(){
-                var me = this;
-                var url = '/produccion/selectAlmacen';
-
-                axios.get(url).then(function(response){
-                    me.SelectAlmacen = response.data;
-                }).catch(function(error){
-                    console.log(error);
-                });
-            }
+            
         },
         mounted() {
             this.listar();

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Producto;
 use App\Persona;
+use App\Centro;
 
 class LibreriaController extends Controller
 {
@@ -36,5 +37,13 @@ class LibreriaController extends Controller
         return [
             'persona' => $persona
         ];
+    }
+
+    public function selectAlmacen(Request $request){
+        if ( !$request->ajax() ) return redirect('/');
+        $almacenes = Centro::select('id', 'nombre',)
+                            ->where('tipo','=','A')
+                            ->orderBy('nombre', 'asc')->get();
+        return $almacenes;
     }
 }

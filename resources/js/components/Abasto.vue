@@ -155,7 +155,7 @@
                     <div class="modal-body">
                         <div class="container-fluid">
                         <!-- Modal Numero 1 de AGREGAR-->
-                            <div v-if="Modal.numero==1">
+                            <!-- <div v-if="Modal.numero==1"> -->
                                 <!-- Filtro de productos -->
                                 <div v-if="Error.estado" class="row d-flex justify-content-center">
                                     <div class="alert alert-danger">
@@ -346,51 +346,16 @@
                                             <div class="col-md-4">
                                                 <div class="input-group"> 
                                                     <label for="">Enviar a</label>&nbsp;
-                                                    <select class="custom-select custom-select-sm text-gray-900">
-                                                        <option value="">Seleccione</option>
-                                                        <option value="">Almacén 1</option>
-                                                        <option value="">Almacén 2</option>
-                                                        <option value="">Almacén 3</option>
+                                                    <select v-model="Abasto.centro_to_id" class="custom-select custom-select-sm text-gray-900">
+                                                        <option value="0">Seleccione</option>
+                                                        <option v-for="item in SelectAlmacen" :key="item.id" :value="item.id" v-text="item.nombre" ></option>
                                                     </select>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                
-                                <!-- <div class="row">
-                                    <div class="col-md-3"></div>
-                                    <div class="col-md-4 form-inline">
-                                        Fecha de inicio&nbsp;<span class="text-danger">*</span>
-                                        <input type="date" class="form-control form-control-sm" >
-                                    </div>
-                                    <div class="col-md-5 form-inline">
-                                        Fecha prog. finalización&nbsp;<span class="text-danger">*</span>
-                                        <input type="date" class="form-control form-control-sm" >
-                                    </div>
-                                </div> -->
-                                
-                            </div>
-                            <!-- <div v-if="Modal.numero==3">
-                                <div v-if="Error.estado" class="row d-flex justify-content-center">
-                                    <div class="alert alert-danger">
-                                        <button type="button" @click="Error.estado=0" class="close text-primary" data-dismiss="alert">×</button>
-                                        <strong>Corregir los siguentes errores:</strong>
-                                        <ul> 
-                                            <li v-for="error in Error.mensaje" :key="error" v-text="error"></li> 
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="row form-group">
-                                    <label class="col-md-5 font-weight-bold" for="des">Seleccione almacén&nbsp;<span class="text-danger">*</span></label>
-                                    <div class="col-md-7">
-                                        <select  class="custom-select">
-                                            <option value="" disabled>Almacen</option>
-                                            <option v-for="item in SelectAlmacen" :key="item.id" :value="item.id" v-text="item.nombre"></option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div> -->
+                            <!-- </div> -->
                         </div>
                     </div>
 
@@ -806,6 +771,7 @@
             // },
             abrirModalAgregar(){
                 this.abrirModal(1, 'Registrar Abasto', 'Agregar');
+                if(!this.SelectAlmacen.length) this.selectAlmacen();
                 // let inputFiltro = document.getElementById('filtroProducto');
                 // inputFiltro.focus();
             },
@@ -849,10 +815,10 @@
                 this.Abasto.id = 0;
                 this.Abasto.total = 0.00;
                 this.Abasto.pagoInicial = '';
+                this.Abasto.centro_to_id = 0;
 
                 this.ListaDetalleAbasto = [];
                 this.BusquedaFiltro.texto = '';
-
             },
             accionar(accion){
                 switch( accion ){
@@ -1010,14 +976,14 @@
             //Metodos de envios
             selectAlmacen(){
                 var me = this;
-                var url = '/produccion/selectAlmacen';
+                var url = '/libreria/selectAlmacen';
 
                 axios.get(url).then(function(response){
                     me.SelectAlmacen = response.data;
                 }).catch(function(error){
                     console.log(error);
                 });
-            }
+            },
         },
         mounted() {
             this.listar();
