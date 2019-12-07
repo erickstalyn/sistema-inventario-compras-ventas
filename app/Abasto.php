@@ -19,7 +19,7 @@ class Abasto extends Model
     //Relación inversa de uno a muchos con proveedor
     public function getProveedor()
     {
-        return $this->belongsTo('App\Proveedor');
+        return $this->belongsTo('App\Persona');
     }
 
     //Relación de muchos a muchos con Producto

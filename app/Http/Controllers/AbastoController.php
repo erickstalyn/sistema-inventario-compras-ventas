@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use App\Abasto;
+use App\Persona;
+use Exception;
 
 class AbastoController extends Controller
 {
@@ -78,5 +80,69 @@ class AbastoController extends Controller
             ],
             'abastos' => $abastos
         ];
+    }
+
+    public function agregar(Request $request){
+        if ( !$request->ajax() ) return redirect('/');
+
+        try {
+            DB::beginTransaction();
+
+            //Agrego la produccion
+            $proveedor = $request->proveedor;
+            $abasto = new Abasto();//AQUI ME QUEDE
+            $abasto->total = $request->total;
+            $abasto->tipo = $request->tipo;
+            //Verifico si existe el proveedor
+            if($proveedor['id'] == 0){ //No existe el proveedor
+                //Insertamos al proveedor
+                $persona = new Persona();
+                if(strlen($proveedor['documento']) == 8){
+                    
+                    $persona->dni = $proveedor['documento'];
+                    $persona->nombres = $proveedor['nombres'];
+                    $persona->apellidos = $proveedor['apellidos'];
+
+                    $abasto->proveedor_nombre = $proveedor['nombres'] . ' ' . $proveedor['apellidos'];
+                }else{
+                    $persona->ruc = $proveedor['documento'];
+                    $persona->razon_social = $proveedor['razon_social'];
+
+                    $abasto->proveedor_nombre = $proveedor['razon_social'];
+                }
+                $persona->save();
+                $abasto->proveedor_id = $persona->id;
+            }else{ //Ya existe el proveedor
+                $abasto->proveedor_id = $proveedor['id'];
+                if(strlen($proveedor['documento']) == 8){
+                    $abasto->proveedor_nombre = $proveedor['nombres'] . ' ' . $proveedor['apellidos'];
+                }else{
+                    $abasto->proveedor_nombre = $proveedor['razon_social'];
+                }
+
+            }
+
+            $abasto->save();
+
+            //Insertamos los datos del detalle de produccion
+            // $listaDetalleProduccion = $request->listaDetalleProduccion;
+
+            // foreach($listaDetalleProduccion as $ep => $det){
+            //     $detalle = new Detalle_produccion();
+            //     $detalle->nombre_producto = $det['nombre'];
+            //     $detalle->costo_produccion = $det['costo_produccion'];
+            //     $detalle->cantidad = $det['cantidad'];
+            //     // $detalle->subtotal = floatval($det['cantidad']) * floatval($det['costo_produccion']);
+            //     $detalle->subtotal = $det['subtotal'];
+            //     $detalle->producto_id = $det['id'];
+            //     $detalle->produccion_id = $produccion->id;
+            //     $detalle->save();
+            // }
+
+            DB::commit();
+        } catch(Exception $e) {
+            DB::rollback();
+        }
+
     }
 }

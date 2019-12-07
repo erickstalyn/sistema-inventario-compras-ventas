@@ -84,6 +84,7 @@ Route::group(['middleware' => ['auth']], function () {
 
         //RUTAS PARA ABASTO
         Route::get('/abasto', 'AbastoController@listar'); //metodos generales
+        Route::post('/abasto/agregar', 'AbastoController@agregar');
         
 
     });

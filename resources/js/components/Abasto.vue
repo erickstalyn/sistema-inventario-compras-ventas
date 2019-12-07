@@ -175,7 +175,7 @@
                                             <div class="col-md-3">
                                                 <div class="input-group"> 
                                                     RUC/DNI&nbsp;<span class="text-danger">*</span>&nbsp;
-                                                    <input type="text" class="form-control form-control-sm" v-model="DatosServicio.documento">
+                                                    <input type="text" class="form-control form-control-sm" v-model="DatosServicio.documento" autofocus>
                                                     <button type="button" class="btn btn-sm btn-primary" @click="consultar()">
                                                         <i class="fas fa-sync-alt"></i>
                                                     </button>
@@ -194,19 +194,19 @@
                                                 <div class="col-md-2">
                                                     <div class="input-group"> 
                                                         DNI&nbsp;
-                                                        <input type="text" class="form-control form-control-sm" readonly v-model="DatosProveedor.dni">
+                                                        <input type="text" class="form-control form-control-sm" readonly v-model="DatosProveedor.documento">
                                                     </div>
                                                 </div>
                                                 <div class="" :class="Modal.numero == 2 ? 'col-md-3': 'col-md-4'">
                                                     <div class="input-group">
                                                         <label >Nombres</label>&nbsp;
-                                                        <input type="text" class="form-control form-control-sm" v-model="DatosProveedor.nombres">
+                                                        <input type="text" class="form-control form-control-sm" readonly v-model="DatosProveedor.nombres">
                                                     </div>
                                                 </div>
                                                 <div class="" :class="Modal.numero == 2 ? 'col-md-3': 'col-md-6'">
                                                     <div class="input-group">
                                                         <label >Apellidos</label>&nbsp;
-                                                        <input type="text" class="form-control form-control-sm" v-model="DatosProveedor.apellidos">
+                                                        <input type="text" class="form-control form-control-sm" readonly v-model="DatosProveedor.apellidos">
                                                     </div>
                                                 </div>
                                             </div>
@@ -216,13 +216,13 @@
                                                 <div class="col-md-2">
                                                     <div class="input-group"> 
                                                         RUC&nbsp;
-                                                        <input type="text" class="form-control form-control-sm" readonly v-model="DatosProveedor.ruc">
+                                                        <input type="text" class="form-control form-control-sm" readonly v-model="DatosProveedor.documento">
                                                     </div>
                                                 </div>
                                                 <div class="" :class="Modal.numero == 2 ? 'col-md-6': 'col-md-10'">
                                                     <div class="input-group">
                                                         <label >Razón social</label>&nbsp;
-                                                        <input type="text" class="form-control form-control-sm" v-model="DatosProveedor.razon_social">
+                                                        <input type="text" class="form-control form-control-sm" v-model="DatosProveedor.razon_social" :readonly="DatosServicio.readonly">
                                                     </div>
                                                 </div>
                                             </div>
@@ -236,7 +236,7 @@
                                         </div>
                                         <div class="row">
                                             <div class="input-group"> 
-                                                <input type="search" class="form-control form-control-sm" v-model="BusquedaFiltro.texto" @keyup.enter="listarFiltro()" id="filtroProducto" autofocus placeholder="Producto,marca,modelo,tamaño,color">
+                                                <input type="search" class="form-control form-control-sm" v-model="BusquedaFiltro.texto" @keyup.enter="listarFiltro()" id="filtroProducto" placeholder="Producto,marca,modelo,tamaño,color">
                                                 <button type="button" class="btn btn-sm btn-primary" @click="listarFiltro()">
                                                     <i class="fa fa-search"></i>&nbsp; Buscar
                                                 </button>
@@ -387,10 +387,11 @@
                 },
                 DatosProveedor:{
                     id: 0,
-                    dni: '',
+                    documento: '',
+                    // dni: '',
                     nombres: '',
                     apellidos: '',
-                    ruc: '',
+                    // ruc: '',
                     razon_social: ''
                 },
                 SelectUnidad: [],
@@ -437,12 +438,8 @@
                     texto: ''
                 },
                 ListaProducto:[
-                    // {nombre: 'Camperita Silmar Roja Grande', stock: 56},
-                    // {nombre: 'Mochila Porta Verde mediana', stock: 100}
                 ],
                 ListaDetalleAbasto:[
-                    // {nombre: 'Camperita Silmar Roja Grande', stock: 56},
-                    // {nombre: 'Mochila Porta Verde mediana', stock: 100}
                 ],
                 //DATOS PARA ENVIAR UNA PRODUCCION
                 SelectAlmacen: [],
@@ -451,7 +448,8 @@
                     documento: '',
                     tipo: 0, //1->PERSONA, 2-> EMPRESA
                     mensaje: '',
-                    alert: ''
+                    alert: '',
+                    readonly: false
                 },
                 Carga: {
                     clase: ''
@@ -627,20 +625,37 @@
                         me.Carga.clase = '';
 
                         const persona = response.data.persona[0];
+                        me.DatosProveedor.id = persona.id;
                         if(persona.razon_social){//Es una EMPRESA
                             me.DatosServicio.tipo = 2;
-                            me.DatosProveedor.ruc = me.DatosServicio.documento;
+                            me.DatosServicio.readonly = true;
+                            // me.DatosProveedor.ruc = me.DatosServicio.documento;
+                            me.DatosProveedor.documento = me.DatosServicio.documento;
                             me.DatosProveedor.razon_social = persona.razon_social;
+
+                            // me.DatosProveedor.dni = '';
+                            // me.DatosProveedor.nombres = '';
+                            // me.DatosProveedor.apellidos = '';
                         }else{//Es una PERSONA
                             me.DatosServicio.tipo = 1;
-                            me.DatosProveedor.dni = me.DatosServicio.documento;
+                            // me.DatosProveedor.dni = me.DatosServicio.documento;
+                            me.DatosProveedor.documento = me.DatosServicio.documento;
                             me.DatosProveedor.nombres = persona.nombres;
                             me.DatosProveedor.apellidos = persona.apellidos;
+
+                            // me.DatosProveedor.ruc = '';
+                            // me.DatosProveedor.razon_social = '';
                         }
                     }else{//No esxiste la persona en la db
-                        if(me.DatosServicio.documento.length == 8){//Consultar DNI
+                        me.DatosProveedor.id = 0;
+                        if(me.DatosServicio.documento.length == 8){
+                            // me.DatosProveedor.ruc = '';
+                            // me.DatosProveedor.razon_social = '';
                             me.consultarDNI();
-                        }else{//Consultar RUC
+                        }else{
+                            // me.DatosProveedor.dni = '';
+                            // me.DatosProveedor.nombres = '';
+                            // me.DatosProveedor.apellidos = '';
                             me.consultarRUC();
                         }
                     }
@@ -661,15 +676,18 @@
                         me.DatosServicio.mensaje = 'Consultado...';
                     },
                     success: function (data, textStatus, jqXHR) {
-                        console.log(data);
                         if(data.RazonSocial){
                             me.DatosServicio.documento = '';
                             me.DatosServicio.alert = '';
                             me.DatosServicio.mensaje = '';
                             me.DatosServicio.tipo = 2;
-                            me.DatosProveedor.ruc = data.RUC;
+                            me.DatosServicio.readonly = false;
+                            // me.DatosProveedor.ruc = data.RUC;
+                            me.DatosProveedor.documento = data.RUC;
                             me.DatosProveedor.razon_social = data.RazonSocial;
                         }else{
+                            // me.DatosProveedor.ruc = '';
+                            // me.DatosProveedor.razon_social = '';
                             me.DatosServicio.alert = 'badge badge-primary';
                             me.DatosServicio.mensaje = 'El RUC no existe';
                         }
@@ -697,10 +715,14 @@
                             me.DatosServicio.alert = '';
                             me.DatosServicio.mensaje = '';
                             me.DatosServicio.tipo = 1;
-                            me.DatosProveedor.dni = persona.dni;
+                            // me.DatosProveedor.dni = persona.dni;
+                            me.DatosProveedor.documento = persona.dni;
                             me.DatosProveedor.nombres = persona.nombres;
                             me.DatosProveedor.apellidos = persona.apellidos;
                         }else{
+                            // me.DatosProveedor.dni = '';
+                            // me.DatosProveedor.nombres = '';
+                            // me.DatosProveedor.apellidos = '';
                             me.DatosServicio.alert = 'badge badge-primary';
                             me.DatosServicio.mensaje = 'El DNI no existe';
                         }
@@ -709,37 +731,100 @@
                 }).fail(function(){
                 });
             },
-            // agregar(){
-            //     if ( this.validar() ) return;
+            abrirModalAgregar(){
+                this.abrirModal(1, 'Registrar Abasto', 'Agregar');
+                if(!this.SelectAlmacen.length) this.selectAlmacen();
+            },
+            abrirModal(numero, titulo, accion){
+                this.Modal.estado = 1;
+                this.Modal.numero = numero;
+                this.Modal.titulo = titulo;
+                this.Modal.accion = accion;
+            },
+            accionar(accion){
+                switch( accion ){
+                    case 'Agregar': {
+                        this.agregar();
+                        break;
+                    }
+                    case 'Editar': {
+                        this.editar();
+                        break;
+                    }
+                    // case 'Finalizar': {
+                    //     this.finalizar();
+                    //     break;
+                    // }
+                    // case 'Activar': {
+                    //     this.activar();
+                    //     break;
+                    // }
+                    // case 'Desactivar': {
+                    //     this.desactivar();
+                    //     break;
+                    // }
+                }
+            },
+            validar(){
+                this.Error.estado = 0;
+                this.Error.mensaje = [];
+
+                //Recorrere la lista de Material
+                if(this.Modal.numero == 1){ //Modal agregar
+                    if (this.DatosProveedor.dni == '' && this.DatosProveedor.ruc == '') this.Error.mensaje.push('Debe ingresar datos del proveedor');
+                    if (!this.ListaDetalleAbasto.length ) {
+                        this.Error.mensaje.push("No existe ningun detalle de abasto");
+                    }else if(this.Abasto.total == 0.00){
+                        this.Error.mensaje.push("El total no puede ser cero");
+                    }else if(this.Abasto.centro_to_id == 0){
+                        this.Error.mensaje.push('Debe seleccionar el almacén receptor');
+                    }
+
+                    if(this.Abasto.tipo == -1){
+                        this.Error.mensaje.push("Debe seleccionar el tipo de abasto");
+                    }else if(this.Abasto.tipo == 1){
+                        if(this.Abasto.pagoInicial == '') this.Error.mensaje.push('Debe ingresar el pago inicial del Abasto al crédito');
+                    }
+                }else{ //Modal editar
+                    
+                }
+                if ( this.Error.mensaje.length ) this.Error.estado = 1;
+                return this.Error.estado;
+            },
+            agregar(){
+                if ( this.validar() ) return;
                 
-            //     var me = this;
-            //     axios.post('/produccion/agregar', {
-            //         //Datos de la produccion
-            //         'total' : this.Produccion.total,
-            //         'fecha_inicio' : this.Produccion.fecha_inicio,
-            //         'fecha_programada' : this.Produccion.fecha_programada,
-            //         'almacen_id': this.Produccion.almacen_id,
-            //         //Datos del detalle de venta
-            //         'listaDetalleProduccion' : this.ListaDetalleProduccion
-            //     }).then(function(response){
-            //         me.cerrarModal();
-            //         me.listar();
-            //         Swal.fire({
-            //             position: 'top-end',
-            //             toast: true,
-            //             type: 'success',
-            //             title: 'La produccion se ha REGISTRADO correctamente',
-            //             showConfirmButton: false,
-            //             timer: 4500,
-            //             animation:false,
-            //             customClass:{
-            //                 popup: 'animated bounceIn fast'
-            //             }
-            //         });
-            //     }).catch(function(error){
-            //         console.log(error);
-            //     });
-            // },
+                var me = this;
+                axios.post('/abasto/agregar', {
+                    //Datos del abasto
+                    'id' : this.Abasto.id,
+                    'total': this.Abasto.total,
+                    'tipo': this.Abasto.tipo, 
+                    'centro_to_id': this.Abasto.centro_to_id,
+                    'pagoInicial': this.Abasto.pagoInicial,
+                    'proveedor': this.DatosProveedor,
+                    //Datos del detalle de abasto
+                    'listaDetalleAbasto': this.ListaDetalleAbasto
+                    
+                }).then(function(response){
+                    me.cerrarModal();
+                    me.listar();
+                    Swal.fire({
+                        position: 'top-end',
+                        toast: true,
+                        type: 'success',
+                        title: 'El abasto se ha REGISTRADO correctamente',
+                        showConfirmButton: false,
+                        timer: 4500,
+                        animation:false,
+                        customClass:{
+                            popup: 'animated bounceIn fast'
+                        }
+                    });
+                }).catch(function(error){
+                    console.log(error);
+                });
+            },
             // editar(){
             //     if ( this.validar() ) return;
 
@@ -769,12 +854,7 @@
             //         console.log(error);
             //     });
             // },
-            abrirModalAgregar(){
-                this.abrirModal(1, 'Registrar Abasto', 'Agregar');
-                if(!this.SelectAlmacen.length) this.selectAlmacen();
-                // let inputFiltro = document.getElementById('filtroProducto');
-                // inputFiltro.focus();
-            },
+            
             // abrirModalEnviar(){
             //     this.abrirModal(3, 'Enviar Produccion', 'Enviar');
             //     if(this.SelectAlmacen == 0) this.selectAlmacen();
@@ -798,12 +878,7 @@
             //     //Verifico si el arreglo SelectUnidad esta vacia
             //     if(!this.SelectUnidad.length) this.selectUnidad();
             // },
-            abrirModal(numero, titulo, accion){
-                this.Modal.estado = 1;
-                this.Modal.numero = numero;
-                this.Modal.titulo = titulo;
-                this.Modal.accion = accion;
-            },
+            
             cerrarModal(){
                 this.Modal.numero = 0;
                 this.Modal.estado = 0;
@@ -812,38 +887,25 @@
                 this.Error.estado = 0;
                 this.Error.mensaje = [];
 
+                this.DatosServicio.documento = '';
+
                 this.Abasto.id = 0;
                 this.Abasto.total = 0.00;
                 this.Abasto.pagoInicial = '';
                 this.Abasto.centro_to_id = 0;
 
+                this.DatosServicio.tipo = 0;
+                this.DatosProveedor.id = 0;
+                this.DatosProveedor.dni = '';
+                this.DatosProveedor.nombres = '';
+                this.DatosProveedor.apellidos = '';
+                this.DatosProveedor.ruc = '';
+                this.DatosProveedor.razon_social = '';
+
                 this.ListaDetalleAbasto = [];
                 this.BusquedaFiltro.texto = '';
             },
-            accionar(accion){
-                switch( accion ){
-                    case 'Agregar': {
-                        this.agregar();
-                        break;
-                    }
-                    case 'Editar': {
-                        this.editar();
-                        break;
-                    }
-                    // case 'Finalizar': {
-                    //     this.finalizar();
-                    //     break;
-                    // }
-                    // case 'Activar': {
-                    //     this.activar();
-                    //     break;
-                    // }
-                    // case 'Desactivar': {
-                    //     this.desactivar();
-                    //     break;
-                    // }
-                }
-            },
+            
             getTitulo(titulo){
                 var seleccionada = 0;
 
@@ -864,42 +926,6 @@
 
                 return titulo;
             },
-            // validar(){
-            //     this.Error.estado = 0;
-            //     this.Error.mensaje = [];
-
-            //     //Recorrere la lista de Material
-            //     if(this.Modal.numero == 1){
-            //         //Modal agregar
-            //         if ( !this.ListaDetalleProduccion.length ) this.Error.mensaje.push("No existe ningun detalle de producción"); 
-            //         if ( !this.Produccion.fecha_inicio || !this.Produccion.fecha_programada){
-            //             this.Error.mensaje.push('Debe ingresar una fecha de inicio y una fecha programada de la producción');
-            //         }else {
-
-            //             let arrayfechaInicio = this.Produccion.fecha_inicio.split('-');
-            //             let arrayFechaProgramada = this.Produccion.fecha_programada.split('-');
-            //             let fecha_inicio = new Date(parseInt(arrayfechaInicio[0]),parseInt(arrayfechaInicio[1]-1),parseInt(arrayfechaInicio[2]));
-            //             let fecha_programada = new Date(parseInt(arrayFechaProgramada[0]),parseInt(arrayFechaProgramada[1]-1),parseInt(arrayFechaProgramada[2]));
-
-            //             let hoyBase =  new Date();
-            //             // console.log(hoy.getFullYear());
-            //             // console.log(hoy.getMonth()+1);
-            //             // console.log(hoy.getDate());
-
-            //             let hoyFirme = new Date(hoyBase.getFullYear(), hoyBase.getMonth(), hoyBase.getDate());
-
-            //             if(fecha_inicio <  hoyFirme){//Aqui me quede
-            //                 this.Error.mensaje.push('La fecha de inicio es incorrecta');
-            //             }else if(fecha_inicio >= fecha_programada){
-            //                 this.Error.mensaje.push('La fecha programada debe ser después que la fecha de inicio de la producción');
-            //             }
-            //         }
-            //     }else{
-            //         //Modal editar
-            //     }
-            //     if ( this.Error.mensaje.length ) this.Error.estado = 1;
-            //     return this.Error.estado;
-            // },
             cambiarPagina(page){
                 if ( page >= 1 && page <= this.Paginacion.lastPage) {
                     this.listar(page);
