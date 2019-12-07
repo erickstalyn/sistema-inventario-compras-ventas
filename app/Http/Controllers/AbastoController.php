@@ -5,14 +5,14 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Exception;
 use App\Abasto;
 use App\Persona;
-use Exception;
 
 class AbastoController extends Controller
 {
     public function listar(Request $request){
-        // if ( !$request->ajax() ) return redirect('/') ;
+        if ( !$request->ajax() ) return redirect('/') ;
         
         $estado = $request->estado;
         $texto = $request->texto;
@@ -65,7 +65,7 @@ class AbastoController extends Controller
                                 }else{
                                 }
                             })
-                            ->where('abasto.administrador_id', '<>', null)
+                            ->where('abasto.centro_id', '=', null)
                             // ->orderBy('abasto.id', 'asc')->get();
                             ->orderBy($ordenarPor, $orden)->paginate($filas);
 
@@ -88,11 +88,13 @@ class AbastoController extends Controller
         try {
             DB::beginTransaction();
 
-            //Agrego la produccion
             $proveedor = $request->proveedor;
+            $now = Carbon::now('America/Lima')->toDateString();
+            //Agrego la produccion
             $abasto = new Abasto();//AQUI ME QUEDE
             $abasto->total = $request->total;
             $abasto->tipo = $request->tipo;
+            $abasto->created_at = $now;
             //Verifico si existe el proveedor
             if($proveedor['id'] == 0){ //No existe el proveedor
                 //Insertamos al proveedor
@@ -102,12 +104,12 @@ class AbastoController extends Controller
                     $persona->dni = $proveedor['documento'];
                     $persona->nombres = $proveedor['nombres'];
                     $persona->apellidos = $proveedor['apellidos'];
-
+                    $persona->tipo = 'P';
                     $abasto->proveedor_nombre = $proveedor['nombres'] . ' ' . $proveedor['apellidos'];
                 }else{
                     $persona->ruc = $proveedor['documento'];
                     $persona->razon_social = $proveedor['razon_social'];
-
+                    $persona->tipo = 'E';
                     $abasto->proveedor_nombre = $proveedor['razon_social'];
                 }
                 $persona->save();
@@ -121,26 +123,11 @@ class AbastoController extends Controller
                 }
 
             }
-
             $abasto->save();
-
-            //Insertamos los datos del detalle de produccion
-            // $listaDetalleProduccion = $request->listaDetalleProduccion;
-
-            // foreach($listaDetalleProduccion as $ep => $det){
-            //     $detalle = new Detalle_produccion();
-            //     $detalle->nombre_producto = $det['nombre'];
-            //     $detalle->costo_produccion = $det['costo_produccion'];
-            //     $detalle->cantidad = $det['cantidad'];
-            //     // $detalle->subtotal = floatval($det['cantidad']) * floatval($det['costo_produccion']);
-            //     $detalle->subtotal = $det['subtotal'];
-            //     $detalle->producto_id = $det['id'];
-            //     $detalle->produccion_id = $produccion->id;
-            //     $detalle->save();
-            // }
 
             DB::commit();
         } catch(Exception $e) {
+            echo($e);
             DB::rollback();
         }
 

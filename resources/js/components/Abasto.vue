@@ -771,7 +771,7 @@
 
                 //Recorrere la lista de Material
                 if(this.Modal.numero == 1){ //Modal agregar
-                    if (this.DatosProveedor.dni == '' && this.DatosProveedor.ruc == '') this.Error.mensaje.push('Debe ingresar datos del proveedor');
+                    if (this.DatosProveedor.documento == '') this.Error.mensaje.push('Debe ingresar datos del proveedor');
                     if (!this.ListaDetalleAbasto.length ) {
                         this.Error.mensaje.push("No existe ningun detalle de abasto");
                     }else if(this.Abasto.total == 0.00){
@@ -888,18 +888,20 @@
                 this.Error.mensaje = [];
 
                 this.DatosServicio.documento = '';
+                this.DatosServicio.alert = '';
+                this.DatosServicio.mensaje = '';
 
                 this.Abasto.id = 0;
                 this.Abasto.total = 0.00;
                 this.Abasto.pagoInicial = '';
                 this.Abasto.centro_to_id = 0;
+                this.Abasto.tipo = -1;
 
                 this.DatosServicio.tipo = 0;
                 this.DatosProveedor.id = 0;
-                this.DatosProveedor.dni = '';
+                this.DatosProveedor.documento = '';
                 this.DatosProveedor.nombres = '';
                 this.DatosProveedor.apellidos = '';
-                this.DatosProveedor.ruc = '';
                 this.DatosProveedor.razon_social = '';
 
                 this.ListaDetalleAbasto = [];

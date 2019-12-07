@@ -11,6 +11,8 @@ class Abasto extends Model
         'total', 'tipo', 'proveedor_id', 'administrador_id', 'centro_id', 'created_at'
     ];
 
+    public $timestamps = false;
+
     //Relación de uno a muchos con Envio
     public function getEnvios()
     {
