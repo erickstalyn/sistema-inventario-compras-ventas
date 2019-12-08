@@ -55,10 +55,10 @@
                                 <td v-text="superproducto.superstock"></td>
                                 <td>
                                     <button type="button" @click="abrirModalVer(superproducto)" title="VER" class="btn btn-primary btn-sm">
-                                        <span>ver</span>
+                                        <i class="far fa-eye"></i>
                                     </button>
                                     <button type="button" @click="abrirModalEditar(superproducto)" title="EDITAR" class="btn btn-warning btn-sm">
-                                        <i class="fas fa-user-edit"></i>
+                                        <i class="fas fa-edit"></i>
                                     </button>
                                 </td>
                             </tr>
@@ -420,7 +420,7 @@
                     me.ListaSuperProducto = response.data.superproductos.data;
                     me.Paginacion = response.data.paginacion;
                 }).catch(function (error) {
-                    console.log(error)
+                    console.log(error);
                 });
             },
             agregar(){
@@ -430,7 +430,8 @@
                 var url = this.Ruta.superproducto+'/agregar';
                 axios.post(url, {
                     'nombre' : this.SuperProducto.nombre,
-                    'descripcion' : this.SuperProducto.descripcion
+                    'descripcion' : this.SuperProducto.descripcion,
+                    'listaproducto': this.ListaProducto
                 }).then(function(response){
                     me.cerrarModal();
                     me.listar();
