@@ -542,7 +542,7 @@
             listarFiltro(){
                 if(this.BusquedaFiltro.texto != ''){
                     let me = this;
-                    let url = '/libreria/getProductoFiltrado?texto=' + this.BusquedaFiltro.texto;
+                    let url = '/producto/getProductoFiltrado?texto=' + this.BusquedaFiltro.texto;
                     axios.get(url).then(function(response){
                         if(response.data.productos.length == 1 && me.BusquedaFiltro.texto == response.data.productos[0].codigo){
                             me.agregarDetalle(response.data.productos[0]);
@@ -604,7 +604,7 @@
             },
             consultarDB(){
                 var me = this;
-                var url = '/libreria/getPersona';
+                var url = '/persona/getPersona';
 
                 me.DatosServicio.alert = 'badge badge-info';
                 me.DatosServicio.mensaje = 'Consultado...';
@@ -912,7 +912,7 @@
             //Metodos de envios
             selectAlmacen(){
                 var me = this;
-                var url = '/libreria/selectAlmacen';
+                var url = '/centro/selectAlmacen';
 
                 axios.get(url).then(function(response){
                     me.SelectAlmacen = response.data;

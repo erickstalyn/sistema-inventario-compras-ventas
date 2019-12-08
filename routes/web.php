@@ -45,10 +45,13 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/producto/selectMaterial', 'ProductoController@selectMaterial'); 
 
     //RUTAS PARA FUNCIONES COMUNES
-    Route::get('/libreria/getProductoFiltrado', 'LibreriaController@getProductoFiltrado');
-    Route::get('/libreria/getPersona', 'LibreriaController@getPersona');
-    Route::get('/libreria/selectAlmacen', 'LibreriaController@selectAlmacen');
+    // Route::get('/libreria/getProductoFiltrado', 'LibreriaController@getProductoFiltrado');
+    // Route::get('/libreria/getPersona', 'LibreriaController@getPersona');
+    // Route::get('/libreria/selectAlmacen', 'LibreriaController@selectAlmacen');
 
+    Route::get('/producto/getProductoFiltrado', 'ProductoController@getProductoFiltrado');
+    Route::get('/persona/getPersona', 'PersonaController@getPersona');
+    Route::get('/centro/selectAlmacen', 'CentroController@selectAlmacen');
 
     Route::group(['middleware' => ['Administrador']], function (){
         
@@ -72,7 +75,7 @@ Route::group(['middleware' => ['auth']], function () {
         //RUTAS PARA PRODUCCIONES
         Route::get('/produccion', 'ProduccionController@listar'); //métodos generales
         Route::post('/produccion/agregar', 'ProduccionController@agregar');
-        // Route::get('/produccion/getProductoFiltrado', 'ProduccionController@getProductoFiltrado'); //metodos secundarios
+        
         // Route::get('/produccion/selectAlmacen', 'ProduccionController@selectAlmacen'); //metodos secundarios
         Route::put('/produccion/finalizar', 'ProduccionController@finalizar'); //metodos secundarios
 
