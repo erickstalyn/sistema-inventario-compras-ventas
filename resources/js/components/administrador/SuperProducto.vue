@@ -558,7 +558,7 @@
                 this.SuperProducto.created_at = data['created_at'];
             },
             abrirModalEditar(data = []){
-                this.abrirModal(3, 'Editar Super Producto', 'modal-sm', 'Editar');
+                this.abrirModal(3, 'Editar Super Producto', '', 'Editar');
                 
                 this.SuperProducto.id = data['id'];
                 this.SuperProducto.nombre = data['nombre'];
