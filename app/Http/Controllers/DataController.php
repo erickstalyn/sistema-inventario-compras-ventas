@@ -20,4 +20,11 @@ class DataController extends Controller{
 
         return $colores;
     }
+
+    public function selectUnidad(Request $request){
+        $tipos = Data::select('id', 'tipo', 'subtipo','nombre')
+                            ->where('tipo','=','U')
+                            ->orderBy('id', 'asc')->get();
+        return $tipos;
+    }
 }
