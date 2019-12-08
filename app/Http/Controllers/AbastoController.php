@@ -115,6 +115,7 @@ class AbastoController extends Controller
                     $persona->tipo = 'E';
                     $abasto->proveedor_nombre = $proveedor['razon_social'];
                 }
+                
                 $persona->save();
                 $abasto->proveedor_id = $persona->id;
             }else{ //Ya existe el proveedor
@@ -138,6 +139,7 @@ class AbastoController extends Controller
             $envio = new Envio();
             $envio->centro_to_id = $request->centro_to_id;
             $envio->abasto_id = $abasto->id;
+            $envio->created_at = $now;
             $envio->save();
 
             DB::commit();

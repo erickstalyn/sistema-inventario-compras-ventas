@@ -8,6 +8,7 @@ class Data extends Model
 {
     protected $table = 'data';
     protected $fillable = ['tipo', 'subtipo', 'nombre'];
+    public $timestamps = false;
 
     //Relación uno a uno con Material
     public function getMaterial(){
