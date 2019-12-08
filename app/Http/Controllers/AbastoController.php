@@ -102,8 +102,8 @@ class AbastoController extends Controller
             if($proveedor['id'] == 0){ //No existe el proveedor
                 //Insertamos al proveedor
                 $persona = new Persona();
+                $persona->proveedor = 1;
                 if(strlen($proveedor['documento']) == 8){
-                    
                     $persona->dni = $proveedor['documento'];
                     $persona->nombres = $proveedor['nombres'];
                     $persona->apellidos = $proveedor['apellidos'];
@@ -115,10 +115,13 @@ class AbastoController extends Controller
                     $persona->tipo = 'E';
                     $abasto->proveedor_nombre = $proveedor['razon_social'];
                 }
-                
                 $persona->save();
                 $abasto->proveedor_id = $persona->id;
             }else{ //Ya existe el proveedor
+                $persona = Persona::findOrFail($proveedor['id']);
+                $persona->proveedor = 1;
+                $persona->save();
+
                 $abasto->proveedor_id = $proveedor['id'];
                 if(strlen($proveedor['documento']) == 8){
                     $abasto->proveedor_nombre = $proveedor['nombres'] . ' ' . $proveedor['apellidos'];

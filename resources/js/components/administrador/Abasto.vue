@@ -93,11 +93,14 @@
                                 <td v-text="abasto.costo_total"></td>
                                 <td v-text="abasto.tipo_abasto? 'Crédito' : 'Contado'"></td>
                                 <td>
-                                    <div v-if="abasto.estado_envio == 'E'">
+                                    <div v-if="abasto.estado_envio == 0">
                                         <span class="badge badge-primary">Enviado</span>
                                     </div>
-                                    <div v-else="">
+                                    <div v-else-if="abasto.estado_envio == 1">
                                         <span class="badge badge-success">Recibido</span>
+                                    </div>
+                                    <div v-else>
+                                        <span class="badge badge-success">Rechazado</span>
                                     </div>
                                 </td>
                                 <td class="text-center">
@@ -111,8 +114,15 @@
                                         <button type="button"  title="Ver más" class="btn btn-primary btn-sm">
                                             <i class="far fa-eye"></i>
                                         </button>
+                                    </template>
+                                    <template v-if="abasto.estado_envio == 0">
                                         <button type="button"  title="Anular" class="btn btn-danger btn-sm">
-                                            <i class="fas fa-trash-alt"></i>
+                                                <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </template>
+                                    <template v-else-if="abasto.estado_envio == 2">
+                                        <button type="button"  title="Reenviar" class="btn btn-info btn-sm">
+                                            <i class="fas fa-plane"></i>
                                         </button>
                                     </template>
                                     
