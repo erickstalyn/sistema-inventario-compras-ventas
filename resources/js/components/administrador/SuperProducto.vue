@@ -721,7 +721,7 @@
                         if ( this.Producto.precio_menor < 0 ) this.Error.mensaje.push("El precio al por menor debe ser positivo");  //precio_menor
                         if ( this.Producto.precio_mayor == 0 ) this.Error.mensaje.push("Debe ingresar un precio al por mayor");     //precio_mayor
                         if ( this.Producto.precio_mayor < 0 ) this.Error.mensaje.push("El precio al por mayor debe ser positivo");  //precio_mayor
-                        if ( found ) this.Error.mensaje.push("Ese producto ya se encuentra en lista");                              //producto repetido
+                        if ( found ) this.Error.mensaje.push("Ese producto ya se encuentra en lista");                              //producto existente
                         break;
                     case 3:
                         this.Error.mensaje.push("Ese nombre de Super Producto ya existe");                                          //superproducto existente

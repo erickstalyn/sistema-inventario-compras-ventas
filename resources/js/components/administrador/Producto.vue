@@ -104,9 +104,9 @@
                     <div class="modal-body">
                         <!-- Modal Numero 1 de AGREGAR-->
                         <div v-if="Modal.numero==1">
-                            <div v-if="Error.estado" class="row d-flex justify-content-center">
+                            <div v-if="Error.estado && (Error.numero==1 || Error.numero==2)" class="row d-flex justify-content-center">
                                 <div class="alert alert-danger">
-                                    <button type="button" @click="Error.estado=0" class="close text-primary" data-dismiss="alert">×</button>
+                                    <button type="button" @click="closeError()" class="close text-primary" data-dismiss="alert">×</button>
                                     <strong>Corregir los siguentes errores:</strong>
                                     <ul> 
                                         <li v-for="error in Error.mensaje" :key="error" v-text="error"></li> 
@@ -114,91 +114,75 @@
                                 </div>
                             </div>
                             <div class="row form-group">
-                                <label class="col-md-3 font-weight-bold">Super Producto&nbsp;(<span class="text-danger">*</span>):</label>
-                                <div class="col-md-9">
-                                    <select v-model="Producto.superproducto_id" class="form-control">
-                                        <option value="0" disabled>seleccione un superproducto</option>
-                                        <option v-for="superproducto in SelectSuperProducto" :key="superproducto.id" :value="superproducto.id" v-text="superproducto.nombre"></option>
-                                    </select>
-                                </div>
+                                <label class="col-md-3">Nombre</label>
+                                <label class="col-md-9 text-success" v-text="Producto.nombre"></label>
                             </div>
                             <div class="row form-group">
-                                <label class="col-md-3 font-weight-bold">Descripcion:</label>
-                                <div class="col-md-9">
-                                    <input type="text" v-model="Producto.descripcion" class="form-control" placeholder="ingrese la descripcion">
-                                </div>
+                                <label class="col-md-5">Super Producto&nbsp;<span class="text-danger">*</span></label>
+                                <select class="col-md-7 custom-select custom-select-sm" v-model="Producto.superproducto_id" @click="updateName()">
+                                    <option value="0" disabled>Seleccione un superproducto</option>
+                                    <option class="text-gray-900" v-for="superproducto in SelectSuperProducto" :key="superproducto.id" :value="superproducto.id" v-text="superproducto.nombre"></option>
+                                </select>
                             </div>
                             <div class="row form-group">
-                                <label class="col-md-3 font-weight-bold">Tamaño&nbsp;(<span class="text-danger">*</span>):</label>
-                                <div class="col-md-9">
-                                    <select v-model="Producto.size" class="form-control">
-                                        <option value="" disabled>seleccione un tamaño</option>
-                                        <option v-for="size in SelectSize" :key="size.nombre" :value="size.nombre" v-text="size.nombre"></option>
-                                    </select>
-                                </div>
+                                <label class="col-md-5">Tamaño&nbsp;<span class="text-danger">*</span></label>
+                                <select class="col-md-7 custom-select custom-select-sm" v-model="Producto.size" @click="updateName()">
+                                    <option value="" disabled>Seleccione un tamaño</option>
+                                    <option class="text-gray-900" v-for="size in SelectSize" :key="size.nombre" :value="size.nombre" v-text="size.nombre"></option>
+                                </select>
                             </div>
                             <div class="row form-group">
-                                <label class="col-md-3 font-weight-bold">Color&nbsp;(<span class="text-danger">*</span>):</label>
-                                <div class="col-md-9">
-                                    <select v-model="Producto.color" class="form-control">
-                                        <option value="" disabled>seleccione un color</option>
-                                        <option v-for="color in SelectColor" :key="color.nombre" :value="color.nombre" v-text="color.nombre"></option>
-                                    </select>
-                                </div>
+                                <label class="col-md-5">Color&nbsp;<span class="text-danger">*</span></label>
+                                <select class="col-md-7 custom-select custom-select-sm" v-model="Producto.color" @click="updateName()">
+                                    <option value="" disabled>seleccione un color</option>
+                                    <option class="text-gray-900" v-for="color in SelectColor" :key="color.nombre" :value="color.nombre" v-text="color.nombre"></option>
+                                </select>
                             </div>
                             <div class="row form-group">
-                                <label class="col-md-3 font-weight-bold">Precio normal&nbsp;(<span class="text-danger">*</span>):</label>
-                                <div class="col-md-9">
-                                    <input type="text" v-model="Producto.precio_menor" class="form-control" placeholder="ingrese el precio normal">
-                                </div>
+                                <label class="col-md-5">Precio al por menor&nbsp;<span class="text-danger">*</span></label>
+                                <input type="number" class="col-md-7 form-control form-control-sm" v-model="Producto.precio_menor" placeholder="Ingrese el precio normal">
                             </div>
                             <div class="row form-group">
-                                <label class="col-md-3 font-weight-bold">Precio al por mayor&nbsp;(<span class="text-danger">*</span>):</label>
-                                <div class="col-md-9">
-                                    <input type="text" v-model="Producto.precio_mayor" class="form-control" placeholder="ingrese el precio al por mayor">
-                                </div>
+                                <label class="col-md-5">Precio al por mayor&nbsp;<span class="text-danger">*</span></label>
+                                <input type="number" class="col-md-7 form-control form-control-sm" v-model="Producto.precio_mayor" placeholder="Ingrese el precio normal">
                             </div>
                         </div>
                         <!-- Modal Numero 2 de VER-->
                         <div v-if="Modal.numero==2">
                             <div class="row form-group">
-                                <label class="col-md-3 font-weight-bold">Nombre</label>
-                                <label class="col-md-9 font-weight-bold" v-text="Producto.nombre"></label>
+                                <label class="col-md-4">Nombre</label>
+                                <label class="col-md-8 text-info" v-text="Producto.nombre"></label>
                             </div>
                             <div class="row form-group">
-                                <label class="col-md-3 font-weight-bold">Codigo</label>
-                                <label class="col-md-9 font-weight-bold" v-text="Producto.codigo?Producto.codigo:'-'"></label>
+                                <label class="col-md-4">Codigo</label>
+                                <label class="col-md-8 text-info" v-text="Producto.codigo?Producto.codigo:'-'"></label>
                             </div>
                             <div class="row form-group">
-                                <label class="col-md-3 font-weight-bold">Descripcion</label>
-                                <label class="col-md-9 font-weight-bold" v-text="Producto.descripcion?Producto.descripcion:'-'"></label>
+                                <label class="col-md-4">Costo de produccion</label>
+                                <label class="col-md-8 text-info" v-text="Producto.costo_produccion"></label>
                             </div>
                             <div class="row form-group">
-                                <label class="col-md-3 font-weight-bold">Costo de produccion</label>
-                                <label class="col-md-3 font-weight-bold" v-text="Producto.costo_produccion"></label>
+                                <label class="col-md-4">Precio normal</label>
+                                <label class="col-md-8 text-info" v-text="Producto.precio_menor"></label>
                             </div>
                             <div class="row form-group">
-                                <label class="col-md-3 font-weight-bold">Precio normal</label>
-                                <label class="col-md-9 font-weight-bold" v-text="Producto.precio_menor"></label>
+                                <label class="col-md-4">Precio al por mayor</label>
+                                <label class="col-md-8 text-info" v-text="Producto.precio_mayor"></label>
                             </div>
                             <div class="row form-group">
-                                <label class="col-md-3 font-weight-bold">Precio al por mayor</label>
-                                <label class="col-md-9 font-weight-bold" v-text="Producto.precio_mayor"></label>
+                                <label class="col-md-4">Stock</label>
+                                <label class="col-md-8 text-info" v-text="Producto.stock"></label>
                             </div>
                             <div class="row form-group">
-                                <label class="col-md-3 font-weight-bold">Stock</label>
-                                <label class="col-md-9 font-weight-bold" v-text="Producto.stock"></label>
-                            </div>
-                            <div class="row form-group">
-                                <label class="col-md-3 font-weight-bold">Fecha de creacion</label>
-                                <label class="col-md-9 font-weight-bold" v-text="Producto.created_at"></label>
+                                <label class="col-md-4">Fecha de creacion</label>
+                                <label class="col-md-8 text-info" v-text="Producto.created_at"></label>
                             </div>
                         </div>
                         <!-- Modal Numero 3 de EDITAR-->
                         <div v-if="Modal.numero==3">
-                            <div v-if="Error.estado" class="row d-flex justify-content-center">
+                            <div v-if="Error.estado && (Error.numero==1 || Error.numero==2)" class="row d-flex justify-content-center">
                                 <div class="alert alert-danger">
-                                    <button type="button" @click="Error.estado=0" class="close text-primary" data-dismiss="alert">×</button>
+                                    <button type="button" @click="closeError()" class="close text-primary" data-dismiss="alert">×</button>
                                     <strong>Corregir los siguentes errores:</strong>
                                     <ul> 
                                         <li v-for="error in Error.mensaje" :key="error" v-text="error"></li> 
@@ -206,49 +190,37 @@
                                 </div>
                             </div>
                             <div class="row form-group">
-                                <label class="col-md-3 font-weight-bold">Super Producto&nbsp;(<span class="text-danger">*</span>):</label>
-                                <div class="col-md-9">
-                                    <select v-model="Producto.superproducto_id" class="form-control">
-                                        <option value="0" disabled>seleccione un superproducto</option>
-                                        <option v-for="superproducto in SelectSuperProducto" :key="superproducto.id" :value="superproducto.id" v-text="superproducto.nombre"></option>
-                                    </select>
-                                </div>
+                                <label class="col-md-3">Nombre</label>
+                                <label class="col-md-9 text-success" v-text="Producto.nombre"></label>
                             </div>
                             <div class="row form-group">
-                                <label class="col-md-3 font-weight-bold">Descripcion:</label>
-                                <div class="col-md-9">
-                                    <input type="text" v-model="Producto.descripcion" class="form-control" placeholder="ingrese la descripcion">
-                                </div>
+                                <label class="col-md-5">Super Producto&nbsp;<span class="text-danger">*</span></label>
+                                <select class="col-md-7 custom-select custom-select-sm" v-model="Producto.superproducto_id" @click="updateName()">
+                                    <option value="0" disabled>Seleccione un superproducto</option>
+                                    <option class="text-gray-900" v-for="superproducto in SelectSuperProducto" :key="superproducto.id" :value="superproducto.id" v-text="superproducto.nombre"></option>
+                                </select>
                             </div>
                             <div class="row form-group">
-                                <label class="col-md-3 font-weight-bold">Tamaño&nbsp;(<span class="text-danger">*</span>):</label>
-                                <div class="col-md-9">
-                                    <select v-model="Producto.size" class="form-control">
-                                        <option value="" disabled>seleccione un tamaño</option>
-                                        <option v-for="size in SelectSize" :key="size.nombre" :value="size.nombre" v-text="size.nombre"></option>
-                                    </select>
-                                </div>
+                                <label class="col-md-5">Tamaño&nbsp;<span class="text-danger">*</span></label>
+                                <select class="col-md-7 custom-select custom-select-sm" v-model="Producto.size" @click="updateName()">
+                                    <option value="" disabled>Seleccione un tamaño</option>
+                                    <option class="text-gray-900" v-for="size in SelectSize" :key="size.nombre" :value="size.nombre" v-text="size.nombre"></option>
+                                </select>
                             </div>
                             <div class="row form-group">
-                                <label class="col-md-3 font-weight-bold">Color&nbsp;(<span class="text-danger">*</span>):</label>
-                                <div class="col-md-9">
-                                    <select v-model="Producto.color" class="form-control">
-                                        <option value="" disabled>seleccione un color</option>
-                                        <option v-for="color in SelectColor" :key="color.nombre" :value="color.nombre" v-text="color.nombre"></option>
-                                    </select>
-                                </div>
+                                <label class="col-md-5">Color&nbsp;<span class="text-danger">*</span></label>
+                                <select class="col-md-7 custom-select custom-select-sm" v-model="Producto.color" @click="updateName()">
+                                    <option value="" disabled>seleccione un color</option>
+                                    <option class="text-gray-900" v-for="color in SelectColor" :key="color.nombre" :value="color.nombre" v-text="color.nombre"></option>
+                                </select>
                             </div>
                             <div class="row form-group">
-                                <label class="col-md-3 font-weight-bold">Precio normal&nbsp;(<span class="text-danger">*</span>):</label>
-                                <div class="col-md-9">
-                                    <input type="text" v-model="Producto.precio_menor" class="form-control" placeholder="ingrese el precio normal">
-                                </div>
+                                <label class="col-md-5">Precio al por menor&nbsp;<span class="text-danger">*</span></label>
+                                <input type="number" class="col-md-7 form-control form-control-sm" v-model="Producto.precio_menor" placeholder="Ingrese el precio normal">
                             </div>
                             <div class="row form-group">
-                                <label class="col-md-3 font-weight-bold">Precio al por mayor&nbsp;(<span class="text-danger">*</span>):</label>
-                                <div class="col-md-9">
-                                    <input type="text" v-model="Producto.precio_mayor" class="form-control" placeholder="ingrese el precio al por mayor">
-                                </div>
+                                <label class="col-md-5">Precio al por mayor&nbsp;<span class="text-danger">*</span></label>
+                                <input type="number" class="col-md-7 form-control form-control-sm" v-model="Producto.precio_mayor" placeholder="Ingrese el precio normal">
                             </div>
                         </div>
                         <!-- Modal Numero 4 de MATERIALES-->
@@ -320,13 +292,13 @@
                         </div>
                     </div>
 
-                    <div class="modal-footer" v-if="permisoModalFooter">
+                    <div class="modal-footer">
                         <div class="row form-group col-md-12 d-flex justify-content-around">
-                            <div v-if="Modal.accion">
-                                <button type="button" @click="accionar(Modal.accion)" class="btn btn-success" v-text="Modal.accion"></button>
+                            <div v-if="Modal.btnA">
+                                <button type="button" @click="accionar()" class="btn btn-success" v-text="Modal.btnA"></button>
                             </div>
-                            <div>
-                                <button type="button" @click="cerrarModal()" class="btn btn-secondary">Cancelar</button>
+                            <div v-if="Modal.btnC">
+                                <button type="button" @click="cerrarModal()" class="btn btn-secondary" v-text="Modal.btnC"></button>
                             </div>
                         </div>
                     </div>
@@ -349,7 +321,6 @@
                     superproducto_id: 0,
                     nombre: '',
                     codigo: 0,
-                    descripcion: '',
                     size: '',
                     color: '',
                     costo_produccion: 0,
@@ -391,8 +362,9 @@
                     numero: 0,
                     estado: 0,
                     titulo: '',
-                    accion: '',
-                    tamaño: ''
+                    tamaño: '',
+                    btnA: '',
+                    btnC: ''
                 },
 
                 //datos de paginacion
@@ -406,18 +378,24 @@
                 },
                 Navegacion:{
                     offset: 3,
-                    ordenarPor: 'nombre',
+                    ordenarPor: 'id',
                     orden: 'desc' 
                 },
 
                 //datos de errores
                 Error: {
                     estado: 0,
+                    numero: 0,
                     mensaje: []
                 },
 
                 //datos de ruta de consultas
-                Ruta: '/producto'
+                Ruta: {
+                    superproducto: '/superproducto',
+                    producto: '/producto',
+                    material: '/material',
+                    data: '/data'
+                }
             }
         },
         computed: {
@@ -466,13 +444,6 @@
                 headers.push({titulo: 'Stock', nombre: 'stock'});
 
                 return headers;
-            },
-            permisoModalFooter: function(){
-                if ( this.Modal.numero == 1 ) return true;
-                if ( this.Modal.numero == 2 ) return true;
-                if ( this.Modal.numero == 3 ) return true;
-
-                return false;
             }
         },
         methods: {
@@ -485,7 +456,7 @@
                 }
                 this.Paginacion.currentPage = page;
 
-                var url = this.Ruta+'?'
+                var url = this.Ruta.producto+'?'
                         +'page='+this.Paginacion.currentPage
                         +'&texto='+this.Busqueda.texto
                         +'&filas='+this.Busqueda.filas
@@ -501,68 +472,76 @@
                 });
             },
             agregar(){
-                if ( this.validar() ) return;
+                if ( this.validar(1) ) return;
                 
                 var me = this;
-                var url = this.Ruta+'/agregar';
+                var url = this.Ruta.producto+'/agregar';
                 axios.post(url , {
                     'superproducto_id' : this.Producto.superproducto_id,
-                    'descripcion' : this.Producto.descripcion,
+                    'nombre' : this.Producto.nombre,
                     'size': this.Producto.size,
                     'color' : this.Producto.color,
                     'precio_menor' : this.Producto.precio_menor,
                     'precio_mayor' : this.Producto.precio_mayor
                 }).then(function(response){
-                    me.cerrarModal();
-                    me.listar();
                     var estado = response.data.estado;
-                    if ( estado == 0 ) console.log(response.data.error);
-                    Swal.fire({
-                        position: 'top-end',
-                        toast: true,
-                        type: estado==1?'success':'info',
-                        title: 'El producto'+ (estado==1?' ':' NO ') +'se ha AGREGADO correctamente',
-                        showConfirmButton: false,
-                        timer: 4500,
-                        animation:false,
-                        customClass:{
-                            popup: 'animated bounceIn fast'
-                        }
-                    });
+                    if ( estado == 1 ) {
+                        me.cerrarModal();
+                        me.listar();
+                        Swal.fire({
+                            position: 'top-end',
+                            toast: true,
+                            type: 'success',
+                            title: 'El producto se ha AGREGADO correctamente',
+                            showConfirmButton: false,
+                            timer: 4500,
+                            animation:false,
+                            customClass:{
+                                popup: 'animated bounceIn fast'
+                            }
+                        });
+                    } else {
+                        console.log(response.data.error);
+                        me.validar(2);
+                    }
                 }).catch(function(error){
                     console.log(error);
                 });
             },
             editar(){
-                if ( this.validar() ) return;
+                if ( this.validar(1) ) return;
                 
                 var me = this;
-                var url = this.Ruta+'/editar';
+                var url = this.Ruta.producto+'/editar';
                 axios.put(url , {
                     'id': this.Producto.id,
                     'superproducto_id' : this.Producto.superproducto_id,
-                    'descripcion' : this.Producto.descripcion,
+                    'nombre' : this.Producto.nombre,
                     'size': this.Producto.size,
                     'color' : this.Producto.color,
                     'precio_menor' : this.Producto.precio_menor,
                     'precio_mayor' : this.Producto.precio_mayor
                 }).then(function(response){
-                    me.cerrarModal();
-                    me.listar();
                     var estado = response.data.estado;
-                    if ( estado == 0 ) console.log(response.data.error);
-                    Swal.fire({
-                        position: 'top-end',
-                        toast: true,
-                        type: estado==1?'success':'info',
-                        title: 'El producto'+ (estado==1?' ':' NO ') +'se ha EDITADO correctamente',
-                        showConfirmButton: false,
-                        timer: 4500,
-                        animation:false,
-                        customClass:{
-                            popup: 'animated bounceIn fast'
-                        }
-                    });
+                    if ( estado == 1 ) {
+                        me.cerrarModal();
+                        me.listar();
+                        Swal.fire({
+                            position: 'top-end',
+                            toast: true,
+                            type: 'success',
+                            title: 'El producto se ha EDITADO correctamente',
+                            showConfirmButton: false,
+                            timer: 4500,
+                            animation:false,
+                            customClass:{
+                                popup: 'animated bounceIn fast'
+                            }
+                        });
+                    } else {
+                        console.log(response.data.error);
+                        me.validar(2);
+                    }
                 }).catch(function(error){
                     console.log(error);
                 });
@@ -589,10 +568,10 @@
                 this.ListaProductoMaterial.splice(indice,1);
             },
             abrirModalAgregar(){
-                this.abrirModal(1, 'Nuevo Producto', 'Agregar', 'modal-xl');
+                this.abrirModal(1, 'Nuevo Producto', '', 'Agregar', 'Cancelar');
 
                 this.Producto.superproducto_id = 0;
-                this.Producto.descripcion = '';
+                this.Producto.nombre = '';
                 this.Producto.size = '';
                 this.Producto.color = '';
                 this.Producto.precio_menor = 0;
@@ -603,11 +582,10 @@
                 this.selectColor();
             },
             abrirModalVer(data = []){
-                this.abrirModal(2, 'Ver Producto', '', 'modal-lg');
+                this.abrirModal(2, 'Ver Producto', '', '', 'Cerrar');
                 
                 this.Producto.nombre = data['nombre'];
                 this.Producto.codigo = data['codigo'];
-                this.Producto.descripcion = data['descripcion'];
                 this.Producto.costo_produccion = data['costo_produccion'];
                 this.Producto.precio_menor = data['precio_menor'];
                 this.Producto.precio_mayor = data['precio_mayor'];
@@ -615,11 +593,11 @@
                 this.Producto.created_at = data['created_at'];
             },
             abrirModalEditar(data = []){
-                this.abrirModal(3, 'Editar Producto', 'Editar', 'modal-sm');
+                this.abrirModal(3, 'Editar Producto', '', 'Editar', 'Cancelar');
                 
                 this.Producto.id = data['id'];
                 this.Producto.superproducto_id = data['superproducto_id'];
-                this.Producto.descripcion = data['descripcion'];
+                this.Producto.nombre = data['nombre'];
                 this.Producto.size = data['size'];
                 this.Producto.color = data['color'];
                 this.Producto.precio_menor = data['precio_menor'];
@@ -645,19 +623,21 @@
 
                 this.selectMaterial();
             },
-            abrirModal(numero, titulo, accion = '', tamaño){
+            abrirModal(numero, titulo, tamaño, btnA, btnC){
                 this.Modal.estado = 1;
                 this.Modal.numero = numero;
                 this.Modal.titulo = titulo;
-                this.Modal.accion = accion;
                 this.Modal.tamaño = tamaño;
+                this.Modal.btnA = btnA;
+                this.Modal.btnC = btnC;
             },
             cerrarModal(){
                 this.Modal.numero = 0;
                 this.Modal.estado = 0;
                 this.Modal.titulo = '';
                 this.Modal.tamaño = '';
-                this.Modal.accion = '';
+                this.Modal.btnA = '';
+                this.Modal.btnC = '';
 
                 this.Error.estado = 0;
                 this.Error.mensaje = [];
@@ -666,7 +646,6 @@
                 this.Producto.superproducto_id = 0;
                 this.Producto.nombre = '';
                 this.Producto.codigo = '';
-                this.Producto.descripcion = '';
                 this.Producto.size = '';
                 this.Producto.color = '';
                 this.Producto.costo_produccion = 0;
@@ -674,10 +653,6 @@
                 this.Producto.precio_mayor = 0;
                 this.Producto.stock = 0;
                 this.Producto.created_at = '';
-
-                this.SelectSuperProducto = [];
-                this.SelectSize = [];
-                this.SelectColor = [];
 
                 this.ListaMaterial = [];
                 this.ListaProductoMaterial = [];
@@ -689,60 +664,70 @@
                 this.ProductoMaterial.costo_unitario = 0;
                 this.ProductoMaterial.cantidad = 0;
                 this.ProductoMaterial.subtotal = 0;
-                
-                this.SelectMaterial = [];
             },
-            accionar(accion){
-                switch( accion ){
-                    case 'Agregar': {
+            accionar(){
+                switch( this.Modal.numero ){
+                    case 1: 
                         this.agregar();
                         break;
-                    }
-                    case 'Editar': {
+                    case 3: 
                         this.editar();
                         break;
-                    }
                 }
             },
             selectSuperProducto(){
-                var me = this;
-                var url = this.Ruta+'/selectSuperProducto';
-
-                axios.get(url).then(function(response){
-                    me.SelectSuperProducto = response.data;
-                }).catch(function(error){
-                    console.log(error);
-                });
+                if ( !this.SelectSuperProducto.lenth ) {
+                    var me = this;
+                    var url = this.Ruta.superproducto+'/selectSuperProducto';
+                    axios.get(url).then(function(response){
+                        me.SelectSuperProducto = response.data;
+                    }).catch(function(error){
+                        console.log(error);
+                    });
+                }
             },
             selectSize(){
-                var me = this;
-                var url = this.Ruta+'/selectSize';
-
-                axios.get(url).then(function(response){
-                    me.SelectSize = response.data;
-                }).catch(function(error){
-                    console.log(error);
-                });
+                if ( !this.SelectSize.lenth ) {
+                    var me = this;
+                    var url = this.Ruta.data+'/selectSize';
+                    axios.get(url).then(function(response){
+                        me.SelectSize = response.data;
+                    }).catch(function(error){
+                        console.log(error);
+                    });
+                }
             },
             selectColor(){
-                var me = this;
-                var url = this.Ruta+'/selectColor';
+                if ( !this.SelectColor.lenth ) {
+                    var me = this;
+                    var url = this.Ruta.data+'/selectColor';
+                    axios.get(url).then(function(response){
+                        me.SelectColor = response.data;
+                    }).catch(function(error){
+                        console.log(error);
+                    });
+                }
+            },
+            updateName(){
+                var name = '';
+                for (let i = 0; i < this.SelectSuperProducto.length; i++) {
+                    if ( this.SelectSuperProducto[i].id == this.Producto.superproducto_id ) {
+                        name = this.SelectSuperProducto[i].nombre; break;
+                    }
+                }
 
-                axios.get(url).then(function(response){
-                    me.SelectColor = response.data;
-                }).catch(function(error){
-                    console.log(error);
-                });
+                this.Producto.nombre = name + ' ' + this.Producto.size + ' ' + this.Producto.color;
             },
             selectMaterial(){
-                var me = this;
-                var url = this.Ruta+'/selectMaterial';
-
-                axios.get(url).then(function(response){
-                    me.SelectMaterial = response.data;
-                }).catch(function(error){
-                    console.log(error);
-                });
+                if ( !this.SelectMaterial.lenth ) {
+                    var me = this;
+                    var url = this.Ruta.material+'/selectMaterial';
+                    axios.get(url).then(function(response){
+                        me.SelectMaterial = response.data;
+                    }).catch(function(error){
+                        console.log(error);
+                    });
+                }
             },
             getTitulo(titulo){
                 var seleccionada = 0;
@@ -775,24 +760,34 @@
                     }
                 }
             },
-            validar(){
+            validar(numero){
                 this.Error.estado = 0;
+                this.Error.numero = numero;
                 this.Error.mensaje = [];
 
-                //superproducto
-                if ( this.Producto.superproducto_id == 0 ) this.Error.mensaje.push("Debe seleccionar un superproducto");
-                //size
-                if ( this.Producto.size == '' ) this.Error.mensaje.push("Debe seleccionar un tamaño");
-                //color
-                if ( this.Producto.color == '' ) this.Error.mensaje.push("Debe seleccionar un color");
-                //precio_menor
-                if ( this.Producto.precio_menor == 0) this.Error.mensaje.push("Debe ingresar un precio normal");
-                //precio_mayor
-                if ( this.Producto.precio_mayor == 0) this.Error.mensaje.push("Debe ingresar un precio al por mayor");
+                switch (numero) {
+                    case 1:
+                        if ( this.Producto.superproducto_id == 0 ) this.Error.mensaje.push("Debe seleccionar un superproducto");    //superproducto
+                        if ( this.Producto.size == '' ) this.Error.mensaje.push("Debe seleccionar un tamaño");                      //size
+                        if ( this.Producto.color == '' ) this.Error.mensaje.push("Debe seleccionar un color");                      //color
+                        if ( this.Producto.precio_menor == 0) this.Error.mensaje.push("Debe ingresar un precio al por menor");      //precio_menor
+                        if ( this.Producto.precio_menor < 0) this.Error.mensaje.push("El precio al por menor debe ser positivo");   //precio_menor
+                        if ( this.Producto.precio_mayor == 0) this.Error.mensaje.push("Debe ingresar un precio al por mayor");      //precio_mayor
+                        if ( this.Producto.precio_mayor < 0) this.Error.mensaje.push("El precio al por mayor debe ser positivo");   //precio_mayor
+                        break;
+                    case 2:
+                        this.Error.mensaje.push("Este producto ya existe");                                                         //producto existente
+                        break;
+                }
 
                 if ( this.Error.mensaje.length ) this.Error.estado = 1;
 
                 return this.Error.estado;
+            },
+            closeError(){
+                this.Error.estado = 0;
+                this.Error.numero = 0;
+                this.Error.mensaje = [];
             },
             cambiarPagina(page){
                 if ( page >= 1 && page <= this.Paginacion.lastPage) {

@@ -103,6 +103,12 @@ class SuperProductoController extends Controller{
             'error' => $error
         ];
     }
+    
+    public function selectSuperProducto(Request $request){
+        $superproductos = SuperProducto::select('id', 'nombre')
+                                    ->orderBy('nombre', 'desc')->get();
+        return $superproductos;
+    }
 
 }
 

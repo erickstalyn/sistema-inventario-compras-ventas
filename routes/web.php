@@ -57,6 +57,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::put('/material/activar', 'MaterialController@activar');
         Route::put('/material/desactivar', 'MaterialController@desactivar');
         Route::get('/material/selectUnidad', 'MaterialController@selectUnidad'); //metodos secundarios
+        Route::get('/material/selectMaterial', 'MaterialController@selectMaterial'); 
 
         //RUTAS PARA PRODUCCIONES
         Route::get('/produccion', 'ProduccionController@listar'); //métodos generales
@@ -69,18 +70,13 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/superproducto', 'SuperProductoController@listar'); //metodos generales
         Route::post('/superproducto/agregar', 'SuperProductoController@agregar');
         Route::put('/superproducto/editar', 'SuperProductoController@editar');
-        Route::put('/superproducto/setEstado', 'SuperProductoController@setEstado');
+        Route::get('/superproducto/selectSuperProducto', 'SuperProductoController@selectSuperProducto'); //metodos secundarios
 
         //RUTAS PARA PRODUCTO
         Route::get('/producto', 'ProductoController@listar'); //metodos generales
         Route::post('/producto/agregar', 'ProductoController@agregar');
         Route::put('/producto/editar', 'ProductoController@editar');
-        Route::put('/producto/setEstado', 'ProductoController@setEstado');
-        Route::get('/producto/selectSuperProducto', 'ProductoController@selectSuperProducto'); //metodos secundarios
-        Route::get('/producto/selectSize', 'ProductoController@selectSize'); 
-        Route::get('/producto/selectColor', 'ProductoController@selectColor'); 
-        Route::get('/producto/selectMaterial', 'ProductoController@selectMaterial'); 
-        Route::get('/producto/listaProducto', 'ProductoController@listaProducto'); 
+        Route::get('/producto/listaProducto', 'ProductoController@listaProducto');  //metodos secundarios
 
         //RUTAS PARA DATA
         Route::get('/data/selectSize', 'DataController@selectSize'); 

@@ -24,8 +24,7 @@ class ProductoController extends Controller {
 
         $productos = Producto::where(function ($query) use ($texto) {
                                 if ( $texto != '' ) {
-                                    $query->where('nombre', 'like', '%'.$texto.'%')
-                                        ->orWhere('descripcion', 'like', '%'.$texto.'%')
+                                    $query->where('nombre', 'like', $texto.'%')
                                         ->orWhere('codigo', 'like', '%'.$texto.'%');
                                 }
                             })
@@ -50,12 +49,9 @@ class ProductoController extends Controller {
         try {
             DB::beginTransaction();
             
-            $superproducto = SuperProducto::findOrFail($request->superproducto_id);
-            
             $producto = new Producto();
             $producto->superproducto_id = $request->superproducto_id;
-            $producto->nombre = $superproducto->nombre.' '.$request->size.' '.$request->color;
-            $producto->descripcion = $request->descripcion==''?NULL:$request->descripcion;
+            $producto->nombre = $request->nombre;
             $producto->size = $request->size;
             $producto->color = $request->color;
             $producto->precio_menor = $request->precio_menor;
@@ -82,12 +78,9 @@ class ProductoController extends Controller {
         try {
             DB::beginTransaction();
 
-            $superproducto = SuperProducto::findOrFail($request->superproducto_id);
-
             $producto = Producto::findOrFail($request->id);
             $producto->superproducto_id = $request->superproducto_id;
-            $producto->nombre = $superproducto->nombre.' '.$request->size.' '.$request->color;
-            $producto->descripcion = $request->descripcion==''?NULL:$request->descripcion;
+            $producto->nombre = $request->nombre;
             $producto->size = $request->size;
             $producto->color = $request->color;
             $producto->precio_menor = $request->precio_menor;
@@ -105,29 +98,6 @@ class ProductoController extends Controller {
             'estado' => $error==NULL?1:0,
             'error' => $error
         ];
-    }
-
-    public function selectSuperProducto(Request $request){
-        $superproductos = SuperProducto::select('id', 'nombre')
-                                    ->orderBy('nombre', 'desc')->get();
-
-        return $superproductos;
-    }
-    public function selectSize(Request $request){
-        $tamaños = Data::select('nombre')
-                    ->where('tipo', '=', 'T')->get();
-
-        return $tamaños;
-    }
-    public function selectColor(Request $request){
-        $colores = Data::select('nombre')
-                    ->where('tipo', '=', 'C')->get();
-
-        return $colores;
-    }
-    public function selectMaterial(Request $request){
-        $materiales = Material::orderBy('nombre', 'desc')->get();
-        return $materiales;
     }
 
     public function listaProducto(Request $request){
