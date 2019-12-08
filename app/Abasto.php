@@ -11,6 +11,8 @@ class Abasto extends Model
         'total', 'tipo', 'proveedor_id', 'administrador_id', 'centro_id', 'created_at'
     ];
 
+    public $timestamps = false;
+
     //Relación de uno a muchos con Envio
     public function getEnvios()
     {
@@ -19,7 +21,7 @@ class Abasto extends Model
     //Relación inversa de uno a muchos con proveedor
     public function getProveedor()
     {
-        return $this->belongsTo('App\Proveedor');
+        return $this->belongsTo('App\Persona');
     }
 
     //Relación de muchos a muchos con Producto

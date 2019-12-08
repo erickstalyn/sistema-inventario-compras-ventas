@@ -155,7 +155,7 @@
                     <div class="modal-body">
                         <div class="container-fluid">
                         <!-- Modal Numero 1 de AGREGAR-->
-                            <div v-if="Modal.numero==1">
+                            <!-- <div v-if="Modal.numero==1"> -->
                                 <!-- Filtro de productos -->
                                 <div v-if="Error.estado" class="row d-flex justify-content-center">
                                     <div class="alert alert-danger">
@@ -175,17 +175,12 @@
                                             <div class="col-md-3">
                                                 <div class="input-group"> 
                                                     RUC/DNI&nbsp;<span class="text-danger">*</span>&nbsp;
-                                                    <input type="text" class="form-control form-control-sm" v-model="DatosServicio.documento">
+                                                    <input type="text" class="form-control form-control-sm" v-model="DatosServicio.documento" autofocus>
                                                     <button type="button" class="btn btn-sm btn-primary" @click="consultar()">
                                                         <i class="fas fa-sync-alt"></i>
                                                     </button>
                                                 </div>
                                             </div>
-                                            <!-- <div class="col-md-3" :class="DatosServicio.alert">
-                                                <span role="status" :class="Carga.clase">
-                                                </span>&nbsp;
-                                                <span v-text="DatosServicio.mensaje"></span>
-                                            </div> -->
                                             <div class="col-md-3">
                                                 <h5>
                                                     <span role="status" :class="Carga.clase">
@@ -199,19 +194,19 @@
                                                 <div class="col-md-2">
                                                     <div class="input-group"> 
                                                         DNI&nbsp;
-                                                        <input type="text" class="form-control form-control-sm" readonly v-model="DatosProveedor.dni">
+                                                        <input type="text" class="form-control form-control-sm" readonly v-model="DatosProveedor.documento">
                                                     </div>
                                                 </div>
-                                                <div class="col-md-3">
+                                                <div class="" :class="Modal.numero == 2 ? 'col-md-3': 'col-md-4'">
                                                     <div class="input-group">
                                                         <label >Nombres</label>&nbsp;
-                                                        <input type="text" class="form-control form-control-sm" v-model="DatosProveedor.nombres">
+                                                        <input type="text" class="form-control form-control-sm" readonly v-model="DatosProveedor.nombres">
                                                     </div>
                                                 </div>
-                                                <div class="col-md-3">
+                                                <div class="" :class="Modal.numero == 2 ? 'col-md-3': 'col-md-6'">
                                                     <div class="input-group">
                                                         <label >Apellidos</label>&nbsp;
-                                                        <input type="text" class="form-control form-control-sm" v-model="DatosProveedor.apellidos">
+                                                        <input type="text" class="form-control form-control-sm" readonly v-model="DatosProveedor.apellidos">
                                                     </div>
                                                 </div>
                                             </div>
@@ -221,13 +216,13 @@
                                                 <div class="col-md-2">
                                                     <div class="input-group"> 
                                                         RUC&nbsp;
-                                                        <input type="text" class="form-control form-control-sm" readonly v-model="DatosProveedor.ruc">
+                                                        <input type="text" class="form-control form-control-sm" readonly v-model="DatosProveedor.documento">
                                                     </div>
                                                 </div>
-                                                <div class="col-md-6">
+                                                <div class="" :class="Modal.numero == 2 ? 'col-md-6': 'col-md-10'">
                                                     <div class="input-group">
                                                         <label >Razón social</label>&nbsp;
-                                                        <input type="text" class="form-control form-control-sm" v-model="DatosProveedor.razon_social">
+                                                        <input type="text" class="form-control form-control-sm" v-model="DatosProveedor.razon_social" :readonly="DatosServicio.readonly">
                                                     </div>
                                                 </div>
                                             </div>
@@ -241,7 +236,7 @@
                                         </div>
                                         <div class="row">
                                             <div class="input-group"> 
-                                                <input type="search" class="form-control form-control-sm" v-model="BusquedaFiltro.texto" @keyup.enter="listarFiltro()" id="filtroProducto" autofocus placeholder="Producto,marca,modelo,tamaño,color">
+                                                <input type="search" class="form-control form-control-sm" v-model="BusquedaFiltro.texto" @keyup.enter="listarFiltro()" id="filtroProducto" placeholder="Producto,marca,modelo,tamaño,color">
                                                 <button type="button" class="btn btn-sm btn-primary" @click="listarFiltro()">
                                                     <i class="fa fa-search"></i>&nbsp; Buscar
                                                 </button>
@@ -278,7 +273,20 @@
                                     </div>
                                     <div class="col-md-8 ml-auto container">
                                         <div class="row">
-                                            <h5 class="font-weight-bold">Lista de items</h5>
+                                            <div class="col-md-3 p-0">
+                                                <h5 class="font-weight-bold">Lista de items</h5>
+                                            </div>
+                                            <div class="col-md-6"></div>
+                                            <div class="col-md-3">
+                                                <div class="input-group">
+                                                    <label for="tipo">Tipo</label>&nbsp;
+                                                    <select v-model="Abasto.tipo" class="custom-select custom-select-sm" id="tipo">
+                                                        <option value="-1">Seleccione</option>
+                                                        <option value="0">Contado</option>
+                                                        <option value="1">Credito</option>
+                                                    </select>
+                                                </div>
+                                            </div>
                                         </div>
                                         <div class="row form-group ec-table-modal overflow-auto">
                                             <div v-if="ListaDetalleAbasto.length">
@@ -289,7 +297,7 @@
                                                             <th>Nombre</th>
                                                             <th style="width: 5rem;">Cant.</th>
                                                             <th style="width: 5rem;">P. Unit.</th>
-                                                            <th>Subtotal</th>
+                                                            <th class="text-center">Subtotal</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -306,8 +314,7 @@
                                                             <td>
                                                                 <input type="number" v-model="detalle.costo_abasto" class="form-control form-control-sm" min="0">
                                                             </td>
-                                                            <td>
-                                                                <!-- s/ {{(detalle.costo_produccion * detalle.cantidad).toFixed(2)}} -->
+                                                            <td class="text-right pr-3">
                                                                 {{detalle.subtotal = (detalle.costo_abasto * detalle.cantidad).toFixed(2)}}
                                                             </td>
                                                         </tr>
@@ -319,70 +326,33 @@
                                                 <p>Sin detalles de abasto</p>
                                             </div>
                                         </div>
-                                        <div class="row form-group">
+                                        <div class="row">
                                             <div class="col-md-4">
-                                                <div class="input-group" style="width: 11.2rem;"> 
+                                                <div class="input-group" style="width: 11.2rem;" v-if="Abasto.tipo == '1'"> 
                                                     <label for="">Pago inicial</label>&nbsp;
-                                                    <input type="number" class="form-control form-control-sm">
+                                                    <input type="number" class="form-control form-control-sm" v-model="Abasto.pagoInicial" min="0">
                                                 </div>
                                             </div>
                                             <div class="col-md-3">
                                             </div>
                                             <div class="col-md-5">
-                                                <div class="input-group"> 
-                                                    <label for="">Desembolso total: s/ 1573.00 </label>
-                                                </div>
+                                                <p class="text-right pr-1">Desembolso total: s/ {{getDesembolso}}</p>
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-4">
                                                 <div class="input-group"> 
                                                     <label for="">Enviar a</label>&nbsp;
-                                                    <select class="custom-select custom-select-sm text-gray-900">
-                                                        <option value="">Seleccione</option>
-                                                        <option value="">Almacén 1</option>
-                                                        <option value="">Almacén 2</option>
-                                                        <option value="">Almacén 3</option>
+                                                    <select v-model="Abasto.centro_to_id" class="custom-select custom-select-sm text-gray-900">
+                                                        <option value="0">Seleccione</option>
+                                                        <option v-for="item in SelectAlmacen" :key="item.id" :value="item.id" v-text="item.nombre" ></option>
                                                     </select>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                
-                                <!-- <div class="row">
-                                    <div class="col-md-3"></div>
-                                    <div class="col-md-4 form-inline">
-                                        Fecha de inicio&nbsp;<span class="text-danger">*</span>
-                                        <input type="date" class="form-control form-control-sm" >
-                                    </div>
-                                    <div class="col-md-5 form-inline">
-                                        Fecha prog. finalización&nbsp;<span class="text-danger">*</span>
-                                        <input type="date" class="form-control form-control-sm" >
-                                    </div>
-                                </div> -->
-                                
-                            </div>
-                            <!-- <div v-if="Modal.numero==3">
-                                <div v-if="Error.estado" class="row d-flex justify-content-center">
-                                    <div class="alert alert-danger">
-                                        <button type="button" @click="Error.estado=0" class="close text-primary" data-dismiss="alert">×</button>
-                                        <strong>Corregir los siguentes errores:</strong>
-                                        <ul> 
-                                            <li v-for="error in Error.mensaje" :key="error" v-text="error"></li> 
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="row form-group">
-                                    <label class="col-md-5 font-weight-bold" for="des">Seleccione almacén&nbsp;<span class="text-danger">*</span></label>
-                                    <div class="col-md-7">
-                                        <select  class="custom-select">
-                                            <option value="" disabled>Almacen</option>
-                                            <option v-for="item in SelectAlmacen" :key="item.id" :value="item.id" v-text="item.nombre"></option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div> -->
+                            <!-- </div> -->
                         </div>
                     </div>
 
@@ -407,18 +377,16 @@
                 Abasto: {
                     id: 0,
                     total: 0.00,
-                    tipo: 0,
-                    proveedor_id: 0,
-                    administrador_id: 0,
-                    centro_id: 0,
+                    tipo: -1, // 0: Contado, 1: Credito
+                    centro_to_id: 0, //Almacén donde se enviará el abasto
                     created_at : '',
+                    pagoInicial: '',
                 },
                 DatosProveedor:{
                     id: 0,
-                    dni: '',
+                    documento: '',
                     nombres: '',
                     apellidos: '',
-                    ruc: '',
                     razon_social: ''
                 },
                 SelectUnidad: [],
@@ -434,7 +402,7 @@
 
                 //datos de modales
                 Modal: {
-                    numero: 0,
+                    numero: 0, // 1: Agregar, 2: Ver, 3: Pagar
                     estado: 0,
                     titulo: '',
                     accion: ''
@@ -465,12 +433,8 @@
                     texto: ''
                 },
                 ListaProducto:[
-                    // {nombre: 'Camperita Silmar Roja Grande', stock: 56},
-                    // {nombre: 'Mochila Porta Verde mediana', stock: 100}
                 ],
                 ListaDetalleAbasto:[
-                    // {nombre: 'Camperita Silmar Roja Grande', stock: 56},
-                    // {nombre: 'Mochila Porta Verde mediana', stock: 100}
                 ],
                 //DATOS PARA ENVIAR UNA PRODUCCION
                 SelectAlmacen: [],
@@ -479,7 +443,8 @@
                     documento: '',
                     tipo: 0, //1->PERSONA, 2-> EMPRESA
                     mensaje: '',
-                    alert: ''
+                    alert: '',
+                    readonly: false
                 },
                 Carga: {
                     clase: ''
@@ -538,15 +503,13 @@
             //     });
             //     return selectUnidadFiltrado;
             // },
-            // getTotal: function(){
-            //     this.Produccion.total = 0.00;
-            //     this.ListaDetalleProduccion.forEach( detalle => {
-            //         // console.log(Number.parseFloat(detalle.costo_produccion * detalle.cantidad).toFixed(2));
-            //         // this.Produccion.total = this.Produccion.total + detalle.costo_produccion * detalle.cantidad;
-            //         this.Produccion.total = this.Produccion.total + detalle.costo_produccion * detalle.cantidad;
-            //     });
-            //     return (this.Produccion.total).toFixed(2);
-            // }
+            getDesembolso: function(){
+                this.Abasto.total = 0.00;
+                this.ListaDetalleAbasto.forEach( detalle => {
+                    this.Abasto.total = this.Abasto.total + detalle.costo_abasto * detalle.cantidad;
+                });
+                return (this.Abasto.total).toFixed(2);
+            }
         },
         methods: {
             listar(page = 1, ordenarPor = ''){
@@ -579,7 +542,7 @@
             listarFiltro(){
                 if(this.BusquedaFiltro.texto != ''){
                     let me = this;
-                    let url = '/libreria/getProductoFiltrado?texto=' + this.BusquedaFiltro.texto;
+                    let url = '/producto/getProductoFiltrado?texto=' + this.BusquedaFiltro.texto;
                     axios.get(url).then(function(response){
                         if(response.data.productos.length == 1 && me.BusquedaFiltro.texto == response.data.productos[0].codigo){
                             me.agregarDetalle(response.data.productos[0]);
@@ -632,9 +595,6 @@
                     case 8: case 11:
                         this.consultarDB();
                         break;
-                    // case 11:
-                    //     this.consultarRUC();
-                    //     break;
                     default:
                         // this.DatosServicio.alert = 'alert alert-danger';
                         this.DatosServicio.alert = 'badge badge-primary';
@@ -644,7 +604,7 @@
             },
             consultarDB(){
                 var me = this;
-                var url = '/libreria/getPersona';
+                var url = '/persona/getPersona';
 
                 me.DatosServicio.alert = 'badge badge-info';
                 me.DatosServicio.mensaje = 'Consultado...';
@@ -654,27 +614,33 @@
                         'documento': me.DatosServicio.documento
                     }
                 }).then(function(response){
-                    console.log(response.data.persona.length);
                     if(response.data.persona.length){//Si existe la persona en la db
                         me.DatosServicio.alert = '';
                         me.DatosServicio.mensaje = '';
                         me.Carga.clase = '';
 
                         const persona = response.data.persona[0];
+                        me.DatosProveedor.id = persona.id;
                         if(persona.razon_social){//Es una EMPRESA
                             me.DatosServicio.tipo = 2;
-                            me.DatosProveedor.ruc = me.DatosServicio.documento;
+                            me.DatosServicio.readonly = true;
+                            me.DatosProveedor.documento = me.DatosServicio.documento;
                             me.DatosProveedor.razon_social = persona.razon_social;
+
+                            me.DatosServicio.documento = '';
                         }else{//Es una PERSONA
                             me.DatosServicio.tipo = 1;
-                            me.DatosProveedor.dni = me.DatosServicio.documento;
+                            me.DatosProveedor.documento = me.DatosServicio.documento;
                             me.DatosProveedor.nombres = persona.nombres;
                             me.DatosProveedor.apellidos = persona.apellidos;
+                            
+                            me.DatosServicio.documento = '';
                         }
                     }else{//No esxiste la persona en la db
-                        if(me.DatosServicio.documento.length == 8){//Consultar DNI
-                            
-                        }else{//Consultar RUC
+                        me.DatosProveedor.id = 0;
+                        if(me.DatosServicio.documento.length == 8){
+                            me.consultarDNI();
+                        }else{
                             me.consultarRUC();
                         }
                     }
@@ -700,7 +666,8 @@
                             me.DatosServicio.alert = '';
                             me.DatosServicio.mensaje = '';
                             me.DatosServicio.tipo = 2;
-                            me.DatosProveedor.ruc = data.RUC;
+                            me.DatosServicio.readonly = false;
+                            me.DatosProveedor.documento = data.RUC;
                             me.DatosProveedor.razon_social = data.RazonSocial;
                         }else{
                             me.DatosServicio.alert = 'badge badge-primary';
@@ -709,117 +676,48 @@
                         me.Carga.clase = '';
                     }
                 }).fail(function(){
-                    console.log('no existe');
                 });
             },
-            // agregar(){
-            //     if ( this.validar() ) return;
-                
-            //     var me = this;
-            //     axios.post('/produccion/agregar', {
-            //         //Datos de la produccion
-            //         'total' : this.Produccion.total,
-            //         'fecha_inicio' : this.Produccion.fecha_inicio,
-            //         'fecha_programada' : this.Produccion.fecha_programada,
-            //         'almacen_id': this.Produccion.almacen_id,
-            //         //Datos del detalle de venta
-            //         'listaDetalleProduccion' : this.ListaDetalleProduccion
-            //     }).then(function(response){
-            //         me.cerrarModal();
-            //         me.listar();
-            //         Swal.fire({
-            //             position: 'top-end',
-            //             toast: true,
-            //             type: 'success',
-            //             title: 'La produccion se ha REGISTRADO correctamente',
-            //             showConfirmButton: false,
-            //             timer: 4500,
-            //             animation:false,
-            //             customClass:{
-            //                 popup: 'animated bounceIn fast'
-            //             }
-            //         });
-            //     }).catch(function(error){
-            //         console.log(error);
-            //     });
-            // },
-            // editar(){
-            //     if ( this.validar() ) return;
-
-            //     var me = this;
-            //     axios.put('/material/editar', {
-            //         'id' : this.Material.id,
-            //         'nombre' : this.Material.nombre,
-            //         'subtipo' : this.Material.subtipo,
-            //         'unidad' : this.Material.unidad,
-            //         'costo' : this.Material.costo,
-            //     }).then(function(response){
-            //         me.cerrarModal();
-            //         me.listar();
-            //         Swal.fire({
-            //             position: 'top-end',
-            //             toast: true,
-            //             type: 'success',
-            //             title: 'El Material se ha EDITADO correctamente',
-            //             showConfirmButton: false,
-            //             timer: 4500,
-            //             animation:false,
-            //             customClass:{
-            //                 popup: 'animated bounceIn fast'
-            //             }
-            //         });
-            //     }).catch(function(error){
-            //         console.log(error);
-            //     });
-            // },
+            consultarDNI(){
+                let me = this;
+                let dni = me.DatosServicio.documento;
+                $.ajax({
+                    type: 'GET',
+                    url: "http://localhost:80/Reniec/demo.php",
+                    data: "dni="+dni,
+                    beforeSend(){
+                        me.Carga.clase = 'spinner-border spinner-border-sm text-primary';
+                        me.DatosServicio.alert = 'badge badge-info';
+                        me.DatosServicio.mensaje = 'Consultado...';
+                    },
+                    success: function (data, textStatus, jqXHR) {
+                        let persona = JSON.parse(data);
+                        if(persona.estado == true){
+                            me.DatosServicio.documento = '';
+                            me.DatosServicio.alert = '';
+                            me.DatosServicio.mensaje = '';
+                            me.DatosServicio.tipo = 1;
+                            me.DatosProveedor.documento = persona.dni;
+                            me.DatosProveedor.nombres = persona.nombres;
+                            me.DatosProveedor.apellidos = persona.apellidos;
+                        }else{
+                            me.DatosServicio.alert = 'badge badge-primary';
+                            me.DatosServicio.mensaje = 'El DNI no existe';
+                        }
+                        me.Carga.clase = '';
+                    }
+                }).fail(function(){
+                });
+            },
             abrirModalAgregar(){
                 this.abrirModal(1, 'Registrar Abasto', 'Agregar');
-                // let inputFiltro = document.getElementById('filtroProducto');
-                // inputFiltro.focus();
+                if(!this.SelectAlmacen.length) this.selectAlmacen();
             },
-            // abrirModalEnviar(){
-            //     this.abrirModal(3, 'Enviar Produccion', 'Enviar');
-            //     if(this.SelectAlmacen == 0) this.selectAlmacen();
-            // },
-            // abrirModalEditar(data = []){
-            //     this.abrirModal(2, 'Editar Material', 'Editar');
-                
-            //     this.Material.id = data['id'];
-            //     this.Material.nombre = data['nombre'];
-            //     this.Material.subtipo = data['subtipo'];
-            //     this.Material.unidad = data['unidad'];
-            //     this.Material.costo  = data['costo'];
-
-            //     //Lleno los campos de mi Material Original
-            //     this.MaterialOrigen.id = data['id'];
-            //     this.MaterialOrigen.nombre = data['nombre'];
-            //     this.MaterialOrigen.subtipo = data['subtipo'];
-            //     this.MaterialOrigen.unidad = data['unidad'];
-            //     this.MaterialOrigen.costo  = data['costo'];
-                
-            //     //Verifico si el arreglo SelectUnidad esta vacia
-            //     if(!this.SelectUnidad.length) this.selectUnidad();
-            // },
             abrirModal(numero, titulo, accion){
                 this.Modal.estado = 1;
                 this.Modal.numero = numero;
                 this.Modal.titulo = titulo;
                 this.Modal.accion = accion;
-            },
-            cerrarModal(){
-                this.Modal.numero = 0;
-                this.Modal.estado = 0;
-                this.Modal.mensaje = [];
-
-                this.Error.estado = 0;
-                this.Error.mensaje = [];
-
-                this.Abasto.id = 0;
-                this.Abasto.total = 0.00;
-
-                this.ListaDetalleAbasto = [];
-                this.BusquedaFiltro.texto = '';
-
             },
             accionar(accion){
                 switch( accion ){
@@ -831,20 +729,103 @@
                         this.editar();
                         break;
                     }
-                    // case 'Finalizar': {
-                    //     this.finalizar();
-                    //     break;
-                    // }
-                    // case 'Activar': {
-                    //     this.activar();
-                    //     break;
-                    // }
-                    // case 'Desactivar': {
-                    //     this.desactivar();
-                    //     break;
-                    // }
                 }
             },
+            validar(){
+                this.Error.estado = 0;
+                this.Error.mensaje = [];
+
+                //Recorrere la lista de Material
+                if(this.Modal.numero == 1){ //Modal agregar
+                    if (this.DatosProveedor.documento == '') this.Error.mensaje.push('Debe ingresar datos del proveedor');
+                    if (!this.ListaDetalleAbasto.length ) {
+                        this.Error.mensaje.push("No existe ningun detalle de abasto");
+                    }else if(this.Abasto.total == 0.00){
+                        this.Error.mensaje.push("El total no puede ser cero");
+                    }else if(this.Abasto.centro_to_id == 0){
+                        this.Error.mensaje.push('Debe seleccionar el almacén receptor');
+                    }
+
+                    if(this.Abasto.tipo == -1){
+                        this.Error.mensaje.push("Debe seleccionar el tipo de abasto");
+                    }else if(this.Abasto.tipo == 1){
+                        if(this.Abasto.pagoInicial == '' || this.Abasto.pagoInicial < 0) this.Error.mensaje.push("Debe ingresar un pago inicial válido (mayor o igual a '0')");
+                    }
+                }else{ //Modal editar
+                    
+                }
+                if ( this.Error.mensaje.length ) this.Error.estado = 1;
+                return this.Error.estado;
+            },
+            agregar(){
+                if ( this.validar() ) return;
+                
+                var me = this;
+                axios.post('/abasto/agregar', {
+                    //Datos del abasto
+                    'id' : this.Abasto.id,
+                    'total': this.Abasto.total,
+                    'tipo': this.Abasto.tipo, 
+                    'centro_to_id': this.Abasto.centro_to_id,
+                    'pagoInicial': this.Abasto.pagoInicial,
+                    'proveedor': this.DatosProveedor,
+                    //Datos del detalle de abasto
+                    'listaDetalleAbasto': this.ListaDetalleAbasto
+                    
+                }).then(function(response){
+                    me.cerrarModal();
+                    me.listar();
+                    Swal.fire({
+                        position: 'top-end',
+                        toast: true,
+                        type: 'success',
+                        title: 'El abasto se ha REGISTRADO correctamente',
+                        showConfirmButton: false,
+                        timer: 4500,
+                        animation:false,
+                        customClass:{
+                            popup: 'animated bounceIn fast'
+                        }
+                    });
+                }).catch(function(error){
+                    console.log(error);
+                });
+            },
+            
+            // abrirModalEnviar(){
+            //     this.abrirModal(3, 'Enviar Produccion', 'Enviar');
+            //     if(this.SelectAlmacen == 0) this.selectAlmacen();
+            // },
+            
+            cerrarModal(){
+                this.Modal.numero = 0;
+                this.Modal.estado = 0;
+                this.Modal.mensaje = [];
+
+                this.Error.estado = 0;
+                this.Error.mensaje = [];
+
+                this.DatosServicio.documento = '';
+                this.DatosServicio.alert = '';
+                this.DatosServicio.mensaje = '';
+
+                this.Abasto.id = 0;
+                this.Abasto.total = 0.00;
+                this.Abasto.pagoInicial = '';
+                this.Abasto.centro_to_id = 0;
+                this.Abasto.tipo = -1;
+
+                this.DatosServicio.tipo = 0;
+                this.DatosProveedor.id = 0;
+                this.DatosProveedor.documento = '';
+                this.DatosProveedor.nombres = '';
+                this.DatosProveedor.apellidos = '';
+                this.DatosProveedor.razon_social = '';
+
+                this.ListaDetalleAbasto = [];
+                this.BusquedaFiltro.texto = '';
+            },
+            
             getTitulo(titulo){
                 var seleccionada = 0;
 
@@ -865,57 +846,11 @@
 
                 return titulo;
             },
-            // validar(){
-            //     this.Error.estado = 0;
-            //     this.Error.mensaje = [];
-
-            //     //Recorrere la lista de Material
-            //     if(this.Modal.numero == 1){
-            //         //Modal agregar
-            //         if ( !this.ListaDetalleProduccion.length ) this.Error.mensaje.push("No existe ningun detalle de producción"); 
-            //         if ( !this.Produccion.fecha_inicio || !this.Produccion.fecha_programada){
-            //             this.Error.mensaje.push('Debe ingresar una fecha de inicio y una fecha programada de la producción');
-            //         }else {
-
-            //             let arrayfechaInicio = this.Produccion.fecha_inicio.split('-');
-            //             let arrayFechaProgramada = this.Produccion.fecha_programada.split('-');
-            //             let fecha_inicio = new Date(parseInt(arrayfechaInicio[0]),parseInt(arrayfechaInicio[1]-1),parseInt(arrayfechaInicio[2]));
-            //             let fecha_programada = new Date(parseInt(arrayFechaProgramada[0]),parseInt(arrayFechaProgramada[1]-1),parseInt(arrayFechaProgramada[2]));
-
-            //             let hoyBase =  new Date();
-            //             // console.log(hoy.getFullYear());
-            //             // console.log(hoy.getMonth()+1);
-            //             // console.log(hoy.getDate());
-
-            //             let hoyFirme = new Date(hoyBase.getFullYear(), hoyBase.getMonth(), hoyBase.getDate());
-
-            //             if(fecha_inicio <  hoyFirme){//Aqui me quede
-            //                 this.Error.mensaje.push('La fecha de inicio es incorrecta');
-            //             }else if(fecha_inicio >= fecha_programada){
-            //                 this.Error.mensaje.push('La fecha programada debe ser después que la fecha de inicio de la producción');
-            //             }
-            //         }
-            //     }else{
-            //         //Modal editar
-            //     }
-            //     if ( this.Error.mensaje.length ) this.Error.estado = 1;
-            //     return this.Error.estado;
-            // },
             cambiarPagina(page){
                 if ( page >= 1 && page <= this.Paginacion.lastPage) {
                     this.listar(page);
                 }
             },
-            // selectUnidad(){
-            //     var me = this;
-            //     var url = '/material/selectUnidad';
-
-            //     axios.get(url).then(function(response){
-            //         me.SelectUnidad = response.data;
-            //     }).catch(function(error){
-            //         console.log(error);
-            //     });
-            // },
             getFechaHoy(){
                 let n =  new Date();
                 //Año
@@ -977,14 +912,14 @@
             //Metodos de envios
             selectAlmacen(){
                 var me = this;
-                var url = '/produccion/selectAlmacen';
+                var url = '/centro/selectAlmacen';
 
                 axios.get(url).then(function(response){
                     me.SelectAlmacen = response.data;
                 }).catch(function(error){
                     console.log(error);
                 });
-            }
+            },
         },
         mounted() {
             this.listar();

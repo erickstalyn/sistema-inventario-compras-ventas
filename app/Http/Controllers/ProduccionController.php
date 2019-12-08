@@ -113,30 +113,13 @@ class ProduccionController extends Controller
 
     }
 
-    // public function getProductoFiltrado(Request $request){
+    // public function selectAlmacen(Request $request){
     //     if ( !$request->ajax() ) return redirect('/');
-    //     $texto = $request->texto;
-
-    //     $productos = Producto::select('id','nombre', 'stock', 'costo_produccion', 'codigo')
-    //                         ->where(function ($query) use ($texto) {
-    //                             if ( $texto != '' ) {
-    //                                 $query->where('nombre', 'like', $texto . '%')
-    //                                     ->orWhere('codigo', '=', $texto);
-    //                             }
-    //                         })
+    //     $almacenes = Centro::select('id', 'nombre',)
+    //                         ->where('tipo','=','A')
     //                         ->orderBy('nombre', 'asc')->get();
-    //     return [
-    //         'productos' => $productos
-    //     ];
+    //     return $almacenes;
     // }
-
-    public function selectAlmacen(Request $request){
-        if ( !$request->ajax() ) return redirect('/');
-        $almacenes = Centro::select('id', 'nombre',)
-                            ->where('tipo','=','A')
-                            ->orderBy('nombre', 'asc')->get();
-        return $almacenes;
-    }
 
     public function finalizar(Request $request){
         try {

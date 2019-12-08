@@ -5,12 +5,16 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Exception;
 use App\Abasto;
+use App\Persona;
+use App\Pago;
+use App\Envio;
 
 class AbastoController extends Controller
 {
     public function listar(Request $request){
-        // if ( !$request->ajax() ) return redirect('/') ;
+        if ( !$request->ajax() ) return redirect('/') ;
         
         $estado = $request->estado;
         $texto = $request->texto;
@@ -63,7 +67,7 @@ class AbastoController extends Controller
                                 }else{
                                 }
                             })
-                            ->where('abasto.administrador_id', '<>', null)
+                            ->where('abasto.centro_id', '=', null)
                             // ->orderBy('abasto.id', 'asc')->get();
                             ->orderBy($ordenarPor, $orden)->paginate($filas);
 
@@ -78,5 +82,69 @@ class AbastoController extends Controller
             ],
             'abastos' => $abastos
         ];
+    }
+
+    public function agregar(Request $request){
+        if ( !$request->ajax() ) return redirect('/');
+
+        try {
+            DB::beginTransaction();
+
+            $proveedor = $request->proveedor;
+            $now = Carbon::now('America/Lima')->toDateString();
+            //Agrego la produccion
+            $abasto = new Abasto();//AQUI ME QUEDE
+            $abasto->total = $request->total;
+            $abasto->tipo = $request->tipo;
+
+            $abasto->created_at = $now;
+            //Verifico si existe el proveedor
+            if($proveedor['id'] == 0){ //No existe el proveedor
+                //Insertamos al proveedor
+                $persona = new Persona();
+                if(strlen($proveedor['documento']) == 8){
+                    
+                    $persona->dni = $proveedor['documento'];
+                    $persona->nombres = $proveedor['nombres'];
+                    $persona->apellidos = $proveedor['apellidos'];
+                    $persona->tipo = 'P';
+                    $abasto->proveedor_nombre = $proveedor['nombres'] . ' ' . $proveedor['apellidos'];
+                }else{
+                    $persona->ruc = $proveedor['documento'];
+                    $persona->razon_social = $proveedor['razon_social'];
+                    $persona->tipo = 'E';
+                    $abasto->proveedor_nombre = $proveedor['razon_social'];
+                }
+                $persona->save();
+                $abasto->proveedor_id = $persona->id;
+            }else{ //Ya existe el proveedor
+                $abasto->proveedor_id = $proveedor['id'];
+                if(strlen($proveedor['documento']) == 8){
+                    $abasto->proveedor_nombre = $proveedor['nombres'] . ' ' . $proveedor['apellidos'];
+                }else{
+                    $abasto->proveedor_nombre = $proveedor['razon_social'];
+                }
+
+            }
+            $abasto->save();
+
+            if($request->tipo == 1 && $request->pagoInicial > 0){// C y PI -> make a pago
+                $pago = new Pago();
+                $pago->monto = $request->pagoInicial;
+                $pago->abasto_id = $abasto->id;
+                $pago->save();
+            }
+            //Registramos el ENVÍO
+            $envio = new Envio();
+            $envio->centro_to_id = $request->centro_to_id;
+            $envio->abasto_id = $abasto->id;
+            $envio->save();
+
+            DB::commit();
+        } catch(Exception $e) {
+            echo($e);
+            DB::rollback();
+        }
+
     }
 }

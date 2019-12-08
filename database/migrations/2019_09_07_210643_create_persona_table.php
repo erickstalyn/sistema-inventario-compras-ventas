@@ -33,8 +33,8 @@ class CreatePersonaTable extends Migration
             $table->unsignedSmallInteger('persona_id')->nullable();;
             $table->foreign('persona_id')->references('id')->on('persona');
 
-            $table->date('created_at'); //Fecha de creacion manual
-            $table->softDeletes(); //Fecha de eliminación automática
+            // $table->date('created_at'); //Fecha de creacion manual
+            // $table->softDeletes(); //Fecha de eliminación automática
         });
 
     }

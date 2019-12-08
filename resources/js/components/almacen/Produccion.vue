@@ -491,7 +491,7 @@
             listarFiltro(){
                 if(this.BusquedaFiltro.texto != ''){
                     let me = this;
-                    let url = '/libreria/getProductoFiltrado?texto=' + this.BusquedaFiltro.texto;
+                    let url = '/producto/getProductoFiltrado?texto=' + this.BusquedaFiltro.texto;
                     axios.get(url).then(function(response){
                         if(response.data.productos.length == 1 && me.BusquedaFiltro.texto == response.data.productos[0].codigo){
                             me.agregarDetalle(response.data.productos[0]);
@@ -747,9 +747,6 @@
                         let fecha_programada = new Date(parseInt(arrayFechaProgramada[0]),parseInt(arrayFechaProgramada[1]-1),parseInt(arrayFechaProgramada[2]));
 
                         let hoyBase =  new Date();
-                        // console.log(hoy.getFullYear());
-                        // console.log(hoy.getMonth()+1);
-                        // console.log(hoy.getDate());
 
                         let hoyFirme = new Date(hoyBase.getFullYear(), hoyBase.getMonth(), hoyBase.getDate());
 
@@ -838,17 +835,7 @@
                 let year = n.getFullYear();
                 return year;
             },
-            //Metodos de envios
-            selectAlmacen(){
-                var me = this;
-                var url = '/produccion/selectAlmacen';
-
-                axios.get(url).then(function(response){
-                    me.SelectAlmacen = response.data;
-                }).catch(function(error){
-                    console.log(error);
-                });
-            }
+            
         },
         mounted() {
             this.listar();

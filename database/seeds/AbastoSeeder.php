@@ -17,7 +17,7 @@ class AbastoSeeder extends Seeder
             'tipo' => 0, 
             'proveedor_id' => 2,
             'proveedor_nombre' => 'Jose Anderson Cespedes Diaz',
-            'administrador_id' => 1, //Persona que realizó el abasto
+            // 'administrador_id' => 1, //Persona que realizó el abasto
             'created_at' => $now
         ));
         DB::table('abasto')->insert(array(//2
@@ -25,7 +25,7 @@ class AbastoSeeder extends Seeder
             'tipo' => 1, 
             'proveedor_id' => 3,
             'proveedor_nombre' => 'Amelia Sofía Rojas Cordova',
-            'administrador_id' => 1, //Persona que realizó el abasto
+            // 'administrador_id' => 1, //Persona que realizó el abasto
             'created_at' => $now
         ));
 

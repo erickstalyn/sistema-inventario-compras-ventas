@@ -8,7 +8,7 @@ class Envio extends Model
 {
     protected $table = 'envio';
     protected $fillable = [
-        'usuario_from_id','usuario_to_id', 'abasto_id', 'estado'
+        'centro_from_id','centro_to_id', 'abasto_id', 'estado'
     ];
 
     //Relación inversa de uno a muchos con Usuario

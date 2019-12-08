@@ -14,13 +14,13 @@ class EnvioSeeder extends Seeder
     {
         $now = Carbon::now('America/Lima')->toDateString();
         DB::table('envio')->insert(array(
-            'estado' => 'E',
+            'estado' => '0',
             'centro_to_id' => 4,
             'abasto_id' => 1,
             'created_at' => $now
         ));
         DB::table('envio')->insert(array(
-            'estado' => 'R',
+            'estado' => '0',
             'centro_to_id' => 4,
             'abasto_id' => 2,
             'created_at' => $now,
