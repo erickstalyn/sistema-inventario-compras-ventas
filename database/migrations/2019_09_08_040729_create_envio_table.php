@@ -18,8 +18,7 @@ class CreateEnvioTable extends Migration
             /*
                 0 -> Enviado
                 1 -> Recibido
-                2 -> Rechazado
-                3 -> Anulado
+                2 -> Rechazado (Cuando se rechace un envio, se mantendrá hasta que se realice un reenvio nuevamente...y alli si eliminamos el envio rechazado)
             */
             $table->unsignedTinyInteger('centro_from_id')->nullable();
             $table->foreign('centro_from_id')->references('id')->on('centro');

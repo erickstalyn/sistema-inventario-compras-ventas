@@ -8,6 +8,8 @@ use Carbon\Carbon;
 use Exception;
 use App\Abasto;
 use App\Persona;
+use App\Pago;
+use App\Envio;
 
 class AbastoController extends Controller
 {
@@ -94,6 +96,7 @@ class AbastoController extends Controller
             $abasto = new Abasto();//AQUI ME QUEDE
             $abasto->total = $request->total;
             $abasto->tipo = $request->tipo;
+
             $abasto->created_at = $now;
             //Verifico si existe el proveedor
             if($proveedor['id'] == 0){ //No existe el proveedor
@@ -124,6 +127,18 @@ class AbastoController extends Controller
 
             }
             $abasto->save();
+
+            if($request->tipo == 1 && $request->pagoInicial > 0){// C y PI -> make a pago
+                $pago = new Pago();
+                $pago->monto = $request->pagoInicial;
+                $pago->abasto_id = $abasto->id;
+                $pago->save();
+            }
+            //Registramos el ENVÍO
+            $envio = new Envio();
+            $envio->centro_to_id = $request->centro_to_id;
+            $envio->abasto_id = $abasto->id;
+            $envio->save();
 
             DB::commit();
         } catch(Exception $e) {

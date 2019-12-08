@@ -330,16 +330,13 @@
                                             <div class="col-md-4">
                                                 <div class="input-group" style="width: 11.2rem;" v-if="Abasto.tipo == '1'"> 
                                                     <label for="">Pago inicial</label>&nbsp;
-                                                    <input type="number" class="form-control form-control-sm" v-model="Abasto.pagoInicial">
+                                                    <input type="number" class="form-control form-control-sm" v-model="Abasto.pagoInicial" min="0">
                                                 </div>
                                             </div>
                                             <div class="col-md-3">
                                             </div>
                                             <div class="col-md-5">
-                                                <!-- <div class="input-group pr-3">  -->
-                                                    <!-- <label for="">Desembolso total: s/ {{getDesembolso}}</label> -->
-                                                    <p class="text-right pr-1">Desembolso total: s/ {{getDesembolso}}</p>
-                                                <!-- </div> -->
+                                                <p class="text-right pr-1">Desembolso total: s/ {{getDesembolso}}</p>
                                             </div>
                                         </div>
                                         <div class="row">
@@ -388,10 +385,8 @@
                 DatosProveedor:{
                     id: 0,
                     documento: '',
-                    // dni: '',
                     nombres: '',
                     apellidos: '',
-                    // ruc: '',
                     razon_social: ''
                 },
                 SelectUnidad: [],
@@ -629,33 +624,23 @@
                         if(persona.razon_social){//Es una EMPRESA
                             me.DatosServicio.tipo = 2;
                             me.DatosServicio.readonly = true;
-                            // me.DatosProveedor.ruc = me.DatosServicio.documento;
                             me.DatosProveedor.documento = me.DatosServicio.documento;
                             me.DatosProveedor.razon_social = persona.razon_social;
 
-                            // me.DatosProveedor.dni = '';
-                            // me.DatosProveedor.nombres = '';
-                            // me.DatosProveedor.apellidos = '';
+                            me.DatosServicio.documento = '';
                         }else{//Es una PERSONA
                             me.DatosServicio.tipo = 1;
-                            // me.DatosProveedor.dni = me.DatosServicio.documento;
                             me.DatosProveedor.documento = me.DatosServicio.documento;
                             me.DatosProveedor.nombres = persona.nombres;
                             me.DatosProveedor.apellidos = persona.apellidos;
-
-                            // me.DatosProveedor.ruc = '';
-                            // me.DatosProveedor.razon_social = '';
+                            
+                            me.DatosServicio.documento = '';
                         }
                     }else{//No esxiste la persona en la db
                         me.DatosProveedor.id = 0;
                         if(me.DatosServicio.documento.length == 8){
-                            // me.DatosProveedor.ruc = '';
-                            // me.DatosProveedor.razon_social = '';
                             me.consultarDNI();
                         }else{
-                            // me.DatosProveedor.dni = '';
-                            // me.DatosProveedor.nombres = '';
-                            // me.DatosProveedor.apellidos = '';
                             me.consultarRUC();
                         }
                     }
@@ -682,12 +667,9 @@
                             me.DatosServicio.mensaje = '';
                             me.DatosServicio.tipo = 2;
                             me.DatosServicio.readonly = false;
-                            // me.DatosProveedor.ruc = data.RUC;
                             me.DatosProveedor.documento = data.RUC;
                             me.DatosProveedor.razon_social = data.RazonSocial;
                         }else{
-                            // me.DatosProveedor.ruc = '';
-                            // me.DatosProveedor.razon_social = '';
                             me.DatosServicio.alert = 'badge badge-primary';
                             me.DatosServicio.mensaje = 'El RUC no existe';
                         }
@@ -715,14 +697,10 @@
                             me.DatosServicio.alert = '';
                             me.DatosServicio.mensaje = '';
                             me.DatosServicio.tipo = 1;
-                            // me.DatosProveedor.dni = persona.dni;
                             me.DatosProveedor.documento = persona.dni;
                             me.DatosProveedor.nombres = persona.nombres;
                             me.DatosProveedor.apellidos = persona.apellidos;
                         }else{
-                            // me.DatosProveedor.dni = '';
-                            // me.DatosProveedor.nombres = '';
-                            // me.DatosProveedor.apellidos = '';
                             me.DatosServicio.alert = 'badge badge-primary';
                             me.DatosServicio.mensaje = 'El DNI no existe';
                         }
@@ -751,18 +729,6 @@
                         this.editar();
                         break;
                     }
-                    // case 'Finalizar': {
-                    //     this.finalizar();
-                    //     break;
-                    // }
-                    // case 'Activar': {
-                    //     this.activar();
-                    //     break;
-                    // }
-                    // case 'Desactivar': {
-                    //     this.desactivar();
-                    //     break;
-                    // }
                 }
             },
             validar(){
@@ -783,7 +749,7 @@
                     if(this.Abasto.tipo == -1){
                         this.Error.mensaje.push("Debe seleccionar el tipo de abasto");
                     }else if(this.Abasto.tipo == 1){
-                        if(this.Abasto.pagoInicial == '') this.Error.mensaje.push('Debe ingresar el pago inicial del Abasto al crédito');
+                        if(this.Abasto.pagoInicial == '' || this.Abasto.pagoInicial < 0) this.Error.mensaje.push("Debe ingresar un pago inicial válido (mayor o igual a '0')");
                     }
                 }else{ //Modal editar
                     
@@ -825,58 +791,10 @@
                     console.log(error);
                 });
             },
-            // editar(){
-            //     if ( this.validar() ) return;
-
-            //     var me = this;
-            //     axios.put('/material/editar', {
-            //         'id' : this.Material.id,
-            //         'nombre' : this.Material.nombre,
-            //         'subtipo' : this.Material.subtipo,
-            //         'unidad' : this.Material.unidad,
-            //         'costo' : this.Material.costo,
-            //     }).then(function(response){
-            //         me.cerrarModal();
-            //         me.listar();
-            //         Swal.fire({
-            //             position: 'top-end',
-            //             toast: true,
-            //             type: 'success',
-            //             title: 'El Material se ha EDITADO correctamente',
-            //             showConfirmButton: false,
-            //             timer: 4500,
-            //             animation:false,
-            //             customClass:{
-            //                 popup: 'animated bounceIn fast'
-            //             }
-            //         });
-            //     }).catch(function(error){
-            //         console.log(error);
-            //     });
-            // },
             
             // abrirModalEnviar(){
             //     this.abrirModal(3, 'Enviar Produccion', 'Enviar');
             //     if(this.SelectAlmacen == 0) this.selectAlmacen();
-            // },
-            // abrirModalEditar(data = []){
-            //     this.abrirModal(2, 'Editar Material', 'Editar');
-                
-            //     this.Material.id = data['id'];
-            //     this.Material.nombre = data['nombre'];
-            //     this.Material.subtipo = data['subtipo'];
-            //     this.Material.unidad = data['unidad'];
-            //     this.Material.costo  = data['costo'];
-
-            //     //Lleno los campos de mi Material Original
-            //     this.MaterialOrigen.id = data['id'];
-            //     this.MaterialOrigen.nombre = data['nombre'];
-            //     this.MaterialOrigen.subtipo = data['subtipo'];
-            //     this.MaterialOrigen.unidad = data['unidad'];
-            //     this.MaterialOrigen.costo  = data['costo'];
-                
-            //     //Verifico si el arreglo SelectUnidad esta vacia
-            //     if(!this.SelectUnidad.length) this.selectUnidad();
             // },
             
             cerrarModal(){
@@ -933,16 +851,6 @@
                     this.listar(page);
                 }
             },
-            // selectUnidad(){
-            //     var me = this;
-            //     var url = '/material/selectUnidad';
-
-            //     axios.get(url).then(function(response){
-            //         me.SelectUnidad = response.data;
-            //     }).catch(function(error){
-            //         console.log(error);
-            //     });
-            // },
             getFechaHoy(){
                 let n =  new Date();
                 //Año
