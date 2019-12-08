@@ -19,12 +19,15 @@ window.Vue = require('vue');
 // const files = require.context('./', true, /\.vue$/i);
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default));
 
-Vue.component('usuario', require('./components/Usuario.vue').default);
-Vue.component('superproducto', require('./components/SuperProducto.vue').default);
-Vue.component('producto', require('./components/Producto.vue').default);
-Vue.component('material', require('./components/Material.vue').default);
-Vue.component('produccion', require('./components/Produccion.vue').default);
-Vue.component('abasto', require('./components/Abasto.vue').default);
+Vue.component('adm-usuario', require('./components/administrador/Usuario.vue').default);
+Vue.component('adm-superproducto', require('./components/administrador/SuperProducto.vue').default);
+Vue.component('adm-producto', require('./components/administrador/Producto.vue').default);
+Vue.component('adm-material', require('./components/administrador/Material.vue').default);
+Vue.component('adm-abasto', require('./components/administrador/Abasto.vue').default);
+
+Vue.component('alm-produccion', require('./components/almacen/Produccion.vue').default);
+
+
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
