@@ -99,7 +99,7 @@
                     <div class="modal-body">
                         <!-- Modal Numero 1 de AGREGAR-->
                         <div v-if="Modal.numero==1">
-                            <div v-if="Error.estado && Error.numero==1" class="row d-flex justify-content-center">
+                            <div v-if="Error.estado && (Error.numero==1 || Error.numero==3)" class="row d-flex justify-content-center">
                                 <div class="alert alert-danger">
                                     <button type="button" @click="closeError()" class="close text-primary" data-dismiss="alert">×</button>
                                     <strong>Corregir los siguentes errores:</strong>
@@ -201,41 +201,51 @@
                         </div>
                         <!-- Modal Numero 2 de VER-->
                         <div v-if="Modal.numero==2">
-                            <div v-if="Error.estado" class="row d-flex justify-content-center">
-                                <div class="alert alert-danger">
-                                    <button type="button" @click="Error.estado=0" class="close" data-dismiss="alert">×</button>
-                                    <strong>Corregir los siguentes errores:</strong>
-                                    <ul> 
-                                        <li v-for="error in Error.mensaje" :key="error" v-text="error"></li> 
-                                    </ul>
+                            <div class="row form-group">
+                                <label class="col-md-2">Nombre:</label>
+                                <label class="col-md-5" v-text="SuperProducto.nombre"></label>
+                                <label class="col-md-5">Fecha de creacion:   {{SuperProducto.created_at}}</label>
+                                <label class="col-md-2">Descripcion:</label>
+                                <label class="col-md-10" v-text="SuperProducto.descripcion?SuperProducto.descripcion:'-'"></label>
+                            </div>
+                            <div class="row form-group">
+                                <label class="col-md-9 font-weight-bold">LISTA DE PRODUCTOS</label>
+                                <label class="col-md-3">Super Stock:   {{SuperProducto.superstock}}</label>
+                                <div class="col-md-12" v-if="ListaProducto.length">
+                                    <table class="table table-bordered table-striped table-sm text-gray-900">
+                                        <thead>
+                                            <tr class="table-primary">
+                                                <th>Tamaño</th>
+                                                <th>Color</th>
+                                                <th>Costo de produccion</th>
+                                                <th>Precio al por menor</th>
+                                                <th>Precio al por mayor</th>
+                                                <th>Stock</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="producto in ListaProducto" :key="producto.id" >
+                                                <td v-text="producto.size"></td>
+                                                <td v-text="producto.color"></td>
+                                                <td v-text="producto.costo_produccion?producto.costo_produccion:'-'"></td>
+                                                <td v-text="producto.precio_menor"></td>
+                                                <td v-text="producto.precio_mayor"></td>
+                                                <td v-text="producto.stock"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="col-md-12" v-else>
+                                    <label class="text text-danger">Sin productos</label>
                                 </div>
                             </div>
-                            <div class="row form-group">
-                                <label class="col-md-3 font-weight-bold">Nombre:</label>
-                                <label class="col-md-9 font-weight-bold" v-text="SuperProducto.nombre"></label>
-                            </div>
-                            <div class="row form-group">
-                                <label class="col-md-3 font-weight-bold">Descripcion:</label>
-                                <label class="col-md-9 font-weight-bold" v-text="SuperProducto.descripcion?SuperProducto.descripcion:'-'"></label>
-                            </div>
-                            <div class="row form-group">
-                                <label class="col-md-3 font-weight-bold">Super Stock:</label>
-                                <label class="col-md-9 font-weight-bold" v-text="SuperProducto.superstock"></label>
-                            </div>
-                            <div class="row form-group">
-                                <label class="col-md-3 font-weight-bold">Estado:</label>
-                                <label class="col-md-9 font-weight-bold" v-text="SuperProducto.estado==1?'activado':'desactivado'"></label>
-                            </div>
-                            <div class="row form-group">
-                                <label class="col-md-3 font-weight-bold">Fecha de creacion:</label>
-                                <label class="col-md-9 font-weight-bold" v-text="SuperProducto.created_at"></label>
-                            </div>
+                            
                         </div>
                         <!-- Modal Numero 3 de EDITAR-->
                         <div v-if="Modal.numero==3">
-                            <div v-if="Error.estado" class="row d-flex justify-content-center">
+                            <div v-if="Error.estado && (Error.numero==1 || Error.numero==3)" class="row d-flex justify-content-center">
                                 <div class="alert alert-danger">
-                                    <button type="button" @click="Error.estado=0" class="close text-primary" data-dismiss="alert">×</button>
+                                    <button type="button" @click="cerrarError()" class="close text-primary" data-dismiss="alert">×</button>
                                     <strong>Corregir los siguentes errores:</strong>
                                     <ul> 
                                         <li v-for="error in Error.mensaje" :key="error" v-text="error"></li> 
@@ -243,27 +253,27 @@
                                 </div>
                             </div>
                             <div class="row form-group">
-                                <label class="col-md-3 font-weight-bold" for="nom">Nombre&nbsp;(<span class="text-danger">*</span>):</label>
+                                <label class="col-md-3" for="nom">Nombre&nbsp;<span class="text-danger">*</span></label>
                                 <div class="col-md-9">
-                                    <input type="text" v-model="SuperProducto.nombre" class="form-control" placeholder="ingrese el nombre" id="nom">
+                                    <input type="text" class="form-control form-control-sm" v-model="SuperProducto.nombre" placeholder="Ingrese el nombre" id="nom">
                                 </div>
                             </div>
                             <div class="row form-group">
-                                <label class="col-md-3 font-weight-bold" for="des">Descripcion:</label>
+                                <label class="col-md-3" for="des">Descripcion</label>
                                 <div class="col-md-9">
-                                    <input type="text" v-model="SuperProducto.descripcion" class="form-control" placeholder="ingrese la descripcion" id="des">
+                                    <input type="text" class="form-control form-control-sm" v-model="SuperProducto.descripcion" placeholder="Ingrese la descripcion" id="des">
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="modal-footer" v-if="permisoModalFooter">
+                    <div class="modal-footer">
                         <div class="row form-group col-md-12 d-flex justify-content-around">
-                            <div v-if="Modal.accion">
-                                <button type="button" @click="accionar()" class="btn btn-success font-weight-bold" v-text="Modal.accion"></button>
+                            <div v-if="Modal.btnA">
+                                <button type="button" @click="accionar()" class="btn btn-success font-weight-bold" v-text="Modal.btnA"></button>
                             </div>
-                            <div>
-                                <button type="button" @click="cerrarModal()" class="btn btn-secondary font-weight-bold">Cancelar</button>
+                            <div v-if="Modal.btnC">
+                                <button type="button" @click="cerrarModal()" class="btn btn-secondary font-weight-bold" v-text="Modal.btnC"></button>
                             </div>
                         </div>
                     </div>
@@ -313,7 +323,8 @@
                     numero: 0,
                     estado: 0,
                     titulo: '',
-                    accion: '',
+                    btnA: '', //Boton de aceptar
+                    btnC: '', //Boton de cancelar
                     tamaño: ''
                 },
 
@@ -328,7 +339,7 @@
                 },
                 Navegacion:{
                     offset: 3,
-                    ordenarPor: 'nombre',
+                    ordenarPor: 'id',
                     orden: 'desc' 
                 },
 
@@ -342,6 +353,7 @@
                 //datos de la ruta de consultas
                 Ruta: {
                     superproducto: '/superproducto',
+                    producto: '/producto',
                     data: '/data'
                 }
             }
@@ -390,13 +402,6 @@
                 headers.push({titulo: 'Stock total', nombre: 'superstock'});
 
                 return headers;
-            },
-            permisoModalFooter: function(){
-                if ( this.Modal.numero == 1 ) return true;
-                if ( this.Modal.numero == 2 ) return true;
-                if ( this.Modal.numero == 3 ) return true;
-
-                return false;
             }
         },
         methods: {
@@ -433,22 +438,26 @@
                     'descripcion' : this.SuperProducto.descripcion,
                     'listaproducto': this.ListaProducto
                 }).then(function(response){
-                    me.cerrarModal();
-                    me.listar();
                     var estado = response.data.estado;
-                    if ( estado == 0 ) console.log(response.data.error);
-                    Swal.fire({
-                        position: 'top-end',
-                        toast: true,
-                        type: estado==1?'success':'info',
-                        title: estado==1?'El super producto se ha AGREGADO correctamente':'El super producto NO se ha AGREGADO correctamente',
-                        showConfirmButton: false,
-                        timer: 4500,
-                        animation:false,
-                        customClass:{
-                            popup: 'animated bounceIn fast'
-                        }
-                    });
+                    if ( estado ) {
+                        me.cerrarModal();
+                        me.listar();
+                        Swal.fire({
+                            position: 'top-end',
+                            toast: true,
+                            type: 'success',
+                            title: 'El super producto se ha AGREGADO correctamente',
+                            showConfirmButton: false,
+                            timer: 4500,
+                            animation:false,
+                            customClass:{
+                                popup: 'animated bounceIn fast'
+                            }
+                        });
+                    } else {
+                        console.log(response.data.error);
+                        me.validar(3);
+                    }
                 }).catch(function(error){
                     console.log(error);
                 });
@@ -463,22 +472,26 @@
                     'nombre' : this.SuperProducto.nombre,
                     'descripcion' : this.SuperProducto.descripcion
                 }).then(function(response){
-                    me.cerrarModal();
-                    me.listar();
                     var estado = response.data.estado;
-                    if ( estado == 0 ) console.log(response.data.error);
-                    Swal.fire({
-                        position: 'top-end',
-                        toast: true,
-                        type: estado==1?'success':'info',
-                        title: estado==1?'El super producto se ha EDITADO correctamente':'El super producto NO se ha EDITADO correctamente',
-                        showConfirmButton: false,
-                        timer: 4500,
-                        animation:false,
-                        customClass:{
-                            popup: 'animated bounceIn fast'
-                        }
-                    });
+                    if ( estado ) {
+                        me.cerrarModal();
+                        me.listar();
+                        Swal.fire({
+                            position: 'top-end',
+                            toast: true,
+                            type: 'success',
+                            title: 'El super producto se ha EDITADO correctamente',
+                            showConfirmButton: false,
+                            timer: 4500,
+                            animation:false,
+                            customClass:{
+                                popup: 'animated bounceIn fast'
+                            }
+                        });
+                    } else {
+                        console.log(response.data.error);
+                        me.validar(3);
+                    }
                 }).catch(function(error){
                     console.log(error);
                 });
@@ -532,7 +545,7 @@
             //     });
             // },
             abrirModalAgregar(){
-                this.abrirModal(1, 'Nuevo Super Producto', 'modal-xl', 'Agregar Super Producto');
+                this.abrirModal(1, 'Nuevo Super Producto', 'modal-xl', 'Agregar Super Producto', 'Cancelar');
 
                 this.SuperProducto.nombre = '';
                 this.SuperProducto.descripcion = '';
@@ -549,16 +562,19 @@
                 this.selectColor();
             },
             abrirModalVer(data = []){
-                this.abrirModal(2, 'Ver Super Producto', 'modal-lg');
+                this.abrirModal(2, 'Ver Super Producto', 'modal-lg', '', 'Cerrar');
                 
+                this.SuperProducto.id = data['id'];
                 this.SuperProducto.nombre = data['nombre'];
                 this.SuperProducto.descripcion = data['descripcion'];
                 this.SuperProducto.superstock = data['superstock'];
                 this.SuperProducto.estado = data['estado'];
                 this.SuperProducto.created_at = data['created_at'];
+
+                this.listaProducto();
             },
             abrirModalEditar(data = []){
-                this.abrirModal(3, 'Editar Super Producto', '', 'Editar');
+                this.abrirModal(3, 'Editar Super Producto', '', 'Editar', 'Cancelar');
                 
                 this.SuperProducto.id = data['id'];
                 this.SuperProducto.nombre = data['nombre'];
@@ -588,19 +604,21 @@
             //         }
             //     });
             // },
-            abrirModal(numero, titulo, tamaño, accion = ''){
+            abrirModal(numero, titulo, tamaño, btnA, btnC){
                 this.Modal.estado = 1;
                 this.Modal.numero = numero;
                 this.Modal.titulo = titulo;
                 this.Modal.tamaño = tamaño;
-                this.Modal.accion = accion;
+                this.Modal.btnA = btnA;
+                this.Modal.btnC = btnC;
             },
             cerrarModal(){
                 this.Modal.estado = 0;
                 this.Modal.numero = 0;
                 this.Modal.titulo = '';
-                this.Modal.accion = '';
                 this.Modal.tamaño = '';
+                this.Modal.btnC = '';
+                this.Modal.btnA = '';
 
                 this.Error.estado = 0;
                 this.Error.numero = 0;
@@ -618,41 +636,48 @@
                 this.Producto.precio_menor = 0;
                 this.Producto.precio_mayor = 0;
 
-                this.SelectSize = [];
-                this.SelectColor = [];
-
                 this.ListaProducto = [];
             },
             selectSize(){
-                var me = this;
-                var url = this.Ruta.data+'/selectSize';
+                if ( !this.SelectSize.length ) {
+                    var me = this;
+                    var url = this.Ruta.data+'/selectSize';
 
-                axios.get(url).then(function (response) {
-                    me.SelectSize = response.data;
-                }).catch(function (error) {
-                    console.log(error);
-                });
+                    axios.get(url).then(function (response) {
+                        me.SelectSize = response.data;
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                }
             },
             selectColor(){
-                var me = this;
-                var url = this.Ruta.data+'/selectColor';
+                if ( !this.SelectColor.length ) {
+                    var me = this;
+                    var url = this.Ruta.data+'/selectColor';
 
-                axios.get(url).then(function(response){
-                    me.SelectColor = response.data;
-                }).catch(function(error){
-                    console.log(error);
+                    axios.get(url).then(function(response){
+                        me.SelectColor = response.data;
+                    }).catch(function(error){
+                        console.log(error);
+                    });
+                }
+            },
+            listaProducto(){
+                var me = this;
+                var url = this.Ruta.producto+'/listaProducto?id='+this.SuperProducto.id;
+                
+                axios.get(url).then(function (response) {
+                    me.ListaProducto = response.data;
                 });
             },
             accionar(){
                 switch( this.Modal.numero ){
-                    case 1: {
+                    case 1: 
                         this.agregar();
                         break;
-                    }
-                    case 3: {
+                    case 3: 
                         this.editar();
                         break;
-                    }
                 }
             },
             getTitulo(titulo){
@@ -680,21 +705,27 @@
                 this.Error.numero = 0;
                 this.Error.mensaje = [];
 
-                if ( numero == 1 ) {
-                    if ( !this.SuperProducto.nombre ) this.Error.mensaje.push("Debe ingresar un nombre");                       //nombre
-                } else if ( numero == 2 ) {
-                    var found = 0;
-                    for (let i = 0; i < this.ListaProducto.length; i++) {
-                        if ( this.Producto.size == this.ListaProducto[i].size && this.Producto.color == this.ListaProducto[i].color ) {found = 1; break;}
-                    }
+                switch (numero) {
+                    case 1:
+                        if ( !this.SuperProducto.nombre ) this.Error.mensaje.push("Debe ingresar un nombre");                       //nombre
+                        break;
+                    case 2:
+                        var found = 0;
+                        for (let i = 0; i < this.ListaProducto.length; i++) {
+                            if ( this.Producto.size == this.ListaProducto[i].size && this.Producto.color == this.ListaProducto[i].color ) {found = 1; break;}
+                        }
 
-                    if ( !this.Producto.size ) this.Error.mensaje.push("Debe seleccionar un tamaño");                           //size
-                    if ( !this.Producto.color ) this.Error.mensaje.push("Debe seleccionar un color");                           //color
-                    if ( !this.Producto.precio_menor ) this.Error.mensaje.push("Debe ingresar un precio al por menor");         //precio_menor
-                    if ( this.Producto.precio_menor < 0 ) this.Error.mensaje.push("El precio al por menor debe ser positivo");  //precio_menor
-                    if ( !this.Producto.precio_mayor ) this.Error.mensaje.push("Debe ingresar un precio al por mayor");         //precio_mayor
-                    if ( this.Producto.precio_mayor < 0 ) this.Error.mensaje.push("El precio al por mayor debe ser positivo");  //precio_mayor
-                    if ( found ) this.Error.mensaje.push("Ese producto ya se encuentra en lista");                              //producto repetido
+                        if ( !this.Producto.size ) this.Error.mensaje.push("Debe seleccionar un tamaño");                           //size
+                        if ( !this.Producto.color ) this.Error.mensaje.push("Debe seleccionar un color");                           //color
+                        if ( this.Producto.precio_menor == 0 ) this.Error.mensaje.push("Debe ingresar un precio al por menor");     //precio_menor
+                        if ( this.Producto.precio_menor < 0 ) this.Error.mensaje.push("El precio al por menor debe ser positivo");  //precio_menor
+                        if ( this.Producto.precio_mayor == 0 ) this.Error.mensaje.push("Debe ingresar un precio al por mayor");     //precio_mayor
+                        if ( this.Producto.precio_mayor < 0 ) this.Error.mensaje.push("El precio al por mayor debe ser positivo");  //precio_mayor
+                        if ( found ) this.Error.mensaje.push("Ese producto ya se encuentra en lista");                              //producto repetido
+                        break;
+                    case 3:
+                        this.Error.mensaje.push("Ese nombre de Super Producto ya existe");                                          //superproducto existente
+                        break;
                 }
 
                 if ( this.Error.mensaje.length ) this.Error.estado = 1;

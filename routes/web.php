@@ -33,16 +33,6 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/main', function () {
         return view('contenidoPrincipal.contenidoPrincipal');
     })->name('main');
-    
-    //RUTAS PARA PRODUCTO
-    Route::get('/producto', 'ProductoController@listar'); //metodos generales
-    Route::post('/producto/agregar', 'ProductoController@agregar');
-    Route::put('/producto/editar', 'ProductoController@editar');
-    Route::put('/producto/setEstado', 'ProductoController@setEstado');
-    Route::get('/producto/selectSuperProducto', 'ProductoController@selectSuperProducto'); //metodos secundarios
-    Route::get('/producto/selectSize', 'ProductoController@selectSize'); 
-    Route::get('/producto/selectColor', 'ProductoController@selectColor'); 
-    Route::get('/producto/selectMaterial', 'ProductoController@selectMaterial'); 
 
     //RUTAS PARA FUNCIONES COMUNES
     Route::get('/libreria/getProductoFiltrado', 'LibreriaController@getProductoFiltrado');
@@ -90,6 +80,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/producto/selectSize', 'ProductoController@selectSize'); 
         Route::get('/producto/selectColor', 'ProductoController@selectColor'); 
         Route::get('/producto/selectMaterial', 'ProductoController@selectMaterial'); 
+        Route::get('/producto/listaProducto', 'ProductoController@listaProducto'); 
 
         //RUTAS PARA DATA
         Route::get('/data/selectSize', 'DataController@selectSize'); 

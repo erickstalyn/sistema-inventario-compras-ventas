@@ -130,4 +130,12 @@ class ProductoController extends Controller {
         return $materiales;
     }
 
+    public function listaProducto(Request $request){
+        $productos = Producto::select('size', 'color', 'costo_produccion', 'precio_menor', 'precio_mayor', 'stock')
+                            ->where('superproducto_id', '=', $request->id)
+                            ->orderBy('id', 'desc')->get();
+        
+        return $productos;
+    }
+
 }
