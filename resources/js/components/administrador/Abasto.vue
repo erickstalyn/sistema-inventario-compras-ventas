@@ -719,9 +719,6 @@
                 }).fail(function(){
                 });
             },
-            convertirCapitalize(){
-
-            },
             abrirModalAgregar(){
                 this.abrirModal(1, 'Registrar Abasto', 'Agregar');
                 if(!this.SelectAlmacen.length) this.selectAlmacen();
@@ -753,10 +750,12 @@
                     if (this.DatosProveedor.documento == '') this.Error.mensaje.push('Debe ingresar datos del proveedor');
                     if (!this.ListaDetalleAbasto.length ) {
                         this.Error.mensaje.push("No existe ningun detalle de abasto");
-                    }else if(this.Abasto.total == 0.00){
-                        this.Error.mensaje.push("El total no puede ser cero");
+                    // }else if(){
+                    //     // this.Error.mensaje.push("El total no puede ser cero");
                     }else if(this.Abasto.centro_to_id == 0){
                         this.Error.mensaje.push('Debe seleccionar el almacén receptor');
+                    }else{
+                        this.validarNegativos();
                     }
 
                     if(this.Abasto.tipo == -1){
@@ -769,6 +768,18 @@
                 }
                 if ( this.Error.mensaje.length ) this.Error.estado = 1;
                 return this.Error.estado;
+            },
+            validarNegativos(){
+                for (let i = 0; i < this.ListaDetalleAbasto.length; i++) {
+                    const detalle = this.ListaDetalleAbasto[i];
+                    if(detalle.cantidad <1){
+                        this.Error.mensaje.push('Las cantidades de los detalles deben ser mayores o iguales a 1');
+                        break;
+                    }else if(detalle.costo_abasto <= 0){
+                        this.Error.mensaje.push('Los precios de los detalles debe ser mayores a 0');
+                        break;
+                    }
+                }
             },
             agregar(){
                 if ( this.validar() ) return;

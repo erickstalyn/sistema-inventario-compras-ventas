@@ -38,6 +38,6 @@ Vue.component('alm-produccion', require('./components/almacen/Produccion.vue').d
 const app = new Vue({
     el: '#app',
     data:{
-        menu: 1,
+        menu: 3,
     }
 });

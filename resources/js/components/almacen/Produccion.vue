@@ -752,9 +752,13 @@
                 return this.Error.estado;
             },
             ValidarNegativosCantidades(){
-                this.ListaDetalleProduccion.forEach(detalle => {
-                    if(detalle.cantidad<1) this.Error.mensaje.push('Las cantidades de los detalles deben ser mayores o iguales a 1');
-                });
+                for (let i = 0; i < this.ListaDetalleProduccion.length; i++) {
+                    const detalle = this.ListaDetalleProduccion[i];
+                    if(detalle.cantidad<1){
+                        this.Error.mensaje.push('Las cantidades de los detalles deben ser mayores o iguales a 1');
+                        break;
+                    }
+                }
             },
             validarFechasLogicas(){
                 let arrayfechaInicio = this.Produccion.fecha_inicio.split('-');
