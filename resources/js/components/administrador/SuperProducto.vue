@@ -178,7 +178,7 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr v-for="(producto, indice) in ListaProducto" :key="producto.id" >
+                                                    <tr v-for="(producto, indice) in ListaProducto" :key="indice" >
                                                         <td>
                                                             <button type="button" class="btn btn-circle btn-outline-danger btn-sm" @click="eliminarProducto(indice)" title="QUITAR">
                                                                 <i class="fas fa-minus"></i>
@@ -224,7 +224,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr v-for="producto in ListaProducto" :key="producto.id" >
+                                            <tr v-for="producto in ListaProducto" :key="producto.id">
                                                 <td v-text="producto.size"></td>
                                                 <td v-text="producto.color"></td>
                                                 <td v-text="producto.costo_produccion?producto.costo_produccion:'-'"></td>
