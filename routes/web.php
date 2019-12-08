@@ -56,7 +56,6 @@ Route::group(['middleware' => ['auth']], function () {
         Route::put('/material/editar', 'MaterialController@editar');
         Route::put('/material/activar', 'MaterialController@activar');
         Route::put('/material/desactivar', 'MaterialController@desactivar');
-        Route::get('/material/selectUnidad', 'MaterialController@selectUnidad'); //metodos secundarios
         Route::get('/material/selectMaterial', 'MaterialController@selectMaterial'); 
 
         //RUTAS PARA PRODUCCIONES
@@ -85,6 +84,7 @@ Route::group(['middleware' => ['auth']], function () {
         //RUTAS PARA ABASTO
         Route::get('/abasto', 'AbastoController@listar'); //metodos generales
         Route::post('/abasto/agregar', 'AbastoController@agregar');
+        Route::get('/data/selectUnidad', 'DataController@selectUnidad'); //metodos secundarios
         
 
     });

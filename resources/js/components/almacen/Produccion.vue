@@ -6,10 +6,10 @@
             
             <!-- Encabezado principal -->
             <div class="row form-group">
-                <i class="fas fa-map-signs"></i>&nbsp;&nbsp;
+                <i class="fas fa-hammer"></i>&nbsp;&nbsp;
                 <span class="h3 mb-0 text-gray-900">Mis Producciones&nbsp;</span>
                 <button type="button" class="btn btn-success" @click="abrirModalAgregar()">
-                    <i class="fas fa-hammer"></i>&nbsp; Nuevo
+                    Nuevo
                 </button>&nbsp;
                 <button type="button" class="btn btn-danger">
                     <i class="far fa-file-pdf"></i>&nbsp; PDF
@@ -49,7 +49,7 @@
                     Año
                     <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.year">
                         <option value="">Todos</option>
-                        <option v-for="item in getYear(2016)" :key="item" :value="item" v-text="item"></option>
+                        <option v-for="item in getYear(2019)" :key="item" :value="item" v-text="item"></option>
                     </select>
                 </div>
                 <div class="col-md-1"></div>
@@ -258,7 +258,6 @@
                                                             </td>
                                                             <td v-text="detalle.costo_produccion"></td>
                                                             <td >
-                                                                <!-- s/ {{(detalle.costo_produccion * detalle.cantidad).toFixed(2)}} -->
                                                                 {{detalle.subtotal = (detalle.costo_produccion * detalle.cantidad).toFixed(2)}}
                                                             </td>
                                                         </tr>
@@ -736,25 +735,15 @@
                 //Recorrere la lista de Material
                 if(this.Modal.numero == 1){
                     //Modal agregar
-                    if ( !this.ListaDetalleProduccion.length ) this.Error.mensaje.push("No existe ningun detalle de producción"); 
+                    if ( !this.ListaDetalleProduccion.length ) {
+                        this.Error.mensaje.push("No existe ningun detalle de producción");
+                    }else{//Valido si hay negativos en las cantidades de los detalles de producción
+                        this.ValidarNegativosCantidades();
+                    }
                     if ( !this.Produccion.fecha_inicio || !this.Produccion.fecha_programada){
                         this.Error.mensaje.push('Debe ingresar una fecha de inicio y una fecha programada de la producción');
                     }else {
-
-                        let arrayfechaInicio = this.Produccion.fecha_inicio.split('-');
-                        let arrayFechaProgramada = this.Produccion.fecha_programada.split('-');
-                        let fecha_inicio = new Date(parseInt(arrayfechaInicio[0]),parseInt(arrayfechaInicio[1]-1),parseInt(arrayfechaInicio[2]));
-                        let fecha_programada = new Date(parseInt(arrayFechaProgramada[0]),parseInt(arrayFechaProgramada[1]-1),parseInt(arrayFechaProgramada[2]));
-
-                        let hoyBase =  new Date();
-
-                        let hoyFirme = new Date(hoyBase.getFullYear(), hoyBase.getMonth(), hoyBase.getDate());
-
-                        if(fecha_inicio <  hoyFirme){//Aqui me quede
-                            this.Error.mensaje.push('La fecha de inicio es incorrecta');
-                        }else if(fecha_inicio >= fecha_programada){
-                            this.Error.mensaje.push('La fecha programada debe ser después que la fecha de inicio de la producción');
-                        }
+                        this.validarFechasLogicas();
                     }
                 }else{
                     //Modal editar
@@ -762,21 +751,36 @@
                 if ( this.Error.mensaje.length ) this.Error.estado = 1;
                 return this.Error.estado;
             },
+            ValidarNegativosCantidades(){
+                for (let i = 0; i < this.ListaDetalleProduccion.length; i++) {
+                    const detalle = this.ListaDetalleProduccion[i];
+                    if(detalle.cantidad<1){
+                        this.Error.mensaje.push('Las cantidades de los detalles deben ser mayores o iguales a 1');
+                        break;
+                    }
+                }
+            },
+            validarFechasLogicas(){
+                let arrayfechaInicio = this.Produccion.fecha_inicio.split('-');
+                let arrayFechaProgramada = this.Produccion.fecha_programada.split('-');
+                let fecha_inicio = new Date(parseInt(arrayfechaInicio[0]),parseInt(arrayfechaInicio[1]-1),parseInt(arrayfechaInicio[2]));
+                let fecha_programada = new Date(parseInt(arrayFechaProgramada[0]),parseInt(arrayFechaProgramada[1]-1),parseInt(arrayFechaProgramada[2]));
+
+                let hoyBase =  new Date();
+
+                let hoyFirme = new Date(hoyBase.getFullYear(), hoyBase.getMonth(), hoyBase.getDate());
+
+                if(fecha_inicio <  hoyFirme){//Aqui me quede
+                    this.Error.mensaje.push('La fecha de inicio es incorrecta');
+                }else if(fecha_inicio >= fecha_programada){
+                    this.Error.mensaje.push('La fecha programada debe ser después que la fecha de inicio de la producción');
+                }
+            },
             cambiarPagina(page){
                 if ( page >= 1 && page <= this.Paginacion.lastPage) {
                     this.listar(page);
                 }
             },
-            // selectUnidad(){
-            //     var me = this;
-            //     var url = '/material/selectUnidad';
-
-            //     axios.get(url).then(function(response){
-            //         me.SelectUnidad = response.data;
-            //     }).catch(function(error){
-            //         console.log(error);
-            //     });
-            // },
             getFechaHoy(){
                 let n =  new Date();
                 //Año
@@ -817,7 +821,7 @@
             },
             getYear(min){
                 let n =  new Date();
-                let max = n.getFullYear();
+                let max = n.getFullYear() +1;
                 let lista = [];
                 while(min <= max){
                     lista.push(min);

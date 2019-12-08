@@ -93,11 +93,14 @@
                                 <td v-text="abasto.costo_total"></td>
                                 <td v-text="abasto.tipo_abasto? 'Crédito' : 'Contado'"></td>
                                 <td>
-                                    <div v-if="abasto.estado_envio == 'E'">
+                                    <div v-if="abasto.estado_envio == 0">
                                         <span class="badge badge-primary">Enviado</span>
                                     </div>
-                                    <div v-else="">
+                                    <div v-else-if="abasto.estado_envio == 1">
                                         <span class="badge badge-success">Recibido</span>
+                                    </div>
+                                    <div v-else>
+                                        <span class="badge badge-success">Rechazado</span>
                                     </div>
                                 </td>
                                 <td class="text-center">
@@ -111,8 +114,15 @@
                                         <button type="button"  title="Ver más" class="btn btn-primary btn-sm">
                                             <i class="far fa-eye"></i>
                                         </button>
+                                    </template>
+                                    <template v-if="abasto.estado_envio == 0">
                                         <button type="button"  title="Anular" class="btn btn-danger btn-sm">
-                                            <i class="fas fa-trash-alt"></i>
+                                                <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </template>
+                                    <template v-else-if="abasto.estado_envio == 2">
+                                        <button type="button"  title="Reenviar" class="btn btn-info btn-sm">
+                                            <i class="fas fa-plane"></i>
                                         </button>
                                     </template>
                                     
@@ -279,7 +289,7 @@
                                             <div class="col-md-6"></div>
                                             <div class="col-md-3">
                                                 <div class="input-group">
-                                                    <label for="tipo">Tipo</label>&nbsp;
+                                                    <label for="tipo" class="font-weight-bold">Tipo</label>&nbsp;<span class="text-danger">*</span>&nbsp;
                                                     <select v-model="Abasto.tipo" class="custom-select custom-select-sm" id="tipo">
                                                         <option value="-1">Seleccione</option>
                                                         <option value="0">Contado</option>
@@ -329,7 +339,7 @@
                                         <div class="row">
                                             <div class="col-md-4">
                                                 <div class="input-group" style="width: 11.2rem;" v-if="Abasto.tipo == '1'"> 
-                                                    <label for="">Pago inicial</label>&nbsp;
+                                                    <label for="">Pago inicial</label>&nbsp;<span class="text-danger">*</span>&nbsp;
                                                     <input type="number" class="form-control form-control-sm" v-model="Abasto.pagoInicial" min="0">
                                                 </div>
                                             </div>
@@ -342,7 +352,7 @@
                                         <div class="row">
                                             <div class="col-md-4">
                                                 <div class="input-group"> 
-                                                    <label for="">Enviar a</label>&nbsp;
+                                                    <label for="">Enviar a</label>&nbsp;<span class="text-danger">*</span>&nbsp;
                                                     <select v-model="Abasto.centro_to_id" class="custom-select custom-select-sm text-gray-900">
                                                         <option value="0">Seleccione</option>
                                                         <option v-for="item in SelectAlmacen" :key="item.id" :value="item.id" v-text="item.nombre" ></option>
@@ -377,7 +387,7 @@
                 Abasto: {
                     id: 0,
                     total: 0.00,
-                    tipo: -1, // 0: Contado, 1: Credito
+                    tipo: 1, // 0: Contado, 1: Credito
                     centro_to_id: 0, //Almacén donde se enviará el abasto
                     created_at : '',
                     pagoInicial: '',
@@ -740,10 +750,12 @@
                     if (this.DatosProveedor.documento == '') this.Error.mensaje.push('Debe ingresar datos del proveedor');
                     if (!this.ListaDetalleAbasto.length ) {
                         this.Error.mensaje.push("No existe ningun detalle de abasto");
-                    }else if(this.Abasto.total == 0.00){
-                        this.Error.mensaje.push("El total no puede ser cero");
+                    // }else if(){
+                    //     // this.Error.mensaje.push("El total no puede ser cero");
                     }else if(this.Abasto.centro_to_id == 0){
                         this.Error.mensaje.push('Debe seleccionar el almacén receptor');
+                    }else{
+                        this.validarNegativos();
                     }
 
                     if(this.Abasto.tipo == -1){
@@ -756,6 +768,18 @@
                 }
                 if ( this.Error.mensaje.length ) this.Error.estado = 1;
                 return this.Error.estado;
+            },
+            validarNegativos(){
+                for (let i = 0; i < this.ListaDetalleAbasto.length; i++) {
+                    const detalle = this.ListaDetalleAbasto[i];
+                    if(detalle.cantidad <1){
+                        this.Error.mensaje.push('Las cantidades de los detalles deben ser mayores o iguales a 1');
+                        break;
+                    }else if(detalle.costo_abasto <= 0){
+                        this.Error.mensaje.push('Los precios de los detalles debe ser mayores a 0');
+                        break;
+                    }
+                }
             },
             agregar(){
                 if ( this.validar() ) return;

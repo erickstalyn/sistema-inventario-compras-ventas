@@ -10,4 +10,5 @@ class Centro extends Model
     protected $fillable = [
         'nombre', 'direccion', 'telefono', 'tipo'
     ];
+    public $timestamps = false;
 }
