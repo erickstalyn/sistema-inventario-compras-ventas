@@ -62,9 +62,9 @@
                                     <button type="button" @click="abrirModalEditar(producto)" title="EDITAR" class="btn btn-warning btn-sm">
                                         <i class="fas fa-edit"></i>
                                     </button>
-                                    <!-- <button type="button" @click="abrirModalMaterial(producto)" title="Agregar Material" class="btn btn-secondary btn-sm">
-                                        <span>Material</span>
-                                    </button> -->
+                                    <button type="button" @click="abrirModalMaterial(producto)" title="MATERIALES" class="btn btn-secondary btn-sm">
+                                        <i class="fas fa-hammer"></i>
+                                    </button>
                                 </td>
                             </tr>
                         </tbody>
@@ -225,46 +225,58 @@
                         </div>
                         <!-- Modal Numero 4 de MATERIALES-->
                         <div v-if="Modal.numero==4">
-                            <div class="row">
-                                <div class="col-md-4 container-fluid">
+                            <div class="row form-group">
+                                <div class="col-md-4 container">
+                                    <div v-if="Error.estado && Error.numero==3" class="row d-flex justify-content-center">
+                                        <div class="alert alert-danger">
+                                            <button type="button" @click="closeError()" class="close text-primary" data-dismiss="alert">×</button>
+                                            <strong>Corregir los siguentes errores:</strong>
+                                            <ul> 
+                                                <li v-for="error in Error.mensaje" :key="error" v-text="error"></li> 
+                                            </ul>
+                                        </div>
+                                    </div>
                                     <div class="row">
                                         <label class="col-md-12 font-weight-bold">AGREGAR MATERIAL</label>
                                     </div>
                                     <div class="row form-group">
-                                        <label class="col-md-4 font-weight-bold">Material:</label>
-                                        <select v-model="ProductoMaterial.material_id" class="col-md-8 form-control-sm" @click="actualizarProductoMaterial()">
-                                            <option value="0" disabled>seleccione</option>
-                                            <option v-for="material in SelectMaterial" :key="material.id" :value="material.id" v-text="material.nombre"></option>
+                                        <label class="col-md-4">Material:</label>
+                                        <select class="col-md-8 custom-select custom-select-sm" v-model="ProductoMaterial.material_id" @click="actualizarProductoMaterial()">
+                                            <option value="0" disabled>Seleccione</option>
+                                            <option class="text-gray-900" v-for="material in SelectMaterial" :key="material.id" :value="material.id" v-text="material.nombre"></option>
                                         </select>
                                     </div>
                                     <div class="row form-group">
-                                        <label class="col-md-4 font-weight-bold">Unidad:</label>
-                                        <label class="col-md-8 font-weight-bold" v-text="ProductoMaterial.unidad"></label>
+                                        <label class="col-md-4">Unidad:</label>
+                                        <label class="col-md-8 text-info" v-text="ProductoMaterial.unidad"></label>
                                     </div>
                                     <div class="row form-group">
-                                        <label class="col-md-4 font-weight-bold">P/U:</label>
-                                        <label class="col-md-8 font-weight-bold" v-text="ProductoMaterial.costo_unitario"></label>
+                                        <label class="col-md-4">P/U:</label>
+                                        <label class="col-md-8 text-info" v-text="ProductoMaterial.costo_unitario"></label>
                                     </div>
                                     <div class="row form-group">
-                                        <label class="col-md-4 font-weight-bold">Cantidad:</label>
-                                        <input type="number" v-model="ProductoMaterial.cantidad" class="col-md-8 form-control-sm" @keyup="actualizarProductoMaterial()" placeholder="ingrese la cantidad">
+                                        <label class="col-md-4">Cantidad:</label>
+                                        <input type="number" class="col-md-8 form-control form-control-sm" v-model="ProductoMaterial.cantidad" @keyup="actualizarProductoMaterial()" placeholder="Ingrese la cantidad">
                                     </div>
                                     <div class="row form-group">
-                                        <label class="col-md-4 font-weight-bold">Subtotal:</label>
-                                        <label class="col-md-8 font-weight-bold" v-text="ProductoMaterial.subtotal"></label>
+                                        <label class="col-md-4">Subtotal:</label>
+                                        <label class="col-md-8 text-info" v-text="ProductoMaterial.subtotal"></label>
                                     </div>
                                     <div class="row form-group col-md-12 d-flex justify-content-around">
-                                        <button type="button" @click="agregarProductoMaterial()" class="btn btn-success">Agregar Material</button>        
+                                        <button type="button" class="btn btn-sm btn-info btn-icon-split" @click="agregarProductoMaterial()">
+                                            <span class="icon text-white-50"><i class="fas fa-plus"></i></span>
+                                            <span class="text">Agregar Material</span>
+                                        </button>
                                     </div>
                                 </div>
-                                <div class="col-md-8 container-fluid">
+                                <div class="col-md-8 container">
                                     <div class="row">
                                         <label class="col-md-12 font-weight-bold">LISTA DE MATERIALES</label>
                                     </div>
-                                    <div class="row form-group">
+                                    <div class="row form-group" v-if="ListaProductoMaterial.length">
                                         <table class="table table-bordered table-striped table-sm text-gray-900">
                                             <thead>
-                                                <tr class="bg-success">
+                                                <tr class="bg-info">
                                                     <th>Quitar</th>
                                                     <th>Material</th>
                                                     <th>Unidad</th>
@@ -276,7 +288,9 @@
                                             <tbody>
                                                 <tr v-for="(material, indice) in ListaProductoMaterial" :key="material.id" >
                                                     <td>
-                                                        <button type="button" class="btn btn-primary" @click="quitarProductoMaterial(indice)">X</button>
+                                                        <button type="button" class="btn btn-circle btn-outline-danger btn-sm" @click="quitarProductoMaterial(indice)" title="QUITAR">
+                                                            <i class="fas fa-minus"></i>
+                                                        </button>
                                                     </td>
                                                     <td v-text="material.nombre"></td>
                                                     <td v-text="material.unidad"></td>
@@ -286,6 +300,9 @@
                                                 </tr>
                                             </tbody>
                                         </table>
+                                    </div>
+                                    <div class="row form-group" v-else>
+                                        <label class="col-md-12 text-danger">No existen materiales</label>
                                     </div>
                                 </div>
                             </div>
@@ -333,10 +350,6 @@
                 SelectSize: [],
                 SelectColor:[],
 
-                //datos de materiales
-                ListaMaterial: [],
-                SelectMaterial: [],
-
                 //datos del producto_material
                 ListaProductoMaterial: [],
                 ProductoMaterial: {
@@ -349,6 +362,7 @@
                     cantidad: 0,
                     subtotal: 0
                 },
+                SelectMaterial: [],
 
                 //datos de busqueda y filtracion
                 Busqueda: {
@@ -608,10 +622,9 @@
                 this.selectColor();
             },
             abrirModalMaterial(data = []){
-                this.abrirModal(4, 'Materiales del Producto', 'Guardar Materiales', 'modal-xl');
+                this.abrirModal(4, 'Materiales del Producto', 'modal-xl', 'Guardar Materiales', 'Cancelar');
                 
                 this.Producto.id = data['id'];
-                this.Producto.nombre = data['nombre'];
 
                 this.ProductoMaterial.producto_id = this.Producto.id;
                 this.ProductoMaterial.material_id = 0;
@@ -654,7 +667,6 @@
                 this.Producto.stock = 0;
                 this.Producto.created_at = '';
 
-                this.ListaMaterial = [];
                 this.ListaProductoMaterial = [];
 
                 this.ProductoMaterial.producto_id = 0;
