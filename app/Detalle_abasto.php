@@ -9,7 +9,7 @@ class Detalle_abasto extends Model
     public $timestamps = false;
     protected $table= 'detalle_abasto';
     protected $fillable = [
-        'producto_id','abasto_id', 'cantidad', 'precio', 'subtotal'
+        'nombre_producto','cantidad', 'costo_abasto', 'subtotal','producto_id','abasto_id'
     ];
 
     public function getAbasto(){

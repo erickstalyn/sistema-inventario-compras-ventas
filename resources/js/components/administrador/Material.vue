@@ -625,22 +625,13 @@
                     if ( this.Material.costo == 0 || this.Material.costo < 0) this.Error.mensaje.push("Debe ingresar un costo válido");
                 }else{
                     //Modal editar
-                    // if(this.Material.nombre != this.MaterialOrigen.nombre){
-                    //     for (let i = 0; i < this.ListaMaterial.length; i++) {
-                    //         if(this.ListaMaterial[i].nombre == this.Material.nombre) {
-                    //             this.Error.mensaje.push("El material '" + this.Material.nombre + "' ya está registrado");
-                    //             break;
-                    //         }
-                    //     }
-                    // }else{
-                        if(this.Material.nombre == this.MaterialOrigen.nombre && this.Material.subtipo == this.MaterialOrigen.subtipo && this.Material.unidad == this.MaterialOrigen.unidad && this.Material.costo == this.MaterialOrigen.costo){
-                            this.Error.mensaje.push("Ningun cambio registrado");
-                        }else{ 
-                            if ( !this.Material.nombre ) this.Error.mensaje.push("Debe ingresar un nombre");
-                            if ( !this.Material.unidad ) this.Error.mensaje.push("Debe seleccionar una Unid. Medida");
-                            if ( this.Material.costo == 0 || this.Material.costo < 0) this.Error.mensaje.push("Debe ingresar un costo válido");
-                        }
-                    // }
+                    if(this.Material.nombre == this.MaterialOrigen.nombre && this.Material.subtipo == this.MaterialOrigen.subtipo && this.Material.unidad == this.MaterialOrigen.unidad && this.Material.costo == this.MaterialOrigen.costo){
+                        this.Error.mensaje.push("Ningun cambio realizado");
+                    }else{ 
+                        if ( !this.Material.nombre ) this.Error.mensaje.push("Debe ingresar un nombre");
+                        if ( !this.Material.unidad ) this.Error.mensaje.push("Debe seleccionar una Unid. Medida");
+                        if ( this.Material.costo == 0 || this.Material.costo < 0) this.Error.mensaje.push("Debe ingresar un costo válido");
+                    }
                 }
 
                 if ( this.Error.mensaje.length ) this.Error.estado = 1;

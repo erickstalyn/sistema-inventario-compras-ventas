@@ -21,9 +21,10 @@
                 <div class="col-md-2">
                     <div class="input-group"> 
                         <select class="custom-select text-gray-900" v-model="Busqueda.estado">
-                            <option value="2">Todos</option>
-                            <option value="E">Enviados</option>
-                            <option value="R">Recibidos</option>
+                            <option value="3">Todos</option>
+                            <option value="0">Enviados</option>
+                            <option value="1">Recibidos</option>
+                            <option value="2">Rechazados</option>
                         </select>
                     </div>
                 </div>
@@ -100,18 +101,18 @@
                                         <span class="badge badge-success">Recibido</span>
                                     </div>
                                     <div v-else>
-                                        <span class="badge badge-success">Rechazado</span>
+                                        <span class="badge badge-danger">Rechazado</span>
                                     </div>
                                 </td>
                                 <td class="text-center">
                                     
                                     <template v-if="abasto.tipo_abasto == 1">
                                         <button type="button"  title="Pagar Cuota" class="btn btn-warning btn-sm">
-                                            <i class="far fa-edit"></i>
+                                            <i class="fas fa-hand-holding-usd"></i>
                                         </button>
                                     </template>
                                     <template>
-                                        <button type="button"  title="Ver más" class="btn btn-primary btn-sm">
+                                        <button type="button"  title="Ver abasto" class="btn btn-primary btn-sm">
                                             <i class="far fa-eye"></i>
                                         </button>
                                     </template>
@@ -403,7 +404,7 @@
                 //datos de busqueda y filtracion general
                 Busqueda: {
                     texto: '',
-                    estado: 2,
+                    estado: 3,
                     filas: 5,
                     dia: '',
                     mes: this.getMesActual(),
