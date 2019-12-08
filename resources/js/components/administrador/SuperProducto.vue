@@ -723,7 +723,7 @@
                         }
                         break;
                     case 3:
-                        this.Error.mensaje.push("El Super Producto ya se encuentra registrado");                                    //superproducto existente
+                        this.Error.mensaje.push("El Super Producto ya esta registrado");                                    //superproducto existente
                         break;
                 }
 

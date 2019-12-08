@@ -115,25 +115,25 @@
                             </div>
                             <div class="row form-group">
                                 <label class="col-md-3">Nombre</label>
-                                <label class="col-md-9 text-success" v-text="Producto.nombre"></label>
+                                <label class="col-md-9 text-success" v-text="updateNombre"></label>
                             </div>
                             <div class="row form-group">
                                 <label class="col-md-5">Super Producto&nbsp;<span class="text-danger">*</span></label>
-                                <select class="col-md-7 custom-select custom-select-sm" v-model="Producto.superproducto_id" @click="updateName()">
+                                <select class="col-md-7 custom-select custom-select-sm" v-model="Producto.superproducto_id">
                                     <option value="0" disabled>Seleccione un superproducto</option>
                                     <option class="text-gray-900" v-for="superproducto in SelectSuperProducto" :key="superproducto.id" :value="superproducto.id" v-text="superproducto.nombre"></option>
                                 </select>
                             </div>
                             <div class="row form-group">
                                 <label class="col-md-5">Tamaño&nbsp;<span class="text-danger">*</span></label>
-                                <select class="col-md-7 custom-select custom-select-sm" v-model="Producto.size" @click="updateName()">
+                                <select class="col-md-7 custom-select custom-select-sm" v-model="Producto.size">
                                     <option value="" disabled>Seleccione un tamaño</option>
                                     <option class="text-gray-900" v-for="size in SelectSize" :key="size.nombre" :value="size.nombre" v-text="size.nombre"></option>
                                 </select>
                             </div>
                             <div class="row form-group">
                                 <label class="col-md-5">Color&nbsp;<span class="text-danger">*</span></label>
-                                <select class="col-md-7 custom-select custom-select-sm" v-model="Producto.color" @click="updateName()">
+                                <select class="col-md-7 custom-select custom-select-sm" v-model="Producto.color">
                                     <option value="" disabled>seleccione un color</option>
                                     <option class="text-gray-900" v-for="color in SelectColor" :key="color.nombre" :value="color.nombre" v-text="color.nombre"></option>
                                 </select>
@@ -191,25 +191,25 @@
                             </div>
                             <div class="row form-group">
                                 <label class="col-md-3">Nombre</label>
-                                <label class="col-md-9 text-success" v-text="Producto.nombre"></label>
+                                <label class="col-md-9 text-success" v-text="updateNombre"></label>
                             </div>
                             <div class="row form-group">
                                 <label class="col-md-5">Super Producto&nbsp;<span class="text-danger">*</span></label>
-                                <select class="col-md-7 custom-select custom-select-sm" v-model="Producto.superproducto_id" @click="updateName()">
+                                <select class="col-md-7 custom-select custom-select-sm" v-model="Producto.superproducto_id">
                                     <option value="0" disabled>Seleccione un superproducto</option>
                                     <option class="text-gray-900" v-for="superproducto in SelectSuperProducto" :key="superproducto.id" :value="superproducto.id" v-text="superproducto.nombre"></option>
                                 </select>
                             </div>
                             <div class="row form-group">
                                 <label class="col-md-5">Tamaño&nbsp;<span class="text-danger">*</span></label>
-                                <select class="col-md-7 custom-select custom-select-sm" v-model="Producto.size" @click="updateName()">
+                                <select class="col-md-7 custom-select custom-select-sm" v-model="Producto.size">
                                     <option value="" disabled>Seleccione un tamaño</option>
                                     <option class="text-gray-900" v-for="size in SelectSize" :key="size.nombre" :value="size.nombre" v-text="size.nombre"></option>
                                 </select>
                             </div>
                             <div class="row form-group">
                                 <label class="col-md-5">Color&nbsp;<span class="text-danger">*</span></label>
-                                <select class="col-md-7 custom-select custom-select-sm" v-model="Producto.color" @click="updateName()">
+                                <select class="col-md-7 custom-select custom-select-sm" v-model="Producto.color">
                                     <option value="" disabled>seleccione un color</option>
                                     <option class="text-gray-900" v-for="color in SelectColor" :key="color.nombre" :value="color.nombre" v-text="color.nombre"></option>
                                 </select>
@@ -241,7 +241,7 @@
                                     </div>
                                     <div class="row form-group">
                                         <label class="col-md-4">Material:</label>
-                                        <select class="col-md-8 custom-select custom-select-sm" v-model="ProductoMaterial.material_id" @click="actualizarProductoMaterial()">
+                                        <select class="col-md-8 custom-select custom-select-sm" v-model="ProductoMaterial.material_id" @click="updateProductoMaterial()">
                                             <option value="0" disabled>Seleccione</option>
                                             <option class="text-gray-900" v-for="material in SelectMaterial" :key="material.id" :value="material.id" v-text="material.nombre"></option>
                                         </select>
@@ -256,14 +256,14 @@
                                     </div>
                                     <div class="row form-group">
                                         <label class="col-md-4">Cantidad:</label>
-                                        <input type="number" class="col-md-8 form-control form-control-sm" v-model="ProductoMaterial.cantidad" @keyup="actualizarProductoMaterial()" placeholder="Ingrese la cantidad">
+                                        <input type="number" class="col-md-8 form-control form-control-sm" v-model="ProductoMaterial.cantidad" @keyup="updateProductoMaterial()" placeholder="Ingrese la cantidad">
                                     </div>
                                     <div class="row form-group">
                                         <label class="col-md-4">Subtotal:</label>
                                         <label class="col-md-8 text-info" v-text="ProductoMaterial.subtotal"></label>
                                     </div>
                                     <div class="row form-group col-md-12 d-flex justify-content-around">
-                                        <button type="button" class="btn btn-sm btn-info btn-icon-split" @click="agregarProductoMaterial()">
+                                        <button type="button" class="btn btn-sm btn-info btn-icon-split" @click="addProductoMaterial()">
                                             <span class="icon text-white-50"><i class="fas fa-plus"></i></span>
                                             <span class="text">Agregar Material</span>
                                         </button>
@@ -288,7 +288,7 @@
                                             <tbody>
                                                 <tr v-for="(material, indice) in ListaProductoMaterial" :key="material.id" >
                                                     <td>
-                                                        <button type="button" class="btn btn-circle btn-outline-danger btn-sm" @click="quitarProductoMaterial(indice)" title="QUITAR">
+                                                        <button type="button" class="btn btn-circle btn-outline-danger btn-sm" @click="removeProductoMaterial(indice)" title="QUITAR">
                                                             <i class="fas fa-minus"></i>
                                                         </button>
                                                     </td>
@@ -303,6 +303,11 @@
                                     </div>
                                     <div class="row form-group" v-else>
                                         <label class="col-md-12 text-danger">No existen materiales</label>
+                                    </div>
+                                    <div class="row form-group">
+                                        <div class="col-md-7"></div>
+                                        <label class="col-md-3">Costo de produccion</label>
+                                        <label class="col-md-2 text-info" v-text="updateCostoProduccion"></label>
                                     </div>
                                 </div>
                             </div>
@@ -407,6 +412,7 @@
                 Ruta: {
                     superproducto: '/superproducto',
                     producto: '/producto',
+                    productomaterial: '/productomaterial',
                     material: '/material',
                     data: '/data'
                 }
@@ -458,6 +464,28 @@
                 headers.push({titulo: 'Stock', nombre: 'stock'});
 
                 return headers;
+            },
+            updateNombre: function () {
+                var name = '';
+                for (let i = 0; i < this.SelectSuperProducto.length; i++) {
+                    if ( this.SelectSuperProducto[i].id == this.Producto.superproducto_id ) {
+                        name = this.SelectSuperProducto[i].nombre; break;
+                    }
+                }
+
+                this.Producto.nombre = name + ' ' + this.Producto.size + ' ' + this.Producto.color;
+
+                return this.Producto.nombre;
+            },
+            updateCostoProduccion: function() {
+                var costo_produccion = 0.00;
+
+                for (var i = 0; i < this.ListaProductoMaterial.length; i++) {
+                    costo_produccion = Number.parseFloat(costo_produccion) + Number.parseFloat(this.ListaProductoMaterial[i].subtotal);
+                }
+                this.Producto.costo_produccion = costo_produccion;
+
+                return Number.parseFloat(costo_produccion).toFixed(2);
             }
         },
         methods: {
@@ -560,7 +588,41 @@
                     console.log(error);
                 });
             },
-            agregarProductoMaterial(){
+            agregarMateriales(){
+                var me = this;
+                var url = this.Ruta.productomaterial+'/agregar';
+
+                axios.post(url, {
+                    'id': this.Producto.id,
+                    'costo_produccion': this.Producto.costo_produccion,
+                    'listaproductomaterial': this.ListaProductoMaterial
+                }).then(function (response) {
+                    var estado = response.data.estado;
+                    if ( estado == 1 ) {
+                        me.cerrarModal();
+                        me.listar();
+                        Swal.fire({
+                            position: 'top-end',
+                            toast: true,
+                            type: 'success',
+                            title: 'La lista de materiales ha sido añadida correctamente',
+                            showConfirmButton: false,
+                            timer: 4500,
+                            animation:false,
+                            customClass:{
+                                popup: 'animated bounceIn fast'
+                            }
+                        });
+                    } else {
+                        console.log(response.data.error);
+                    }
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            },
+            addProductoMaterial(){
+                if ( this.validar(3) ) return;
+
                 let producto_material = {
                     'material_id': this.ProductoMaterial.material_id,
                     'nombre': this.ProductoMaterial.nombre,
@@ -578,7 +640,7 @@
                 this.ProductoMaterial.cantidad = 0;
                 this.ProductoMaterial.subtotal = 0;
             },
-            quitarProductoMaterial(indice){
+            removeProductoMaterial(indice){
                 this.ListaProductoMaterial.splice(indice,1);
             },
             abrirModalAgregar(){
@@ -625,6 +687,7 @@
                 this.abrirModal(4, 'Materiales del Producto', 'modal-xl', 'Guardar Materiales', 'Cancelar');
                 
                 this.Producto.id = data['id'];
+                this.Producto.costo_produccion = data['costo_produccion'];
 
                 this.ProductoMaterial.producto_id = this.Producto.id;
                 this.ProductoMaterial.material_id = 0;
@@ -635,6 +698,7 @@
                 this.ProductoMaterial.subtotal = 0;
 
                 this.selectMaterial();
+                this.listaProductoMaterial();
             },
             abrirModal(numero, titulo, tamaño, btnA, btnC){
                 this.Modal.estado = 1;
@@ -720,16 +784,6 @@
                     });
                 }
             },
-            updateName(){
-                var name = '';
-                for (let i = 0; i < this.SelectSuperProducto.length; i++) {
-                    if ( this.SelectSuperProducto[i].id == this.Producto.superproducto_id ) {
-                        name = this.SelectSuperProducto[i].nombre; break;
-                    }
-                }
-
-                this.Producto.nombre = name + ' ' + this.Producto.size + ' ' + this.Producto.color;
-            },
             selectMaterial(){
                 if ( !this.SelectMaterial.lenth ) {
                     var me = this;
@@ -740,6 +794,16 @@
                         console.log(error);
                     });
                 }
+            },
+            listaProductoMaterial() {
+                var me = this;
+                var url = this.Ruta.productomaterial+'/listaProductoMaterial?producto_id='+this.Producto.id;
+
+                axios.get(url).then(function (response) {
+                    me.ListaProductoMaterial = response.data;
+                }).catch(function (error) {
+                    console.log(error);
+                });
             },
             getTitulo(titulo){
                 var seleccionada = 0;
@@ -761,7 +825,7 @@
 
                 return titulo;
             },
-            actualizarProductoMaterial(){
+            updateProductoMaterial(){
                 for (let i = 0; i < this.SelectMaterial.length; i++) {
                     if ( this.SelectMaterial[i].id == this.ProductoMaterial.material_id ) {
                         this.ProductoMaterial.nombre = this.SelectMaterial[i].nombre;
@@ -788,7 +852,26 @@
                         if ( this.Producto.precio_mayor < 0) this.Error.mensaje.push("El precio al por mayor debe ser positivo");   //precio_mayor
                         break;
                     case 2:
-                        this.Error.mensaje.push("Este producto ya existe");                                                         //producto existente
+                        this.Error.mensaje.push("Este producto ya esta registrado");    //producto existente
+                        break;
+                    case 3:
+                        var found = 0;
+                        for (var i = 0; i < this.ListaProductoMaterial.length; i++) {
+                            if ( this.ProductoMaterial.material_id == this.ListaProductoMaterial[i].material_id ) {
+                                found = 1; break;
+                            }
+                        }
+
+                        if ( found == 0 ) {
+                            if ( this.ProductoMaterial.material_id == 0) this.Error.mensaje.push("Debe seleccionar un material");   //material_id
+                            if ( this.ProductoMaterial.cantidad == 0) this.Error.mensaje.push("Debe ingresar una cantidad");        //cantidad
+                            if ( this.ProductoMaterial.cantidad < 0) this.Error.mensaje.push("La cantidad debe positiva");          //cantidad
+                        } else {
+                            this.Error.mensaje.push("Este material ya esta en lista");    //material existente
+                        }
+                        break;
+                    case 4: 
+                        if ( !this.ListaProductoMaterial.length ) this.Error.mensaje.push("La lista de materiales esta vacia");   //precio_mayor
                         break;
                 }
 
