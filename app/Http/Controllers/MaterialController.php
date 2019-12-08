@@ -116,10 +116,10 @@ class MaterialController extends Controller
         }
     }
 
-    public function selectUnidad(Request $request){
-        $tipos = Data::select('id', 'tipo', 'subtipo','nombre')
-                            ->where('tipo','=','U')
-                            ->orderBy('id', 'asc')->get();
-        return $tipos;
-    }
+    // public function selectUnidad(Request $request){
+    //     $tipos = Data::select('id', 'tipo', 'subtipo','nombre')
+    //                         ->where('tipo','=','U')
+    //                         ->orderBy('id', 'asc')->get();
+    //     return $tipos;
+    // }
 }

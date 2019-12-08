@@ -289,7 +289,7 @@
                                             <div class="col-md-6"></div>
                                             <div class="col-md-3">
                                                 <div class="input-group">
-                                                    <label for="tipo">Tipo</label>&nbsp;
+                                                    <label for="tipo" class="font-weight-bold">Tipo</label>&nbsp;<span class="text-danger">*</span>&nbsp;
                                                     <select v-model="Abasto.tipo" class="custom-select custom-select-sm" id="tipo">
                                                         <option value="-1">Seleccione</option>
                                                         <option value="0">Contado</option>
@@ -339,7 +339,7 @@
                                         <div class="row">
                                             <div class="col-md-4">
                                                 <div class="input-group" style="width: 11.2rem;" v-if="Abasto.tipo == '1'"> 
-                                                    <label for="">Pago inicial</label>&nbsp;
+                                                    <label for="">Pago inicial</label>&nbsp;<span class="text-danger">*</span>&nbsp;
                                                     <input type="number" class="form-control form-control-sm" v-model="Abasto.pagoInicial" min="0">
                                                 </div>
                                             </div>
@@ -352,7 +352,7 @@
                                         <div class="row">
                                             <div class="col-md-4">
                                                 <div class="input-group"> 
-                                                    <label for="">Enviar a</label>&nbsp;
+                                                    <label for="">Enviar a</label>&nbsp;<span class="text-danger">*</span>&nbsp;
                                                     <select v-model="Abasto.centro_to_id" class="custom-select custom-select-sm text-gray-900">
                                                         <option value="0">Seleccione</option>
                                                         <option v-for="item in SelectAlmacen" :key="item.id" :value="item.id" v-text="item.nombre" ></option>
@@ -387,7 +387,7 @@
                 Abasto: {
                     id: 0,
                     total: 0.00,
-                    tipo: -1, // 0: Contado, 1: Credito
+                    tipo: 1, // 0: Contado, 1: Credito
                     centro_to_id: 0, //Almacén donde se enviará el abasto
                     created_at : '',
                     pagoInicial: '',
@@ -718,6 +718,9 @@
                     }
                 }).fail(function(){
                 });
+            },
+            convertirCapitalize(){
+
             },
             abrirModalAgregar(){
                 this.abrirModal(1, 'Registrar Abasto', 'Agregar');

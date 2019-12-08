@@ -653,7 +653,7 @@
             },
             selectUnidad(){
                 var me = this;
-                var url = '/material/selectUnidad';
+                var url = '/data/selectUnidad';
                 axios.get(url).then(function(response){
                     me.SelectUnidad = response.data;
                 }).then(function(){

@@ -86,7 +86,7 @@ class AbastoController extends Controller
 
     public function agregar(Request $request){
         if ( !$request->ajax() ) return redirect('/');
-
+       
         try {
             DB::beginTransaction();
 
@@ -104,11 +104,14 @@ class AbastoController extends Controller
                 $persona = new Persona();
                 $persona->proveedor = 1;
                 if(strlen($proveedor['documento']) == 8){
+                    //Convertimos los nombres y apellidos
+                    $newNombres = mb_convert_case($proveedor['nombres'], MB_CASE_TITLE, "UTF-8");
+                    $newApellidos = mb_convert_case($proveedor['apellidos'], MB_CASE_TITLE, "UTF-8");
                     $persona->dni = $proveedor['documento'];
-                    $persona->nombres = $proveedor['nombres'];
-                    $persona->apellidos = $proveedor['apellidos'];
+                    $persona->nombres = $newNombres;
+                    $persona->apellidos = $newApellidos;
                     $persona->tipo = 'P';
-                    $abasto->proveedor_nombre = $proveedor['nombres'] . ' ' . $proveedor['apellidos'];
+                    $abasto->proveedor_nombre = $newNombres . ' ' . $newApellidos;
                 }else{
                     $persona->ruc = $proveedor['documento'];
                     $persona->razon_social = $proveedor['razon_social'];
