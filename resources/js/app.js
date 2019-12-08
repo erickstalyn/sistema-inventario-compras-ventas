@@ -23,8 +23,11 @@ Vue.component('adm-usuario', require('./components/administrador/Usuario.vue').d
 Vue.component('adm-superproducto', require('./components/administrador/SuperProducto.vue').default);
 Vue.component('adm-producto', require('./components/administrador/Producto.vue').default);
 Vue.component('adm-material', require('./components/administrador/Material.vue').default);
+Vue.component('adm-abasto', require('./components/administrador/Abasto.vue').default);
 
 Vue.component('alm-produccion', require('./components/almacen/Produccion.vue').default);
+
+
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -35,6 +38,6 @@ Vue.component('alm-produccion', require('./components/almacen/Produccion.vue').d
 const app = new Vue({
     el: '#app',
     data:{
-        menu: 1,
+        menu: 3,
     }
 });

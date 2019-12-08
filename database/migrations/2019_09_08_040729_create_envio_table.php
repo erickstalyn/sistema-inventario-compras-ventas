@@ -28,8 +28,8 @@ class CreateEnvioTable extends Migration
             $table->unsignedMediumInteger('abasto_id')->nullable();
             $table->foreign('abasto_id')->references('id')->on('abasto');
             $table->date('created_at'); // Fecha de ENVIO manual
-            $table->date('updated_at'); // Fecha de RECIBIDO O RECHAZO manual
-            $table->date('deleted_at'); // Fecha de ANULACION manual
+            $table->date('updated_at')->nullable(); // Fecha de RECIBIDO O RECHAZO manual
+            $table->date('deleted_at')->nullable(); // Fecha de ANULACION manual
         });
     }
 

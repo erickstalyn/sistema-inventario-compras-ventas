@@ -13,6 +13,9 @@
             <template v-if="menu==2">
                 <adm-producto></adm-producto>
             </template>
+            <template v-if="menu==3">
+                <abasto></abasto>
+            </template>
             <template v-if="menu==5">
                 <adm-usuario></adm-usuario>
             </template>

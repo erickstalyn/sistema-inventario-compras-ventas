@@ -44,6 +44,11 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/producto/selectColor', 'ProductoController@selectColor'); 
     Route::get('/producto/selectMaterial', 'ProductoController@selectMaterial'); 
 
+    //RUTAS PARA FUNCIONES COMUNES
+    Route::get('/libreria/getProductoFiltrado', 'LibreriaController@getProductoFiltrado');
+    Route::get('/libreria/getPersona', 'LibreriaController@getPersona');
+
+
     Route::group(['middleware' => ['Administrador']], function (){
         
         //Rutas para USUARIO
@@ -66,7 +71,7 @@ Route::group(['middleware' => ['auth']], function () {
         //RUTAS PARA PRODUCCIONES
         Route::get('/produccion', 'ProduccionController@listar'); //métodos generales
         Route::post('/produccion/agregar', 'ProduccionController@agregar');
-        Route::get('/produccion/getProductoFiltrado', 'ProduccionController@getProductoFiltrado'); //metodos secundarios
+        // Route::get('/produccion/getProductoFiltrado', 'ProduccionController@getProductoFiltrado'); //metodos secundarios
         Route::get('/produccion/selectAlmacen', 'ProduccionController@selectAlmacen'); //metodos secundarios
         Route::put('/produccion/finalizar', 'ProduccionController@finalizar'); //metodos secundarios
 
@@ -89,31 +94,17 @@ Route::group(['middleware' => ['auth']], function () {
         //RUTAS PARA DATA
         Route::get('/data/selectSize', 'DataController@selectSize'); 
         Route::get('/data/selectColor', 'DataController@selectColor'); 
+        
+        //RUTAS PARA ABASTO
+        Route::get('/abasto', 'AbastoController@listar'); //metodos generales
+        
+
     });
     Route::group(['middleware' => ['Puesto']], function (){
 
-        //RUTAS PARA PRODUCTO
-        // Route::get('/producto', 'ProductoController@listar'); //metodos generales
-        // Route::post('/producto/agregar', 'ProductoController@agregar');
-        // Route::put('/producto/editar', 'ProductoController@editar');
-        // Route::put('/producto/setEstado', 'ProductoController@setEstado');
-        // Route::get('/producto/selectSuperProducto', 'ProductoController@selectSuperProducto'); //metodos secundarios
-        // Route::get('/producto/selectSize', 'ProductoController@selectSize'); 
-        // Route::get('/producto/selectColor', 'ProductoController@selectColor'); 
-        // Route::get('/producto/selectMaterial', 'ProductoController@selectMaterial'); 
 
     });
     Route::group(['middleware' => ['Almacen']], function (){
-
-        //RUTAS PARA PRODUCTO
-        // Route::get('/producto', 'ProductoController@listar'); //metodos generales
-        // Route::post('/producto/agregar', 'ProductoController@agregar');
-        // Route::put('/producto/editar', 'ProductoController@editar');
-        // Route::put('/producto/setEstado', 'ProductoController@setEstado');
-        // Route::get('/producto/selectSuperProducto', 'ProductoController@selectSuperProducto'); //metodos secundarios
-        // Route::get('/producto/selectSize', 'ProductoController@selectSize'); 
-        // Route::get('/producto/selectColor', 'ProductoController@selectColor'); 
-        // Route::get('/producto/selectMaterial', 'ProductoController@selectMaterial');
 
         // RUTAS PARA PRODUCCIONES
         Route::get('/produccion', 'ProduccionController@listar'); //métodos generales

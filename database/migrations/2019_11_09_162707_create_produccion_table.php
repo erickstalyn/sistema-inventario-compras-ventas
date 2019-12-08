@@ -25,6 +25,7 @@ class CreateProduccionTable extends Migration
             //Los estados que tiene es: Sin Iniciar, En Proceso, Finalizado
             //Las producciones tiene un eliminado fisico
         });
+
     }
 
     /**
