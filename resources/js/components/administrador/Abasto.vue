@@ -18,9 +18,9 @@
 
             <!-- Inputs de busqueda -->
             <div class="row form-group">
-                <div class="col-md-2">
+                <div style="width: 8rem;" class="mr-1">
                     <div class="input-group"> 
-                        <select class="custom-select text-gray-900" v-model="Busqueda.estado">
+                        <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.estado">
                             <option value="3">Todos</option>
                             <option value="0">Enviados</option>
                             <option value="1">Aceptados</option>
@@ -28,10 +28,8 @@
                         </select>
                     </div>
                 </div>
-                <div class="col-md-2">
-                    <!-- <div class="input-group"> -->
-                        <input type="search" class="form-control" v-model="Busqueda.texto" @keyup.enter="listar()" placeholder="Buscar por proveedor">
-                    <!-- </div> -->
+                <div style="width: 24rem;">
+                    <input type="search" class="form-control" v-model="Busqueda.texto" @keyup.enter="listar()" placeholder="Buscar por proveedor">
                 </div>
                 <div class="col-md-1">
                     <label for="">Fecha de envío</label>
@@ -43,7 +41,7 @@
                         <option v-for="item in getDia()" :key="item" :value="item" v-text="item"></option>
                     </select>
                 </div>
-                <div class="col-md-2">
+                <div style="width: 8rem;">
                     Mes
                     <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.mes">
                         <option value="">Todos</option>
@@ -88,7 +86,7 @@
                         </thead>
                         <tbody>
                             <tr v-for="abasto in ListaAbasto" :key="abasto.id" >
-                                <td v-text="abasto.proveedor_nombre"></td>
+                                <td v-text="abasto.proveedor_persona ? abasto.proveedor_persona : abasto.proveedor_empresa"></td>
                                 <td v-text="abasto.nombre_centro"></td>
                                 <td v-text="abasto.fecha_envio"></td>
                                 <td v-text="abasto.costo_total"></td>
@@ -665,7 +663,7 @@
                 let ruc = me.DatosServicio.documento;
                 $.ajax({
                     type: 'GET',
-                    url: "http://localhost:8080/SunatPHP/demo.php",
+                    url: "http://localhost:80/SunatPHP/demo.php",
                     data: "ruc="+ruc,
                     beforeSend(){
                         me.Carga.clase = 'spinner-border spinner-border-sm text-primary';
@@ -695,7 +693,7 @@
                 let dni = me.DatosServicio.documento;
                 $.ajax({
                     type: 'GET',
-                    url: "http://localhost:8080/Reniec/demo.php",
+                    url: "http://localhost:80/Reniec/demo.php",
                     data: "dni="+dni,
                     beforeSend(){
                         me.Carga.clase = 'spinner-border spinner-border-sm text-primary';

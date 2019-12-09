@@ -425,7 +425,7 @@
                             }
                         });
                     }else{
-                        me.Error.mensaje.push("Ya existe un material registrado con el nombre '" + me.Material.nombre + "'");
+                        me.Error.mensaje.push('Este material ya está registrado');
                         me.Error.estado = 1;
                     }
                 }).catch(function(error){
