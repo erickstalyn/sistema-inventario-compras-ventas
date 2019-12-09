@@ -29,7 +29,7 @@ class AbastoController extends Controller
         $year = $request->year;
 
         $abastos = Abasto::select('abasto.id as id','persona.id as proveedor_id','proveedor_nombre', 'centro_to_id', 'centro.nombre as nombre_centro', 
-                        'abasto.created_at as fecha_envio', 'abasto.total as costo_total',
+                        'abasto.created_at as fecha_envio', 'abasto.total as costo_total', 'abasto.total_faltante as total_faltante',
                         'abasto.tipo as tipo_abasto', 'envio.estado as estado_envio')
                         ->join('persona', 'abasto.proveedor_id', '=', 'persona.id')
                         ->leftjoin('envio', 'abasto.id', '=', 'envio.abasto_id')
@@ -140,6 +140,7 @@ class AbastoController extends Controller
                 $pago = new Pago();
                 $pago->monto = $request->pagoInicial;
                 $pago->abasto_id = $abasto->id;
+                $pago->created_at = Carbon::now('America/Lima')->toDateTimeString();
                 $pago->save();
             }
             //Registramos el ENVÍO

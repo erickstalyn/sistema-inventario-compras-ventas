@@ -106,7 +106,7 @@
                                 </td>
                                 <td class="text-center">
                                     
-                                    <template v-if="abasto.tipo_abasto == 1">
+                                    <template v-if="abasto.tipo_abasto == 1 && abasto.total_faltante != 0">
                                         <button type="button"  title="Pagar Cuota" class="btn btn-warning btn-sm">
                                             <i class="fas fa-hand-holding-usd"></i>
                                         </button>
@@ -292,7 +292,7 @@
                                                 <div class="input-group">
                                                     <label for="tipo" class="font-weight-bold">Tipo</label>&nbsp;<span class="text-danger">*</span>&nbsp;
                                                     <select v-model="Abasto.tipo" class="custom-select custom-select-sm" id="tipo">
-                                                        <option value="-1">Seleccione</option>
+                                                        <!-- <option value="-1">Seleccione</option> -->
                                                         <option value="0">Contado</option>
                                                         <option value="1">Credito</option>
                                                     </select>
@@ -388,6 +388,7 @@
                 Abasto: {
                     id: 0,
                     total: 0.00,
+                    total_faltante: 0.00,
                     tipo: 1, // 0: Contado, 1: Credito
                     centro_to_id: 0, //Almacén donde se enviará el abasto
                     created_at : '',
@@ -751,19 +752,27 @@
                     if (this.DatosProveedor.documento == '') this.Error.mensaje.push('Debe ingresar datos del proveedor');
                     if (!this.ListaDetalleAbasto.length ) {
                         this.Error.mensaje.push("No existe ningun detalle de abasto");
-                    // }else if(){
-                    //     // this.Error.mensaje.push("El total no puede ser cero");
                     }else if(this.Abasto.centro_to_id == 0){
                         this.Error.mensaje.push('Debe seleccionar el almacén receptor');
                     }else{
                         this.validarNegativos();
                     }
 
-                    if(this.Abasto.tipo == -1){
-                        this.Error.mensaje.push("Debe seleccionar el tipo de abasto");
-                    }else if(this.Abasto.tipo == 1){
-                        if(this.Abasto.pagoInicial == '' || this.Abasto.pagoInicial < 0) this.Error.mensaje.push("Debe ingresar un pago inicial válido (mayor o igual a '0')");
+                    // if(this.Abasto.tipo == -1){
+                    //     this.Error.mensaje.push("Debe seleccionar el tipo de abasto");
+                    // }else if(this.Abasto.tipo == 1){
+                    //     if(this.Abasto.pagoInicial == '' || this.Abasto.pagoInicial < 0) this.Error.mensaje.push("Debe ingresar un pago inicial válido (mayor o igual a '0')");
+                    // }
+                    if(this.Abasto.tipo == 1){
+                        if(this.Abasto.pagoInicial<0){
+                            this.Error.mensaje.push('El pago inicial debe ser mayor o igual a 0')
+                        }else if(this.Abasto.pagoInicial > this.Abasto.total){
+                            this.Error.mensaje.push('El pago inicial no debe ser mayor al desembolso total')
+                        }else if(this.Abasto.pagoInicial == this.Abasto.total){
+                            this.Error.mensaje.push('El pago inicial es igual al desembolso total, se recomienda cambiarlo a una venta al contado')
+                        }
                     }
+
                 }else{ //Modal editar
                     
                 }
