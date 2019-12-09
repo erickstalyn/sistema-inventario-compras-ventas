@@ -23,7 +23,7 @@
                         <select class="custom-select text-gray-900" v-model="Busqueda.estado">
                             <option value="3">Todos</option>
                             <option value="0">Enviados</option>
-                            <option value="1">Recibidos</option>
+                            <option value="1">Aceptados</option>
                             <option value="2">Rechazados</option>
                         </select>
                     </div>
@@ -98,7 +98,7 @@
                                         <span class="badge badge-primary">Enviado</span>
                                     </div>
                                     <div v-else-if="abasto.estado_envio == 1">
-                                        <span class="badge badge-success">Recibido</span>
+                                        <span class="badge badge-success">Aceptado</span>
                                     </div>
                                     <div v-else>
                                         <span class="badge badge-danger">Rechazado</span>
