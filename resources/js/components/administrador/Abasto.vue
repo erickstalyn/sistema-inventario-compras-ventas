@@ -88,7 +88,7 @@
                             <tr v-for="abasto in ListaAbasto" :key="abasto.id" >
                                 <td v-text="abasto.proveedor_persona ? abasto.proveedor_persona : abasto.proveedor_empresa"></td>
                                 <td v-text="abasto.nombre_centro"></td>
-                                <td v-text="abasto.fecha_envio"></td>
+                                <td v-text="formatearFecha(abasto.fecha_envio)"></td>
                                 <td v-text="abasto.costo_total"></td>
                                 <td v-text="abasto.tipo_abasto? 'Crédito' : 'Contado'"></td>
                                 <td>
@@ -548,6 +548,11 @@
                 }).catch(function (error) {
                     console.log(error)
                 });
+            },
+            formatearFecha(fecha){
+                let arrayFecha = fecha.split('-');
+                let newFecha = arrayFecha[2] + '-' + arrayFecha[1] + '-' + arrayFecha[0];
+                return newFecha;
             },
             listarFiltro(){
                 if(this.BusquedaFiltro.texto != ''){

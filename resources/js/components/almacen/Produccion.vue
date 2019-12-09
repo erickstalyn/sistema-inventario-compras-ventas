@@ -90,9 +90,10 @@
                         </thead>
                         <tbody>
                             <tr v-for="produccion in ListaProduccion" :key="produccion.id" >
-                                <td v-text="produccion.fecha_inicio"></td>
-                                <td v-text="produccion.fecha_programada"></td>
-                                <td v-text="produccion.fecha_fin ? produccion.fecha_fin : '----------------'"></td>
+                                <!-- <td v-text="produccion.fecha_inicio"></td> -->
+                                <td v-text="formatearFecha(produccion.fecha_inicio)"></td>
+                                <td v-text="formatearFecha(produccion.fecha_programada)"></td>
+                                <td v-text="produccion.fecha_fin ? formatearFecha(produccion.fecha_fin) : '----------------'"></td>
                                 <td v-text="produccion.total"></td>
                                 <td>
                                     <div v-if="produccion.fecha_inicio > getFechaHoy()">
@@ -487,6 +488,11 @@
                     console.log(error)
                 });
             },
+            formatearFecha(fecha){
+                let arrayFecha = fecha.split('-');
+                let newFecha = arrayFecha[2] + '-' + arrayFecha[1] + '-' + arrayFecha[0];
+                return newFecha;
+            },
             listarFiltro(){
                 if(this.BusquedaFiltro.texto != ''){
                     let me = this;
@@ -562,6 +568,57 @@
                 }).catch(function(error){
                     console.log(error);
                 });
+            },
+            validar(){
+                this.Error.estado = 0;
+                this.Error.mensaje = [];
+
+                //Recorrere la lista de Material
+                if(this.Modal.numero == 1){
+                    //Modal agregar
+                    if ( !this.ListaDetalleProduccion.length ) {
+                        this.Error.mensaje.push("No existe ningun detalle de producción");
+                    }else{//Valido si hay negativos en las cantidades de los detalles de producción
+                        this.ValidarNegativosCantidades();
+                    }
+                    if ( !this.Produccion.fecha_inicio || !this.Produccion.fecha_programada){
+                        this.Error.mensaje.push('Debe ingresar una fecha de inicio y una fecha programada de la producción');
+                    }else {
+                        this.validarFechasLogicas();
+                    }
+                }else{
+                    //Modal editar
+                }
+                if ( this.Error.mensaje.length ) this.Error.estado = 1;
+                return this.Error.estado;
+            },
+            ValidarNegativosCantidades(){
+                for (let i = 0; i < this.ListaDetalleProduccion.length; i++) {
+                    const detalle = this.ListaDetalleProduccion[i];
+                    if(detalle.cantidad<1){
+                        this.Error.mensaje.push('Las cantidades de los detalles deben ser mayores o iguales a 1');
+                        break;
+                    }
+                }
+            },
+            validarFechasLogicas(){
+                let arrayfechaInicio = this.Produccion.fecha_inicio.split('-');
+                let arrayFechaProgramada = this.Produccion.fecha_programada.split('-');
+                let fecha_inicio = new Date(parseInt(arrayfechaInicio[0]),parseInt(arrayfechaInicio[1]-1),parseInt(arrayfechaInicio[2]));
+                let fecha_programada = new Date(parseInt(arrayFechaProgramada[0]),parseInt(arrayFechaProgramada[1]-1),parseInt(arrayFechaProgramada[2]));
+
+                let hoyBase =  new Date();
+                let hoyFirme = new Date(hoyBase.getFullYear(), hoyBase.getMonth(), hoyBase.getDate());
+
+                if(fecha_inicio <  hoyFirme){//Aqui me quede
+                    this.Error.mensaje.push('La fecha de inicio es incorrecta');
+                }else if(fecha_inicio >= fecha_programada){
+                    this.Error.mensaje.push('La fecha programada debe ser después que la fecha de inicio de la producción');
+                }
+                //Pruebas
+                // this.Produccion.fecha_inicio = arrayfechaInicio[2] + '-' + parseInt(arrayfechaInicio[1]-1) + '-' + arrayfechaInicio[0];
+                // this.Produccion.fecha_programada = arrayFechaProgramada[2] + '-' + parseInt(arrayFechaProgramada[1]-1) + '-' + arrayFechaProgramada[0];
+
             },
             // editar(){
             //     if ( this.validar() ) return;
@@ -728,54 +785,6 @@
 
             //     return titulo;
             // },
-            validar(){
-                this.Error.estado = 0;
-                this.Error.mensaje = [];
-
-                //Recorrere la lista de Material
-                if(this.Modal.numero == 1){
-                    //Modal agregar
-                    if ( !this.ListaDetalleProduccion.length ) {
-                        this.Error.mensaje.push("No existe ningun detalle de producción");
-                    }else{//Valido si hay negativos en las cantidades de los detalles de producción
-                        this.ValidarNegativosCantidades();
-                    }
-                    if ( !this.Produccion.fecha_inicio || !this.Produccion.fecha_programada){
-                        this.Error.mensaje.push('Debe ingresar una fecha de inicio y una fecha programada de la producción');
-                    }else {
-                        this.validarFechasLogicas();
-                    }
-                }else{
-                    //Modal editar
-                }
-                if ( this.Error.mensaje.length ) this.Error.estado = 1;
-                return this.Error.estado;
-            },
-            ValidarNegativosCantidades(){
-                for (let i = 0; i < this.ListaDetalleProduccion.length; i++) {
-                    const detalle = this.ListaDetalleProduccion[i];
-                    if(detalle.cantidad<1){
-                        this.Error.mensaje.push('Las cantidades de los detalles deben ser mayores o iguales a 1');
-                        break;
-                    }
-                }
-            },
-            validarFechasLogicas(){
-                let arrayfechaInicio = this.Produccion.fecha_inicio.split('-');
-                let arrayFechaProgramada = this.Produccion.fecha_programada.split('-');
-                let fecha_inicio = new Date(parseInt(arrayfechaInicio[0]),parseInt(arrayfechaInicio[1]-1),parseInt(arrayfechaInicio[2]));
-                let fecha_programada = new Date(parseInt(arrayFechaProgramada[0]),parseInt(arrayFechaProgramada[1]-1),parseInt(arrayFechaProgramada[2]));
-
-                let hoyBase =  new Date();
-
-                let hoyFirme = new Date(hoyBase.getFullYear(), hoyBase.getMonth(), hoyBase.getDate());
-
-                if(fecha_inicio <  hoyFirme){//Aqui me quede
-                    this.Error.mensaje.push('La fecha de inicio es incorrecta');
-                }else if(fecha_inicio >= fecha_programada){
-                    this.Error.mensaje.push('La fecha programada debe ser después que la fecha de inicio de la producción');
-                }
-            },
             cambiarPagina(page){
                 if ( page >= 1 && page <= this.Paginacion.lastPage) {
                     this.listar(page);
