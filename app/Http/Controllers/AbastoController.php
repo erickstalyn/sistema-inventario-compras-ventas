@@ -171,4 +171,5 @@ class AbastoController extends Controller
         }
 
     }
+    
 }
