@@ -10,24 +10,35 @@ use Exception;
 class ProductoMaterialController extends Controller
 {
     public function agregar(Request $request) {
+        $lista = $request->listaproductomaterial;
+
         try {
             DB::beginTransaction();
-            
-            for ($i = 0; $i < count($request->listaproductomaterial); $i++) {
-                if ( $request->$listaproductomaterial[$i]['id']->id == 0 ) {
+
+            for ($i = 0; $i < count($lista); $i++) {
+                if ( $lista[$i]['id'] == 0 ) {
                     $productomaterial = new ProductoMaterial();
+                    $productomaterial->producto_id = $request->producto_id;
+                    $productomaterial->material_id = $lista[$i]['material_id'];
+                    $productomaterial->nombre = $lista[$i]['nombre'];
+                    $productomaterial->unidad = $lista[$i]['unidad'];
+                    $productomaterial->costo_unitario = $lista[$i]['costo_unitario'];
+                    $productomaterial->cantidad = $lista[$i]['cantidad'];
+                    $productomaterial->subtotal = $lista[$i]['subtotal'];
+                    $productomaterial->save();
+                } else if ( $lista[$i]['estado'] == 1 ) {
+                    $productomaterial = ProductoMaterial::findOrFail($lista[$i]['id']);
+                    $productomaterial->producto_id = $request->producto_id;
+                    $productomaterial->material_id = $lista[$i]['material_id'];
+                    $productomaterial->nombre = $lista[$i]['nombre'];
+                    $productomaterial->unidad = $lista[$i]['unidad'];
+                    $productomaterial->costo_unitario = $lista[$i]['costo_unitario'];
+                    $productomaterial->cantidad = $lista[$i]['cantidad'];
+                    $productomaterial->subtotal = $lista[$i]['subtotal'];
+                    $productomaterial->save();
                 } else {
-                    $productomaterial = ProductoMaterial::findOrFail($request->$listaproductomaterial[$i]['id']);
+                    ProductoMaterial::where('id', '=', $lista[$i]['id'])->delete();
                 }
-                
-                $productomaterial->producto_id = $request->$id;
-                $productomaterial->material_id = $request->$listaproductomaterial[$i]['material_id'];
-                $productomaterial->nombre = $request->$listaproductomaterial[$i]['nombre'];
-                $productomaterial->unidad = $request->$listaproductomaterial[$i]['unidad'];
-                $productomaterial->costo_unitario = $request->$listaproductomaterial[$i]['costo_unitario'];
-                $productomaterial->cantidad = $request->$listaproductomaterial[$i]['cantidad'];
-                $productomaterial->subtotal = $request->$listaproductomaterial[$i]['subtotal'];
-                $productomaterial->save();
             }
 
             DB::commit();
@@ -38,13 +49,13 @@ class ProductoMaterialController extends Controller
         }
 
         return [
-            'estado' => $error==NULL?0:1,
+            'estado' => $error==NULL?1:0,
             'error' => $error
         ];
     }
 
     public function listaProductoMaterial(Request $request){
-        $lista = ProductoMaterial::select('id', 'material_id', 'nombre', 'unidad', 'costo_unitario', 'cantidad', 'subtotal')
+        $lista = ProductoMaterial::select('id', 'material_id', 'nombre', 'unidad', 'costo_unitario', 'cantidad', 'subtotal', DB::raw('1 as estado'))
                                 ->where('producto_id', '=', $request->producto_id)
                                 ->orderBy('id', 'desc')->get();
         return $lista;

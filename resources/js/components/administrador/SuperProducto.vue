@@ -2,7 +2,7 @@
     <main>
 
         <!-- Interfaz Principal -->
-        <div class="container-small">
+        <div>
             
             <!-- Encabezado principal -->
             <div class="row form-group">
@@ -698,7 +698,7 @@
                         for (let i = 0; i < this.ListaSuperProducto.length; i++) {
                             if ( this.SuperProducto.id == this.ListaSuperProducto[i].id ) {
                                 if ( this.SuperProducto.nombre == this.ListaSuperProducto[i].nombre && this.SuperProducto.descripcion == this.ListaSuperProducto[i].descripcion ) {
-                                    this.Error.mensaje.push("Ningun cambio realizado");    //superproducto existente
+                                    this.Error.mensaje.push("Ningun cambio realizado");    //sin cambios
                                 }
                                 break;
                             }

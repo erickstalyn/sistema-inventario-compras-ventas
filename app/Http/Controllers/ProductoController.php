@@ -19,8 +19,6 @@ class ProductoController extends Controller {
         $estado = $request->estado;
         $texto = $request->texto;
         $filas = $request->filas;
-        $ordenarPor = $request->ordenarPor;
-        $orden = $request->orden;
 
         $productos = Producto::where(function ($query) use ($texto) {
                                 if ( $texto != '' ) {
@@ -28,7 +26,7 @@ class ProductoController extends Controller {
                                         ->orWhere('codigo', 'like', '%'.$texto.'%');
                                 }
                             })
-                            ->orderBy($ordenarPor, $orden)->paginate($filas);
+                            ->orderBy('id', 'desc')->paginate($filas);
 
         return [
             'paginacion' => [
