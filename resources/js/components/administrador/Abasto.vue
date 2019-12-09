@@ -838,7 +838,7 @@
                 this.Abasto.total = 0.00;
                 this.Abasto.pagoInicial = '';
                 this.Abasto.centro_to_id = 0;
-                this.Abasto.tipo = -1;
+                this.Abasto.tipo = 1;
 
                 this.DatosServicio.tipo = 0;
                 this.DatosProveedor.id = 0;
