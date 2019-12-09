@@ -10,6 +10,7 @@ use App\Abasto;
 use App\Persona;
 use App\Pago;
 use App\Envio;
+use App\Detalle_abasto;
 
 class AbastoController extends Controller
 {
@@ -40,7 +41,7 @@ class AbastoController extends Controller
                                 }
                             })
                             ->where(function ($query) use ($estado) {
-                                if ( $estado != 2 ) {
+                                if ( $estado != 3 ) {
                                     $query->where('envio.estado', '=', $estado);
                                 }
                             })
@@ -147,6 +148,20 @@ class AbastoController extends Controller
             $envio->abasto_id = $abasto->id;
             $envio->created_at = $now;
             $envio->save();
+
+            //Insertamos los datos del detalle de abasto
+            $listaDetalleAbasto = $request->listaDetalleAbasto;
+
+            foreach($listaDetalleAbasto as $ep => $det){
+                $detalle = new Detalle_abasto();
+                $detalle->nombre_producto = $det['nombre'];
+                $detalle->costo_abasto = $det['costo_abasto'];
+                $detalle->cantidad = $det['cantidad'];
+                $detalle->subtotal = $det['subtotal'];
+                $detalle->producto_id = $det['id'];
+                $detalle->abasto_id = $abasto->id;
+                $detalle->save();
+            }
 
             DB::commit();
         } catch(Exception $e) {
