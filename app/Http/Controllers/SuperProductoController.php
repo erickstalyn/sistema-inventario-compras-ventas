@@ -16,17 +16,14 @@ class SuperProductoController extends Controller{
         
         $texto = $request->texto;
         $filas = $request->filas;
-        $ordenarPor = $request->ordenarPor;
-        $orden = $request->orden;
 
         $superproductos = SuperProducto::select('id', 'nombre', 'descripcion', 'superstock', 'created_at')
                             ->where(function ($query) use ($texto) {
                                 if ( $texto != '' ) {
-                                    $query->where('nombre', 'like', '%'.$texto.'%')
-                                        ->orWhere('descripcion', 'like', '%'.$texto.'%');
+                                    $query->where('nombre', 'like', '%'.$texto.'%');
                                 }
                             })
-                            ->orderBy($ordenarPor, $orden)->paginate($filas);
+                            ->orderBy('id', 'desc')->paginate($filas);
 
         return [
             'paginacion' => [

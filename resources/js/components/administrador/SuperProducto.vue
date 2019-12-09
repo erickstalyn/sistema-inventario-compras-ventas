@@ -44,7 +44,9 @@
                     <table class="table table-bordered table-condensed table-striped table-sm text-gray-900">
                         <thead>
                             <tr class="ec-th">
-                                <th v-for="head in Headers" :key="head.nombre" @click="listar(1, head.nombre)" class="ec-cursor" v-text="getTitulo(head.titulo)"></th>
+                                <th>Nombre</th>
+                                <th>Descripcion</th>
+                                <th>Stock Total</th>
                                 <th>Opciones</th>
                             </tr>
                         </thead>
@@ -243,9 +245,9 @@
                         </div>
                         <!-- Modal Numero 3 de EDITAR-->
                         <div v-if="Modal.numero==3">
-                            <div v-if="Error.estado && Error.numero==1" class="row d-flex justify-content-center">
+                            <div v-if="Error.estado && (Error.numero==1 || Error.numero==3 || Error.numero==4)" class="row d-flex justify-content-center">
                                 <div class="alert alert-danger">
-                                    <button type="button" @click="cerrarError()" class="close text-primary" data-dismiss="alert">×</button>
+                                    <button type="button" @click="closeError()" class="close text-primary" data-dismiss="alert">×</button>
                                     <strong>Corregir los siguentes errores:</strong>
                                     <ul> 
                                         <li v-for="error in Error.mensaje" :key="error" v-text="error"></li> 
@@ -389,34 +391,18 @@
                 }
 
                 return filas;
-            },
-            Headers: function(){
-                var headers = [];
-
-                headers.push({titulo: 'Nombre', nombre: 'nombre'});
-                headers.push({titulo: 'Descripcion', nombre: 'descripcion'});
-                headers.push({titulo: 'Stock total', nombre: 'superstock'});
-
-                return headers;
             }
         },
         methods: {
-            listar(page = 1, ordenarPor = ''){
-                if ( ordenarPor == this.Navegacion.ordenarPor ) {
-                    this.Navegacion.orden = (this.Navegacion.orden == 'asc'?'desc':'asc');
-                } else {
-                    this.Navegacion.ordenarPor = ordenarPor!=''?ordenarPor:this.Navegacion.ordenarPor;
-                }
+            listar(page = 1){
                 this.Paginacion.currentPage = page;
 
+                var me = this;
                 var url = this.Ruta.superproducto+'?'
                         +'page='+this.Paginacion.currentPage
                         +'&texto='+this.Busqueda.texto
-                        +'&filas='+this.Busqueda.filas
-                        +'&ordenarPor='+this.Navegacion.ordenarPor
-                        +'&orden='+this.Navegacion.orden;
+                        +'&filas='+this.Busqueda.filas;
                 
-                var me = this;
                 axios.get(url).then(function (response) {
                     me.ListaSuperProducto = response.data.superproductos.data;
                     me.Paginacion = response.data.paginacion;
@@ -460,6 +446,7 @@
             },
             editar(){
                 if ( this.validar(1) ) return;
+                if ( this.validar(4) ) return;
 
                 var me = this;
                 var url = this.Ruta.superproducto+'/editar';
@@ -575,6 +562,8 @@
                 this.SuperProducto.id = data['id'];
                 this.SuperProducto.nombre = data['nombre'];
                 this.SuperProducto.descripcion = data['descripcion'];
+
+                this.DataSuperProducto = data;
             },
             // abrirModalSetEstado(data = [], estado){
             //     this.SuperProducto.id = data['id'];
@@ -676,26 +665,6 @@
                         break;
                 }
             },
-            getTitulo(titulo){
-                var seleccionada = 0;
-
-                for (let i = 0; i < this.Headers.length; i++) {
-                    if ( titulo == this.Headers[i].titulo && this.Navegacion.ordenarPor == this.Headers[i].nombre ) {
-                        seleccionada = 1;
-                        break;
-                    }
-                }
-
-                if ( seleccionada == 1 ) {
-                    if ( this.Navegacion.orden == 'asc' ) {
-                        titulo = titulo + ' ^';
-                    } else {
-                        titulo = titulo + ' v';
-                    }
-                }
-
-                return titulo;
-            },
             validar(numero){
                 this.Error.estado = 0;
                 this.Error.numero = 0;
@@ -703,7 +672,7 @@
 
                 switch (numero) {
                     case 1:
-                        if ( !this.SuperProducto.nombre ) this.Error.mensaje.push("Debe ingresar un nombre");                       //nombre
+                        if ( !this.SuperProducto.nombre ) this.Error.mensaje.push("Debe ingresar un nombre");   //nombre
                         break;
                     case 2:
                         var found = 0;
@@ -712,7 +681,7 @@
                         }
 
                         if ( found ) {
-                            this.Error.mensaje.push("Ese producto ya se encuentra en lista");                              //producto existente
+                            this.Error.mensaje.push("Ese producto ya se encuentra en lista");                                           //producto existente
                         } else {
                             if ( !this.Producto.size ) this.Error.mensaje.push("Debe seleccionar un tamaño");                           //size
                             if ( !this.Producto.color ) this.Error.mensaje.push("Debe seleccionar un color");                           //color
@@ -723,7 +692,17 @@
                         }
                         break;
                     case 3:
-                        this.Error.mensaje.push("El Super Producto ya esta registrado");                                    //superproducto existente
+                        this.Error.mensaje.push("El Super Producto ya esta registrado");    //superproducto existente
+                        break;
+                    case 4:
+                        for (let i = 0; i < this.ListaSuperProducto.length; i++) {
+                            if ( this.SuperProducto.id == this.ListaSuperProducto[i].id ) {
+                                if ( this.SuperProducto.nombre == this.ListaSuperProducto[i].nombre && this.SuperProducto.descripcion == this.ListaSuperProducto[i].descripcion ) {
+                                    this.Error.mensaje.push("Ningun cambio realizado");    //superproducto existente
+                                }
+                                break;
+                            }
+                        }
                         break;
                 }
 

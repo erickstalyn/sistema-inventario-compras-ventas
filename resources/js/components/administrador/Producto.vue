@@ -286,7 +286,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr v-for="(material, indice) in ListaProductoMaterial" :key="material.id" >
+                                                <tr v-for="(material, indice) in ListaProductoMaterial" :key="indice" >
                                                     <td>
                                                         <button type="button" class="btn btn-circle btn-outline-danger btn-sm" @click="removeProductoMaterial(indice)" title="QUITAR">
                                                             <i class="fas fa-minus"></i>
@@ -594,7 +594,6 @@
 
                 axios.post(url, {
                     'id': this.Producto.id,
-                    'costo_produccion': this.Producto.costo_produccion,
                     'listaproductomaterial': this.ListaProductoMaterial
                 }).then(function (response) {
                     var estado = response.data.estado;
@@ -624,6 +623,7 @@
                 if ( this.validar(3) ) return;
 
                 let producto_material = {
+                    'id': 0,
                     'material_id': this.ProductoMaterial.material_id,
                     'nombre': this.ProductoMaterial.nombre,
                     'unidad': this.ProductoMaterial.unidad,
@@ -748,6 +748,9 @@
                         break;
                     case 3: 
                         this.editar();
+                        break;
+                    case 4: 
+                        this.agregarMateriales();
                         break;
                 }
             },
