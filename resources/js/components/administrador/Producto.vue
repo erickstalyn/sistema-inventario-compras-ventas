@@ -40,7 +40,7 @@
             <!-- Listado -->
             <div v-if="ListaProducto.length" class="table-responsive">
                 <!-- Tabla -->
-                <div class="ec-table overflow-auto">
+                <div class="table-scroll-20 overflow-auto">
                     <table class="table table-bordered table-striped table-sm text-gray-900">
                         <thead>
                             <tr class="bg-success">
@@ -277,7 +277,7 @@
                                     <div class="row">
                                         <label class="col-md-12 font-weight-bold">LISTA DE MATERIALES</label>
                                     </div>
-                                    <div class="row form-group" v-if="ListaProductoMaterial.length">
+                                    <div class="row form-group table-scroll-15" v-if="ListaProductoMaterial.length">
                                         <table class="table table-bordered table-striped table-sm text-gray-900">
                                             <thead>
                                                 <tr class="bg-info">
@@ -290,7 +290,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr v-for="(material, indice) in ListaProductoMaterial" :key="indice" >
+                                                <tr v-for="(material, indice) in ListaProductoMaterial" v-if="material.estado==1" :key="indice">
                                                     <td>
                                                         <button type="button" class="btn btn-circle btn-outline-danger btn-sm" @click="removeProductoMaterial(indice)" title="QUITAR">
                                                             <i class="fas fa-minus"></i>
@@ -305,7 +305,7 @@
                                             </tbody>
                                         </table>
                                     </div>
-                                    <div class="row form-group" v-else>
+                                    <div class="row form-group table-scroll-15" v-else>
                                         <label class="col-md-12 text-danger">No existen materiales</label>
                                     </div>
                                     <div class="row form-group">
@@ -474,7 +474,9 @@
                 var costo_produccion = 0.00;
 
                 for (var i = 0; i < this.ListaProductoMaterial.length; i++) {
-                    costo_produccion = Number.parseFloat(costo_produccion) + Number.parseFloat(this.ListaProductoMaterial[i].subtotal);
+                    if ( this.ListaProductoMaterial[i].estado == 1 ) {
+                        costo_produccion = Number.parseFloat(costo_produccion) + Number.parseFloat(this.ListaProductoMaterial[i].subtotal);
+                    } 
                 }
                 this.Producto.costo_produccion = costo_produccion;
 
@@ -579,7 +581,7 @@
                 var url = this.Ruta.productomaterial+'/agregar';
 
                 axios.post(url, {
-                    'id': this.Producto.id,
+                    'producto_id': this.Producto.id,
                     'listaproductomaterial': this.ListaProductoMaterial
                 }).then(function (response) {
                     var estado = response.data.estado;
@@ -609,15 +611,27 @@
                 if ( this.validar(3) ) return;
 
                 let producto_material = {
-                    'id': 0,
-                    'material_id': this.ProductoMaterial.material_id,
-                    'nombre': this.ProductoMaterial.nombre,
-                    'unidad': this.ProductoMaterial.unidad,
-                    'costo_unitario': this.ProductoMaterial.costo_unitario,
-                    'cantidad': this.ProductoMaterial.cantidad,
-                    'subtotal': this.ProductoMaterial.subtotal
+                    id: 0,
+                    material_id: this.ProductoMaterial.material_id,
+                    nombre: this.ProductoMaterial.nombre,
+                    unidad: this.ProductoMaterial.unidad,
+                    costo_unitario: this.ProductoMaterial.costo_unitario,
+                    cantidad: this.ProductoMaterial.cantidad,
+                    subtotal: this.ProductoMaterial.subtotal,
+                    estado: 1
                 };
-                this.ListaProductoMaterial.push(producto_material);
+                
+                var found = 0;
+                for (let i = 0; i < this.ListaProductoMaterial.length; i++) {
+                    if ( this.ListaProductoMaterial[i].material_id == producto_material.material_id ) {
+                        this.ListaProductoMaterial[i].cantidad = producto_material.cantidad;
+                        this.ListaProductoMaterial[i].subtotal = producto_material.subtotal;
+                        this.ListaProductoMaterial[i].estado = 1;
+                        found = 1; break;
+                    }
+                }
+                
+                if ( found == 0 ) this.ListaProductoMaterial.push(producto_material);
 
                 this.ProductoMaterial.material_id = 0;
                 this.ProductoMaterial.nombre = '';
@@ -627,7 +641,11 @@
                 this.ProductoMaterial.subtotal = 0;
             },
             removeProductoMaterial(indice){
-                this.ListaProductoMaterial.splice(indice,1);
+                if ( this.ListaProductoMaterial[indice].id != 0 ) {
+                    this.ListaProductoMaterial[indice].estado = 0;
+                } else {
+                    this.ListaProductoMaterial.splice(indice,1);
+                }
             },
             abrirModalAgregar(){
                 this.abrirModal(1, 'Nuevo Producto', '', 'Agregar', 'Cancelar');
@@ -826,7 +844,7 @@
                     case 3:
                         var found = 0;
                         for (var i = 0; i < this.ListaProductoMaterial.length; i++) {
-                            if ( this.ProductoMaterial.material_id == this.ListaProductoMaterial[i].material_id ) {
+                            if ( this.ProductoMaterial.material_id == this.ListaProductoMaterial[i].material_id && this.ProductoMaterial.estado == 1 ) {
                                 found = 1; break;
                             }
                         }
@@ -888,9 +906,13 @@
     .ec-cursor{
         cursor: pointer;
     }
-    .ec-table{
-        overflow: scroll;
+    .table-scroll-20{
+        overflow: hidden;
         height: 20rem;
+    }
+    .table-scroll-15{
+        overflow: auto;
+        height: 15rem;
     }
     .ec-th{
         background-color: skyblue;
