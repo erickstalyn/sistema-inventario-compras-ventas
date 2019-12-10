@@ -93,7 +93,7 @@ Route::group(['middleware' => ['auth']], function () {
 
     });
     Route::group(['middleware' => ['Puesto']], function (){
-
+        Route::get('/envioRecibido', 'EnvioController@listar'); //metodos generales
 
     });
     Route::group(['middleware' => ['Almacen']], function (){
@@ -105,7 +105,8 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/produccion/selectAlmacen', 'ProduccionController@selectAlmacen'); //metodos secundarios
         Route::put('/produccion/finalizar', 'ProduccionController@finalizar'); //metodos secundarios
 
-        
+        Route::get('/envioRecibido', 'EnvioController@listar'); //metodos generales
+        Route::put('/envioRecibido/setEstado', 'EnvioController@setEstado'); //metodos secundarios
     });
     
 

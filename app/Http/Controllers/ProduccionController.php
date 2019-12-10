@@ -112,15 +112,6 @@ class ProduccionController extends Controller
         }
 
     }
-
-    // public function selectAlmacen(Request $request){
-    //     if ( !$request->ajax() ) return redirect('/');
-    //     $almacenes = Centro::select('id', 'nombre',)
-    //                         ->where('tipo','=','A')
-    //                         ->orderBy('nombre', 'asc')->get();
-    //     return $almacenes;
-    // }
-
     public function finalizar(Request $request){
         try {
             DB::beginTransaction();

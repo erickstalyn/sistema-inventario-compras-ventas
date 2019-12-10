@@ -18,7 +18,7 @@ class CreateEnvioTable extends Migration
             /*
                 0 -> Enviado
                 1 -> Aceptado
-                2 -> Rechazado (Cuando se rechace un envio, se mantendrá hasta que se realice un reenvio nuevamente...y alli si eliminamos el envio rechazado)
+                2 -> Rechazado (Cuando se rechace un envio, se mantendrá rechazado hasta que se reenvie nuevamente a otro centro)
             */
             $table->unsignedTinyInteger('centro_from_id')->nullable();
             $table->foreign('centro_from_id')->references('id')->on('centro');
@@ -27,7 +27,7 @@ class CreateEnvioTable extends Migration
             $table->unsignedMediumInteger('abasto_id')->nullable();
             $table->foreign('abasto_id')->references('id')->on('abasto');
             $table->date('created_at'); // Fecha de ENVIO manual
-            $table->date('updated_at')->nullable(); // Fecha de RECIBIDO O RECHAZO manual
+            $table->date('updated_at')->nullable(); // Fecha de ACEPTADO O RECHAZO manual (SE ACEPTARA CUANDO LA MERCADERÍA YA ESTÉ EN EL CENTRO)
             // Tendrá un eliminado fisico
             // $table->date('deleted_at')->nullable(); // Fecha de ANULACION manual
         });

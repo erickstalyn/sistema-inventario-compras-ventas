@@ -23,6 +23,7 @@ class PersonaSeeder extends Seeder {
         DB::table('persona')->insert(array(
             'nombres' => 'Jose Anderson',
             'apellidos' => 'Cespedes Diaz',
+            'proveedor' => 1,
             // 'created_at' => $now,
             'tipo' => 'P'
         ));
@@ -30,6 +31,7 @@ class PersonaSeeder extends Seeder {
             'nombres' => 'Amelia Sofía',
             'apellidos' => 'Rojas Cordova',
             'dni' => '12345678',
+            'proveedor' => 1,
             // 'created_at' => $now,
             'tipo' => 'P'
         ));
@@ -37,6 +39,7 @@ class PersonaSeeder extends Seeder {
             'nombres' => 'Erick Stalyn',
             'apellidos' => 'Pacherrez Puyén',
             'dni' => '74757559',
+            'proveedor' => 1,
             // 'created_at' => $now,
             'tipo' => 'P'
         ));
@@ -44,12 +47,14 @@ class PersonaSeeder extends Seeder {
         DB::table('persona')->insert(array(
             'razon_social' => 'Gloria SAA',
             'ruc' => '27136842916',
+            'proveedor' => 1,
             // 'created_at' => $now,
             'tipo' => 'E'
         ));
         DB::table('persona')->insert(array(
             'razon_social' => 'EasyCode SAC',
             'ruc' => '85721696932',
+            'proveedor' => 1,
             // 'created_at' => $now,
             'tipo' => 'E'
         ));

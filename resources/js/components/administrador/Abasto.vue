@@ -18,9 +18,9 @@
 
             <!-- Inputs de busqueda -->
             <div class="row form-group">
-                <div class="col-md-2">
+                <div style="width: 8rem;" class="mr-1">
                     <div class="input-group"> 
-                        <select class="custom-select text-gray-900" v-model="Busqueda.estado">
+                        <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.estado">
                             <option value="3">Todos</option>
                             <option value="0">Enviados</option>
                             <option value="1">Aceptados</option>
@@ -28,10 +28,8 @@
                         </select>
                     </div>
                 </div>
-                <div class="col-md-2">
-                    <!-- <div class="input-group"> -->
-                        <input type="search" class="form-control" v-model="Busqueda.texto" @keyup.enter="listar()" placeholder="Buscar por proveedor">
-                    <!-- </div> -->
+                <div style="width: 24rem;">
+                    <input type="search" class="form-control" v-model="Busqueda.texto" @keyup.enter="listar()" placeholder="Buscar por proveedor">
                 </div>
                 <div class="col-md-1">
                     <label for="">Fecha de envío</label>
@@ -43,7 +41,7 @@
                         <option v-for="item in getDia()" :key="item" :value="item" v-text="item"></option>
                     </select>
                 </div>
-                <div class="col-md-2">
+                <div style="width: 8rem;">
                     Mes
                     <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.mes">
                         <option value="">Todos</option>
@@ -88,9 +86,9 @@
                         </thead>
                         <tbody>
                             <tr v-for="abasto in ListaAbasto" :key="abasto.id" >
-                                <td v-text="abasto.proveedor_nombre"></td>
+                                <td v-text="abasto.proveedor_persona ? abasto.proveedor_persona : abasto.proveedor_empresa"></td>
                                 <td v-text="abasto.nombre_centro"></td>
-                                <td v-text="abasto.fecha_envio"></td>
+                                <td v-text="formatearFecha(abasto.fecha_envio)"></td>
                                 <td v-text="abasto.costo_total"></td>
                                 <td v-text="abasto.tipo_abasto? 'Crédito' : 'Contado'"></td>
                                 <td>
@@ -106,7 +104,7 @@
                                 </td>
                                 <td class="text-center">
                                     
-                                    <template v-if="abasto.tipo_abasto == 1">
+                                    <template v-if="abasto.tipo_abasto == 1 && abasto.total_faltante != 0">
                                         <button type="button"  title="Pagar Cuota" class="btn btn-warning btn-sm">
                                             <i class="fas fa-hand-holding-usd"></i>
                                         </button>
@@ -124,6 +122,9 @@
                                     <template v-else-if="abasto.estado_envio == 2">
                                         <button type="button"  title="Reenviar" class="btn btn-info btn-sm">
                                             <i class="fas fa-plane"></i>
+                                        </button>
+                                        <button type="button"  title="Anular" class="btn btn-danger btn-sm">
+                                                <i class="fas fa-trash-alt"></i>
                                         </button>
                                     </template>
                                     
@@ -292,7 +293,7 @@
                                                 <div class="input-group">
                                                     <label for="tipo" class="font-weight-bold">Tipo</label>&nbsp;<span class="text-danger">*</span>&nbsp;
                                                     <select v-model="Abasto.tipo" class="custom-select custom-select-sm" id="tipo">
-                                                        <option value="-1">Seleccione</option>
+                                                        <!-- <option value="-1">Seleccione</option> -->
                                                         <option value="0">Contado</option>
                                                         <option value="1">Credito</option>
                                                     </select>
@@ -388,6 +389,7 @@
                 Abasto: {
                     id: 0,
                     total: 0.00,
+                    total_faltante: 0.00,
                     tipo: 1, // 0: Contado, 1: Credito
                     centro_to_id: 0, //Almacén donde se enviará el abasto
                     created_at : '',
@@ -550,6 +552,11 @@
                     console.log(error)
                 });
             },
+            formatearFecha(fecha){
+                let arrayFecha = fecha.split('-');
+                let newFecha = arrayFecha[2] + '-' + arrayFecha[1] + '-' + arrayFecha[0];
+                return newFecha;
+            },
             listarFiltro(){
                 if(this.BusquedaFiltro.texto != ''){
                     let me = this;
@@ -664,7 +671,7 @@
                 let ruc = me.DatosServicio.documento;
                 $.ajax({
                     type: 'GET',
-                    url: "http://localhost:8080/SunatPHP/demo.php",
+                    url: "http://localhost:80/SunatPHP/demo.php",
                     data: "ruc="+ruc,
                     beforeSend(){
                         me.Carga.clase = 'spinner-border spinner-border-sm text-primary';
@@ -694,7 +701,7 @@
                 let dni = me.DatosServicio.documento;
                 $.ajax({
                     type: 'GET',
-                    url: "http://localhost:8080/Reniec/demo.php",
+                    url: "http://localhost:80/Reniec/demo.php",
                     data: "dni="+dni,
                     beforeSend(){
                         me.Carga.clase = 'spinner-border spinner-border-sm text-primary';
@@ -751,19 +758,27 @@
                     if (this.DatosProveedor.documento == '') this.Error.mensaje.push('Debe ingresar datos del proveedor');
                     if (!this.ListaDetalleAbasto.length ) {
                         this.Error.mensaje.push("No existe ningun detalle de abasto");
-                    // }else if(){
-                    //     // this.Error.mensaje.push("El total no puede ser cero");
                     }else if(this.Abasto.centro_to_id == 0){
                         this.Error.mensaje.push('Debe seleccionar el almacén receptor');
                     }else{
                         this.validarNegativos();
                     }
 
-                    if(this.Abasto.tipo == -1){
-                        this.Error.mensaje.push("Debe seleccionar el tipo de abasto");
-                    }else if(this.Abasto.tipo == 1){
-                        if(this.Abasto.pagoInicial == '' || this.Abasto.pagoInicial < 0) this.Error.mensaje.push("Debe ingresar un pago inicial válido (mayor o igual a '0')");
+                    // if(this.Abasto.tipo == -1){
+                    //     this.Error.mensaje.push("Debe seleccionar el tipo de abasto");
+                    // }else if(this.Abasto.tipo == 1){
+                    //     if(this.Abasto.pagoInicial == '' || this.Abasto.pagoInicial < 0) this.Error.mensaje.push("Debe ingresar un pago inicial válido (mayor o igual a '0')");
+                    // }
+                    if(this.Abasto.tipo == 1){
+                        if(this.Abasto.pagoInicial<0){
+                            this.Error.mensaje.push('El pago inicial debe ser mayor o igual a 0')
+                        }else if(this.Abasto.pagoInicial > this.Abasto.total){
+                            this.Error.mensaje.push('El pago inicial no debe ser mayor al desembolso total')
+                        }else if(this.Abasto.pagoInicial == this.Abasto.total){
+                            this.Error.mensaje.push('El pago inicial es igual al desembolso total, se recomienda cambiarlo a una venta al contado')
+                        }
                     }
+
                 }else{ //Modal editar
                     
                 }

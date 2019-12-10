@@ -71,7 +71,7 @@ class MaterialController extends Controller
     
     public function editar(Request $request){
         if ( !$request->ajax() ) return redirect('/');
-
+        $estado = 1;
         try {
             DB::beginTransaction();
 
@@ -85,7 +85,9 @@ class MaterialController extends Controller
             DB::commit();
         } catch(Exception $e) {
             DB::rollback();
+            if($e != null) $estado = 0;
         }
+        return ['estado' => $estado];
     }
 
     public function activar(Request $request){

@@ -8,19 +8,19 @@ class Envio extends Model
 {
     protected $table = 'envio';
     protected $fillable = [
-        'centro_from_id','centro_to_id', 'abasto_id', 'estado', 'created_at', 'updated_at', 'deleted_at'
+        'centro_from_id','centro_to_id', 'abasto_id', 'estado', 'created_at', 'updated_at'
     ];
     public $timestamps = false;
 
     //Relación inversa de uno a muchos con Usuario
-    public function getUsuarioEnvio()
+    public function getCentroEnvio()
     {
-        return $this->belongsTo('App\Usuario', 'usuario_from_id');
+        return $this->belongsTo('App\Centro', 'centro_from_id');
     }
     //Relación inversa de uno a muchos con Usuario
-    public function getUsuarioRecibido()
+    public function getCentroRecibido()
     {
-        return $this->belongsTo('App\Usuario', 'usuario_to_id');
+        return $this->belongsTo('App\Centro', 'centro_to_id');
     }
     //Relación inverdsa de uno a muchos con Abasto
     public function getAbasto()

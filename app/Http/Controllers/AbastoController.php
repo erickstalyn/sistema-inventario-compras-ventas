@@ -28,8 +28,10 @@ class AbastoController extends Controller
         $mes = $request->mes;
         $year = $request->year;
 
-        $abastos = Abasto::select('abasto.id as id','persona.id as proveedor_id','proveedor_nombre', 'centro_to_id', 'centro.nombre as nombre_centro', 
-                        'abasto.created_at as fecha_envio', 'abasto.total as costo_total',
+        $abastos = Abasto::select('abasto.id as id', DB::raw("concat_ws(' ', persona.nombres, persona.apellidos) as proveedor_persona"),
+                        'persona.razon_social as proveedor_empresa',
+                        'centro_to_id', 'centro.nombre as nombre_centro', 
+                        'abasto.created_at as fecha_envio', 'abasto.total as costo_total', 'abasto.total_faltante as total_faltante',
                         'abasto.tipo as tipo_abasto', 'envio.estado as estado_envio')
                         ->join('persona', 'abasto.proveedor_id', '=', 'persona.id')
                         ->leftjoin('envio', 'abasto.id', '=', 'envio.abasto_id')
@@ -37,7 +39,8 @@ class AbastoController extends Controller
                             ->where(function ($query) use ($texto) {
                                 if ( $texto != '' ) {
                                     $query->where('persona.razon_social', 'like', '%'.$texto.'%')
-                                        ->orWhere('abasto.proveedor_nombre', 'like', '%'. $texto . '%');
+                                        ->orWhere('persona.nombres', 'like', '%'. $texto . '%')
+                                        ->orWhere('persona.apellidos', 'like', '%'. $texto . '%');
                                 }
                             })
                             ->where(function ($query) use ($estado) {
@@ -112,12 +115,12 @@ class AbastoController extends Controller
                     $persona->nombres = $newNombres;
                     $persona->apellidos = $newApellidos;
                     $persona->tipo = 'P';
-                    $abasto->proveedor_nombre = $newNombres . ' ' . $newApellidos;
+                    // $abasto->proveedor_nombre = $newNombres . ' ' . $newApellidos;
                 }else{
                     $persona->ruc = $proveedor['documento'];
                     $persona->razon_social = $proveedor['razon_social'];
                     $persona->tipo = 'E';
-                    $abasto->proveedor_nombre = $proveedor['razon_social'];
+                    // $abasto->proveedor_nombre = $proveedor['razon_social'];
                 }
                 $persona->save();
                 $abasto->proveedor_id = $persona->id;
@@ -127,11 +130,11 @@ class AbastoController extends Controller
                 $persona->save();
 
                 $abasto->proveedor_id = $proveedor['id'];
-                if(strlen($proveedor['documento']) == 8){
-                    $abasto->proveedor_nombre = $proveedor['nombres'] . ' ' . $proveedor['apellidos'];
-                }else{
-                    $abasto->proveedor_nombre = $proveedor['razon_social'];
-                }
+                // if(strlen($proveedor['documento']) == 8){
+                //     $abasto->proveedor_nombre = $proveedor['nombres'] . ' ' . $proveedor['apellidos'];
+                // }else{
+                //     $abasto->proveedor_nombre = $proveedor['razon_social'];
+                // }
 
             }
             $abasto->save();
@@ -140,6 +143,7 @@ class AbastoController extends Controller
                 $pago = new Pago();
                 $pago->monto = $request->pagoInicial;
                 $pago->abasto_id = $abasto->id;
+                $pago->created_at = Carbon::now('America/Lima')->toDateTimeString();
                 $pago->save();
             }
             //Registramos el ENVÍO
@@ -170,4 +174,5 @@ class AbastoController extends Controller
         }
 
     }
+    
 }

@@ -26,6 +26,7 @@ Vue.component('adm-material', require('./components/administrador/Material.vue')
 Vue.component('adm-abasto', require('./components/administrador/Abasto.vue').default);
 
 Vue.component('alm-produccion', require('./components/almacen/Produccion.vue').default);
+Vue.component('enviorecibido', require('./components/EnvioRecibido.vue').default);
 
 
 
@@ -38,6 +39,6 @@ Vue.component('alm-produccion', require('./components/almacen/Produccion.vue').d
 const app = new Vue({
     el: '#app',
     data:{
-        menu: 2,
+        menu: 3,
     }
 });
