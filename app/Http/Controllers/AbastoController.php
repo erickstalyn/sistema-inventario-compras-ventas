@@ -130,11 +130,11 @@ class AbastoController extends Controller
                 $persona->save();
 
                 $abasto->proveedor_id = $proveedor['id'];
-                if(strlen($proveedor['documento']) == 8){
-                    $abasto->proveedor_nombre = $proveedor['nombres'] . ' ' . $proveedor['apellidos'];
-                }else{
-                    $abasto->proveedor_nombre = $proveedor['razon_social'];
-                }
+                // if(strlen($proveedor['documento']) == 8){
+                //     $abasto->proveedor_nombre = $proveedor['nombres'] . ' ' . $proveedor['apellidos'];
+                // }else{
+                //     $abasto->proveedor_nombre = $proveedor['razon_social'];
+                // }
 
             }
             $abasto->save();

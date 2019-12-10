@@ -7,7 +7,7 @@
             <!-- Encabezado principal -->
             <div class="row form-group">
                 <i class="fas fa-hammer"></i>&nbsp;&nbsp;
-                <span class="h3 mb-0 text-gray-900">Mis Producciones&nbsp;</span>
+                <span class="h3 mb-0 text-gray-900">Mis Envios recibidos&nbsp;</span>
                 <button type="button" class="btn btn-success" @click="abrirModalAgregar()">
                     Nuevo
                 </button>&nbsp;
@@ -18,18 +18,21 @@
 
             <!-- Inputs de busqueda -->
             <div class="row form-group">
-                <div class="col-md-2">
+                <div style="width: 8rem;" class="mr-1">
                     <div class="input-group"> 
-                        <select class="custom-select text-gray-900" v-model="Busqueda.estado">
+                        <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.estado">
                             <option value="3">Todos</option>
-                            <option value="2">Sin iniciar</option>
-                            <option value="1">En Proceso</option>
-                            <option value="0">Finalizado</option>
+                            <option value="0">En espera</option>
+                            <option value="1">Aceptados</option>
+                            <option value="2">Rechazados</option>
                         </select>
                     </div>
                 </div>
+                <div style="width: 24rem;">
+                    <input type="search" class="form-control" v-model="Busqueda.texto" @keyup.enter="listar()" placeholder="Buscar por centro origen">
+                </div>
                 <div class="col-md-1">
-                    <label for="">Fecha de inicio</label>
+                    <label for="">Fecha de envío</label>
                 </div>
                 <div class="col-md-1">
                     Dia
@@ -38,7 +41,7 @@
                         <option v-for="item in getDia()" :key="item" :value="item" v-text="item"></option>
                     </select>
                 </div>
-                <div class="col-md-2">
+                <div style="width: 8rem;">
                     Mes
                     <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.mes">
                         <option value="">Todos</option>
@@ -49,23 +52,15 @@
                     Año
                     <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.year">
                         <option value="">Todos</option>
-                        <option v-for="item in getYear(2019)" :key="item" :value="item" v-text="item"></option>
+                        <option v-for="item in getYear(2016)" :key="item" :value="item" v-text="item"></option>
                     </select>
                 </div>
-                <div class="col-md-1"></div>
-                <!-- <div class="col-md-1" align="right">
-                    <label>N° filas:</label>
-                </div> -->
                 <div class="col-md-1">
                     N° filas:
                     <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.filas">
                         <option v-for="item in Filas" :key="item" :value="item" v-text="item"></option>
                     </select>
                 </div>
-                <!-- <div class="col-md-1"></div> -->
-                <!-- <button type="button" class="btn btn-primary" @click="listar()">
-                    <i class="fa fa-search"></i>&nbsp; Buscar
-                </button> -->
                 <div class="col-md-2">
                     <button type="button" class="btn btn-primary" @click="listar()">
                         <i class="fa fa-search"></i>&nbsp; Buscar
@@ -74,69 +69,44 @@
             </div>
 
             <!-- Listado -->
-            <div v-if="ListaProduccion.length" class="">
+            <div v-if="ListaEnvioRecibido.length" class="">
                 <!-- Tabla -->
                 <div class="ec-table overflow-auto">
                     <table class="table table-borderless table-sm text-gray-900">
                         <thead>
                             <tr class="table-info">
-                                <th>Fecha de inicio</th>
-                                <th>Fecha programada</th>
-                                <th>Fecha finalizada</th>
-                                <th>Inversión en materiales</th>
+                                <th>Origen</th>
+                                <th>Fecha de realización</th>
+                                <th>Fecha Aceptado/Rechazado</th>
                                 <th>Estado</th>
                                 <th class="text-center">Opciones</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="produccion in ListaProduccion" :key="produccion.id" >
-                                <td v-text="formatearFecha(produccion.fecha_inicio)"></td>
-                                <td v-text="formatearFecha(produccion.fecha_programada)"></td>
-                                <td v-text="produccion.fecha_fin ? formatearFecha(produccion.fecha_fin) : '----------------'"></td>
-                                <td v-text="produccion.total"></td>
+                            <tr v-for="envio in ListaEnvioRecibido" :key="envio.id" >
+                                <td v-text="envio.centro_origen? envio.centro_origen : 'Administración'"></td>
+                                <td v-text="formatearFecha(envio.fecha_envio)"></td>
+                                <td v-text="envio.fecha_cambio ? formatearFecha(envio.fecha_cambio) : '-------------'"></td>
                                 <td>
-                                    <div v-if="produccion.fecha_inicio > getFechaHoy()">
-                                        <span class="badge badge-primary">Sin iniciar</span>
+                                    <div v-if="envio.estado == 0">
+                                        <span class="badge badge-primary">En espera</span>
                                     </div>
-                                    <div v-else-if="produccion.fecha_fin">
-                                        <span class="badge badge-danger">Finalizado</span>
+                                    <div v-else-if="envio.estado == 1">
+                                        <span class="badge badge-success">Aceptado</span>
                                     </div>
                                     <div v-else="">
-                                        <span class="badge badge-success">En proceso</span>
+                                        <span class="badge badge-danger">Rechazado</span>
                                     </div>
                                 </td>
                                 <td class="text-center">
-                                    <button type="button"  title="Ver" class="btn btn-primary btn-sm">
+                                    <button type="button" title="Ver" class="btn btn-sm btn-primary">
                                         <i class="far fa-eye"></i>
                                     </button>
-                                    <!-- Sin iniciar -->
-                                    <template v-if="produccion.fecha_inicio > getFechaHoy()">
-                                        <button type="button"  title="Editar" class="btn btn-warning btn-sm">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button type="button"  title="Eliminar" class="btn btn-danger btn-sm">
-                                            <i class="fas fa-trash-alt"></i>
+                                    <template v-if="envio.estado == 0">
+                                        <button type="button"  title="Aceptar/Rechazar" class="btn btn-sm btn-outline-warning" @click="accion(envio)">
+                                            <i class="fas fa-sort-amount-down-alt"></i>
                                         </button>
                                     </template>
-                                    <!-- Finalizado -->
-                                    <template v-else-if="produccion.fecha_fin">
-                                        <!-- <button type="button" title="Enviar" class="btn btn-secondary btn-sm" @click="abrirModalEnviar()">
-                                            <i class="fas fa-plane"></i>
-                                        </button> -->
-                                    </template>
-                                    <!-- En proceso -->
-                                    <template v-else="">
-                                        <button type="button"  title="Editar" class="btn btn-warning btn-sm">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button type="button"  title="Eliminar" class="btn btn-danger btn-sm">
-                                            <i class="fas fa-trash-alt"></i>
-                                        </button>
-                                        <button type="button"  title="Finalizar" class="btn btn-outline-success btn-sm" @click="finalizar(produccion)">
-                                            <i class="fas fa-check"></i>
-                                        </button>
-                                    </template>
-                                    
                                 </td>
                             </tr>
                         </tbody>
@@ -292,26 +262,6 @@
                                 </div>
                                 
                             </div>
-                            <!-- <div v-if="Modal.numero==3">
-                                <div v-if="Error.estado" class="row d-flex justify-content-center">
-                                    <div class="alert alert-danger">
-                                        <button type="button" @click="Error.estado=0" class="close text-primary" data-dismiss="alert">×</button>
-                                        <strong>Corregir los siguentes errores:</strong>
-                                        <ul> 
-                                            <li v-for="error in Error.mensaje" :key="error" v-text="error"></li> 
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="row form-group">
-                                    <label class="col-md-5 font-weight-bold" for="des">Seleccione almacén&nbsp;<span class="text-danger">*</span></label>
-                                    <div class="col-md-7">
-                                        <select  class="custom-select">
-                                            <option value="" disabled>Almacen</option>
-                                            <option v-for="item in SelectAlmacen" :key="item.id" :value="item.id" v-text="item.nombre"></option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div> -->
                         </div>
                     </div>
 
@@ -332,15 +282,15 @@
         data(){
             return {
                 //datos generales
-                ListaProduccion: [],
-                Produccion: {
+                ListaEnvioRecibido: [],
+                EnvioRecibido: {
                     id: 0,
-                    fecha_inicio : '',
-                    fecha_programada : '',
-                    fecha_fin: '',
-                    total : 0.00,
-                    // almacen_id: document.getElementById('idCentro').value
-                    almacen_id: $('meta[name="idCentro"]').attr('content')
+                    abasto_id: 0,
+                    centro_origen: '',
+                    estado: 0,
+                    fecha_envio: '',
+                    fecha_cambio: '',
+                    idCentro: $('meta[name="idCentro"]').attr('content')
                 },
                 SelectUnidad: [],
                 //datos de busqueda y filtracion general
@@ -372,7 +322,7 @@
                 },
                 Navegacion:{
                     offset: 3,
-                    ordenarPor: 'id',
+                    ordenarPor: 'envio.id',
                     orden: 'desc'
                 },
 
@@ -386,12 +336,8 @@
                     texto: ''
                 },
                 ListaProducto:[
-                    // {nombre: 'Camperita Silmar Roja Grande', stock: 56},
-                    // {nombre: 'Mochila Porta Verde mediana', stock: 100}
                 ],
                 ListaDetalleProduccion:[
-                    // {nombre: 'Camperita Silmar Roja Grande', stock: 56},
-                    // {nombre: 'Mochila Porta Verde mediana', stock: 100}
                 ],
                 //DATOS PARA ENVIAR UNA PRODUCCION
                 SelectAlmacen: [],
@@ -465,12 +411,12 @@
                     this.Navegacion.orden = (this.Navegacion.orden == 'asc' ? 'desc' : 'asc');
                 } else {
                     this.Navegacion.ordenarPor = (ordenarPor != '' ? ordenarPor: this.Navegacion.ordenarPor);
-                    // this.Navegacion.orden = 'asc';
                 }
                 this.Paginacion.currentPage = page==1?1:page;
 
-                var url = '/produccion?page='+this.Paginacion.currentPage
+                var url = '/envioRecibido?page='+this.Paginacion.currentPage
                         +'&estado='+this.Busqueda.estado
+                        +'&idCentro='+this.EnvioRecibido.idCentro
                         +'&texto='+this.Busqueda.texto
                         +'&filas='+this.Busqueda.filas
                         +'&dia='+this.Busqueda.dia
@@ -481,7 +427,7 @@
                 
                 var me = this;
                 axios.get(url).then(function (response) {
-                    me.ListaProduccion = response.data.producciones.data;
+                    me.ListaEnvioRecibido = response.data.envios.data;
                     me.Paginacion = response.data.paginacion;
                 }).catch(function (error) {
                     console.log(error)
@@ -648,46 +594,60 @@
             //         console.log(error);
             //     });
             // },
-            finalizar(produccion = []){
-                this.Produccion.id = produccion['id'];
-                Swal.fire({
-                    title: '¿Esta seguro de FINALIZAR la producción ',
-                    type: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: 'Si, finalizar',
-                    cancelButtonText: 'Cancelar',
+            accion(envio = []){
+                this.EnvioRecibido.id = envio['id'];
+                const swalWithBootstrapButtons = Swal.mixin({
                     customClass: {
                         confirmButton: 'btn btn-success',
                         cancelButton: 'btn btn-danger'
                     },
                     buttonsStyling: false
+                })
+                swalWithBootstrapButtons.fire({
+                title: '¿Qué ACCIÓN desea realizar?',
+                text: "Por favor elija con cuidado, que son acciones irreversibles",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Aceptar envío',
+                cancelButtonText: 'Rechazar envío',
                 }).then((result) => {
-                    if (result.value) {
-                        var me = this;
-                
-                        axios.put('/produccion/finalizar', {
-                            'id' : me.Produccion.id
-                        }).then(function (response) {
-                            me.listar();
-                            Swal.fire({
-                                position: 'top-end',
-                                toast: true,
-                                type: 'success',
-                                title: 'La producción se ha FINALIZADO correctamente',
-                                showConfirmButton: false,
-                                timer: 4500,
-                                animation:false,
-                                customClass:{
-                                    popup: 'animated bounceIn fast'
-                                }
-                            });
-                        }).catch(function (error) {
-                            console.log(error);
-                        });
-                    } else if ( result.dismiss === Swal.DismissReason.cancel ) {
-
-                    }
-                });
+                if (result.value) {
+                    var me = this;
+                    axios.put('/envioRecibido/setEstado', {
+                        'id' : me.EnvioRecibido.id,
+                        'estado' : 1
+                    }).then(function(response){
+                        me.cerrarModal();
+                        me.listar();
+                        swalWithBootstrapButtons.fire(
+                        'Aceptado!',
+                        'El envío ha sido aceptado, revise su inventario de productos',
+                        'success'
+                        )
+                    }).catch(function(error){
+                        console.log('Soy el error: ' + error);
+                    });
+                    
+                } else if (
+                    result.dismiss === Swal.DismissReason.cancel
+                ) {
+                    var me = this;
+                    axios.put('/envioRecibido/setEstado', {
+                        'id' : me.EnvioRecibido.id,
+                        'estado' : 2
+                    }).then(function(response){
+                        me.cerrarModal();
+                        me.listar();
+                        swalWithBootstrapButtons.fire(
+                        'Rechazado!',
+                        'El envío ha sido rechazado, por favor infórmeselo al administrador',
+                        'danger'
+                        )
+                    }).catch(function(error){
+                        console.log('Soy el error: ' + error);
+                    });
+                }
+                })
             },
             abrirModalAgregar(){
                 this.abrirModal(1, 'Registrar Produccion', 'Agregar');
@@ -731,12 +691,11 @@
                 this.Error.estado = 0;
                 this.Error.mensaje = [];
 
-                this.Produccion.id = 0;
-                this.Produccion.total = 0.00;
-                this.Produccion.fecha_inicio = '';
-                this.Produccion.fecha_programada = '';
+                // this.Produccion.id = 0;
+                // this.Produccion.total = 0.00;
+                // this.Produccion.fecha_inicio = '';
+                // this.Produccion.fecha_programada = '';
 
-                this.ListaDetalleProduccion = [];
                 this.BusquedaFiltro.texto = '';
 
             },
@@ -764,26 +723,6 @@
                     // }
                 }
             },
-            // getTitulo(titulo){
-            //     var seleccionada = 0;
-
-            //     for (let i = 0; i < this.Headers.length; i++) {
-            //         if ( titulo == this.Headers[i].titulo && this.Navegacion.ordenarPor == this.Headers[i].nombre ) {
-            //             seleccionada = 1;
-            //             break;
-            //         }
-            //     }
-
-            //     if ( seleccionada == 1 ) {
-            //         if ( this.Navegacion.orden == 'asc' ) {
-            //             titulo = titulo + ' ^';
-            //         } else {
-            //             titulo = titulo + ' v';
-            //         }
-            //     }
-
-            //     return titulo;
-            // },
             cambiarPagina(page){
                 if ( page >= 1 && page <= this.Paginacion.lastPage) {
                     this.listar(page);
