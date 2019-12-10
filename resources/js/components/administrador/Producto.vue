@@ -31,7 +31,7 @@
                     <label>N° filas:</label>
                 </div>
                 <div class="col-md-1">
-                    <select class="form-control text-gray-900" v-model="Busqueda.filas" @click="listar()">
+                    <select class="form-control text-gray-900" v-model="Busqueda.filas">
                         <option v-for="fila in Filas" :key="fila" :value="fila" v-text="fila"></option>
                     </select>
                 </div>
@@ -40,11 +40,15 @@
             <!-- Listado -->
             <div v-if="ListaProducto.length" class="table-responsive">
                 <!-- Tabla -->
-                <div class="ec-table overflow-auto">
+                <div class="table-scroll-20 overflow-auto">
                     <table class="table table-bordered table-striped table-sm text-gray-900">
                         <thead>
                             <tr class="bg-success">
-                                <th v-for="head in Headers" :key="head.nombre" @click="listar(1, head.nombre)" class="ec-cursor" v-text="getTitulo(head.titulo)"></th>
+                                <th>Nombre</th>
+                                <th>Costo de produccion</th>
+                                <th>Precio al por menor</th>
+                                <th>Precio al por mayor</th>
+                                <th>Stock</th>
                                 <th>Opciones</th>
                             </tr>
                         </thead>
@@ -115,25 +119,25 @@
                             </div>
                             <div class="row form-group">
                                 <label class="col-md-3">Nombre</label>
-                                <label class="col-md-9 text-success" v-text="Producto.nombre"></label>
+                                <label class="col-md-9 text-success" v-text="updateNombre"></label>
                             </div>
                             <div class="row form-group">
                                 <label class="col-md-5">Super Producto&nbsp;<span class="text-danger">*</span></label>
-                                <select class="col-md-7 custom-select custom-select-sm" v-model="Producto.superproducto_id" @click="updateName()">
+                                <select class="col-md-7 custom-select custom-select-sm" v-model="Producto.superproducto_id">
                                     <option value="0" disabled>Seleccione un superproducto</option>
                                     <option class="text-gray-900" v-for="superproducto in SelectSuperProducto" :key="superproducto.id" :value="superproducto.id" v-text="superproducto.nombre"></option>
                                 </select>
                             </div>
                             <div class="row form-group">
                                 <label class="col-md-5">Tamaño&nbsp;<span class="text-danger">*</span></label>
-                                <select class="col-md-7 custom-select custom-select-sm" v-model="Producto.size" @click="updateName()">
+                                <select class="col-md-7 custom-select custom-select-sm" v-model="Producto.size">
                                     <option value="" disabled>Seleccione un tamaño</option>
                                     <option class="text-gray-900" v-for="size in SelectSize" :key="size.nombre" :value="size.nombre" v-text="size.nombre"></option>
                                 </select>
                             </div>
                             <div class="row form-group">
                                 <label class="col-md-5">Color&nbsp;<span class="text-danger">*</span></label>
-                                <select class="col-md-7 custom-select custom-select-sm" v-model="Producto.color" @click="updateName()">
+                                <select class="col-md-7 custom-select custom-select-sm" v-model="Producto.color">
                                     <option value="" disabled>seleccione un color</option>
                                     <option class="text-gray-900" v-for="color in SelectColor" :key="color.nombre" :value="color.nombre" v-text="color.nombre"></option>
                                 </select>
@@ -162,7 +166,7 @@
                                 <label class="col-md-8 text-info" v-text="Producto.costo_produccion"></label>
                             </div>
                             <div class="row form-group">
-                                <label class="col-md-4">Precio normal</label>
+                                <label class="col-md-4">Precio al por menor</label>
                                 <label class="col-md-8 text-info" v-text="Producto.precio_menor"></label>
                             </div>
                             <div class="row form-group">
@@ -180,7 +184,7 @@
                         </div>
                         <!-- Modal Numero 3 de EDITAR-->
                         <div v-if="Modal.numero==3">
-                            <div v-if="Error.estado && (Error.numero==1 || Error.numero==2)" class="row d-flex justify-content-center">
+                            <div v-if="Error.estado && (Error.numero==1 || Error.numero==2 || Error.numero==5)" class="row d-flex justify-content-center">
                                 <div class="alert alert-danger">
                                     <button type="button" @click="closeError()" class="close text-primary" data-dismiss="alert">×</button>
                                     <strong>Corregir los siguentes errores:</strong>
@@ -191,25 +195,25 @@
                             </div>
                             <div class="row form-group">
                                 <label class="col-md-3">Nombre</label>
-                                <label class="col-md-9 text-success" v-text="Producto.nombre"></label>
+                                <label class="col-md-9 text-success" v-text="updateNombre"></label>
                             </div>
                             <div class="row form-group">
                                 <label class="col-md-5">Super Producto&nbsp;<span class="text-danger">*</span></label>
-                                <select class="col-md-7 custom-select custom-select-sm" v-model="Producto.superproducto_id" @click="updateName()">
+                                <select class="col-md-7 custom-select custom-select-sm" v-model="Producto.superproducto_id">
                                     <option value="0" disabled>Seleccione un superproducto</option>
                                     <option class="text-gray-900" v-for="superproducto in SelectSuperProducto" :key="superproducto.id" :value="superproducto.id" v-text="superproducto.nombre"></option>
                                 </select>
                             </div>
                             <div class="row form-group">
                                 <label class="col-md-5">Tamaño&nbsp;<span class="text-danger">*</span></label>
-                                <select class="col-md-7 custom-select custom-select-sm" v-model="Producto.size" @click="updateName()">
+                                <select class="col-md-7 custom-select custom-select-sm" v-model="Producto.size">
                                     <option value="" disabled>Seleccione un tamaño</option>
                                     <option class="text-gray-900" v-for="size in SelectSize" :key="size.nombre" :value="size.nombre" v-text="size.nombre"></option>
                                 </select>
                             </div>
                             <div class="row form-group">
                                 <label class="col-md-5">Color&nbsp;<span class="text-danger">*</span></label>
-                                <select class="col-md-7 custom-select custom-select-sm" v-model="Producto.color" @click="updateName()">
+                                <select class="col-md-7 custom-select custom-select-sm" v-model="Producto.color">
                                     <option value="" disabled>seleccione un color</option>
                                     <option class="text-gray-900" v-for="color in SelectColor" :key="color.nombre" :value="color.nombre" v-text="color.nombre"></option>
                                 </select>
@@ -241,7 +245,7 @@
                                     </div>
                                     <div class="row form-group">
                                         <label class="col-md-4">Material:</label>
-                                        <select class="col-md-8 custom-select custom-select-sm" v-model="ProductoMaterial.material_id" @click="actualizarProductoMaterial()">
+                                        <select class="col-md-8 custom-select custom-select-sm" v-model="ProductoMaterial.material_id" @click="updateProductoMaterial()">
                                             <option value="0" disabled>Seleccione</option>
                                             <option class="text-gray-900" v-for="material in SelectMaterial" :key="material.id" :value="material.id" v-text="material.nombre"></option>
                                         </select>
@@ -256,14 +260,14 @@
                                     </div>
                                     <div class="row form-group">
                                         <label class="col-md-4">Cantidad:</label>
-                                        <input type="number" class="col-md-8 form-control form-control-sm" v-model="ProductoMaterial.cantidad" @keyup="actualizarProductoMaterial()" placeholder="Ingrese la cantidad">
+                                        <input type="number" class="col-md-8 form-control form-control-sm" v-model="ProductoMaterial.cantidad" @keyup="updateProductoMaterial()" placeholder="Ingrese la cantidad">
                                     </div>
                                     <div class="row form-group">
                                         <label class="col-md-4">Subtotal:</label>
                                         <label class="col-md-8 text-info" v-text="ProductoMaterial.subtotal"></label>
                                     </div>
                                     <div class="row form-group col-md-12 d-flex justify-content-around">
-                                        <button type="button" class="btn btn-sm btn-info btn-icon-split" @click="agregarProductoMaterial()">
+                                        <button type="button" class="btn btn-sm btn-info btn-icon-split" @click="addProductoMaterial()">
                                             <span class="icon text-white-50"><i class="fas fa-plus"></i></span>
                                             <span class="text">Agregar Material</span>
                                         </button>
@@ -273,7 +277,7 @@
                                     <div class="row">
                                         <label class="col-md-12 font-weight-bold">LISTA DE MATERIALES</label>
                                     </div>
-                                    <div class="row form-group" v-if="ListaProductoMaterial.length">
+                                    <div class="row form-group table-scroll-15" v-if="ListaProductoMaterial.length">
                                         <table class="table table-bordered table-striped table-sm text-gray-900">
                                             <thead>
                                                 <tr class="bg-info">
@@ -286,9 +290,9 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr v-for="(material, indice) in ListaProductoMaterial" :key="material.id" >
+                                                <tr v-for="(material, indice) in ListaProductoMaterial" v-if="material.estado==1" :key="indice">
                                                     <td>
-                                                        <button type="button" class="btn btn-circle btn-outline-danger btn-sm" @click="quitarProductoMaterial(indice)" title="QUITAR">
+                                                        <button type="button" class="btn btn-circle btn-outline-danger btn-sm" @click="removeProductoMaterial(indice)" title="QUITAR">
                                                             <i class="fas fa-minus"></i>
                                                         </button>
                                                     </td>
@@ -301,8 +305,13 @@
                                             </tbody>
                                         </table>
                                     </div>
-                                    <div class="row form-group" v-else>
+                                    <div class="row form-group table-scroll-15" v-else>
                                         <label class="col-md-12 text-danger">No existen materiales</label>
+                                    </div>
+                                    <div class="row form-group">
+                                        <div class="col-md-7"></div>
+                                        <label class="col-md-3">Costo de produccion</label>
+                                        <label class="col-md-2 text-info" v-text="updateCostoProduccion"></label>
                                     </div>
                                 </div>
                             </div>
@@ -407,6 +416,7 @@
                 Ruta: {
                     superproducto: '/superproducto',
                     producto: '/producto',
+                    productomaterial: '/productomaterial',
                     material: '/material',
                     data: '/data'
                 }
@@ -448,36 +458,41 @@
 
                 return filas;
             },
-            Headers: function(){
-                var headers = [];
+            updateNombre: function () {
+                var name = '';
+                for (let i = 0; i < this.SelectSuperProducto.length; i++) {
+                    if ( this.SelectSuperProducto[i].id == this.Producto.superproducto_id ) {
+                        name = this.SelectSuperProducto[i].nombre; break;
+                    }
+                }
 
-                headers.push({titulo: 'Nombre', nombre: 'nombre'});
-                headers.push({titulo: 'Costo', nombre: 'costo_produccion'});
-                headers.push({titulo: 'Precio normal', nombre: 'precio_menor'});
-                headers.push({titulo: 'Precio al por mayor', nombre: 'precio_mayor'});
-                headers.push({titulo: 'Stock', nombre: 'stock'});
+                this.Producto.nombre = name + ' ' + this.Producto.size + ' ' + this.Producto.color;
 
-                return headers;
+                return this.Producto.nombre;
+            },
+            updateCostoProduccion: function() {
+                var costo_produccion = 0.00;
+
+                for (var i = 0; i < this.ListaProductoMaterial.length; i++) {
+                    if ( this.ListaProductoMaterial[i].estado == 1 ) {
+                        costo_produccion = Number.parseFloat(costo_produccion) + Number.parseFloat(this.ListaProductoMaterial[i].subtotal);
+                    } 
+                }
+                this.Producto.costo_produccion = costo_produccion;
+
+                return Number.parseFloat(costo_produccion).toFixed(2);
             }
         },
         methods: {
-            listar(page = 1, ordenarPor = ''){
-                if ( ordenarPor == this.Navegacion.ordenarPor ) {
-                    this.Navegacion.orden = (this.Navegacion.orden == 'asc'?'desc':'asc');
-                } else {
-                    this.Navegacion.ordenarPor = ordenarPor!=''?ordenarPor:this.Navegacion.ordenarPor;
-                    // this.Navegacion.orden = 'asc';
-                }
+            listar(page = 1){
                 this.Paginacion.currentPage = page;
 
+                var me = this;
                 var url = this.Ruta.producto+'?'
                         +'page='+this.Paginacion.currentPage
                         +'&texto='+this.Busqueda.texto
-                        +'&filas='+this.Busqueda.filas
-                        +'&ordenarPor='+this.Navegacion.ordenarPor
-                        +'&orden='+this.Navegacion.orden;
+                        +'&filas='+this.Busqueda.filas;
                 
-                var me = this;
                 axios.get(url).then(function (response) {
                     me.ListaProducto = response.data.productos.data;
                     me.Paginacion = response.data.paginacion;
@@ -524,6 +539,7 @@
             },
             editar(){
                 if ( this.validar(1) ) return;
+                if ( this.validar(5) ) return;
                 
                 var me = this;
                 var url = this.Ruta.producto+'/editar';
@@ -560,16 +576,62 @@
                     console.log(error);
                 });
             },
-            agregarProductoMaterial(){
+            agregarMateriales(){
+                var me = this;
+                var url = this.Ruta.productomaterial+'/agregar';
+
+                axios.post(url, {
+                    'producto_id': this.Producto.id,
+                    'listaproductomaterial': this.ListaProductoMaterial
+                }).then(function (response) {
+                    var estado = response.data.estado;
+                    if ( estado == 1 ) {
+                        me.cerrarModal();
+                        me.listar();
+                        Swal.fire({
+                            position: 'top-end',
+                            toast: true,
+                            type: 'success',
+                            title: 'La lista de materiales ha sido añadida correctamente',
+                            showConfirmButton: false,
+                            timer: 4500,
+                            animation:false,
+                            customClass:{
+                                popup: 'animated bounceIn fast'
+                            }
+                        });
+                    } else {
+                        console.log(response.data.error);
+                    }
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            },
+            addProductoMaterial(){
+                if ( this.validar(3) ) return;
+
                 let producto_material = {
-                    'material_id': this.ProductoMaterial.material_id,
-                    'nombre': this.ProductoMaterial.nombre,
-                    'unidad': this.ProductoMaterial.unidad,
-                    'costo_unitario': this.ProductoMaterial.costo_unitario,
-                    'cantidad': this.ProductoMaterial.cantidad,
-                    'subtotal': this.ProductoMaterial.subtotal
+                    id: 0,
+                    material_id: this.ProductoMaterial.material_id,
+                    nombre: this.ProductoMaterial.nombre,
+                    unidad: this.ProductoMaterial.unidad,
+                    costo_unitario: this.ProductoMaterial.costo_unitario,
+                    cantidad: this.ProductoMaterial.cantidad,
+                    subtotal: this.ProductoMaterial.subtotal,
+                    estado: 1
                 };
-                this.ListaProductoMaterial.push(producto_material);
+                
+                var found = 0;
+                for (let i = 0; i < this.ListaProductoMaterial.length; i++) {
+                    if ( this.ListaProductoMaterial[i].material_id == producto_material.material_id ) {
+                        this.ListaProductoMaterial[i].cantidad = producto_material.cantidad;
+                        this.ListaProductoMaterial[i].subtotal = producto_material.subtotal;
+                        this.ListaProductoMaterial[i].estado = 1;
+                        found = 1; break;
+                    }
+                }
+                
+                if ( found == 0 ) this.ListaProductoMaterial.push(producto_material);
 
                 this.ProductoMaterial.material_id = 0;
                 this.ProductoMaterial.nombre = '';
@@ -578,8 +640,12 @@
                 this.ProductoMaterial.cantidad = 0;
                 this.ProductoMaterial.subtotal = 0;
             },
-            quitarProductoMaterial(indice){
-                this.ListaProductoMaterial.splice(indice,1);
+            removeProductoMaterial(indice){
+                if ( this.ListaProductoMaterial[indice].id != 0 ) {
+                    this.ListaProductoMaterial[indice].estado = 0;
+                } else {
+                    this.ListaProductoMaterial.splice(indice,1);
+                }
             },
             abrirModalAgregar(){
                 this.abrirModal(1, 'Nuevo Producto', '', 'Agregar', 'Cancelar');
@@ -625,6 +691,7 @@
                 this.abrirModal(4, 'Materiales del Producto', 'modal-xl', 'Guardar Materiales', 'Cancelar');
                 
                 this.Producto.id = data['id'];
+                this.Producto.costo_produccion = data['costo_produccion'];
 
                 this.ProductoMaterial.producto_id = this.Producto.id;
                 this.ProductoMaterial.material_id = 0;
@@ -635,6 +702,7 @@
                 this.ProductoMaterial.subtotal = 0;
 
                 this.selectMaterial();
+                this.listaProductoMaterial();
             },
             abrirModal(numero, titulo, tamaño, btnA, btnC){
                 this.Modal.estado = 1;
@@ -685,10 +753,13 @@
                     case 3: 
                         this.editar();
                         break;
+                    case 4: 
+                        this.agregarMateriales();
+                        break;
                 }
             },
             selectSuperProducto(){
-                if ( !this.SelectSuperProducto.lenth ) {
+                if ( !this.SelectSuperProducto.length ) {
                     var me = this;
                     var url = this.Ruta.superproducto+'/selectSuperProducto';
                     axios.get(url).then(function(response){
@@ -699,7 +770,7 @@
                 }
             },
             selectSize(){
-                if ( !this.SelectSize.lenth ) {
+                if ( !this.SelectSize.length ) {
                     var me = this;
                     var url = this.Ruta.data+'/selectSize';
                     axios.get(url).then(function(response){
@@ -710,7 +781,7 @@
                 }
             },
             selectColor(){
-                if ( !this.SelectColor.lenth ) {
+                if ( !this.SelectColor.length ) {
                     var me = this;
                     var url = this.Ruta.data+'/selectColor';
                     axios.get(url).then(function(response){
@@ -720,18 +791,8 @@
                     });
                 }
             },
-            updateName(){
-                var name = '';
-                for (let i = 0; i < this.SelectSuperProducto.length; i++) {
-                    if ( this.SelectSuperProducto[i].id == this.Producto.superproducto_id ) {
-                        name = this.SelectSuperProducto[i].nombre; break;
-                    }
-                }
-
-                this.Producto.nombre = name + ' ' + this.Producto.size + ' ' + this.Producto.color;
-            },
             selectMaterial(){
-                if ( !this.SelectMaterial.lenth ) {
+                if ( !this.SelectMaterial.length ) {
                     var me = this;
                     var url = this.Ruta.material+'/selectMaterial';
                     axios.get(url).then(function(response){
@@ -741,27 +802,17 @@
                     });
                 }
             },
-            getTitulo(titulo){
-                var seleccionada = 0;
+            listaProductoMaterial() {
+                var me = this;
+                var url = this.Ruta.productomaterial+'/listaProductoMaterial?producto_id='+this.Producto.id;
 
-                for (let i = 0; i < this.Headers.length; i++) {
-                    if ( titulo == this.Headers[i].titulo && this.Navegacion.ordenarPor == this.Headers[i].nombre ) {
-                        seleccionada = 1;
-                        break;
-                    }
-                }
-
-                if ( seleccionada == 1 ) {
-                    if ( this.Navegacion.orden == 'asc' ) {
-                        titulo = titulo + ' ^';
-                    } else {
-                        titulo = titulo + ' v';
-                    }
-                }
-
-                return titulo;
+                axios.get(url).then(function (response) {
+                    me.ListaProductoMaterial = response.data;
+                }).catch(function (error) {
+                    console.log(error);
+                });
             },
-            actualizarProductoMaterial(){
+            updateProductoMaterial(){
                 for (let i = 0; i < this.SelectMaterial.length; i++) {
                     if ( this.SelectMaterial[i].id == this.ProductoMaterial.material_id ) {
                         this.ProductoMaterial.nombre = this.SelectMaterial[i].nombre;
@@ -788,7 +839,39 @@
                         if ( this.Producto.precio_mayor < 0) this.Error.mensaje.push("El precio al por mayor debe ser positivo");   //precio_mayor
                         break;
                     case 2:
-                        this.Error.mensaje.push("Este producto ya existe");                                                         //producto existente
+                        this.Error.mensaje.push("Este producto ya esta registrado");    //producto existente
+                        break;
+                    case 3:
+                        var found = 0;
+                        for (var i = 0; i < this.ListaProductoMaterial.length; i++) {
+                            if ( this.ProductoMaterial.material_id == this.ListaProductoMaterial[i].material_id && this.ProductoMaterial.estado == 1 ) {
+                                found = 1; break;
+                            }
+                        }
+
+                        if ( found == 0 ) {
+                            if ( this.ProductoMaterial.material_id == 0) this.Error.mensaje.push("Debe seleccionar un material");   //material_id
+                            if ( this.ProductoMaterial.cantidad == 0) this.Error.mensaje.push("Debe ingresar una cantidad");        //cantidad
+                            if ( this.ProductoMaterial.cantidad < 0) this.Error.mensaje.push("La cantidad debe positiva");          //cantidad
+                        } else {
+                            this.Error.mensaje.push("Este material ya esta en lista");    //material existente
+                        }
+                        break;
+                    case 4: 
+                        if ( !this.ListaProductoMaterial.length ) this.Error.mensaje.push("La lista de materiales esta vacia");   //precio_mayor
+                        break;
+                    case 5:
+                        for (let i = 0; i < this.ListaProducto.length; i++) {
+                            console.log("entro al for");
+                            if ( this.Producto.id == this.ListaProducto[i].id ) {
+                                console.log("encontro el producto");
+                                if ( this.Producto.size == this.ListaProducto[i].size && this.Producto.color == this.ListaProducto[i].color && this.Producto.precio_menor == this.ListaProducto[i].precio_menor && this.Producto.precio_mayor == this.ListaProducto[i].precio_mayor ) {
+                                    this.Error.mensaje.push("Ningun cambio realizado");    //sin cambios
+                                    console.log("deberia salir el error");
+                                }
+                                break;
+                            }
+                        }
                         break;
                 }
 
@@ -823,9 +906,13 @@
     .ec-cursor{
         cursor: pointer;
     }
-    .ec-table{
-        overflow: scroll;
+    .table-scroll-20{
+        overflow: hidden;
         height: 20rem;
+    }
+    .table-scroll-15{
+        overflow: auto;
+        height: 15rem;
     }
     .ec-th{
         background-color: skyblue;

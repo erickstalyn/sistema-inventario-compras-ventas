@@ -77,6 +77,10 @@ Route::group(['middleware' => ['auth']], function () {
         Route::put('/producto/editar', 'ProductoController@editar');
         Route::get('/producto/listaProducto', 'ProductoController@listaProducto');  //metodos secundarios
 
+        //RUTAS PARA PRODUCTO MATERIAL
+        Route::post('/productomaterial/agregar', 'ProductoMaterialController@agregar');
+        Route::get('/productomaterial/listaProductoMaterial', 'ProductoMaterialController@listaProductoMaterial');
+
         //RUTAS PARA DATA
         Route::get('/data/selectSize', 'DataController@selectSize'); 
         Route::get('/data/selectColor', 'DataController@selectColor'); 

@@ -16,8 +16,9 @@ class CreateAbastoTable extends Migration
             $table->mediumIncrements('id'); // usa 3 bytes, Cantiada max: 8 388 607
 
             $table->decimal('total', 8, 2);
+            $table->decimal('total_faltante', 8, 2)->nullable();
             $table->boolean('tipo'); // 0: Contado, 1: Credito
-            $table->string('proveedor_nombre', 120);
+            // $table->string('proveedor_nombre', 120);
 
             $table->unsignedSmallInteger('proveedor_id')->nullable();
             $table->foreign('proveedor_id')->references('id')->on('persona');
