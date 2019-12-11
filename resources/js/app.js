@@ -27,8 +27,7 @@ Vue.component('adm-abasto', require('./components/administrador/Abasto.vue').def
 
 Vue.component('alm-produccion', require('./components/almacen/Produccion.vue').default);
 Vue.component('enviorecibido', require('./components/EnvioRecibido.vue').default);
-
-
+Vue.component('enviorealizado', require('./components/EnvioRealizado.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -39,6 +38,6 @@ Vue.component('enviorecibido', require('./components/EnvioRecibido.vue').default
 const app = new Vue({
     el: '#app',
     data:{
-        menu: 3,
+        menu: 2,
     }
 });
