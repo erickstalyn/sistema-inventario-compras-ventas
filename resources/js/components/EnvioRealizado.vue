@@ -169,7 +169,7 @@
                                         </div>
                                         <div class="row">
                                             <div class="input-group"> 
-                                                <input type="search" class="form-control form-control-sm" v-model="BusquedaFiltro.texto" @keyup.enter="listarFiltro()" id="filtroProducto" autofocus placeholder="Guia: Producto - marca - modelo - tamaño -color">
+                                                <input type="search" class="form-control form-control-sm" v-model="BusquedaFiltro.texto" @keyup.enter="listarFiltro()" id="filtroProducto" autofocus placeholder="Guia: Producto - marca - modelo - tamaño - color">
                                                 <button type="button" class="btn btn-sm btn-primary" @click="listarFiltro()">
                                                     <i class="fa fa-search"></i>&nbsp; Buscar
                                                 </button>
@@ -473,6 +473,7 @@
                         id: producto.id,
                         nombre: producto.nombre,
                         cantidad: 1,
+                        stock: producto.substock
                     }
                     this.ListaDetalleEnvio.push(elProducto);
                 }
@@ -519,22 +520,28 @@
                 if(this.Modal.numero == 1){
                     //Modal agregar
                     if ( !this.ListaDetalleEnvio.length ) {
-                        this.Error.mensaje.push("No existe ningun detalle de producción");
-                    }else{//Valido si hay negativos en las cantidades de los detalles de producción
-                        this.ValidarNegativosCantidades();
+                        this.Error.mensaje.push("No existe ningun detalle de envío");
+                    }else{//Valido las cantidades de los detalles de envio
+                        this.validarCantidadesDetalles();
                     }
                     if(!this.EnvioRealizado.centro_to_id) this.Error.mensaje.push('Debe seleccionar el centro receptor');
                 }else{
-                    //Modal editar
+                    //Modal Reenviar
                 }
                 if ( this.Error.mensaje.length ) this.Error.estado = 1;
                 return this.Error.estado;
             },
-            ValidarNegativosCantidades(){
+            validarCantidadesDetalles(){
                 for (let i = 0; i < this.ListaDetalleEnvio.length; i++) {
                     const detalle = this.ListaDetalleEnvio[i];
-                    if(detalle.cantidad<1){
+                    if(typeof detalle.cantidad == 'string'){
+                        this.Error.mensaje.push('Las cantidades de los detalles deben ser números enteros');
+                        break;
+                    }else if(detalle.cantidad<1){
                         this.Error.mensaje.push('Las cantidades de los detalles deben ser mayores o iguales a 1');
+                        break;
+                    } else if(detalle.cantidad > detalle.stock){
+                        this.Error.mensaje.push('No puede enviar cantidades mayores al stock del producto en inventario')
                         break;
                     }
                 }
