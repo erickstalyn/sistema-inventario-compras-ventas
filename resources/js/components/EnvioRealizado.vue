@@ -244,7 +244,7 @@
                                                     <label for="">Enviar a</label>&nbsp;<span class="text-danger">*</span>&nbsp;
                                                     <select v-model="EnvioRealizado.centro_to_id" class="custom-select custom-select-sm text-gray-900">
                                                         <option value="0">Seleccione</option>
-                                                        <option v-for="item in SelectAlmacen" :key="item.id" :value="item.id" v-text="item.nombre" ></option>
+                                                        <option v-for="item in SelectCentro" :key="item.id" :value="item.id" v-text="item.nombre" ></option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -335,7 +335,7 @@
                 ListaDetalleEnvio:[
                 ],
                 //ALMACENES PARA REALIZAR EL ENVIO
-                SelectAlmacen: [],
+                SelectCentro: [],
             }
         },
         computed: {
@@ -442,16 +442,16 @@
                     });
                 }
             },
-            selectAlmacen(){
+            selectCentro(){
                 var me = this;
-                var url = '/centro/selectAlmacen';
+                var url = '/centro/selectCentro';
 
                 axios.get(url,{
                     params: {
-                        'almacen_id': me.EnvioRealizado.idCentro
+                        'idCentro': me.EnvioRealizado.idCentro
                     }
                 }).then(function(response){
-                    me.SelectAlmacen = response.data;
+                    me.SelectCentro = response.data;
                 }).catch(function(error){
                     console.log(error);
                 });
@@ -518,16 +518,12 @@
                 //Recorrere la lista de Material
                 if(this.Modal.numero == 1){
                     //Modal agregar
-                    if ( !this.ListaDetalleProduccion.length ) {
+                    if ( !this.ListaDetalleEnvio.length ) {
                         this.Error.mensaje.push("No existe ningun detalle de producción");
                     }else{//Valido si hay negativos en las cantidades de los detalles de producción
                         this.ValidarNegativosCantidades();
                     }
-                    if ( !this.Produccion.fecha_inicio || !this.Produccion.fecha_programada){
-                        this.Error.mensaje.push('Debe ingresar una fecha de inicio y una fecha programada de la producción');
-                    }else {
-                        this.validarFechasLogicas();
-                    }
+                    if(!this.EnvioRealizado.centro_to_id) this.Error.mensaje.push('Debe seleccionar el centro receptor');
                 }else{
                     //Modal editar
                 }
@@ -535,32 +531,17 @@
                 return this.Error.estado;
             },
             ValidarNegativosCantidades(){
-                for (let i = 0; i < this.ListaDetalleProduccion.length; i++) {
-                    const detalle = this.ListaDetalleProduccion[i];
+                for (let i = 0; i < this.ListaDetalleEnvio.length; i++) {
+                    const detalle = this.ListaDetalleEnvio[i];
                     if(detalle.cantidad<1){
                         this.Error.mensaje.push('Las cantidades de los detalles deben ser mayores o iguales a 1');
                         break;
                     }
                 }
             },
-            validarFechasLogicas(){
-                let arrayfechaInicio = this.Produccion.fecha_inicio.split('-');
-                let arrayFechaProgramada = this.Produccion.fecha_programada.split('-');
-                let fecha_inicio = new Date(parseInt(arrayfechaInicio[0]),parseInt(arrayfechaInicio[1]-1),parseInt(arrayfechaInicio[2]));
-                let fecha_programada = new Date(parseInt(arrayFechaProgramada[0]),parseInt(arrayFechaProgramada[1]-1),parseInt(arrayFechaProgramada[2]));
-
-                let hoyBase =  new Date();
-                let hoyFirme = new Date(hoyBase.getFullYear(), hoyBase.getMonth(), hoyBase.getDate());
-
-                if(fecha_inicio <  hoyFirme){//Aqui me quede
-                    this.Error.mensaje.push('La fecha de inicio es incorrecta');
-                }else if(fecha_inicio >= fecha_programada){
-                    this.Error.mensaje.push('La fecha programada debe ser después que la fecha de inicio de la producción');
-                }
-            },
             abrirModalAgregar(){
                 this.abrirModal(1, 'Registrar Envío', 'Agregar', 'modal-xl');
-                if(!this.SelectAlmacen.length) this.selectAlmacen();
+                if(!this.SelectCentro.length) this.selectCentro();
             },
             abrirModal(numero, titulo, accion, size){
                 this.Modal.estado = 1;
