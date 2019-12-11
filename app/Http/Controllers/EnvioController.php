@@ -37,6 +37,29 @@ class EnvioController extends Controller
                                 }
                             }
                         })
+                        ->where(function ($query) use ($dia, $mes, $year) {
+                            if($dia != '' && $mes != '' && $year != ''){//todos los campos llenos
+                                $query->whereDay('envio.created_at', $dia)
+                                    ->whereMonth('envio.created_at', $mes)
+                                    ->whereYear('envio.created_at', $year);
+                            }else if($dia != '' && $mes != ''){// dia y mes llenos
+                                $query->whereDay('envio.created_at', $dia)
+                                    ->whereMonth('envio.created_at', $mes);
+                            }else if($dia != '' && $year != ''){//dia y año lleno
+                                $query->whereDay('envio.created_at', $dia)
+                                    ->whereYear('envio.created_at', $year);
+                            }else if($mes != '' && $year != ''){//mes y año lleno
+                                $query->whereMonth('envio.created_at', $mes)
+                                    ->whereYear('envio.created_at', $year);
+                            }else if($dia != ''){//dia lleno
+                                $query->whereDay('envio.created_at', $dia);
+                            }else if($mes != ''){//mes lleno
+                                $query->whereMonth('envio.created_at', $mes);
+                            }else if($year != ''){//año lleno
+                                $query->whereYear('envio.created_at', $year);
+                            }else{
+                            }
+                        })
                         ->where(function ($query) use ($estado) {
                             if ( $estado != 3 ) {
                                 $query->where('envio.estado', '=', $estado);

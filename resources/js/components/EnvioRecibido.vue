@@ -76,17 +76,17 @@
                         <thead>
                             <tr class="table-info">
                                 <th>Origen</th>
-                                <th>Fecha de realización</th>
-                                <th>Fecha Aceptado/Rechazado</th>
+                                <th class="text-center">Fecha en que se envió</th>
+                                <th class="text-center">Fecha Aceptado/Rechazado</th>
                                 <th>Estado</th>
                                 <th class="text-center">Opciones</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr v-for="envio in ListaEnvioRecibido" :key="envio.id" >
-                                <td v-text="envio.centro_origen? envio.centro_origen : 'Administración'"></td>
-                                <td v-text="formatearFecha(envio.fecha_envio)"></td>
-                                <td v-text="envio.fecha_cambio ? formatearFecha(envio.fecha_cambio) : '-------------'"></td>
+                                <td v-text="!envio.abasto_id? envio.centro_origen : 'Administración'"></td>
+                                <td v-text="formatearFecha(envio.fecha_envio)" class="text-center"></td>
+                                <td v-text="envio.fecha_cambio ? formatearFecha(envio.fecha_cambio) : '-------------'" class="text-center"></td>
                                 <td>
                                     <div v-if="envio.estado == 0">
                                         <span class="badge badge-primary">En espera</span>
