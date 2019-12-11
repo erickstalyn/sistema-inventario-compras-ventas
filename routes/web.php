@@ -106,6 +106,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::put('/produccion/finalizar', 'ProduccionController@finalizar'); //metodos secundarios
 
         Route::get('/envioRecibido', 'EnvioController@listarEnvioRecibido'); //metodos generales
+        Route::get('/envioRealizado', 'EnvioController@listarEnvioRealizado'); //metodos generales
         Route::put('/envioRecibido/setEstado', 'EnvioController@setEstado'); //metodos secundarios
     });
     

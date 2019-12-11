@@ -82,7 +82,7 @@ class EnvioController extends Controller
     }
 
     public function listarEnvioRealizado(Request $request){
-        if ( !$request->ajax() ) return redirect('/') ;
+        // if ( !$request->ajax() ) return redirect('/') ;
         $estado = $request->estado;
         $texto = $request->texto;
         $filas = $request->filas;
@@ -95,16 +95,12 @@ class EnvioController extends Controller
         $mes = $request->mes;
         $year = $request->year;
 
-        $envios = Envio::select('envio.id as id', 'envio.estado', 'envio.abasto_id', 'envio.created_at as fecha_envio',
-                        'updated_at as fecha_cambio', 'centro.nombre as centro_origen')
-                        ->leftjoin('centro', 'centro.id', '=', 'envio.centro_from_id')
+        $envios = Envio::select('envio.id as id', 'envio.estado', 'envio.created_at as fecha_envio',
+                        'updated_at as fecha_cambio', 'centro.nombre as centro_destino')
+                        ->leftjoin('centro', 'centro.id', '=', 'envio.centro_to_id')
                         ->where(function ($query) use ($texto) {
                             if ( $texto != '' ) {
-                                if(strpos('administracion', $texto) === false){
-                                    $query->where('centro.nombre', 'like', '%'.$texto.'%');
-                                }else{
-                                    $query->where('envio.centro_from_id', '=', null);
-                                }
+                                $query->where('centro.nombre', 'like', '%'.$texto.'%');
                             }
                         })
                         ->where(function ($query) use ($dia, $mes, $year) {
@@ -135,7 +131,7 @@ class EnvioController extends Controller
                                 $query->where('envio.estado', '=', $estado);
                             }
                         })
-                        ->where('envio.centro_to_id', '=', $idCentro)
+                        ->where('envio.centro_from_id', '=', $idCentro)
                         // ->orderBy('envio.id', 'asc')->get();
                         ->orderBy($ordenarPor, $orden)->paginate($filas);
 

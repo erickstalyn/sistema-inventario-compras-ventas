@@ -29,7 +29,7 @@
                     </div>
                 </div>
                 <div style="width: 24rem;">
-                    <input type="search" class="form-control" v-model="Busqueda.texto" @keyup.enter="listar()" placeholder="Buscar por centro origen">
+                    <input type="search" class="form-control" v-model="Busqueda.texto" @keyup.enter="listar()" placeholder="Buscar por centro de destino">
                 </div>
                 <div class="col-md-1">
                     <label for="">Fecha de envío</label>
@@ -69,22 +69,22 @@
             </div>
 
             <!-- Listado -->
-            <div v-if="ListaEnvioRecibido.length" class="">
+            <div v-if="ListaEnvioRealizado.length" class="">
                 <!-- Tabla -->
                 <div class="ec-table overflow-auto">
                     <table class="table table-borderless table-sm text-gray-900">
                         <thead>
                             <tr class="table-info">
-                                <th>Origen</th>
-                                <th class="text-center">Fecha en que se envió</th>
+                                <th>Centro de destino</th>
+                                <th class="text-center">Fecha de envio</th>
                                 <th class="text-center">Fecha Aceptado/Rechazado</th>
                                 <th>Estado</th>
                                 <th class="text-center">Opciones</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="envio in ListaEnvioRecibido" :key="envio.id" >
-                                <td v-text="!envio.abasto_id? envio.centro_origen : 'Administración'"></td>
+                            <tr v-for="envio in ListaEnvioRealizado" :key="envio.id" >
+                                <td v-text="envio.centro_destino"></td>
                                 <td v-text="formatearFecha(envio.fecha_envio)" class="text-center"></td>
                                 <td v-text="envio.fecha_cambio ? formatearFecha(envio.fecha_cambio) : '-------------'" class="text-center"></td>
                                 <td>
@@ -102,9 +102,14 @@
                                     <button type="button" title="Ver" class="btn btn-sm btn-primary">
                                         <i class="far fa-eye"></i>
                                     </button>
-                                    <template v-if="envio.estado == 0">
-                                        <button type="button"  title="Aceptar/Rechazar" class="btn btn-sm btn-outline-warning" @click="accion(envio)">
-                                            <i class="fas fa-sort-amount-down-alt"></i>
+                                    <template v-if="envio.estado == 2">
+                                        <button type="button"  title="Reenviar" class="btn btn-info btn-sm">
+                                            <i class="fas fa-plane"></i>
+                                        </button>
+                                    </template>
+                                    <template v-if="envio.estado != 1">
+                                        <button type="button"  title="Anular" class="btn btn-danger btn-sm">
+                                                <i class="fas fa-trash-alt"></i>
                                         </button>
                                     </template>
                                 </td>
@@ -133,9 +138,9 @@
 
         </div>
 
-        <!-- Modales de Agregar/Editar -->
+        <!-- Modales de Agregar -->
         <div class="modal text-gray-900" :class="{'mostrar': Modal.estado}">
-            <div class="modal-dialog modal-dialog-centered animated bounceIn fast" :class="[Modal.numero != 3 ? 'modal-xl modal-dialog-scrollable' : '']">
+            <div class="modal-dialog modal-dialog-centered animated bounceIn fast" :class="Modal.size">
                 <div class="modal-content">
 
                     <div class="modal-header">
@@ -204,7 +209,7 @@
                                             <h5 class="font-weight-bold">Lista de items</h5>
                                         </div>
                                         <div class="row form-group ec-table-modal overflow-auto">
-                                            <div v-if="ListaDetalleProduccion.length">
+                                            <div v-if="ListaDetalleEnvio.length">
                                                 <table class="table tableless table-striped table-sm text-gray-900">
                                                     <thead>
                                                         <tr class="table-success">
@@ -216,7 +221,7 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <tr v-for="(detalle, indice) in ListaDetalleProduccion" :key="detalle.id">
+                                                        <tr v-for="(detalle, indice) in ListaDetalleEnvio" :key="detalle.id">
                                                             <td class="text-center">
                                                                 <button type="button" title="Editar" class="btn btn-circle btn-outline-danger btn-sm" @click="quitarDetalle(indice)">
                                                                     <i class="fas fa-minus"></i>
@@ -240,24 +245,20 @@
                                             </div>
                                         </div>
                                         <div class="row">
-                                            <div class="col-md-8">
-                                            </div>
                                             <div class="col-md-4">
-                                                Inversión total: s/ {{getTotal}}
+                                                <div class="input-group"> 
+                                                    <label for="">Enviar a</label>&nbsp;<span class="text-danger">*</span>&nbsp;
+                                                    <select v-model="EnvioRealizado.centro_to_id" class="custom-select custom-select-sm text-gray-900">
+                                                        <option value="0">Seleccione</option>
+                                                        <option v-for="item in SelectAlmacen" :key="item.id" :value="item.id" v-text="item.nombre" ></option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4"></div>
+                                            <div class="col-md-4">
+                                                <!-- Inversión total: s/ {{getTotal}} -->
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="row">
-                                    <div class="col-md-3"></div>
-                                    <div class="col-md-4 form-inline">
-                                        Fecha de inicio&nbsp;<span class="text-danger">*</span>
-                                        <input type="date" class="form-control form-control-sm" v-model="Produccion.fecha_inicio">
-                                    </div>
-                                    <div class="col-md-5 form-inline">
-                                        Fecha prog. finalización&nbsp;<span class="text-danger">*</span>
-                                        <input type="date" class="form-control form-control-sm" v-model="Produccion.fecha_programada">
                                     </div>
                                 </div>
                                 
@@ -282,11 +283,10 @@
         data(){
             return {
                 //datos generales
-                ListaEnvioRecibido: [],
-                EnvioRecibido: {
+                ListaEnvioRealizado: [],
+                EnvioRealizado: {
                     id: 0,
-                    abasto_id: 0,
-                    centro_origen: '',
+                    centro_to_id: 0,
                     estado: 0,
                     fecha_envio: '',
                     fecha_cambio: '',
@@ -308,7 +308,8 @@
                     numero: 0,
                     estado: 0,
                     titulo: '',
-                    accion: ''
+                    accion: '',
+                    size: ''
                 },
 
                 //datos de paginacion
@@ -337,9 +338,9 @@
                 },
                 ListaProducto:[
                 ],
-                ListaDetalleProduccion:[
+                ListaDetalleEnvio:[
                 ],
-                //DATOS PARA ENVIAR UNA PRODUCCION
+                //ALMACENES PARA REALIZAR EL ENVIO
                 SelectAlmacen: [],
             }
         },
@@ -414,9 +415,9 @@
                 }
                 this.Paginacion.currentPage = page==1?1:page;
 
-                var url = '/envioRecibido?page='+this.Paginacion.currentPage
+                var url = '/envioRealizado?page='+this.Paginacion.currentPage
                         +'&estado='+this.Busqueda.estado
-                        +'&idCentro='+this.EnvioRecibido.idCentro
+                        +'&idCentro='+this.EnvioRealizado.idCentro
                         +'&texto='+this.Busqueda.texto
                         +'&filas='+this.Busqueda.filas
                         +'&dia='+this.Busqueda.dia
@@ -427,7 +428,7 @@
                 
                 var me = this;
                 axios.get(url).then(function (response) {
-                    me.ListaEnvioRecibido = response.data.envios.data;
+                    me.ListaEnvioRealizado = response.data.envios.data;
                     me.Paginacion = response.data.paginacion;
                 }).catch(function (error) {
                     console.log(error)
@@ -456,6 +457,20 @@
                         console.log(error);
                     });
                 }
+            },
+            selectAlmacen(){
+                var me = this;
+                var url = '/centro/selectAlmacen';
+
+                axios.get(url,{
+                    params: {
+                        'almacen_id': me.EnvioRealizado.idCentro
+                    }
+                }).then(function(response){
+                    me.SelectAlmacen = response.data;
+                }).catch(function(error){
+                    console.log(error);
+                });
             },
             agregarDetalle(producto){
                 //Verifico si el producto ya esta en la lista de detalle
@@ -560,99 +575,10 @@
                 }else if(fecha_inicio >= fecha_programada){
                     this.Error.mensaje.push('La fecha programada debe ser después que la fecha de inicio de la producción');
                 }
-                //Pruebas
-                // this.Produccion.fecha_inicio = arrayfechaInicio[2] + '-' + parseInt(arrayfechaInicio[1]-1) + '-' + arrayfechaInicio[0];
-                // this.Produccion.fecha_programada = arrayFechaProgramada[2] + '-' + parseInt(arrayFechaProgramada[1]-1) + '-' + arrayFechaProgramada[0];
-
-            },
-            // editar(){
-            //     if ( this.validar() ) return;
-
-            //     var me = this;
-            //     axios.put('/material/editar', {
-            //         'id' : this.Material.id,
-            //         'nombre' : this.Material.nombre,
-            //         'subtipo' : this.Material.subtipo,
-            //         'unidad' : this.Material.unidad,
-            //         'costo' : this.Material.costo,
-            //     }).then(function(response){
-            //         me.cerrarModal();
-            //         me.listar();
-            //         Swal.fire({
-            //             position: 'top-end',
-            //             toast: true,
-            //             type: 'success',
-            //             title: 'El Material se ha EDITADO correctamente',
-            //             showConfirmButton: false,
-            //             timer: 4500,
-            //             animation:false,
-            //             customClass:{
-            //                 popup: 'animated bounceIn fast'
-            //             }
-            //         });
-            //     }).catch(function(error){
-            //         console.log(error);
-            //     });
-            // },
-            accion(envio = []){
-                this.EnvioRecibido.id = envio['id'];
-                const swalWithBootstrapButtons = Swal.mixin({
-                    customClass: {
-                        confirmButton: 'btn btn-success',
-                        cancelButton: 'btn btn-danger'
-                    },
-                    buttonsStyling: false
-                })
-                swalWithBootstrapButtons.fire({
-                title: '¿Qué ACCIÓN desea realizar?',
-                text: "Por favor elija con cuidado, que son acciones irreversibles",
-                type: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Aceptar envío',
-                cancelButtonText: 'Rechazar envío',
-                }).then((result) => {
-                if (result.value) {
-                    var me = this;
-                    axios.put('/envioRecibido/setEstado', {
-                        'id' : me.EnvioRecibido.id,
-                        'estado' : 1
-                    }).then(function(response){
-                        me.cerrarModal();
-                        me.listar();
-                        swalWithBootstrapButtons.fire(
-                        'Aceptado!',
-                        'El envío ha sido aceptado, revise su inventario de productos',
-                        'success'
-                        )
-                    }).catch(function(error){
-                        console.log('Soy el error: ' + error);
-                    });
-                    
-                } else if (
-                    result.dismiss === Swal.DismissReason.cancel
-                ) {
-                    var me = this;
-                    axios.put('/envioRecibido/setEstado', {
-                        'id' : me.EnvioRecibido.id,
-                        'estado' : 2
-                    }).then(function(response){
-                        me.cerrarModal();
-                        me.listar();
-                        swalWithBootstrapButtons.fire(
-                        'Rechazado!',
-                        'El envío ha sido rechazado, por favor infórmeselo al administrador',
-                        'danger'
-                        )
-                    }).catch(function(error){
-                        console.log('Soy el error: ' + error);
-                    });
-                }
-                })
             },
             abrirModalAgregar(){
-                this.abrirModal(1, 'Registrar Produccion', 'Agregar');
-                // let inputFiltro = document.getElementById('filtroProducto');
-                // inputFiltro.focus();
+                this.abrirModal(1, 'Registrar Envío', 'Agregar', 'modal-xl');
+                if(!this.SelectAlmacen.length) this.selectAlmacen();
             },
             // abrirModalEnviar(){
             //     this.abrirModal(3, 'Enviar Produccion', 'Enviar');
@@ -677,11 +603,12 @@
             //     //Verifico si el arreglo SelectUnidad esta vacia
             //     if(!this.SelectUnidad.length) this.selectUnidad();
             // },
-            abrirModal(numero, titulo, accion){
+            abrirModal(numero, titulo, accion, size){
                 this.Modal.estado = 1;
                 this.Modal.numero = numero;
                 this.Modal.titulo = titulo;
                 this.Modal.accion = accion;
+                this.Modal.size = size;
             },
             cerrarModal(){
                 this.Modal.numero = 0;
