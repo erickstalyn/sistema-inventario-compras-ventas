@@ -163,13 +163,13 @@
                                     </div>
                                 </div>
                                 <div class="row shadow bg-white rounded p-2">
-                                    <div class="col-md-4">
+                                    <div class="col-md-6">
                                         <div class="row">
                                             <h5 class="font-weight-bold">Productos</h5>
                                         </div>
                                         <div class="row">
                                             <div class="input-group"> 
-                                                <input type="search" class="form-control form-control-sm" v-model="BusquedaFiltro.texto" @keyup.enter="listarFiltro()" id="filtroProducto" autofocus placeholder="Producto,marca,modelo,tamaño,color">
+                                                <input type="search" class="form-control form-control-sm" v-model="BusquedaFiltro.texto" @keyup.enter="listarFiltro()" id="filtroProducto" autofocus placeholder="Guia: Producto - marca - modelo - tamaño -color">
                                                 <button type="button" class="btn btn-sm btn-primary" @click="listarFiltro()">
                                                     <i class="fa fa-search"></i>&nbsp; Buscar
                                                 </button>
@@ -182,7 +182,7 @@
                                                     <thead>
                                                         <tr class="table-danger">
                                                             <th class="text-center" style="width: 3rem;">Agregar</th>
-                                                            <th>Nombre</th>
+                                                            <th style="width: 24rem;">Nombre</th>
                                                             <th>Stock</th>
                                                         </tr>
                                                     </thead>
@@ -194,7 +194,7 @@
                                                                 </button>
                                                             </td>
                                                             <td v-text="producto.nombre"></td>
-                                                            <td v-text="producto.stock"></td>
+                                                            <td v-text="producto.substock"></td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
@@ -204,7 +204,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-8 ml-auto container">
+                                    <div class="col-md-6 ml-auto container">
                                         <div class="row">
                                             <h5 class="font-weight-bold">Lista de items</h5>
                                         </div>
@@ -214,10 +214,8 @@
                                                     <thead>
                                                         <tr class="table-success">
                                                             <th class="text-center" style="width: 3rem;">Quitar</th>
-                                                            <th>Nombre</th>
-                                                            <th style="width: 5rem;">Cant.</th>
-                                                            <th>Costo Unit.</th>
-                                                            <th>Subtotal</th>
+                                                            <th >Nombre</th>
+                                                            <th style="width: 5rem;" class="text-center">Cantidad</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -228,12 +226,8 @@
                                                                 </button>
                                                             </td>
                                                             <td v-text="detalle.nombre"></td>
-                                                            <td>
-                                                                <input type="number" v-model="detalle.cantidad" class="form-control form-control-sm" min="1">
-                                                            </td>
-                                                            <td v-text="detalle.costo_produccion"></td>
                                                             <td >
-                                                                {{detalle.subtotal = (detalle.costo_produccion * detalle.cantidad).toFixed(2)}}
+                                                                <input type="number" v-model="detalle.cantidad" class="form-control form-control-sm text-right" min="1">
                                                             </td>
                                                         </tr>
                                                     </tbody>
@@ -241,11 +235,11 @@
                                             </div>
                                             <div v-else>
                                                 <br>
-                                                <h5>Sin detalles de producción</h5>
+                                                <h5>Sin detalles del envío</h5>
                                             </div>
                                         </div>
                                         <div class="row">
-                                            <div class="col-md-4">
+                                            <div class="col-md-6">
                                                 <div class="input-group"> 
                                                     <label for="">Enviar a</label>&nbsp;<span class="text-danger">*</span>&nbsp;
                                                     <select v-model="EnvioRealizado.centro_to_id" class="custom-select custom-select-sm text-gray-900">
@@ -254,9 +248,9 @@
                                                     </select>
                                                 </div>
                                             </div>
-                                            <div class="col-md-4"></div>
-                                            <div class="col-md-4">
-                                                <!-- Inversión total: s/ {{getTotal}} -->
+                                            <!-- <div class="col-md-2"></div> -->
+                                            <div class="col-md-6">
+                                                <p class="text-right pr-3">Total de productos: {{getTotal}}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -386,24 +380,12 @@
 
                 return false;
             },
-            selectUnidadFiltrado: function(){
-                let selectUnidadFiltrado = [];
-                this.SelectUnidad.forEach(unidad => {
-                    if(unidad.subtipo == this.Material.subtipo){
-                        selectUnidadFiltrado.push(unidad);
-                        // console.log('Ingrese al if');
-                    }
-                });
-                return selectUnidadFiltrado;
-            },
             getTotal: function(){
-                this.Produccion.total = 0.00;
-                this.ListaDetalleProduccion.forEach( detalle => {
-                    // console.log(Number.parseFloat(detalle.costo_produccion * detalle.cantidad).toFixed(2));
-                    // this.Produccion.total = this.Produccion.total + detalle.costo_produccion * detalle.cantidad;
-                    this.Produccion.total = this.Produccion.total + detalle.costo_produccion * detalle.cantidad;
+                let total = 0;
+                this.ListaDetalleEnvio.forEach( detalle => {
+                    total = total + Number.parseInt(detalle.cantidad);
                 });
-                return (this.Produccion.total).toFixed(2);
+                return total;
             }
         },
         methods: {
@@ -442,7 +424,9 @@
             listarFiltro(){
                 if(this.BusquedaFiltro.texto != ''){
                     let me = this;
-                    let url = '/producto/getProductoFiltrado?texto=' + this.BusquedaFiltro.texto;
+                    let url = '/detalle_producto/getDetalle_productoFiltrado?texto=' 
+                            + this.BusquedaFiltro.texto
+                            + '&idCentro=' + this.EnvioRealizado.idCentro;
                     axios.get(url).then(function(response){
                         if(response.data.productos.length == 1 && me.BusquedaFiltro.texto == response.data.productos[0].codigo){
                             me.agregarDetalle(response.data.productos[0]);
@@ -475,11 +459,11 @@
             agregarDetalle(producto){
                 //Verifico si el producto ya esta en la lista de detalle
                 let incluido = false;
-                for (let i = 0; i < this.ListaDetalleProduccion.length; i++) {
-                    if(this.ListaDetalleProduccion[i].id == producto.id){
+                for (let i = 0; i < this.ListaDetalleEnvio.length; i++) {
+                    if(this.ListaDetalleEnvio[i].id == producto.id){
                         incluido = true;
                         //adiciono uno más a la cantidad de este producto en la tabla de detalles
-                        this.ListaDetalleProduccion[i].cantidad ++;
+                        this.ListaDetalleEnvio[i].cantidad ++;
                         break;
                     }
                 }
@@ -489,14 +473,12 @@
                         id: producto.id,
                         nombre: producto.nombre,
                         cantidad: 1,
-                        costo_produccion: producto.costo_produccion,
-                        subtotal: 0.00
                     }
-                    this.ListaDetalleProduccion.push(elProducto);
+                    this.ListaDetalleEnvio.push(elProducto);
                 }
             },
             quitarDetalle(indice){
-                this.ListaDetalleProduccion.splice(indice,1);
+                this.ListaDetalleEnvio.splice(indice,1);
             },
             agregar(){
                 if ( this.validar() ) return;
@@ -580,29 +562,6 @@
                 this.abrirModal(1, 'Registrar Envío', 'Agregar', 'modal-xl');
                 if(!this.SelectAlmacen.length) this.selectAlmacen();
             },
-            // abrirModalEnviar(){
-            //     this.abrirModal(3, 'Enviar Produccion', 'Enviar');
-            //     if(this.SelectAlmacen == 0) this.selectAlmacen();
-            // },
-            // abrirModalEditar(data = []){
-            //     this.abrirModal(2, 'Editar Material', 'Editar');
-                
-            //     this.Material.id = data['id'];
-            //     this.Material.nombre = data['nombre'];
-            //     this.Material.subtipo = data['subtipo'];
-            //     this.Material.unidad = data['unidad'];
-            //     this.Material.costo  = data['costo'];
-
-            //     //Lleno los campos de mi Material Original
-            //     this.MaterialOrigen.id = data['id'];
-            //     this.MaterialOrigen.nombre = data['nombre'];
-            //     this.MaterialOrigen.subtipo = data['subtipo'];
-            //     this.MaterialOrigen.unidad = data['unidad'];
-            //     this.MaterialOrigen.costo  = data['costo'];
-                
-            //     //Verifico si el arreglo SelectUnidad esta vacia
-            //     if(!this.SelectUnidad.length) this.selectUnidad();
-            // },
             abrirModal(numero, titulo, accion, size){
                 this.Modal.estado = 1;
                 this.Modal.numero = numero;
