@@ -290,7 +290,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr v-for="(material, indice) in ListaProductoMaterial" v-if="material.estado==1" :key="indice">
+                                                <tr v-for="(material, indice) in listaProductoMaterialFiltrada" :key="indice">
                                                     <td>
                                                         <button type="button" class="btn btn-circle btn-outline-danger btn-sm" @click="removeProductoMaterial(indice)" title="QUITAR">
                                                             <i class="fas fa-minus"></i>
@@ -299,8 +299,10 @@
                                                     <td v-text="material.nombre"></td>
                                                     <td v-text="material.unidad"></td>
                                                     <td v-text="material.costo_unitario"></td>
-                                                    <td v-text="material.cantidad"></td>
-                                                    <td v-text="material.subtotal"></td>
+                                                    <td>
+                                                        <input type="number" class="form-control form-control-sm text-gray-900" min="1" step="1" v-model="material.cantidad" @keyup="calcular(1, material)" @click="calcular(1, material)">
+                                                    </td>
+                                                    <td valign="right" v-text="material.subtotal"></td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -481,6 +483,17 @@
                 this.Producto.costo_produccion = costo_produccion;
 
                 return Number.parseFloat(costo_produccion).toFixed(2);
+            },
+            listaProductoMaterialFiltrada: function(){
+                var lista = [];
+
+                for (let i = 0; i < this.ListaProductoMaterial.length; i++) {
+                    if ( this.ListaProductoMaterial[i].estado == 1 ) {
+                        lista.push(this.ListaProductoMaterial[i]);
+                    }
+                }
+
+                return lista;
             }
         },
         methods: {
@@ -823,6 +836,15 @@
                     }
                 }
             },
+            calcular(numero, data = null){
+                if ( data == null ) return;
+
+                switch ( numero ) {
+                    case 1:
+                        data.subtotal = (data.cantidad * data.costo_unitario).toFixed(2);
+                        break;
+                }
+            },
             validar(numero){
                 this.Error.estado = 0;
                 this.Error.numero = numero;
@@ -907,7 +929,7 @@
         cursor: pointer;
     }
     .table-scroll-20{
-        overflow: hidden;
+        overflow: auto;
         height: 20rem;
     }
     .table-scroll-15{
