@@ -485,14 +485,12 @@
                 if ( this.validar() ) return;
                 
                 var me = this;
-                axios.post('/produccion/agregar', {
+                axios.post('/envioRealizado/agregar', {
                     //Datos de la produccion
-                    'total' : this.Produccion.total,
-                    'fecha_inicio' : this.Produccion.fecha_inicio,
-                    'fecha_programada' : this.Produccion.fecha_programada,
-                    'almacen_id': this.Produccion.almacen_id,
-                    //Datos del detalle de venta
-                    'listaDetalleProduccion' : this.ListaDetalleProduccion
+                    'idCentro': me.EnvioRealizado.idCentro,
+                    'centro_to_id': me.EnvioRealizado.centro_to_id,
+                    //Datos del detalle del envio
+                    'listaDetalleEnvio' : this.ListaDetalleEnvio
                 }).then(function(response){
                     me.cerrarModal();
                     me.listar();
@@ -500,7 +498,7 @@
                         position: 'top-end',
                         toast: true,
                         type: 'success',
-                        title: 'La produccion se ha REGISTRADO correctamente',
+                        title: 'La envío se ha REGISTRADO correctamente',
                         showConfirmButton: false,
                         timer: 4500,
                         animation:false,
@@ -534,6 +532,7 @@
             validarCantidadesDetalles(){
                 for (let i = 0; i < this.ListaDetalleEnvio.length; i++) {
                     const detalle = this.ListaDetalleEnvio[i];
+                    // console.log(typeof Number.parseInt(detalle.cantidad)); Tengo que validar cuando un numero ingresado es un numero flotante
                     if(typeof detalle.cantidad == 'string'){
                         this.Error.mensaje.push('Las cantidades de los detalles deben ser números enteros');
                         break;
@@ -565,11 +564,10 @@
                 this.Error.estado = 0;
                 this.Error.mensaje = [];
 
-                // this.Produccion.id = 0;
-                // this.Produccion.total = 0.00;
-                // this.Produccion.fecha_inicio = '';
-                // this.Produccion.fecha_programada = '';
-
+                this.EnvioRealizado.id = 0;
+                this.EnvioRealizado.total = 0;
+                this.EnvioRealizado.centro_to_id = 0;
+                this.ListaDetalleEnvio = [];
                 this.BusquedaFiltro.texto = '';
 
             },

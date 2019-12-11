@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Envio;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Exception;
+use App\Envio;
+use App\Detalle_envio;
 
 class EnvioController extends Controller
 {
@@ -146,6 +147,40 @@ class EnvioController extends Controller
             ],
             'envios' => $envios
         ];
+    }
+
+    public function agregar(Request $request){
+        if ( !$request->ajax() ) return redirect('/');
+       
+        try {
+            DB::beginTransaction();
+
+            $now = Carbon::now('America/Lima')->toDateString();
+            //Registramos el ENVÍO
+            $envio = new Envio();
+            $envio->centro_from_id = $request->idCentro;
+            $envio->centro_to_id = $request->centro_to_id;
+            $envio->created_at = $now;
+            $envio->save();
+
+            //Insertamos los datos del detalle de envio
+            $listaDetalleEnvio = $request->listaDetalleEnvio;
+
+            foreach($listaDetalleEnvio as $ep => $det){
+                $detalle = new Detalle_envio();
+                $detalle->nombre_producto = $det['nombre'];
+                $detalle->cantidad = $det['cantidad'];
+                $detalle->producto_id = $det['id'];
+                $detalle->envio_id = $envio->id;
+                $detalle->save();
+            }
+
+            DB::commit();
+        } catch(Exception $e) {
+            echo($e);
+            DB::rollback();
+        }
+
     }
 
     public function setEstado(Request $request){

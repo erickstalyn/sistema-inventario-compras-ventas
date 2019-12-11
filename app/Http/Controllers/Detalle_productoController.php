@@ -12,7 +12,7 @@ class Detalle_productoController extends Controller
         $idCentro = $request->idCentro;
         $texto = $request->texto;
 
-        $productos = Detalle_producto::select('detalle_producto.id', 'producto.codigo as codigo', 'producto.nombre as nombre', 'detalle_producto.substock as substock')
+        $productos = Detalle_producto::select('producto.id', 'producto.codigo as codigo', 'producto.nombre as nombre', 'detalle_producto.substock as substock')
                             ->join('producto', 'producto.id', 'detalle_producto.producto_id')
                             ->where(function ($query) use ($texto) {
                                 if ( $texto != '' ) {
