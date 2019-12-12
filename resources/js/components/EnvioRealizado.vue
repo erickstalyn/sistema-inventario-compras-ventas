@@ -569,8 +569,11 @@
             reenviar(){
                 // if ( this.validar() ) return;
                 var me = this;
-                console.log(me.EnvioRealizado.id);
-                console.log(me.EnvioRealizado.centro_to_id);
+                //Selecciono el nombre del centro
+                let nombreCentro;
+                me.SelectCentro.forEach(element => {
+                    if(element.id == me.EnvioRealizado.centro_to_id) nombreCentro = element.nombre;
+                });
                 axios.put('/envioRealizado/reenviar', {
                     'id' : me.EnvioRealizado.id,
                     'centro_to_id': me.EnvioRealizado.centro_to_id,
@@ -581,7 +584,7 @@
                         position: 'top-end',
                         toast: true,
                         type: 'success',
-                        title: 'La REENVIADO con satisfactoriamente',
+                        title: 'Se REENVIÓ satisfactoriamente a ' + nombreCentro,
                         showConfirmButton: false,
                         timer: 4500,
                         animation:false,
