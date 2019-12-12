@@ -533,11 +533,10 @@
                 for (let i = 0; i < this.ListaDetalleEnvio.length; i++) {
                     const detalle = this.ListaDetalleEnvio[i];
                     // console.log(typeof Number.parseInt(detalle.cantidad)); Tengo que validar cuando un numero ingresado es un numero flotante
-                    // if(typeof detalle.cantidad == 'string'){
-                    //     this.Error.mensaje.push('Las cantidades de los detalles deben ser números enteros');
-                    //     break;
-                    // }else if(detalle.cantidad<1){
-                    if(detalle.cantidad<1){
+                    if(detalle.cantidad % 1 != 0){
+                        this.Error.mensaje.push('Las cantidades de los detalles deben ser números enteros');
+                        break;
+                    }else if(detalle.cantidad<1){
                         this.Error.mensaje.push('Las cantidades de los detalles deben ser mayores o iguales a 1');
                         break;
                     } else if(detalle.cantidad > detalle.stock){
