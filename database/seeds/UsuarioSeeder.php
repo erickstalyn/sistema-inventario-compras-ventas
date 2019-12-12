@@ -38,5 +38,12 @@ class UsuarioSeeder extends Seeder
             'rol' => 'A',
             // 'estado' => false,
         ));
+        DB::table('usuario')->insert(array(
+            'centro_id'=> 6,
+            'usuario'=>'almacen3',
+            'password'=>bcrypt('almacen3'),
+            'rol' => 'A',
+            // 'estado' => false,
+        ));
     }
 }

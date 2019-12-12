@@ -201,12 +201,13 @@ class EnvioController extends Controller
     
     public function reenviar(Request $request){
         if ( !$request->ajax() ) return redirect('/');
+        echo($request->id . '<br>');
+        echo($request->centro_to_id . '<br>');
         try {
             DB::beginTransaction();
             $envio = Envio::findOrFail($request->id);
             $envio->updated_at = Carbon::now('America/Lima')->toDateString();
-            // $envio->centro_to_id = $request->centro_to_id;
-            $envio->centro_to_id = 5;
+            $envio->centro_to_id = $request->centro_to_id;
             $envio->estado = 0;
             $envio->save();
 

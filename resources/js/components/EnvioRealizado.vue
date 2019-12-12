@@ -270,8 +270,8 @@
                                 <div class="row form-group">
                                     <label class="col-md-5 font-weight-bold" for="des">Seleccione centro&nbsp;<span class="text-danger">*</span></label>
                                     <div class="col-md-7">
-                                        <select  class="custom-select">
-                                            <option value="" disabled>Seleccione</option>
+                                        <select  class="custom-select" v-model="EnvioRealizado.centro_to_id">
+                                            <option value="0" disabled>Seleccione</option>
                                             <option v-for="item in SelectCentro" :key="item.id" :value="item.id" v-text="item.nombre"></option>
                                         </select>
                                     </div>
@@ -567,11 +567,11 @@
                 }
             },
             reenviar(){
-                if ( this.validar() ) return;
-                
+                // if ( this.validar() ) return;
                 var me = this;
+                console.log(me.EnvioRealizado.id);
+                console.log(me.EnvioRealizado.centro_to_id);
                 axios.put('/envioRealizado/reenviar', {
-                    //Datos de la produccion
                     'id' : me.EnvioRealizado.id,
                     'centro_to_id': me.EnvioRealizado.centro_to_id,
                 }).then(function(response){
@@ -599,6 +599,8 @@
             },
             abrirModalReenviar(envio = []){
                 this.EnvioRealizado.id = envio['id'];
+                // console.log(this.EnvioRealizado.centro_to_id);
+
                 this.abrirModal(3, 'Reenviar', 'Reenviar', '');
                 if(!this.SelectCentro.length) this.selectCentro();
             },
