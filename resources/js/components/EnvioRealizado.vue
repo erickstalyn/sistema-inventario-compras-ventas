@@ -103,7 +103,7 @@
                                         <i class="far fa-eye"></i>
                                     </button>
                                     <template v-if="envio.estado == 2">
-                                        <button type="button"  title="Reenviar" class="btn btn-info btn-sm">
+                                        <button type="button"  title="Reenviar" class="btn btn-info btn-sm" @click="abrirModalReenviar(envio)">
                                             <i class="fas fa-plane"></i>
                                         </button>
                                     </template>
@@ -257,6 +257,26 @@
                                 </div>
                                 
                             </div>
+                            <div v-if="Modal.numero==3">
+                                <div v-if="Error.estado" class="row d-flex justify-content-center">
+                                    <div class="alert alert-danger">
+                                        <button type="button" @click="Error.estado=0" class="close text-primary" data-dismiss="alert">×</button>
+                                        <strong>Corregir los siguentes errores:</strong>
+                                        <ul> 
+                                            <li v-for="error in Error.mensaje" :key="error" v-text="error"></li> 
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <label class="col-md-5 font-weight-bold" for="des">Seleccione centro&nbsp;<span class="text-danger">*</span></label>
+                                    <div class="col-md-7">
+                                        <select  class="custom-select">
+                                            <option value="" disabled>Seleccione</option>
+                                            <option v-for="item in SelectCentro" :key="item.id" :value="item.id" v-text="item.nombre"></option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -299,7 +319,7 @@
 
                 //datos de modales
                 Modal: {
-                    numero: 0,
+                    numero: 0, // 1: Agregar , 2: Ver, 3: Reeviar
                     estado: 0,
                     titulo: '',
                     accion: '',
@@ -377,6 +397,7 @@
             permisoModalFooter: function(){
                 if ( this.Modal.numero == 1 ) return true;
                 if ( this.Modal.numero == 2 ) return true;
+                if ( this.Modal.numero == 3 ) return true;
 
                 return false;
             },
@@ -545,8 +566,40 @@
                     }
                 }
             },
+            reenviar(){
+                if ( this.validar() ) return;
+                
+                var me = this;
+                axios.put('/envioRealizado/reenviar', {
+                    //Datos de la produccion
+                    'id' : me.EnvioRealizado.id,
+                    'centro_to_id': me.EnvioRealizado.centro_to_id,
+                }).then(function(response){
+                    me.cerrarModal();
+                    me.listar();
+                    Swal.fire({
+                        position: 'top-end',
+                        toast: true,
+                        type: 'success',
+                        title: 'La REENVIADO con satisfactoriamente',
+                        showConfirmButton: false,
+                        timer: 4500,
+                        animation:false,
+                        customClass:{
+                            popup: 'animated bounceIn fast'
+                        }
+                    });
+                }).catch(function(error){
+                    console.log(error);
+                });
+            },
             abrirModalAgregar(){
                 this.abrirModal(1, 'Registrar Envío', 'Agregar', 'modal-xl');
+                if(!this.SelectCentro.length) this.selectCentro();
+            },
+            abrirModalReenviar(envio = []){
+                this.EnvioRealizado.id = envio['id'];
+                this.abrirModal(3, 'Reenviar', 'Reenviar', '');
                 if(!this.SelectCentro.length) this.selectCentro();
             },
             abrirModal(numero, titulo, accion, size){
@@ -559,7 +612,6 @@
             cerrarModal(){
                 this.Modal.numero = 0;
                 this.Modal.estado = 0;
-                this.Modal.mensaje = [];
 
                 this.Error.estado = 0;
                 this.Error.mensaje = [];
@@ -581,18 +633,10 @@
                         this.editar();
                         break;
                     }
-                    case 'Finalizar': {
-                        this.finalizar();
+                    case 'Reenviar': {
+                        this.reenviar();
                         break;
                     }
-                    // case 'Activar': {
-                    //     this.activar();
-                    //     break;
-                    // }
-                    // case 'Desactivar': {
-                    //     this.desactivar();
-                    //     break;
-                    // }
                 }
             },
             cambiarPagina(page){

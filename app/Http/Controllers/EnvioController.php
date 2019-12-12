@@ -184,11 +184,30 @@ class EnvioController extends Controller
     }
 
     public function setEstado(Request $request){
+        if ( !$request->ajax() ) return redirect('/');
         try {
             DB::beginTransaction();
             $envio = Envio::findOrFail($request->id);
             $envio->updated_at = Carbon::now('America/Lima')->toDateString();
             $envio->estado = $request->estado;
+            $envio->save();
+
+            DB::commit();
+        } catch (Exception $e) {
+            echo($e);
+            DB::rollback();
+        }
+    }
+    
+    public function reenviar(Request $request){
+        if ( !$request->ajax() ) return redirect('/');
+        try {
+            DB::beginTransaction();
+            $envio = Envio::findOrFail($request->id);
+            $envio->updated_at = Carbon::now('America/Lima')->toDateString();
+            // $envio->centro_to_id = $request->centro_to_id;
+            $envio->centro_to_id = 5;
+            $envio->estado = 0;
             $envio->save();
 
             DB::commit();
