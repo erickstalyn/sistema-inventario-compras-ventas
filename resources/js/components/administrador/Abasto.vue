@@ -105,7 +105,7 @@
                                 <td class="text-center">
                                     
                                     <template v-if="abasto.tipo_abasto == 1 && abasto.total_faltante != 0">
-                                        <button type="button"  title="Pagar Cuota" class="btn btn-warning btn-sm">
+                                        <button type="button"  title="Pagar Cuota" class="btn btn-warning btn-sm" @click="abrirModalPagar()">
                                             <i class="fas fa-hand-holding-usd"></i>
                                         </button>
                                     </template>
@@ -156,7 +156,7 @@
 
         <!-- Modales de Agregar/Editar -->
         <div class="modal text-gray-900" :class="{'mostrar': Modal.estado}">
-            <div class="modal-dialog modal-dialog-centered animated bounceIn fast" :class="[Modal.numero != 3 ? 'modal-xl modal-dialog-scrollable' : '']">
+            <div class="modal-dialog modal-dialog-centered animated bounceIn fast" :class="Modal.size">
                 <div class="modal-content">
 
                     <div class="modal-header">
@@ -167,7 +167,7 @@
                     <div class="modal-body">
                         <div class="container-fluid">
                         <!-- Modal Numero 1 de AGREGAR-->
-                            <!-- <div v-if="Modal.numero==1"> -->
+                            <div v-if="Modal.numero == 1 || Modal.numero == 2">
                                 <!-- Filtro de productos -->
                                 <div v-if="Error.estado" class="row d-flex justify-content-center">
                                     <div class="alert alert-danger">
@@ -187,7 +187,7 @@
                                             <div class="col-md-3">
                                                 <div class="input-group"> 
                                                     RUC/DNI&nbsp;<span class="text-danger">*</span>&nbsp;
-                                                    <input type="text" class="form-control form-control-sm" v-model="DatosServicio.documento" autofocus>
+                                                    <input type="text" class="form-control form-control-sm" v-model="DatosServicio.documento" autofocus @keyup.enter="consultar()">
                                                     <button type="button" class="btn btn-sm btn-primary" @click="consultar()">
                                                         <i class="fas fa-sync-alt"></i>
                                                     </button>
@@ -364,7 +364,42 @@
                                         </div>
                                     </div>
                                 </div>
-                            <!-- </div> -->
+                            </div>
+                            <div v-if="Modal.numero == 3">
+                                <div v-if="Error.estado" class="row d-flex justify-content-center">
+                                    <div class="alert alert-danger">
+                                        <button type="button" @click="Error.estado=0" class="close text-primary" data-dismiss="alert">×</button>
+                                        <strong>Corregir los siguentes errores:</strong>
+                                        <ul> 
+                                            <li v-for="error in Error.mensaje" :key="error" v-text="error"></li> 
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="row form-group ">
+                                    <div class="col-md-3">
+                                        <span class="font-weight-bold">Registrar</span>
+                                    </div>
+                                    <div class="col-md-2"></div>
+                                    <div class="col-md-7">
+                                        <div class="input-group"> 
+                                            Monto&nbsp;
+                                            <input type="number" class="form-control form-control-sm" autofocus>
+                                            <button type="button" class="btn btn-sm btn-primary" @click="consultar()">
+                                                Registrar
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <label class="col-md-5 font-weight-bold" for="des">Seleccione centro&nbsp;<span class="text-danger">*</span></label>
+                                    <div class="col-md-7">
+                                        <select  class="custom-select">
+                                            <option value="0" disabled>Seleccione</option>
+                                            <!-- <option v-for="item in SelectCentro" :key="item.id" :value="item.id" v-text="item.nombre"></option> -->
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -418,7 +453,8 @@
                     numero: 0, // 1: Agregar, 2: Ver, 3: Pagar
                     estado: 0,
                     titulo: '',
-                    accion: ''
+                    accion: '',
+                    size: ''
                 },
 
                 //datos de paginacion
@@ -503,19 +539,10 @@
             permisoModalFooter: function(){
                 if ( this.Modal.numero == 1 ) return true;
                 if ( this.Modal.numero == 2 ) return true;
+                if ( this.Modal.numero == 3 ) return true;
 
                 return false;
             },
-            // selectUnidadFiltrado: function(){
-            //     let selectUnidadFiltrado = [];
-            //     this.SelectUnidad.forEach(unidad => {
-            //         if(unidad.subtipo == this.Material.subtipo){
-            //             selectUnidadFiltrado.push(unidad);
-            //             // console.log('Ingrese al if');
-            //         }
-            //     });
-            //     return selectUnidadFiltrado;
-            // },
             getDesembolso: function(){
                 this.Abasto.total = 0.00;
                 this.ListaDetalleAbasto.forEach( detalle => {
@@ -728,14 +755,15 @@
                 });
             },
             abrirModalAgregar(){
-                this.abrirModal(1, 'Registrar Abasto', 'Agregar');
+                this.abrirModal(1, 'Registrar Abasto', 'Agregar', 'modal-xl modal-dialog-scrollable');
                 if(!this.SelectAlmacen.length) this.selectAlmacen();
             },
-            abrirModal(numero, titulo, accion){
+            abrirModal(numero, titulo, accion, size){
                 this.Modal.estado = 1;
                 this.Modal.numero = numero;
                 this.Modal.titulo = titulo;
                 this.Modal.accion = accion;
+                this.Modal.size = size;
             },
             accionar(accion){
                 switch( accion ){
@@ -744,6 +772,10 @@
                         break;
                     }
                     case 'Editar': {
+                        this.editar();
+                        break;
+                    }
+                    case 'Guardar': {
                         this.editar();
                         break;
                     }
@@ -764,13 +796,8 @@
                         this.validarNegativos();
                     }
 
-                    // if(this.Abasto.tipo == -1){
-                    //     this.Error.mensaje.push("Debe seleccionar el tipo de abasto");
-                    // }else if(this.Abasto.tipo == 1){
-                    //     if(this.Abasto.pagoInicial == '' || this.Abasto.pagoInicial < 0) this.Error.mensaje.push("Debe ingresar un pago inicial válido (mayor o igual a '0')");
-                    // }
                     if(this.Abasto.tipo == 1){
-                        if(this.Abasto.pagoInicial<0){
+                        if(this.Abasto.pagoInicial<0 || this.Abasto.pagoInicial == ''){
                             this.Error.mensaje.push('El pago inicial debe ser mayor o igual a 0')
                         }else if(this.Abasto.pagoInicial > this.Abasto.total){
                             this.Error.mensaje.push('El pago inicial no debe ser mayor al desembolso total')
@@ -832,10 +859,10 @@
                 });
             },
             
-            // abrirModalEnviar(){
-            //     this.abrirModal(3, 'Enviar Produccion', 'Enviar');
-            //     if(this.SelectAlmacen == 0) this.selectAlmacen();
-            // },
+            abrirModalPagar(){
+                this.abrirModal(3, 'Realizar Pago', 'Guardar', '');
+                // if(this.SelectAlmacen == 0) this.selectAlmacen();
+            },
             
             cerrarModal(){
                 this.Modal.numero = 0;
