@@ -50,6 +50,7 @@ class ProductoController extends Controller {
             $producto = new Producto();
             $producto->superproducto_id = $request->superproducto_id;
             $producto->nombre = $request->nombre;
+            $producto->codigo = $request->codigo;
             $producto->size = $request->size;
             $producto->color = $request->color;
             $producto->precio_menor = $request->precio_menor;
@@ -79,6 +80,7 @@ class ProductoController extends Controller {
             $producto = Producto::findOrFail($request->id);
             $producto->superproducto_id = $request->superproducto_id;
             $producto->nombre = $request->nombre;
+            $producto->codigo = $request->codigo;
             $producto->size = $request->size;
             $producto->color = $request->color;
             $producto->precio_menor = $request->precio_menor;

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\ProductoMaterial;
+use App\Producto;
 use Exception;
 
 class ProductoMaterialController extends Controller
@@ -40,6 +41,10 @@ class ProductoMaterialController extends Controller
                     ProductoMaterial::where('id', '=', $lista[$i]['id'])->delete();
                 }
             }
+
+            $producto = Producto::findOrFail($request->producto_id);
+            $producto->costo_produccion = $request->costo_produccion;
+            $producto->save();
 
             DB::commit();
             $error = NULL;
