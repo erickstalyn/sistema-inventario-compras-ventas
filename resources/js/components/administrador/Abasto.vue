@@ -178,65 +178,61 @@
                                         </ul>
                                     </div>
                                 </div>
-                                <div class="row card border border-left-danger" style="height: 6.5rem;">
-                                    <div class="card-body">
-                                        <div class="row form-group ">
-                                            <div class="col-md-2">
-                                                <span class="font-weight-bold">PROVEEDOR</span>
-                                            </div>
-                                            <div class="col-md-3">
-                                                <div class="input-group"> 
-                                                    RUC/DNI&nbsp;<span class="text-danger">*</span>&nbsp;
-                                                    <input type="text" class="form-control form-control-sm" v-model="DatosServicio.documento" autofocus @keyup.enter="consultar()">
-                                                    <button type="button" class="btn btn-sm btn-primary" @click="consultar()">
-                                                        <i class="fas fa-sync-alt"></i>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-3">
-                                                <h5>
-                                                    <span role="status" :class="Carga.clase">
-                                                    </span>&nbsp;
-                                                    <span v-text="DatosServicio.mensaje" :class="DatosServicio.alert"></span>
-                                                </h5>
+                                <div class="row">
+                                    <div class="col-md-2 pl-2">
+                                        <p class="font-weight-bold">PROVEEDOR</p>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="input-group"> 
+                                            RUC/DNI&nbsp;<span class="text-danger">*</span>&nbsp;
+                                            <input type="text" class="form-control form-control-sm" v-model="DatosServicio.documento" autofocus @keyup.enter="consultar()">
+                                            <button type="button" class="btn btn-sm btn-primary" @click="consultar()">
+                                                <i class="fas fa-sync-alt"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <h5>
+                                            <span role="status" :class="Carga.clase">
+                                            </span>&nbsp;
+                                            <span v-text="DatosServicio.mensaje" :class="DatosServicio.alert"></span>
+                                        </h5>
+                                    </div>
+                                </div>
+                                <div v-if="DatosServicio.tipo == 1">
+                                    <div class="row form-group">
+                                        <div class="col-md-2">
+                                            <div class="input-group"> 
+                                                DNI&nbsp;
+                                                <input type="text" class="form-control form-control-sm" readonly v-model="DatosProveedor.documento">
                                             </div>
                                         </div>
-                                        <div v-if="DatosServicio.tipo == 1">
-                                            <div class="row">
-                                                <div class="col-md-2">
-                                                    <div class="input-group"> 
-                                                        DNI&nbsp;
-                                                        <input type="text" class="form-control form-control-sm" readonly v-model="DatosProveedor.documento">
-                                                    </div>
-                                                </div>
-                                                <div class="" :class="Modal.numero == 2 ? 'col-md-3': 'col-md-4'">
-                                                    <div class="input-group">
-                                                        <label >Nombres</label>&nbsp;
-                                                        <input type="text" class="form-control form-control-sm" readonly v-model="DatosProveedor.nombres">
-                                                    </div>
-                                                </div>
-                                                <div class="" :class="Modal.numero == 2 ? 'col-md-3': 'col-md-6'">
-                                                    <div class="input-group">
-                                                        <label >Apellidos</label>&nbsp;
-                                                        <input type="text" class="form-control form-control-sm" readonly v-model="DatosProveedor.apellidos">
-                                                    </div>
-                                                </div>
+                                        <div class="" :class="Modal.numero == 2 ? 'col-md-3': 'col-md-4'">
+                                            <div class="input-group">
+                                                <label >Nombres</label>&nbsp;
+                                                <input type="text" class="form-control form-control-sm" readonly v-model="DatosProveedor.nombres">
                                             </div>
                                         </div>
-                                        <div v-else-if="DatosServicio.tipo == 2">
-                                            <div class="row">
-                                                <div class="col-md-2">
-                                                    <div class="input-group"> 
-                                                        RUC&nbsp;
-                                                        <input type="text" class="form-control form-control-sm" readonly v-model="DatosProveedor.documento">
-                                                    </div>
-                                                </div>
-                                                <div class="" :class="Modal.numero == 2 ? 'col-md-6': 'col-md-10'">
-                                                    <div class="input-group">
-                                                        <label >Razón social</label>&nbsp;
-                                                        <input type="text" class="form-control form-control-sm" v-model="DatosProveedor.razon_social" :readonly="DatosServicio.readonly">
-                                                    </div>
-                                                </div>
+                                        <div class="" :class="Modal.numero == 2 ? 'col-md-3': 'col-md-6'">
+                                            <div class="input-group">
+                                                <label >Apellidos</label>&nbsp;
+                                                <input type="text" class="form-control form-control-sm" readonly v-model="DatosProveedor.apellidos">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div v-else-if="DatosServicio.tipo == 2">
+                                    <div class="row form-group">
+                                        <div class="col-md-2">
+                                            <div class="input-group"> 
+                                                RUC&nbsp;
+                                                <input type="text" class="form-control form-control-sm" readonly v-model="DatosProveedor.documento">
+                                            </div>
+                                        </div>
+                                        <div class="" :class="Modal.numero == 2 ? 'col-md-6': 'col-md-10'">
+                                            <div class="input-group">
+                                                <label >Razón social</label>&nbsp;
+                                                <input type="text" class="form-control form-control-sm" v-model="DatosProveedor.razon_social" :readonly="DatosServicio.readonly">
                                             </div>
                                         </div>
                                     </div>
@@ -244,7 +240,7 @@
                                 <div class="row shadow bg-white rounded p-2">
                                     <div class="col-md-4">
                                         <div class="row">
-                                            <h5 class="font-weight-bold">Productos</h5>
+                                            <p class="font-weight-bold">PRODUCTOS</p>
                                         </div>
                                         <div class="row">
                                             <div class="input-group"> 
@@ -255,7 +251,7 @@
                                             </div>
                                         </div>
                                         <br>
-                                        <div class="row form-group ec-table overflow-auto">
+                                        <div class="row form-group overflow-auto" style="height: 17.5rem;">
                                             <div v-if="ListaProducto.length">
                                                 <table class="table table-borderless table-striped table-sm text-gray-900">
                                                     <thead>
@@ -282,11 +278,22 @@
                                                 <p>No se han encontrado resultados</p>
                                             </div>
                                         </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="input-group"> 
+                                                    <label for="">Enviar a</label>&nbsp;<span class="text-danger">*</span>&nbsp;
+                                                    <select v-model="Abasto.centro_to_id" class="custom-select custom-select-sm text-gray-900">
+                                                        <option value="0">Seleccione</option>
+                                                        <option v-for="item in SelectAlmacen" :key="item.id" :value="item.id" v-text="item.nombre" ></option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="col-md-8 ml-auto container">
                                         <div class="row">
                                             <div class="col-md-3 p-0">
-                                                <h5 class="font-weight-bold">Lista de items</h5>
+                                                <p class="font-weight-bold">LISTA DE ITEMS</p>
                                             </div>
                                             <div class="col-md-6"></div>
                                             <div class="col-md-3">
@@ -340,7 +347,7 @@
                                         </div>
                                         <div class="row">
                                             <div class="col-md-4">
-                                                <div class="input-group" style="width: 11.2rem;" v-if="Abasto.tipo == '1'"> 
+                                                <div class="input-group" style="width: 12.4rem;" v-if="Abasto.tipo == '1'"> 
                                                     <label for="">Pago inicial</label>&nbsp;<span class="text-danger">*</span>&nbsp;
                                                     <input type="number" class="form-control form-control-sm" v-model="Abasto.pagoInicial" min="0">
                                                 </div>
@@ -349,17 +356,6 @@
                                             </div>
                                             <div class="col-md-5">
                                                 <p class="text-right pr-1">Desembolso total: s/ {{getDesembolso}}</p>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-4">
-                                                <div class="input-group"> 
-                                                    <label for="">Enviar a</label>&nbsp;<span class="text-danger">*</span>&nbsp;
-                                                    <select v-model="Abasto.centro_to_id" class="custom-select custom-select-sm text-gray-900">
-                                                        <option value="0">Seleccione</option>
-                                                        <option v-for="item in SelectAlmacen" :key="item.id" :value="item.id" v-text="item.nombre" ></option>
-                                                    </select>
-                                                </div>
                                             </div>
                                         </div>
                                     </div>
