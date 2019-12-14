@@ -93,7 +93,8 @@ Route::group(['middleware' => ['auth']], function () {
 
     });
     Route::group(['middleware' => ['Puesto']], function (){
-
+        //RUTAS PARA PRODUCTO
+        Route::get('/producto', 'ProductoController@listar'); //metodos generales
 
     });
     Route::group(['middleware' => ['Almacen']], function (){

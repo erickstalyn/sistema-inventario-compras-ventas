@@ -27,6 +27,7 @@ Vue.component('adm-abasto', require('./components/administrador/Abasto.vue').def
 
 Vue.component('alm-produccion', require('./components/almacen/Produccion.vue').default);
 
+Vue.component('pue-producto', require('./components/puesto/Producto.vue').default);
 
 
 /**

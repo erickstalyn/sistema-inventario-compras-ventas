@@ -1,0 +1,323 @@
+<template>
+    <main>
+
+        <!-- Interfaz Principal -->
+        <div>
+            
+            <!-- Encabezado principal -->
+            <div class="row form-group">
+                <i class="fas fa-map-signs"></i>&nbsp;&nbsp;
+                <span class="h3 mb-0 text-gray-900">Productos</span>&nbsp;&nbsp;
+            </div>
+
+            <!-- Inputs de busqueda -->
+            <div class="row form-group">
+                <div class="col-md-5">
+                    <div class="input-group">
+                        <input type="search" class="form-control" v-model="Busqueda.texto" @keyup.enter="listar()">
+                        <button type="button" class="btn btn-primary" @click="listar()">
+                            <i class="fa fa-search"></i>&nbsp; Buscar
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-5"></div>
+                <div class="col-md-1 text-right">
+                    <label>N° filas:</label>
+                </div>
+                <select class="col-md-1 form-control text-gray-900" v-model="Busqueda.filas">
+                    <option v-for="fila in Filas" :key="fila" :value="fila" v-text="fila"></option>
+                </select>
+            </div>
+
+            <!-- Listado -->
+            <div v-if="ListaProducto.length" class="table-responsive">
+                <!-- Tabla -->
+                <div class="table-scroll-20 overflow-auto">
+                    <table class="table table-bordered table-striped table-sm text-gray-900">
+                        <thead>
+                            <tr class="bg-success">
+                                <th class="text-center">Nombre</th>
+                                <th class="text-center">Precio al por menor</th>
+                                <th class="text-center">Precio al por mayor</th>
+                                <th class="text-center">Stock</th>
+                                <th class="text-center">Opciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="producto in ListaProducto" :key="producto.id" >
+                                <td v-text="producto.nombre"></td>
+                                <td v-text="producto.precio_menor" class="text-right"></td>
+                                <td v-text="producto.precio_mayor" class="text-right"></td>
+                                <td v-text="producto.stock" class="text-right"></td>
+                                <td class="text-center">
+                                    <button type="button" @click="abrirModalVer(producto)" title="VER" class="btn btn-primary btn-sm">
+                                        <i class="far fa-eye"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- Barra de navegacion -->
+                <nav class="d-flex justify-content-center">
+                    <ul class="pagination">
+                        <li class="page-item">
+                            <a href="#" @click="cambiarPagina(Paginacion.currentPage-1)" class="page-link">Anterior</a>
+                        </li>
+                        <li class="page-item" v-for="page in Paginas" :key="page" :class="[page==Paginacion.currentPage?'active':'']">
+                            <a href="#" @click="cambiarPagina(page)" v-text="page" class="page-link"></a>
+                        </li>
+                        <li class="page-item">
+                            <a href="#" @click="cambiarPagina(Paginacion.currentPage+1)" class="page-link">Siguiente</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            <div v-else>
+                <h5>No se han encontrado resultados</h5>
+            </div>
+
+        </div>
+
+        <!-- Modales: Agregar, Ver, Editar, Materiales -->
+        <div class="modal text-gray-900" :class="{'mostrar': Modal.estado}">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable animated bounceIn fast" :class="Modal.tamaño">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <h3 v-text="Modal.titulo" class="modal-title" ></h3>
+                        <button type="button" @click="cerrarModal()" class="close">X</button>
+                    </div>
+                    
+                    <div class="modal-body">
+                        <!-- Modal Numero 1 de VER-->
+                        <div v-if="Modal.numero==1" class="container">
+                            <div class="row form-group">
+                                <label class="col-md-3 font-weight-bold">Nombre</label>
+                                <label class="col-md-9 text-info" v-text="Producto.nombre"></label>
+                            </div>
+                            <div class="row form-group">
+                                <label class="col-md-5 font-weight-bold">Codigo</label>
+                                <label class="col-md-6 text-info text-right" v-text="Producto.codigo?Producto.codigo:'-'"></label>
+                            </div>
+                            <div class="row form-group">
+                                <label class="col-md-5 font-weight-bold">Costo de produccion</label>
+                                <label class="col-md-3 text-right">S/.</label>
+                                <label class="col-md-3 text-right text-info" v-text="Producto.costo_produccion"></label>
+                            </div>
+                            <div class="row form-group">
+                                <label class="col-md-5 font-weight-bold">Precio al por menor</label>
+                                <label class="col-md-3 text-right">S/.</label>
+                                <label class="col-md-3 text-right text-info" v-text="Producto.precio_menor"></label>
+                            </div>
+                            <div class="row form-group">
+                                <label class="col-md-5 font-weight-bold">Precio al por mayor</label>
+                                <label class="col-md-3 text-right">S/.</label>
+                                <label class="col-md-3 text-right text-info" v-text="Producto.precio_mayor"></label>
+                            </div>
+                            <div class="row form-group">
+                                <label class="col-md-5 font-weight-bold">Stock</label>
+                                <label class="col-md-6 text-right text-info" v-text="Producto.stock"></label>
+                            </div>
+                            <div class="row">
+                                <label class="col-md-5 font-weight-bold">Fecha de creacion</label>
+                                <label class="col-md-6 text-right text-info" v-text="Producto.created_at"></label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <div class="row form-group col-md-12 d-flex justify-content-around">
+                            <div v-if="Modal.btnA">
+                                <button type="button" @click="accionar()" class="btn btn-success" v-text="Modal.btnA"></button>
+                            </div>
+                            <div v-if="Modal.btnC">
+                                <button type="button" @click="cerrarModal()" class="btn btn-secondary" v-text="Modal.btnC"></button>
+                            </div>
+                        </div>
+                    </div>
+                
+                </div>
+            </div>
+        </div>
+
+    </main>
+</template>
+
+<script>
+    export default {
+        data(){
+            return {
+                //datos generales
+                ListaProducto: [],
+                Producto: {
+                    nombre: '',
+                    codigo: '',
+                    size: '',
+                    color: '',
+                    precio_menor: 0,
+                    precio_mayor: 0,
+                    stock: 0,
+                    created_at: ''
+                },
+
+                //datos de busqueda y filtracion
+                Busqueda: {
+                    texto: '',
+                    estado: 2,
+                    filas: 5
+                },
+
+                //datos de modales
+                Modal: {
+                    numero: 0,
+                    estado: 0,
+                    titulo: '',
+                    tamaño: '',
+                    btnA: '',
+                    btnC: ''
+                },
+
+                //datos de paginacion
+                Paginacion: {
+                    total: 0,
+                    currentPage: 0,
+                    lastPage: 0,
+                    perPage: 0,
+                    firstItem: 0,
+                    lastItem: 0
+                },
+                Navegacion:{
+                    offset: 3,
+                },
+
+                //datos de ruta de consultas
+                Ruta: {
+                    producto: '/producto',
+                }
+            }
+        },
+        computed: {
+            Paginas: function(){
+                if ( !this.Paginacion.lastItem ) {
+                    return [];
+                }
+
+                var from = this.Paginacion.currentPage - this.Navegacion.offset;
+                if ( from < 1) {
+                    from = 1;
+                }
+
+                var to = this.Paginacion.currentPage + this.Navegacion.offset*2;
+                if ( to > this.Paginacion.lastPage ) {
+                    to = this.Paginacion.lastPage;
+                }
+
+                var pagesArray = [];
+                while ( from <= to ) {
+                    pagesArray.push(from);
+                    from++;
+                }
+                
+                return pagesArray;
+            },
+            Filas: function(){
+                var min = 3;
+                var max = 20;
+                var filas = [];
+
+                while ( min <= max) {
+                    filas.push(min);
+                    min++;
+                }
+
+                return filas;
+            }
+        },
+        methods: {
+            listar(page = 1){
+                this.Paginacion.currentPage = page;
+
+                var me = this;
+                var url = this.Ruta.producto+'?'
+                        +'page='+this.Paginacion.currentPage
+                        +'&texto='+this.Busqueda.texto
+                        +'&filas='+this.Busqueda.filas;
+                
+                axios.get(url).then(function (response) {
+                    me.ListaProducto = response.data.productos.data;
+                    me.Paginacion = response.data.paginacion;
+                }).catch(function (error) {
+                    console.log(error)
+                });
+            },
+            abrirModalVer(data = []){
+                this.abrirModal(1, 'Ver Producto', '', '', 'Cerrar');
+                
+                this.Producto.nombre = data['nombre'];
+                this.Producto.codigo = data['codigo'];
+                this.Producto.costo_produccion = data['costo_produccion'];
+                this.Producto.precio_menor = data['precio_menor'];
+                this.Producto.precio_mayor = data['precio_mayor'];
+                this.Producto.stock = data['stock'];
+                this.Producto.created_at = data['created_at'];
+            },
+            abrirModal(numero, titulo, tamaño, btnA, btnC){
+                this.Modal.estado = 1;
+                this.Modal.numero = numero;
+                this.Modal.titulo = titulo;
+                this.Modal.tamaño = tamaño;
+                this.Modal.btnA = btnA;
+                this.Modal.btnC = btnC;
+            },
+            cerrarModal(){
+                this.Modal.numero = 0;
+                this.Modal.estado = 0;
+                this.Modal.titulo = '';
+                this.Modal.tamaño = '';
+                this.Modal.btnA = '';
+                this.Modal.btnC = '';
+
+                this.Producto.nombre = '';
+                this.Producto.codigo = '';
+                this.Producto.size = '';
+                this.Producto.color = '';
+                this.Producto.precio_menor = 0;
+                this.Producto.precio_mayor = 0;
+                this.Producto.stock = 0;
+                this.Producto.created_at = '';
+            },
+            cambiarPagina(page){
+                if ( page >= 1 && page <= this.Paginacion.lastPage) {
+                    this.listar(page);
+                }
+            }
+        },
+        mounted() {
+            this.listar();
+        }
+    }
+</script>
+
+<style>
+    .mostrar{
+        display: list-item !important;
+        opacity: 1 !important;
+        position: absolute !important;
+        background-color: #3c29297a !important;
+    }
+    .ec-cursor{
+        cursor: pointer;
+    }
+    .table-scroll-20{
+        overflow: auto;
+        height: 20rem;
+    }
+    .table-scroll-15{
+        overflow: auto;
+        height: 15rem;
+    }
+    .ec-th{
+        background-color: skyblue;
+    }
+</style>

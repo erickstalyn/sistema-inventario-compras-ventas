@@ -14,7 +14,7 @@ use Exception;
 class ProductoController extends Controller {
     
     public function listar(Request $request){
-        if ( !$request->ajax() ) return redirect('/') ;
+        // if ( !$request->ajax() ) return redirect('/') ;
         
         $estado = $request->estado;
         $texto = $request->texto;
