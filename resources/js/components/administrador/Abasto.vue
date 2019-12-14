@@ -386,13 +386,31 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row form-group">
-                                    <label class="col-md-5 font-weight-bold" for="des">Seleccione centro&nbsp;<span class="text-danger">*</span></label>
-                                    <div class="col-md-7">
-                                        <select  class="custom-select">
-                                            <option value="0" disabled>Seleccione</option>
-                                            <!-- <option v-for="item in SelectCentro" :key="item.id" :value="item.id" v-text="item.nombre"></option> -->
-                                        </select>
+                                <div class="row form-group overflow-auto" style="height: 17.5rem;">
+                                    <div v-if="ListaProducto.length">
+                                        <table class="table table-borderless table-striped table-sm text-gray-900">
+                                            <thead>
+                                                <tr class="table-danger">
+                                                    <th class="text-center" style="width: 3rem;">Agregar</th>
+                                                    <th>Nombre</th>
+                                                    <th>Stock</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="producto in ListaProducto" :key="producto.id" >
+                                                    <td class="text-center">
+                                                        <button type="button" title="Editar" class="btn btn-circle btn-sm btn-outline-success" @click="agregarDetalle(producto)">
+                                                            <i class="fas fa-plus"></i>
+                                                        </button>
+                                                    </td>
+                                                    <td v-text="producto.nombre"></td>
+                                                    <td v-text="producto.stock"></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div v-else>
+                                        <p>No se han encontrado resultados</p>
                                     </div>
                                 </div>
                             </div>
