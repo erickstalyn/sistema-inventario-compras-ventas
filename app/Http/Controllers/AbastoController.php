@@ -130,11 +130,6 @@ class AbastoController extends Controller
                 $persona->save();
 
                 $abasto->proveedor_id = $proveedor['id'];
-                // if(strlen($proveedor['documento']) == 8){
-                //     $abasto->proveedor_nombre = $proveedor['nombres'] . ' ' . $proveedor['apellidos'];
-                // }else{
-                //     $abasto->proveedor_nombre = $proveedor['razon_social'];
-                // }
 
             }
             $abasto->save();
@@ -175,4 +170,9 @@ class AbastoController extends Controller
 
     }
     
+    public function getPagos(Request $request){
+        if ( !$request->ajax() ) return redirect('/') ;
+        $pagos = Abasto::findOrFail($request->id)->getPagos;
+        return $pagos;
+    }
 }

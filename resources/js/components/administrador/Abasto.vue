@@ -105,7 +105,7 @@
                                 <td class="text-center">
                                     
                                     <template v-if="abasto.tipo_abasto == 1 && abasto.total_faltante != 0">
-                                        <button type="button"  title="Pagar Cuota" class="btn btn-warning btn-sm" @click="abrirModalPagar()">
+                                        <button type="button"  title="Pagar Cuota" class="btn btn-warning btn-sm" @click="abrirModalPagar(abasto.id)">
                                             <i class="fas fa-hand-holding-usd"></i>
                                         </button>
                                     </template>
@@ -375,42 +375,46 @@
                                     <div class="col-md-3">
                                         <span class="font-weight-bold">Registrar</span>
                                     </div>
-                                    <div class="col-md-2"></div>
+                                    <div class="col-md-1"></div>
                                     <div class="col-md-7">
                                         <div class="input-group"> 
                                             Monto&nbsp;
-                                            <input type="number" class="form-control form-control-sm" autofocus>
-                                            <button type="button" class="btn btn-sm btn-primary" @click="consultar()">
+                                            <input type="number" class="form-control form-control-sm" v-model="Pago.monto" autofocus>&nbsp;
+                                            <button type="button" class="btn btn-sm btn-primary" @click="agregarPago()">
                                                 Registrar
                                             </button>
                                         </div>
                                     </div>
+                                    <div class="col-md-1"></div>
                                 </div>
                                 <div class="row form-group overflow-auto" style="height: 17.5rem;">
-                                    <div v-if="ListaProducto.length">
-                                        <table class="table table-borderless table-striped table-sm text-gray-900">
-                                            <thead>
-                                                <tr class="table-danger">
-                                                    <th class="text-center" style="width: 3rem;">Agregar</th>
-                                                    <th>Nombre</th>
-                                                    <th>Stock</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr v-for="producto in ListaProducto" :key="producto.id" >
-                                                    <td class="text-center">
-                                                        <button type="button" title="Editar" class="btn btn-circle btn-sm btn-outline-success" @click="agregarDetalle(producto)">
-                                                            <i class="fas fa-plus"></i>
-                                                        </button>
-                                                    </td>
-                                                    <td v-text="producto.nombre"></td>
-                                                    <td v-text="producto.stock"></td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
+                                    <div class="col-md-12">
+                                        <div v-if="ListaPago.length">
+                                            <table class="table table-borderless table-striped table-sm text-gray-900">
+                                                <thead>
+                                                    <tr class="table-info">
+                                                        <th class="text-center">#</th>
+                                                        <th class="text-center">Fecha de pago</th>
+                                                        <th class="text-right pr-5">Monto</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr v-for="(pago, index) in ListaPago" :key="index" >
+                                                        <td class="text-center">{{index+1}}</td>
+                                                        <td class="text-center" v-text="pago.created_at"></td>
+                                                        <td class="text-right pr-5" v-text="pago.monto"></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div v-else>
+                                            <p>Ningun pago registrado</p>
+                                        </div>
                                     </div>
-                                    <div v-else>
-                                        <p>No se han encontrado resultados</p>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <p class="text-right pr-5">Monto faltante: s/200.60</p>
                                     </div>
                                 </div>
                             </div>
@@ -451,7 +455,6 @@
                     apellidos: '',
                     razon_social: ''
                 },
-                SelectUnidad: [],
                 //datos de busqueda y filtracion general
                 Busqueda: {
                     texto: '',
@@ -491,6 +494,9 @@
                     estado: 0,
                     mensaje: []
                 },
+                Carga: {
+                    clase: ''
+                },
                 //DATOS PARA AGREGAR UNA PRODUCCION
                 BusquedaFiltro:{
                     texto: ''
@@ -509,8 +515,9 @@
                     alert: '',
                     readonly: false
                 },
-                Carga: {
-                    clase: ''
+                ListaPago: [],
+                Pago:{
+                    monto: '',
                 }
             }
         },
@@ -623,7 +630,6 @@
                 for (let i = 0; i < this.ListaDetalleAbasto.length; i++) {
                     if(this.ListaDetalleAbasto[i].id == producto.id){
                         incluido = true;
-                        //adiciono uno más a la cantidad de este producto en la tabla de detalles
                         this.ListaDetalleAbasto[i].cantidad ++;
                         break;
                     }
@@ -872,10 +878,32 @@
                     console.log(error);
                 });
             },
-            
-            abrirModalPagar(){
+            listarPagos(id){
+                let me = this;
+                let url = '/abasto/getPagos';
+
+                axios.get(url,{
+                    params: {
+                        'id': id
+                    }
+                }).then(function(response){
+                    me.ListaPago = response.data;
+                }).catch(function(error){
+                    console.log(error);
+                });
+            },
+            abrirModalPagar(id){
                 this.abrirModal(3, 'Realizar Pago', 'Guardar', '');
-                // if(this.SelectAlmacen == 0) this.selectAlmacen();
+                this.listarPagos(id);
+            },
+            agregarPago(){//Agrega pagos a la lista de pagos
+            
+                let pago = {
+                    monto: Number.parseFloat(this.Pago.monto).toFixed(2),
+                    created_at: this.getFechaHoraHoy()
+                }
+                this.ListaPago.push(pago);
+                this.Pago.monto = '';
             },
             
             cerrarModal(){
@@ -932,15 +960,15 @@
                     this.listar(page);
                 }
             },
-            getFechaHoy(){
+            getFechaHoraHoy(){
                 let n =  new Date();
-                //Año
                 let y = n.getFullYear();
-                //Mes
                 let m = this.addCero(n.getMonth() + 1);
-                //Día
                 let d = this.addCero(n.getDate());
-                let hoy = y + "-" + m + "-" + d;
+                let h = n.getHours();
+                let minu = n.getMinutes();
+                let seg = n.getSeconds();
+                let hoy =  y + '-' + m + '-' + d + ' ' + h + ':' + minu + ':' + this.addCero(seg);
                 return hoy;
             },
             addCero(i) {

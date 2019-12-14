@@ -87,6 +87,7 @@ Route::group(['middleware' => ['auth']], function () {
         //RUTAS PARA ABASTO
         Route::get('/abasto', 'AbastoController@listar'); //metodos generales
         Route::post('/abasto/agregar', 'AbastoController@agregar');
+        Route::get('/abasto/getPagos', 'AbastoController@getPagos');
         Route::get('/data/selectUnidad', 'DataController@selectUnidad'); //metodos secundarios
 
         Route::get('/centro/selectAlmacen', 'CentroController@selectAlmacen');
@@ -101,7 +102,6 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('/envioRealizado/agregar', 'EnvioController@agregar');
         Route::put('/envioRealizado/reenviar', 'EnvioController@reenviar');//metodo secundario
         Route::put('/envioRecibido/setEstado', 'EnvioController@setEstado'); //metodos secundarios
-
     });
     Route::group(['middleware' => ['Almacen']], function (){
 
