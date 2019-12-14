@@ -24,6 +24,12 @@
             <template v-if="menu==0">
                 <pue-producto></pue-producto>
             </template>
+            <template v-if="menu==2">
+                <enviorealizado></enviorealizado>
+            </template>
+            <template v-if="menu==3">
+                <enviorecibido></enviorecibido>
+            </template>
 
         @elseif(Auth::user()->rol=='A')
             <template v-if="menu==0">
@@ -31,6 +37,9 @@
             </template>
             <template v-if="menu==1">
                 <alm-produccion></alm-produccion>
+            </template>
+            <template v-if="menu==2">
+                <enviorealizado></enviorealizado>
             </template>
             <template v-if="menu==3">
                 <enviorecibido></enviorecibido>

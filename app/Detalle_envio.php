@@ -7,7 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Detalle_envio extends Model
 {
     protected $table = 'detalle_envio';
-    protected $fillable = ['envio_id', 'producto_id', 'cantidad'];
+    protected $fillable = ['envio_id', 'producto_id', 'nombre_producto', 'cantidad'];
+    public $timestamps = false;
 
     public function getEnvio(){
         return $this->belongsTo('App\Envio');

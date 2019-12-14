@@ -53,6 +53,19 @@
             </div>
           </div>
         </li>
+        <!-- Elemento de navegación - MENÚ ENVIOS -->
+        <li class="nav-item">
+          <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#envios" aria-expanded="true" aria-controls="envios">
+              <i class="fas fa-cart-arrow-down"></i>
+            <span >Envíos</span>
+          </a>
+          <div id="envios" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+              <a class="collapse-item font-weight-bold" href="#" @click="menu=2">Envíos Realizados</a>
+              <a class="collapse-item font-weight-bold" href="#" @click="menu=3">Envíos Recibidos</a>
+            </div>
+          </div>
+        </li>
     
         <!-- Elemento de navegación: MENÚ REGISTROS -->
         <li class="nav-item">

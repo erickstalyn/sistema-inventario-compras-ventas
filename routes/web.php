@@ -37,7 +37,6 @@ Route::group(['middleware' => ['auth']], function () {
     //RUTAS PARA FUNCIONES COMUNES
     Route::get('/producto/getProductoFiltrado', 'ProductoController@getProductoFiltrado');
     Route::get('/persona/getPersona', 'PersonaController@getPersona');
-    Route::get('/centro/selectAlmacen', 'CentroController@selectAlmacen');
 
     Route::group(['middleware' => ['Administrador']], function (){
         
@@ -89,11 +88,19 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/abasto', 'AbastoController@listar'); //metodos generales
         Route::post('/abasto/agregar', 'AbastoController@agregar');
         Route::get('/data/selectUnidad', 'DataController@selectUnidad'); //metodos secundarios
+
+        Route::get('/centro/selectAlmacen', 'CentroController@selectAlmacen');
         
 
     });
     Route::group(['middleware' => ['Puesto']], function (){
-        Route::get('/envioRecibido', 'EnvioController@listar'); //metodos generales
+
+        //RUTAS DE ENVIOS
+        Route::get('/envioRecibido', 'EnvioController@listarEnvioRecibido'); //metodos generales
+        Route::get('/envioRealizado', 'EnvioController@listarEnvioRealizado');
+        Route::post('/envioRealizado/agregar', 'EnvioController@agregar');
+        Route::put('/envioRealizado/reenviar', 'EnvioController@reenviar');//metodo secundario
+        Route::put('/envioRecibido/setEstado', 'EnvioController@setEstado'); //metodos secundarios
 
     });
     Route::group(['middleware' => ['Almacen']], function (){
@@ -105,8 +112,15 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/produccion/selectAlmacen', 'ProduccionController@selectAlmacen'); //metodos secundarios
         Route::put('/produccion/finalizar', 'ProduccionController@finalizar'); //metodos secundarios
 
-        Route::get('/envioRecibido', 'EnvioController@listar'); //metodos generales
+        //RUTAS PARA ENVIOS
+        Route::get('/envioRecibido', 'EnvioController@listarEnvioRecibido'); //metodos generales
+        Route::get('/envioRealizado', 'EnvioController@listarEnvioRealizado');
+        Route::post('/envioRealizado/agregar', 'EnvioController@agregar');
+        Route::put('/envioRealizado/reenviar', 'EnvioController@reenviar');//metodo secundario
         Route::put('/envioRecibido/setEstado', 'EnvioController@setEstado'); //metodos secundarios
+
+        Route::get('/detalle_producto/getDetalle_productoFiltrado', 'Detalle_productoController@getDetalle_productoFiltrado');
+        Route::get('/centro/selectCentro', 'CentroController@selectCentro');
     });
     
 
