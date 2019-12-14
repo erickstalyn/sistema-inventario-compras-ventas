@@ -2,7 +2,7 @@
     <main>
 
         <!-- Interfaz Principal -->
-        <div class="container-fluid">
+        <div>
             
             <!-- Encabezado principal -->
             <div class="row form-group">
@@ -44,22 +44,22 @@
                     <table class="table table-bordered table-striped table-sm text-gray-900">
                         <thead>
                             <tr class="bg-success">
-                                <th>Nombre</th>
-                                <th>Costo de produccion</th>
-                                <th>Precio al por menor</th>
-                                <th>Precio al por mayor</th>
-                                <th>Stock</th>
-                                <th>Opciones</th>
+                                <th class="text-center">Nombre</th>
+                                <th class="text-center">Costo de produccion</th>
+                                <th class="text-center">Precio al por menor</th>
+                                <th class="text-center">Precio al por mayor</th>
+                                <th class="text-center">Stock</th>
+                                <th class="text-center">Opciones</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr v-for="producto in ListaProducto" :key="producto.id" >
                                 <td v-text="producto.nombre"></td>
-                                <td v-text="producto.costo_produccion"></td>
-                                <td v-text="producto.precio_menor"></td>
-                                <td v-text="producto.precio_mayor"></td>
-                                <td v-text="producto.stock"></td>
-                                <td>
+                                <td v-text="producto.costo_produccion" class="text-right"></td>
+                                <td v-text="producto.precio_menor" class="text-right"></td>
+                                <td v-text="producto.precio_mayor" class="text-right"></td>
+                                <td v-text="producto.stock" class="text-right"></td>
+                                <td class="text-center">
                                     <button type="button" @click="abrirModalVer(producto)" title="VER" class="btn btn-primary btn-sm">
                                         <i class="far fa-eye"></i>
                                     </button>
@@ -107,7 +107,7 @@
                     
                     <div class="modal-body">
                         <!-- Modal Numero 1 de AGREGAR-->
-                        <div class="row" v-if="Modal.numero==1">
+                        <div v-if="Modal.numero==1" class="container">
                             <div v-if="Error.estado && (Error.numero==1 || Error.numero==2)" class="row d-flex justify-content-center">
                                 <div class="alert alert-danger">
                                     <button type="button" @click="closeError()" class="close text-primary" data-dismiss="alert">×</button>
@@ -143,47 +143,56 @@
                                 </select>
                             </div>
                             <div class="row form-group">
-                                <label class="col-md-5 font-weight-bold">Precio al por menor&nbsp;<span class="text-danger">*</span></label>
-                                <input type="number" class="col-md-7 form-control form-control-sm" v-model="Producto.precio_menor" placeholder="Ingrese el precio normal">
+                                <label class="col-md-5 font-weight-bold">Codigo</label>
+                                <input type="text" class="col-md-7 form-control form-control-sm" v-model="Producto.codigo" maxlength="13" placeholder="Ingrese el codigo">
                             </div>
                             <div class="row form-group">
+                                <label class="col-md-5 font-weight-bold">Precio al por menor&nbsp;<span class="text-danger">*</span></label>
+                                <label class="col-md-3 text-right">S/.</label>
+                                <input type="number" class="col-md-4 text-right form-control form-control-sm" v-model="Producto.precio_menor" placeholder="Ingrese el precio normal">
+                            </div>
+                            <div class="row">
                                 <label class="col-md-5 font-weight-bold">Precio al por mayor&nbsp;<span class="text-danger">*</span></label>
-                                <input type="number" class="col-md-7 form-control form-control-sm" v-model="Producto.precio_mayor" placeholder="Ingrese el precio normal">
+                                <label class="col-md-3 text-right">S/.</label>
+                                <input type="number" class="col-md-4 text-right form-control form-control-sm" v-model="Producto.precio_mayor" placeholder="Ingrese el precio normal">
                             </div>
                         </div>
                         <!-- Modal Numero 2 de VER-->
-                        <div class="row" v-if="Modal.numero==2">
+                        <div v-if="Modal.numero==2" class="container">
                             <div class="row form-group">
-                                <label class="col-md-4 font-weight-bold">Nombre</label>
-                                <label class="col-md-8 text-info" v-text="Producto.nombre"></label>
+                                <label class="col-md-3 font-weight-bold">Nombre</label>
+                                <label class="col-md-9 text-info" v-text="Producto.nombre"></label>
                             </div>
                             <div class="row form-group">
-                                <label class="col-md-4 font-weight-bold">Codigo</label>
-                                <label class="col-md-8 text-info" v-text="Producto.codigo?Producto.codigo:'-'"></label>
+                                <label class="col-md-5 font-weight-bold">Codigo</label>
+                                <label class="col-md-6 text-info text-right" v-text="Producto.codigo?Producto.codigo:'-'"></label>
                             </div>
                             <div class="row form-group">
-                                <label class="col-md-4 font-weight-bold">Costo de produccion</label>
-                                <label class="col-md-8 text-info" v-text="Producto.costo_produccion"></label>
+                                <label class="col-md-5 font-weight-bold">Costo de produccion</label>
+                                <label class="col-md-3 text-right">S/.</label>
+                                <label class="col-md-3 text-right text-info" v-text="Producto.costo_produccion"></label>
                             </div>
                             <div class="row form-group">
-                                <label class="col-md-4 font-weight-bold">Precio al por menor</label>
-                                <label class="col-md-8 text-info" v-text="Producto.precio_menor"></label>
+                                <label class="col-md-5 font-weight-bold">Precio al por menor</label>
+                                <label class="col-md-3 text-right">S/.</label>
+                                <label class="col-md-3 text-right text-info" v-text="Producto.precio_menor"></label>
                             </div>
                             <div class="row form-group">
-                                <label class="col-md-4 font-weight-bold">Precio al por mayor</label>
-                                <label class="col-md-8 text-info" v-text="Producto.precio_mayor"></label>
+                                <label class="col-md-5 font-weight-bold">Precio al por mayor</label>
+                                <label class="col-md-3 text-right">S/.</label>
+                                <label class="col-md-3 text-right text-info" v-text="Producto.precio_mayor"></label>
                             </div>
                             <div class="row form-group">
-                                <label class="col-md-4 font-weight-bold">Stock</label>
-                                <label class="col-md-8 text-info" v-text="Producto.stock"></label>
+                                <label class="col-md-5 font-weight-bold">Stock</label>
+                                <label class="col-md-6 text-right text-info" v-text="Producto.stock"></label>
                             </div>
-                            <div class="row form-group">
-                                <label class="col-md-4 font-weight-bold">Fecha de creacion</label>
-                                <label class="col-md-8 text-info" v-text="Producto.created_at"></label>
+                            <div class="row">
+                                <label class="col-md-5 font-weight-bold">Fecha de creacion</label>
+                                <label class="col-md-6 text-right text-info" v-text="Producto.created_at"></label>
                             </div>
                         </div>
                         <!-- Modal Numero 3 de EDITAR-->
-                        <div class="row" v-if="Modal.numero==3">
+                        <div v-if="Modal.numero==3" class="container">
                             <div v-if="Error.estado && (Error.numero==1 || Error.numero==2 || Error.numero==5)" class="row d-flex justify-content-center">
                                 <div class="alert alert-danger">
                                     <button type="button" @click="closeError()" class="close text-primary" data-dismiss="alert">×</button>
@@ -219,16 +228,22 @@
                                 </select>
                             </div>
                             <div class="row form-group">
-                                <label class="col-md-5 font-weight-bold">Precio al por menor&nbsp;<span class="text-danger">*</span></label>
-                                <input type="number" class="col-md-7 form-control form-control-sm" v-model="Producto.precio_menor" placeholder="Ingrese el precio normal">
+                                <label class="col-md-5 font-weight-bold">Codigo</label>
+                                <input type="text" class="col-md-7 form-control form-control-sm" v-model="Producto.codigo" maxlength="13" placeholder="Ingrese el codigo">
                             </div>
                             <div class="row form-group">
+                                <label class="col-md-5 font-weight-bold">Precio al por menor&nbsp;<span class="text-danger">*</span></label>
+                                <label class="col-md-3 text-right">S/.</label>
+                                <input type="number" class="col-md-4 text-right form-control form-control-sm" v-model="Producto.precio_menor" placeholder="Ingrese el precio normal">
+                            </div>
+                            <div class="row">
                                 <label class="col-md-5 font-weight-bold">Precio al por mayor&nbsp;<span class="text-danger">*</span></label>
-                                <input type="number" class="col-md-7 form-control form-control-sm" v-model="Producto.precio_mayor" placeholder="Ingrese el precio normal">
+                                <label class="col-md-3 text-right">S/.</label>
+                                <input type="number" class="col-md-4 text-right form-control form-control-sm" v-model="Producto.precio_mayor" placeholder="Ingrese el precio normal">
                             </div>
                         </div>
                         <!-- Modal Numero 4 de MATERIALES-->
-                        <div class="row" v-if="Modal.numero==4">
+                        <div v-if="Modal.numero==4" class="row">
                             <div class="col-md-4 container">
                                 <div v-if="Error.estado && Error.numero==3" class="row d-flex justify-content-center">
                                     <div class="alert alert-danger">
@@ -239,7 +254,7 @@
                                         </ul>
                                     </div>
                                 </div>
-                                <div class="row">
+                                <div class="row form-group">
                                     <label class="col-md-12 font-weight-bold">AGREGAR MATERIAL</label>
                                 </div>
                                 <div class="row form-group">
@@ -251,16 +266,16 @@
                                 </div>
                                 <div class="row form-group">
                                     <label class="col-md-4 font-weight-bold">P/U</label>
-                                    <label class="col-md-8 text-info" v-text="ProductoMaterial.costo_unitario"></label>
+                                    <label class="col-md-8 text-info" v-text="'S/. '+ProductoMaterial.costo_unitario"></label>
                                 </div>
                                 <div class="row form-group">
                                     <label class="col-md-4 font-weight-bold">Cantidad&nbsp;<span class="text-danger">*</span></label>
-                                    <input type="number" class="col-md-4 form-control form-control-sm" v-model="ProductoMaterial.cantidad" @keyup="update(0)" @click="update(0)" placeholder="Ingrese la cantidad">
-                                    <label class="col-md-4 text-info" v-text="ProductoMaterial.unidad"></label>
+                                    <input type="number" class="col-md-3 text-right form-control form-control-sm" v-model="ProductoMaterial.cantidad" @keyup="update(0)" @click="update(0)" placeholder="Ingrese la cantidad">
+                                    <label class="col-md-5 text-info" v-text="ProductoMaterial.unidad"></label>
                                 </div>
                                 <div class="row form-group">
                                     <label class="col-md-4 font-weight-bold">Subtotal</label>
-                                    <label class="col-md-8 text-info" v-text="ProductoMaterial.subtotal"></label>
+                                    <label class="col-md-8 text-info" v-text="'S/. '+ProductoMaterial.subtotal"></label>
                                 </div>
                                 <div class="row form-group col-md-12 d-flex justify-content-around">
                                     <button type="button" class="btn btn-sm btn-info btn-icon-split" @click="add()">
@@ -352,7 +367,7 @@
                     id: 0,
                     superproducto_id: 0,
                     nombre: '',
-                    codigo: 0,
+                    codigo: '',
                     size: '',
                     color: '',
                     costo_produccion: 0,
@@ -525,6 +540,7 @@
                 axios.post(url , {
                     'superproducto_id' : this.Producto.superproducto_id,
                     'nombre' : this.Producto.nombre,
+                    'codigo' : this.Producto.codigo,
                     'size': this.Producto.size,
                     'color' : this.Producto.color,
                     'precio_menor' : this.Producto.precio_menor,
@@ -593,7 +609,7 @@
                     console.log(error);
                 });
             },
-            agregarMateriales(){
+            editarMateriales(){
                 if ( this.validar(6) ) return;
 
                 var me = this;
@@ -601,7 +617,8 @@
 
                 axios.post(url, {
                     'producto_id': this.Producto.id,
-                    'listaproductomaterial': this.ListaProductoMaterial
+                    'listaproductomaterial': this.ListaProductoMaterial,
+                    'costo_produccion': this.Producto.costo_produccion
                 }).then(function (response) {
                     var estado = response.data.estado;
                     if ( estado == 1 ) {
@@ -611,7 +628,7 @@
                             position: 'top-end',
                             toast: true,
                             type: 'success',
-                            title: 'La lista de materiales ha sido añadida correctamente',
+                            title: 'La lista de materiales ha sido editada correctamente',
                             showConfirmButton: false,
                             timer: 4500,
                             animation:false,
@@ -631,6 +648,7 @@
 
                 this.Producto.superproducto_id = 0;
                 this.Producto.nombre = '';
+                this.Producto.codigo = '';
                 this.Producto.size = '';
                 this.Producto.color = '';
                 this.Producto.precio_menor = 0;
@@ -657,6 +675,7 @@
                 this.Producto.id = data['id'];
                 this.Producto.superproducto_id = data['superproducto_id'];
                 this.Producto.nombre = data['nombre'];
+                this.Producto.codigo = data['codigo'];
                 this.Producto.size = data['size'];
                 this.Producto.color = data['color'];
                 this.Producto.precio_menor = data['precio_menor'];
@@ -728,7 +747,7 @@
                 switch( this.Modal.numero ){
                     case 1: this.agregar(); break;
                     case 3: this.editar(); break;
-                    case 4: this.agregarMateriales(); break;
+                    case 4: this.editarMateriales(); break;
                 }
             },
             select(numero){
