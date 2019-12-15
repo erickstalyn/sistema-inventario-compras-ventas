@@ -101,10 +101,16 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('/envioRealizado/agregar', 'EnvioController@agregar');
         Route::put('/envioRealizado/reenviar', 'EnvioController@reenviar');//metodo secundario
         Route::put('/envioRecibido/setEstado', 'EnvioController@setEstado'); //metodos secundarios
+        
+        //RUTAS PARA PRODUCTOS DE CENTROS
+        Route::get('/centro/listProductos', 'CentroController@listProductos'); //metodos generales
 
     });
     Route::group(['middleware' => ['Almacen']], function (){
 
+        //RUTAS PARA PRODUCTOS DE CENTROS
+        Route::get('/centro/listProductos', 'CentroController@listProductos'); //metodos generales
+        
         // RUTAS PARA PRODUCCIONES
         Route::get('/produccion', 'ProduccionController@listar'); //métodos generales
         Route::post('/produccion/agregar', 'ProduccionController@agregar');

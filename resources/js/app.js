@@ -25,9 +25,15 @@ Vue.component('adm-producto', require('./components/administrador/Producto.vue')
 Vue.component('adm-material', require('./components/administrador/Material.vue').default);
 Vue.component('adm-abasto', require('./components/administrador/Abasto.vue').default);
 
+Vue.component('pue-producto', require('./components/puesto/Producto.vue').default);
+
 Vue.component('alm-produccion', require('./components/almacen/Produccion.vue').default);
+Vue.component('alm-producto', require('./components/almacen/Producto.vue').default);
+
 Vue.component('enviorecibido', require('./components/EnvioRecibido.vue').default);
 Vue.component('enviorealizado', require('./components/EnvioRealizado.vue').default);
+
+
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
