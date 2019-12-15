@@ -8,26 +8,29 @@ use App\Venta;
 class VentaController extends Controller {
     
     public function listar(Request $request) {
-        if ( $request->ajax() ) return redirect('/');
+        if ( !$request->ajax() ) return redirect('/');
 
         $type = $request->type;
         $text = $request->text;
         $rows = $request->rows;
+        // $type = 2;
+        // $text = '';
+        // $rows = 5;
 
         $ventas = Venta::select('venta.id', 'venta.codigo', 'venta.tipo', 'venta.total', 'venta.total_faltante', 'venta.created_at', 
                                 'persona.dni', 'persona.ruc', 'persona.nombres', 'persona.apellidos', 'persona.razon_social')
-                    ->join('persona', 'persona.id', '=', 'venta.cliente_id')
+                    ->leftJoin('persona', 'persona.id', '=', 'venta.cliente_id')
                     ->where(function ($query) use ($text) {
                         if ( $text != '' ) {
-                            $query->where('persona.nombres', 'like', '%'.$text.'%')
-                                ->orWhere('persona.apellidos', 'like', '%'.$text.'%')
-                                ->orWhere('persona.razon_social', 'like', '%'.$text.'%')
-                                ->orWhere($codigo, '=', $codigo);
+                            $query->where('nombres', 'like', '%'.$text.'%')
+                                ->orWhere('apellidos', 'like', '%'.$text.'%')
+                                ->orWhere('razon_social', 'like', '%'.$text.'%')
+                                ->orWhere('codigo', '=', $text);
                         }
                     })
                     ->where(function ($query) use ($type) {
                         if ( $type != 2 ) {
-                            $query->where('venta.tipo', '=', $type);
+                            $query->where('tipo', '=', $type);
                         }
                     })
                     ->orderBy('id', 'desc')->paginate($rows);

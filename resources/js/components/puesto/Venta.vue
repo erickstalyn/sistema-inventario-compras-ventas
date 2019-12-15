@@ -15,17 +15,18 @@
 
             <!-- Inputs de busqueda -->
             <div class="row form-group">
-                <div class="col-md-4 input-group"> 
-                    <select class="custom-select text-gray-900" v-model="Busqueda.type">
+                <div class="col-md-6 input-group"> 
+                    <select class="custom-select text-gray-900 w4rem" v-model="Busqueda.type">
                         <option value="2">Todos</option>
                         <option value="0">Contado</option>
                         <option value="1">Credito</option>
                     </select>
+                    <input type="search" class="form-control" v-model="Busqueda.text">
                     <button type="button" class="btn btn-primary" @click="listar()">
                         <i class="fa fa-search"></i>&nbsp;Buscar
                     </button>
                 </div>
-                <div class="col-md-5"></div>
+                <div class="col-md-3"></div>
                 <label class="col-md-2 text-right">N° filas:</label>
                 <select class="col-md-1 text-right custom-select custom-select-sm text-gray-900" v-model="Busqueda.rows">
                     <option v-for="item in Filas" :key="item" :value="item" v-text="item"></option>
@@ -36,9 +37,9 @@
             <div v-if="ListaVenta.length">
                 <!-- Tabla -->
                 <div class="ec-table overflow-auto">
-                    <table class="table table-borderless table-sm text-gray-900">
+                    <table class="table table-striped table-condensed table-bordered table-sm text-gray-900">
                         <thead>
-                            <tr class="table-info">
+                            <tr class="table-danger">
                                 <th class="text-center">Codigo</th>
                                 <th class="text-center">Tipo</th>
                                 <th class="text-center">Cliente</th>
@@ -49,27 +50,27 @@
                         </thead>
                         <tbody>
                             <tr v-for="venta in ListaVenta" :key="venta.id" >
-                                <td class="text-right" v-text="venta.codigo"></td>
-                                <td class="text-right">
+                                <td class="text-center" v-text="venta.codigo"></td>
+                                <td>
                                     <label v-if="venta.tipo==0">Contado</label>
                                     <label v-if="venta.tipo==1">Credito</label>
                                 </td>
-                                <td class="text-right" v-text="venta.cliente_nombre"></td>
+                                <td v-text="venta.razon_social!=null?venta.razon_social:(venta.nombres!=null?(venta.nombres+' '+venta.apellidos):'---')"></td>
                                 <td class="text-right" v-text="venta.total"></td>
                                 <td class="text-center" v-text="venta.created_at"></td>
                                 <td class="text-center">
                                     <template>
-                                        <button type="button" title="VER" class="btn btn-warning btn-sm" @click="abrirModalVer(venta)">
+                                        <button type="button" title="VER" class="btn btn-primary btn-sm" @click="abrirModalVer(venta)">
                                             <i class="far fa-eye"></i>
                                         </button>
                                     </template>
                                     <template>
-                                        <button type="button" title="EDITAR" class="btn btn-primary btn-sm">
-                                            <i class="far fa-eye"></i>
+                                        <button type="button" title="EDITAR" class="btn btn-warning btn-sm" @click="abrirModalEditar(venta)">
+                                            <i class="fas fa-edit"></i>
                                         </button>
                                     </template>
                                     <template v-if="venta.tipo==1">
-                                        <button type="button"  title="PAGAR" class="btn btn-warning btn-sm" @click="abrirModalPagar(venta)">
+                                        <button type="button"  title="PAGAR" class="btn btn-info btn-sm" @click="abrirModalPagar(venta)">
                                             <i class="fas fa-hand-holding-usd"></i>
                                         </button>
                                     </template>
@@ -275,9 +276,9 @@
                 
                 axios.get(url).then(function (response) {
                     me.ListaVenta = response.data.ventas.data;
-                    me.Paginacion = response.data.paginacion;
+                    me.Paginacion = response.data.pagination;
                 }).catch(function (error) {
-                    console.log(error)
+                    console.log(error);
                 });
             },
             agregar(){
@@ -787,6 +788,9 @@
     }
     .ec-th{
         background-color: skyblue;
+    }
+    .w10rem{
+        width: 4rem;
     }
 </style>
 

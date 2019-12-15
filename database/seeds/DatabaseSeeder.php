@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+
 class DatabaseSeeder extends Seeder
 {
     /**
@@ -20,5 +21,6 @@ class DatabaseSeeder extends Seeder
         $this->call(ProduccionSeeder::class);
         // $this->call(AbastoSeeder::class);
         // $this->call(EnvioSeeder::class);
+        $this->call(VentaSeeder::class);
     }
 }
