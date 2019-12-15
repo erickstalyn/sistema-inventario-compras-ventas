@@ -115,7 +115,7 @@
                                         </button>
                                     </template>
                                     <template v-if="abasto.estado_envio == 0">
-                                        <button type="button"  title="Anular" class="btn btn-danger btn-sm">
+                                        <button type="button"  title="Anular" class="btn btn-danger btn-sm" @click="anularAbasto(abasto.id)">
                                                 <i class="fas fa-trash-alt"></i>
                                         </button>
                                     </template>
@@ -986,7 +986,46 @@
                 this.ListaDetalleAbasto = [];
                 this.BusquedaFiltro.texto = '';
             },
-            
+            anularAbasto(id){
+                Swal.fire({
+                    title: '¿Está seguro que desea ANULAR el abasto?',
+                    type: 'error',
+                    showCancelButton: true,
+                    confirmButtonText: 'Si, anular',
+                    cancelButtonText: 'Cancelar',
+                    // reverseButtons: true,
+                    customClass: {
+                        confirmButton: 'btn btn-success',
+                        cancelButton: 'btn btn-secondary'
+                    },
+                    buttonsStyling: false
+                }).then((result) => {
+                    if (result.value) {
+                        var me = this;
+                
+                        axios.put('/abasto/anular', {
+                            'id' : id
+                        }).then(function (response) {
+                            me.listar();
+                            Swal.fire({
+                                position: 'top-end',
+                                toast: true,
+                                type: 'success',
+                                title: 'El abasto se anuló correctamente',
+                                showConfirmButton: false,
+                                timer: 4500,
+                                animation:false,
+                                customClass:{
+                                    popup: 'animated bounceIn fast'
+                                }
+                            });
+                        }).catch(function (error) {
+                            console.log(error);
+                        });
+                    } else if ( result.dismiss === Swal.DismissReason.cancel ) {
+                    }
+                });
+            },
             getTitulo(titulo){
                 var seleccionada = 0;
 

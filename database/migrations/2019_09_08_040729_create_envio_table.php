@@ -25,7 +25,7 @@ class CreateEnvioTable extends Migration
             $table->unsignedTinyInteger('centro_to_id');
             $table->foreign('centro_to_id')->references('id')->on('centro');
             $table->unsignedMediumInteger('abasto_id')->nullable();
-            $table->foreign('abasto_id')->references('id')->on('abasto');
+            $table->foreign('abasto_id')->references('id')->on('abasto')->onDelete('cascade');
             $table->date('created_at'); // Fecha de ENVIO manual
             $table->date('updated_at')->nullable(); // Fecha de ACEPTADO O RECHAZO manual (SE ACEPTARA CUANDO LA MERCADERÍA YA ESTÉ EN EL CENTRO)
             // Tendrá un eliminado fisico

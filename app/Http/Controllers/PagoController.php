@@ -12,7 +12,7 @@ class PagoController extends Controller
     public function agregar(Request $request){
         if ( !$request->ajax() ) return redirect('/');
 
-        $estado = 1;
+        // $estado = 1;
         try {
             DB::beginTransaction();
             $listaPagos = $request->listaPagos;
@@ -27,10 +27,9 @@ class PagoController extends Controller
             DB::commit();
         } catch(Exception $e) {
             DB::rollback();
-            if($e != null) $estado = 0;
-            echo($e);
+            // if($e != null) $estado = 0;
+            // echo($e);
         }
-        
         // return ['estado' => $estado];
     }
 }

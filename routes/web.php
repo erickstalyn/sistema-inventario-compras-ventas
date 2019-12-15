@@ -88,6 +88,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/abasto', 'AbastoController@listar'); //metodos generales
         Route::post('/abasto/agregar', 'AbastoController@agregar');
         Route::get('/abasto/getPagos', 'AbastoController@getPagos');
+        Route::put('/abasto/anular', 'AbastoController@anular');
         Route::get('/data/selectUnidad', 'DataController@selectUnidad'); //metodos secundarios
 
         Route::get('/centro/selectAlmacen', 'CentroController@selectAlmacen');

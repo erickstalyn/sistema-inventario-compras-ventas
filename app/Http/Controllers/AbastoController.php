@@ -176,4 +176,16 @@ class AbastoController extends Controller
         $pagos = Abasto::findOrFail($request->id)->getPagos;
         return $pagos;
     }
+
+    public function anular(Request $request){
+        try {
+            DB::beginTransaction();
+
+            $material = Abasto::findOrFail($request->id);
+            $material->delete();
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollback();
+        }
+    }
 }
