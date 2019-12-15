@@ -19,7 +19,7 @@ class CreatePagoTable extends Migration
             $table->unsignedMediumInteger('venta_id')->nullable();
             $table->foreign('venta_id')->references('id')->on('venta');
             $table->unsignedMediumInteger('abasto_id')->nullable();
-            $table->foreign('abasto_id')->references('id')->on('abasto');
+            $table->foreign('abasto_id')->references('id')->on('abasto')->onDelete('cascade');
             // $table->timestamps(); //Fecha y hora de creacion y actualiación manual
             $table->dateTime('created_at');
             $table->dateTime('updated_at')->nullable(); 

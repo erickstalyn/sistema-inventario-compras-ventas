@@ -22,7 +22,7 @@ class CreateDetalleAbastoTable extends Migration
             $table->unsignedMediumInteger('producto_id')->nullable();
             $table->foreign('producto_id')->references('id')->on('producto');
             $table->unsignedMediumInteger('abasto_id');
-            $table->foreign('abasto_id')->references('id')->on('abasto');
+            $table->foreign('abasto_id')->references('id')->on('abasto')->onDelete('cascade');
         });
     }
 

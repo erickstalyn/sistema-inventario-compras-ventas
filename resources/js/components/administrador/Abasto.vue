@@ -89,7 +89,7 @@
                                 <td v-text="abasto.proveedor_persona ? abasto.proveedor_persona : abasto.proveedor_empresa"></td>
                                 <td v-text="abasto.nombre_centro"></td>
                                 <td v-text="formatearFecha(abasto.fecha_envio)"></td>
-                                <td v-text="abasto.costo_total"></td>
+                                <td v-text="abasto.total"></td>
                                 <td v-text="abasto.tipo_abasto? 'Crédito' : 'Contado'"></td>
                                 <td>
                                     <div v-if="abasto.estado_envio == 0">
@@ -105,7 +105,7 @@
                                 <td class="text-center">
                                     
                                     <template v-if="abasto.tipo_abasto == 1 && abasto.total_faltante != 0">
-                                        <button type="button"  title="Pagar Cuota" class="btn btn-warning btn-sm" @click="abrirModalPagar()">
+                                        <button type="button"  title="Pagar Cuota" class="btn btn-warning btn-sm" @click="abrirModalPagar(abasto)">
                                             <i class="fas fa-hand-holding-usd"></i>
                                         </button>
                                     </template>
@@ -115,7 +115,7 @@
                                         </button>
                                     </template>
                                     <template v-if="abasto.estado_envio == 0">
-                                        <button type="button"  title="Anular" class="btn btn-danger btn-sm">
+                                        <button type="button"  title="Anular" class="btn btn-danger btn-sm" @click="anularAbasto(abasto.id)">
                                                 <i class="fas fa-trash-alt"></i>
                                         </button>
                                     </template>
@@ -300,7 +300,6 @@
                                                 <div class="input-group">
                                                     <label for="tipo" class="font-weight-bold">Tipo</label>&nbsp;<span class="text-danger">*</span>&nbsp;
                                                     <select v-model="Abasto.tipo" class="custom-select custom-select-sm" id="tipo">
-                                                        <!-- <option value="-1">Seleccione</option> -->
                                                         <option value="0">Contado</option>
                                                         <option value="1">Credito</option>
                                                     </select>
@@ -363,7 +362,7 @@
                             </div>
                             <div v-if="Modal.numero == 3">
                                 <div v-if="Error.estado" class="row d-flex justify-content-center">
-                                    <div class="alert alert-danger">
+                                    <div class="alert alert-danger" style="height: 4.5rem;">
                                         <button type="button" @click="Error.estado=0" class="close text-primary" data-dismiss="alert">×</button>
                                         <strong>Corregir los siguentes errores:</strong>
                                         <ul> 
@@ -375,24 +374,56 @@
                                     <div class="col-md-3">
                                         <span class="font-weight-bold">Registrar</span>
                                     </div>
-                                    <div class="col-md-2"></div>
+                                    <div class="col-md-1"></div>
                                     <div class="col-md-7">
                                         <div class="input-group"> 
                                             Monto&nbsp;
-                                            <input type="number" class="form-control form-control-sm" autofocus>
-                                            <button type="button" class="btn btn-sm btn-primary" @click="consultar()">
+                                            <input type="number" class="form-control form-control-sm" v-model="Pago.monto" @keyup.enter="agregarListaPago()">&nbsp;
+                                            <button type="button" class="btn btn-sm btn-primary" @click="agregarListaPago()">
                                                 Registrar
                                             </button>
                                         </div>
                                     </div>
+                                    <div class="col-md-1"></div>
                                 </div>
-                                <div class="row form-group">
-                                    <label class="col-md-5 font-weight-bold" for="des">Seleccione centro&nbsp;<span class="text-danger">*</span></label>
-                                    <div class="col-md-7">
-                                        <select  class="custom-select">
-                                            <option value="0" disabled>Seleccione</option>
-                                            <!-- <option v-for="item in SelectCentro" :key="item.id" :value="item.id" v-text="item.nombre"></option> -->
-                                        </select>
+                                <div class="row form-group overflow-auto" style="height: 17.5rem;">
+                                    <div class="col-md-12">
+                                        <div v-if="ListaPago.length">
+                                            <table class="table table-borderless table-striped table-sm text-gray-900">
+                                                <thead>
+                                                    <tr class="table-info">
+                                                        <th class="text-center">#</th>
+                                                        <th class="text-center">Fecha de pago</th>
+                                                        <th class="text-right pr-5">Monto</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr v-for="(pago, index) in ListaPago" :key="index" :class="pago.color">
+                                                        <td class="text-center">{{index+1}}</td>
+                                                        <td class="text-center" v-text="pago.created_at"></td>
+                                                        <td class="text-right pr-5" v-text="pago.monto"></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div v-else>
+                                            <p>Ningun pago registrado</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12 text-right pr-5">
+                                        <span class="text-success">Monto pagado: s/{{getSumaPagos}}</span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12 text-right pr-5">
+                                        <span class="text-danger">Monto faltante: s/{{this.Abasto.total_faltante = Abasto.total - getSumaPagos}}</span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12 text-right pr-5">
+                                        <span>Costo total: s/{{Abasto.total}}</span>
                                     </div>
                                 </div>
                             </div>
@@ -433,7 +464,6 @@
                     apellidos: '',
                     razon_social: ''
                 },
-                SelectUnidad: [],
                 //datos de busqueda y filtracion general
                 Busqueda: {
                     texto: '',
@@ -473,6 +503,9 @@
                     estado: 0,
                     mensaje: []
                 },
+                Carga: {
+                    clase: ''
+                },
                 //DATOS PARA AGREGAR UNA PRODUCCION
                 BusquedaFiltro:{
                     texto: ''
@@ -491,8 +524,10 @@
                     alert: '',
                     readonly: false
                 },
-                Carga: {
-                    clase: ''
+                ListaPago: [],
+                Pago:{
+                    monto: '',
+                    sumaPagos: 0.00,
                 }
             }
         },
@@ -545,6 +580,13 @@
                     this.Abasto.total = this.Abasto.total + detalle.costo_abasto * detalle.cantidad;
                 });
                 return (this.Abasto.total).toFixed(2);
+            },
+            getSumaPagos: function(){
+                let sumaPagos = 0.00;
+                this.ListaPago.forEach( detalle => {
+                    sumaPagos = sumaPagos + Number.parseFloat(detalle.monto);
+                });
+                return sumaPagos;
             }
         },
         methods: {
@@ -605,7 +647,6 @@
                 for (let i = 0; i < this.ListaDetalleAbasto.length; i++) {
                     if(this.ListaDetalleAbasto[i].id == producto.id){
                         incluido = true;
-                        //adiciono uno más a la cantidad de este producto en la tabla de detalles
                         this.ListaDetalleAbasto[i].cantidad ++;
                         break;
                     }
@@ -767,12 +808,8 @@
                         this.agregar();
                         break;
                     }
-                    case 'Editar': {
-                        this.editar();
-                        break;
-                    }
                     case 'Guardar': {
-                        this.editar();
+                        this.agregarPago();
                         break;
                     }
                 }
@@ -803,7 +840,7 @@
                     }
 
                 }else{ //Modal editar
-                    
+                    if (this.Pago.monto == '' || this.Pago.monto <= 0 || this.Pago.monto > this.Abasto.total_faltante) this.Error.mensaje.push('Debe ingresar un monto válido');
                 }
                 if ( this.Error.mensaje.length ) this.Error.estado = 1;
                 return this.Error.estado;
@@ -854,12 +891,70 @@
                     console.log(error);
                 });
             },
-            
-            abrirModalPagar(){
-                this.abrirModal(3, 'Realizar Pago', 'Guardar', '');
-                // if(this.SelectAlmacen == 0) this.selectAlmacen();
+            listarPagos(id,total){
+                let me = this;
+                let url = '/abasto/getPagos';
+
+                axios.get(url,{
+                    params: {
+                        'id': id
+                    }
+                }).then(function(response){
+                    // me.Abasto.total_faltante = total;
+                    me.ListaPago = response.data;
+                }).catch(function(error){
+                    console.log(error);
+                });
             },
-            
+            abrirModalPagar(abasto = []){
+                this.Abasto.id = abasto['id'];
+                this.Abasto.total = abasto['total'];
+                this.abrirModal(3, 'Realizar Pago', 'Guardar', '');
+                this.listarPagos(abasto['id'], abasto['total']);
+            },
+            agregarListaPago(){//Agrega pagos a la lista de pagos
+                if ( this.validar() ) return;
+                let pago = {
+                    monto: Number.parseFloat(this.Pago.monto).toFixed(2),
+                    created_at: this.getFechaHoraHoy(),
+                    color: 'table-success',
+                    estado: 1 // 1: nuevo
+                }
+                this.ListaPago.push(pago);
+                this.Pago.monto = '';
+            },
+            agregarPago(){
+                let me = this;
+                let pagosNuevos = me.filtrarPagosNuevos();
+                axios.post('/pago/agregar', {
+                    'idAbasto': this.Abasto.id,
+                    'listaPagos': pagosNuevos
+                }).then(function(response){
+                    me.cerrarModal();
+                    me.listar();
+                    Swal.fire({
+                        position: 'top-end',
+                        toast: true,
+                        type: 'success',
+                        title: 'El pago se ha REGISTRADO correctamente',
+                        showConfirmButton: false,
+                        timer: 4500,
+                        animation:false,
+                        customClass:{
+                            popup: 'animated bounceIn fast'
+                        }
+                    });
+                }).catch(function(error){
+                    console.log(error);
+                });
+            },
+            filtrarPagosNuevos(){
+                let pagosNuevos = [];
+                this.ListaPago.forEach(pago => {
+                    if(pago.estado) pagosNuevos.push(pago);
+                });
+                return pagosNuevos;
+            },
             cerrarModal(){
                 this.Modal.numero = 0;
                 this.Modal.estado = 0;
@@ -885,10 +980,52 @@
                 this.DatosProveedor.apellidos = '';
                 this.DatosProveedor.razon_social = '';
 
+                this.ListaPago = [];
+                this.Pago.monto = '';
+
                 this.ListaDetalleAbasto = [];
                 this.BusquedaFiltro.texto = '';
             },
-            
+            anularAbasto(id){
+                Swal.fire({
+                    title: '¿Está seguro que desea ANULAR el abasto?',
+                    type: 'error',
+                    showCancelButton: true,
+                    confirmButtonText: 'Si, anular',
+                    cancelButtonText: 'Cancelar',
+                    // reverseButtons: true,
+                    customClass: {
+                        confirmButton: 'btn btn-success',
+                        cancelButton: 'btn btn-secondary'
+                    },
+                    buttonsStyling: false
+                }).then((result) => {
+                    if (result.value) {
+                        var me = this;
+                
+                        axios.put('/abasto/anular', {
+                            'id' : id
+                        }).then(function (response) {
+                            me.listar();
+                            Swal.fire({
+                                position: 'top-end',
+                                toast: true,
+                                type: 'success',
+                                title: 'El abasto se anuló correctamente',
+                                showConfirmButton: false,
+                                timer: 4500,
+                                animation:false,
+                                customClass:{
+                                    popup: 'animated bounceIn fast'
+                                }
+                            });
+                        }).catch(function (error) {
+                            console.log(error);
+                        });
+                    } else if ( result.dismiss === Swal.DismissReason.cancel ) {
+                    }
+                });
+            },
             getTitulo(titulo){
                 var seleccionada = 0;
 
@@ -914,15 +1051,15 @@
                     this.listar(page);
                 }
             },
-            getFechaHoy(){
+            getFechaHoraHoy(){
                 let n =  new Date();
-                //Año
                 let y = n.getFullYear();
-                //Mes
                 let m = this.addCero(n.getMonth() + 1);
-                //Día
                 let d = this.addCero(n.getDate());
-                let hoy = y + "-" + m + "-" + d;
+                let h = n.getHours();
+                let minu = n.getMinutes();
+                let seg = n.getSeconds();
+                let hoy =  y + '-' + m + '-' + d + ' ' + h + ':' + this.addCero(minu) + ':' + this.addCero(seg);
                 return hoy;
             },
             addCero(i) {

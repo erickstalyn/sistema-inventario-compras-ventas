@@ -13,11 +13,6 @@ class Abasto extends Model
 
     public $timestamps = false;
 
-    //Relación de uno a muchos con Envio
-    public function getEnvios()
-    {
-        return $this->hasMany('App\Envio');
-    }
     //Relación inversa de uno a muchos con proveedor
     public function getProveedor()
     {
@@ -28,6 +23,10 @@ class Abasto extends Model
     public function getProductos()
     {
         return $this->belongsToMany('App\Producto', 'detalle_abasto');
+    }
+    //Relacion de de uno a muchos con pagos 
+    public function getPagos(){
+        return $this->hasMany('App\Pago', 'abasto_id');
     }
 
 }
