@@ -185,6 +185,7 @@ class AbastoController extends Controller
             $material->delete();
             DB::commit();
         } catch (Exception $e) {
+            echo($e);
             DB::rollback();
         }
     }

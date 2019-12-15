@@ -37,6 +37,13 @@ Route::group(['middleware' => ['auth']], function () {
     //RUTAS PARA FUNCIONES COMUNES
     Route::get('/producto/getProductoFiltrado', 'ProductoController@getProductoFiltrado');
     Route::get('/persona/getPersona', 'PersonaController@getPersona');
+    Route::get('/centro/listProductos', 'CentroController@listProductos'); //metodos generales
+    //RUTAS DE ENVIOS
+    Route::get('/envioRecibido', 'EnvioController@listarEnvioRecibido'); //metodos generales
+    Route::get('/envioRealizado', 'EnvioController@listarEnvioRealizado');
+    Route::post('/envioRealizado/agregar', 'EnvioController@agregar');
+    Route::put('/envioRealizado/reenviar', 'EnvioController@reenviar');//metodo secundario
+    Route::put('/envioRecibido/setEstado', 'EnvioController@setEstado'); //metodos secundarios
 
     Route::group(['middleware' => ['Administrador']], function (){
         
@@ -99,22 +106,15 @@ Route::group(['middleware' => ['auth']], function () {
 
     });
     Route::group(['middleware' => ['Puesto']], function (){
-
-        //RUTAS DE ENVIOS
-        Route::get('/envioRecibido', 'EnvioController@listarEnvioRecibido'); //metodos generales
-        Route::get('/envioRealizado', 'EnvioController@listarEnvioRealizado');
-        Route::post('/envioRealizado/agregar', 'EnvioController@agregar');
-        Route::put('/envioRealizado/reenviar', 'EnvioController@reenviar');//metodo secundario
-        Route::put('/envioRecibido/setEstado', 'EnvioController@setEstado'); //metodos secundarios
         
         //RUTAS PARA PRODUCTOS DE CENTROS
-        Route::get('/centro/listProductos', 'CentroController@listProductos'); //metodos generales
+        // Route::get('/centro/listProductos', 'CentroController@listProductos'); //metodos generales
 
     });
     Route::group(['middleware' => ['Almacen']], function (){
 
         //RUTAS PARA PRODUCTOS DE CENTROS
-        Route::get('/centro/listProductos', 'CentroController@listProductos'); //metodos generales
+        // Route::get('/centro/listProductos', 'CentroController@listProductos'); //metodos generales
         
         // RUTAS PARA PRODUCCIONES
         Route::get('/produccion', 'ProduccionController@listar'); //métodos generales
@@ -123,16 +123,8 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/produccion/selectAlmacen', 'ProduccionController@selectAlmacen'); //metodos secundarios
         Route::put('/produccion/finalizar', 'ProduccionController@finalizar'); //metodos secundarios
 
-        //RUTAS PARA ENVIOS
-        Route::get('/envioRecibido', 'EnvioController@listarEnvioRecibido'); //metodos generales
-        Route::get('/envioRealizado', 'EnvioController@listarEnvioRealizado');
-        Route::post('/envioRealizado/agregar', 'EnvioController@agregar');
-        Route::put('/envioRealizado/reenviar', 'EnvioController@reenviar');//metodo secundario
-        Route::put('/envioRecibido/setEstado', 'EnvioController@setEstado'); //metodos secundarios
-
         Route::get('/detalle_producto/getDetalle_productoFiltrado', 'Detalle_productoController@getDetalle_productoFiltrado');
         Route::get('/centro/selectCentro', 'CentroController@selectCentro');
     });
-    
 
 });
