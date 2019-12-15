@@ -80,7 +80,7 @@
                                 <th>Fecha de envío</th>
                                 <th>Costo total</th>
                                 <th>Tipo</th>
-                                <th>Estado de envío</th>
+                                <th class="text-center">Estado de envío</th>
                                 <th class="text-center">Opciones</th>
                             </tr>
                         </thead>
@@ -90,8 +90,9 @@
                                 <td v-text="abasto.nombre_centro"></td>
                                 <td v-text="formatearFecha(abasto.fecha_envio)"></td>
                                 <td v-text="abasto.total"></td>
-                                <td v-text="abasto.tipo_abasto? 'Crédito' : 'Contado'"></td>
-                                <td>
+                                <td v-text="abasto.tipo_abasto? 'Crédito' : 'Contado'">
+                                </td>
+                                <td class="text-center">
                                     <div v-if="abasto.estado_envio == 0">
                                         <span class="badge badge-primary">Enviado</span>
                                     </div>
@@ -110,7 +111,7 @@
                                         </button>
                                     </template>
                                     <template>
-                                        <button type="button"  title="Ver abasto" class="btn btn-primary btn-sm">
+                                        <button type="button"  title="Ver abasto" class="btn btn-primary btn-sm" @click="abrirModalVer(abasto)">
                                             <i class="far fa-eye"></i>
                                         </button>
                                     </template>
@@ -123,7 +124,7 @@
                                         <button type="button"  title="Reenviar" class="btn btn-info btn-sm">
                                             <i class="fas fa-plane"></i>
                                         </button>
-                                        <button type="button"  title="Anular" class="btn btn-danger btn-sm">
+                                        <button type="button"  title="Anular" class="btn btn-danger btn-sm" @click="anularAbasto(abasto.id)">
                                                 <i class="fas fa-trash-alt"></i>
                                         </button>
                                     </template>
@@ -166,8 +167,7 @@
                     
                     <div class="modal-body">
                         <div class="container-fluid">
-                        <!-- Modal Numero 1 de AGREGAR-->
-                            <div v-if="Modal.numero == 1 || Modal.numero == 2">
+                            <div v-if="Modal.numero == 1">
                                 <!-- Filtro de productos -->
                                 <div v-if="Error.estado" class="row d-flex justify-content-center">
                                     <div class="alert alert-danger">
@@ -213,7 +213,7 @@
                                                 <input type="text" class="form-control form-control-sm" readonly v-model="DatosProveedor.nombres">
                                             </div>
                                         </div>
-                                        <div class="" :class="Modal.numero == 2 ? 'col-md-3': 'col-md-6'">
+                                        <div class="col-md-6">
                                             <div class="input-group">
                                                 <label >Apellidos</label>&nbsp;
                                                 <input type="text" class="form-control form-control-sm" readonly v-model="DatosProveedor.apellidos">
@@ -229,7 +229,7 @@
                                                 <input type="text" class="form-control form-control-sm" readonly v-model="DatosProveedor.documento">
                                             </div>
                                         </div>
-                                        <div class="" :class="Modal.numero == 2 ? 'col-md-6': 'col-md-10'">
+                                        <div class="col-md-10">
                                             <div class="input-group">
                                                 <label >Razón social</label>&nbsp;
                                                 <input type="text" class="form-control form-control-sm" v-model="DatosProveedor.razon_social" :readonly="DatosServicio.readonly">
@@ -299,7 +299,7 @@
                                             <div class="col-md-3">
                                                 <div class="input-group">
                                                     <label for="tipo" class="font-weight-bold">Tipo</label>&nbsp;<span class="text-danger">*</span>&nbsp;
-                                                    <select v-model="Abasto.tipo" class="custom-select custom-select-sm" id="tipo">
+                                                    <select v-model="Abasto.tipo_abasto" class="custom-select custom-select-sm" id="tipo">
                                                         <option value="0">Contado</option>
                                                         <option value="1">Credito</option>
                                                     </select>
@@ -346,7 +346,7 @@
                                         </div>
                                         <div class="row">
                                             <div class="col-md-4">
-                                                <div class="input-group" style="width: 12.4rem;" v-if="Abasto.tipo == '1'"> 
+                                                <div class="input-group" style="width: 12.4rem;" v-if="Abasto.tipo_abasto == '1'"> 
                                                     <label for="">Pago inicial</label>&nbsp;<span class="text-danger">*</span>&nbsp;
                                                     <input type="number" class="form-control form-control-sm" v-model="Abasto.pagoInicial" min="0">
                                                 </div>
@@ -355,6 +355,187 @@
                                             </div>
                                             <div class="col-md-5">
                                                 <p class="text-right pr-1">Desembolso total: s/ {{getDesembolso}}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div v-if="Modal.numero == 2">
+                                <div class="row">
+                                    <div class="col-md-2 pl-2">
+                                        <p class="font-weight-bold">PROVEEDOR</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="input-group">
+                                            <span class="font-weight-bold">Enviado a:</span>&nbsp;{{Abasto.nombre_centro}}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div v-if="DatosProveedor.documento.length == 8">
+                                    <div class="row form-group">
+                                        <div class="col-md-2">
+                                            <div class="input-group"> 
+                                                DNI&nbsp;
+                                                <input type="text" class="form-control form-control-sm" readonly v-model="DatosProveedor.documento">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="input-group">
+                                                <label >Nombres</label>&nbsp;
+                                                <input type="text" class="form-control form-control-sm" readonly v-model="DatosProveedor.nombres">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="input-group">
+                                                <span class="font-weight-bold">Estado de envío:</span>&nbsp;&nbsp;
+                                                <h5>
+                                                    <div v-if="Abasto.estado_envio == 0">
+                                                        <span class="badge badge-primary">Enviado</span>
+                                                    </div>
+                                                    <div v-else-if="Abasto.estado_envio == 1">
+                                                        <span class="badge badge-success">Aceptado</span>
+                                                    </div>
+                                                    <div v-else>
+                                                        <span class="badge badge-danger">Rechazado</span>
+                                                    </div>
+                                                </h5>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div v-else="">
+                                    <div class="row form-group">
+                                        <div class="col-md-2">
+                                            <div class="input-group"> 
+                                                RUC&nbsp;
+                                                <input type="text" class="form-control form-control-sm" readonly v-model="DatosProveedor.documento">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="input-group">
+                                                <label >Razón social</label>&nbsp;
+                                                <input type="text" class="form-control form-control-sm" v-model="DatosProveedor.razon_social" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="input-group">
+                                                <span class="font-weight-bold">Estado de envío:</span>&nbsp;&nbsp;
+                                                <h5>
+                                                    <div v-if="Abasto.estado_envio == 0">
+                                                        <span class="badge badge-primary">Enviado</span>
+                                                    </div>
+                                                    <div v-else-if="Abasto.estado_envio == 1">
+                                                        <span class="badge badge-success">Aceptado</span>
+                                                    </div>
+                                                    <div v-else>
+                                                        <span class="badge badge-danger">Rechazado</span>
+                                                    </div>
+                                                </h5>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row shadow bg-white rounded p-2">
+                                    <div class="col-md-4" v-if="Abasto.tipo_abasto == 1">
+                                        <div class="row">
+                                            <p class="font-weight-bold">PAGOS</p>
+                                        </div>
+                                        <br>
+                                        <div class="row form-group overflow-auto" style="height: 15.5rem;">
+                                            <div class="col-md-12">
+                                                <div v-if="ListaPago.length">
+                                                    <table class="table table-borderless table-striped table-sm text-gray-900">
+                                                        <thead>
+                                                            <tr class="table-info">
+                                                                <th class="text-center">#</th>
+                                                                <th class="text-center">Fecha de pago</th>
+                                                                <th class="text-right pr-4">Monto</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr v-for="(pago, index) in ListaPago" :key="index" :class="pago.color">
+                                                                <td class="text-center">{{index+1}}</td>
+                                                                <td class="text-center" v-text="pago.created_at"></td>
+                                                                <td class="text-right pr-4" v-text="pago.monto"></td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                <div v-else>
+                                                    <p>Ningun pago registrado</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12 text-right pr-4">
+                                                <span class="text-success">Monto pagado: s/{{getSumaPagos}}</span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12 text-right pr-4">
+                                                <span class="text-danger">Monto faltante: s/{{(Abasto.total_ver - getSumaPagos).toFixed(2)}}</span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12 text-right pr-4">
+                                                <span>Costo total: s/{{Abasto.total_ver}}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="ml-auto container" :class="[Abasto.tipo_abasto ? 'col-md-8' : 'col-md-12']">
+                                        <div class="row">
+                                            <div class="col-md-3 p-0">
+                                                <p class="font-weight-bold">LISTA DE ITEMS</p>
+                                            </div>
+                                            <div class="col-md-6"></div>
+                                            <div class="col-md-3">
+                                                <div class="input-group">
+                                                    <label for="tipo" class="font-weight-bold">Tipo: </label>&nbsp;
+                                                    <div v-if="Abasto.tipo_abasto">
+                                                        Crédito
+                                                    </div>
+                                                    <div v-else>
+                                                        Contado
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row form-group ec-table-modal overflow-auto">
+                                            <table class="table tableless table-striped table-sm text-gray-900">
+                                                <thead>
+                                                    <tr class="table-success">
+                                                        <th class="text-center">#</th>
+                                                        <th class="text-center">Nombre</th>
+                                                        <th style="width: 5rem;">Cant.</th>
+                                                        <th style="width: 5rem;">P. Unit.</th>
+                                                        <th class="text-right pr-4">Subtotal</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr v-for="(detalle, index) in ListaDetalleAbastoVer" :key="index">
+                                                        <td class="text-center">{{index+1}}</td>
+                                                        <td class="text-center" v-text="detalle.nombre_producto"></td>
+                                                        <td >
+                                                            {{detalle.cantidad}}
+                                                        </td>
+                                                        <td>
+                                                            {{detalle.costo_abasto}}
+                                                        </td>
+                                                        <td class="text-right pr-4">
+                                                            {{detalle.subtotal}}
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-7">
+                                            </div>
+                                            <div class="col-md-5">
+                                                <p class="text-right pr-2">Desembolso total: s/ {{Abasto.total_ver}}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -418,12 +599,12 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-md-12 text-right pr-5">
-                                        <span class="text-danger">Monto faltante: s/{{this.Abasto.total_faltante = Abasto.total - getSumaPagos}}</span>
+                                        <span class="text-danger">Monto faltante: s/{{(Abasto.total_ver - getSumaPagos).toFixed(2)}}</span>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-12 text-right pr-5">
-                                        <span>Costo total: s/{{Abasto.total}}</span>
+                                        <span>Costo total: s/{{Abasto.total_ver}}</span>
                                     </div>
                                 </div>
                             </div>
@@ -432,8 +613,10 @@
 
                     <div class="modal-footer" v-if="permisoModalFooter">
                         <div class="row form-group col-md-12 d-flex justify-content-around">
-                            <button type="button" @click="accionar(Modal.accion)" class="btn btn-success" v-text="Modal.accion"></button>
-                            <button type="button" @click="cerrarModal()" class="btn btn-secondary">Cancelar</button>
+                            <div v-if="Modal.accion">
+                                <button type="button" @click="accionar(Modal.accion)" class="btn btn-success" v-text="Modal.accion"></button>
+                            </div>
+                            <button type="button" @click="cerrarModal()" class="btn btn-secondary" v-text="Modal.cancelar"></button>
                         </div>
                     </div>
                 
@@ -451,11 +634,14 @@
                 Abasto: {
                     id: 0,
                     total: 0.00,
+                    total_ver: 0.00,
                     total_faltante: 0.00,
-                    tipo: 1, // 0: Contado, 1: Credito
+                    tipo_abasto: 1, // 0: Contado, 1: Credito
                     centro_to_id: 0, //Almacén donde se enviará el abasto
                     created_at : '',
                     pagoInicial: '',
+                    nombre_centro: '', //Nombre del centro al que se envia
+                    estado_envio: -1
                 },
                 DatosProveedor:{
                     id: 0,
@@ -480,6 +666,7 @@
                     estado: 0,
                     titulo: '',
                     accion: '',
+                    cancelar: '',
                     size: ''
                 },
 
@@ -512,8 +699,8 @@
                 },
                 ListaProducto:[
                 ],
-                ListaDetalleAbasto:[
-                ],
+                ListaDetalleAbasto:[],
+                ListaDetalleAbastoVer:[],
                 //DATOS PARA ENVIAR UNA PRODUCCION
                 SelectAlmacen: [],
                 //DATOS PARA CONSULTA SUNAT Y RENIEC
@@ -586,7 +773,7 @@
                 this.ListaPago.forEach( detalle => {
                     sumaPagos = sumaPagos + Number.parseFloat(detalle.monto);
                 });
-                return sumaPagos;
+                return (sumaPagos).toFixed(2);
             }
         },
         methods: {
@@ -792,14 +979,32 @@
                 });
             },
             abrirModalAgregar(){
-                this.abrirModal(1, 'Registrar Abasto', 'Agregar', 'modal-xl modal-dialog-scrollable');
+                this.abrirModal(1, 'Registrar Abasto', 'Agregar', 'Cancelar', 'modal-xl modal-dialog-scrollable');
                 if(!this.SelectAlmacen.length) this.selectAlmacen();
             },
-            abrirModal(numero, titulo, accion, size){
+            abrirModalVer(abasto = []){
+                if(abasto['dni']){
+                    this.DatosProveedor.documento = abasto['dni'];
+                    this.DatosProveedor.nombres = abasto['proveedor_persona'];
+                }else{
+                    this.DatosProveedor.documento = abasto['ruc'];
+                    this.DatosProveedor.razon_social = abasto['proveedor_empresa'];
+                }
+                this.Abasto.nombre_centro = abasto['nombre_centro'];
+                this.Abasto.estado_envio = abasto['estado_envio'];
+                this.Abasto.tipo_abasto = abasto['tipo_abasto'];
+                this.Abasto.total_ver = abasto['total'];
+
+                this.listarPagos(abasto['id']);
+                this.listarDetallesAbasto(abasto['id']);
+                this.abrirModal(2, 'Ver Abasto', '', 'Cerrar', 'modal-xl modal-dialog-scrollable')
+            },
+            abrirModal(numero, titulo, accion, cancelar, size){
                 this.Modal.estado = 1;
                 this.Modal.numero = numero;
                 this.Modal.titulo = titulo;
                 this.Modal.accion = accion;
+                this.Modal.cancelar = cancelar;
                 this.Modal.size = size;
             },
             accionar(accion){
@@ -829,7 +1034,7 @@
                         this.validarNegativos();
                     }
 
-                    if(this.Abasto.tipo == 1){
+                    if(this.Abasto.tipo_abasto == 1){
                         if(this.Abasto.pagoInicial<0 || this.Abasto.pagoInicial == ''){
                             this.Error.mensaje.push('El pago inicial debe ser mayor o igual a 0')
                         }else if(this.Abasto.pagoInicial > this.Abasto.total){
@@ -840,7 +1045,7 @@
                     }
 
                 }else{ //Modal editar
-                    if (this.Pago.monto == '' || this.Pago.monto <= 0 || this.Pago.monto > this.Abasto.total_faltante) this.Error.mensaje.push('Debe ingresar un monto válido');
+                    if (this.Pago.monto == '' || this.Pago.monto <= 0 || this.Pago.monto > (this.Abasto.total_ver - this.getSumaPagos)) this.Error.mensaje.push('Debe ingresar un monto válido');
                 }
                 if ( this.Error.mensaje.length ) this.Error.estado = 1;
                 return this.Error.estado;
@@ -865,7 +1070,7 @@
                     //Datos del abasto
                     'id' : this.Abasto.id,
                     'total': this.Abasto.total,
-                    'tipo': this.Abasto.tipo, 
+                    'tipo': this.Abasto.tipo_abasto, 
                     'centro_to_id': this.Abasto.centro_to_id,
                     'pagoInicial': this.Abasto.pagoInicial,
                     'proveedor': this.DatosProveedor,
@@ -891,7 +1096,7 @@
                     console.log(error);
                 });
             },
-            listarPagos(id,total){
+            listarPagos(id){
                 let me = this;
                 let url = '/abasto/getPagos';
 
@@ -900,17 +1105,31 @@
                         'id': id
                     }
                 }).then(function(response){
-                    // me.Abasto.total_faltante = total;
                     me.ListaPago = response.data;
+                }).catch(function(error){
+                    console.log(error);
+                });
+            },
+            listarDetallesAbasto(id){
+                let me = this;
+                let url = '/abasto/getDetalles';
+
+                axios.get(url,{
+                    params: {
+                        'id': id
+                    }
+                }).then(function(response){
+                    me.ListaDetalleAbastoVer = response.data;
                 }).catch(function(error){
                     console.log(error);
                 });
             },
             abrirModalPagar(abasto = []){
                 this.Abasto.id = abasto['id'];
-                this.Abasto.total = abasto['total'];
-                this.abrirModal(3, 'Realizar Pago', 'Guardar', '');
-                this.listarPagos(abasto['id'], abasto['total']);
+                this.Abasto.total_ver = abasto['total'];
+                this.listarPagos(abasto['id']);
+
+                this.abrirModal(3, 'Realizar Pago', 'Guardar', 'Cancelar', '');
             },
             agregarListaPago(){//Agrega pagos a la lista de pagos
                 if ( this.validar() ) return;
@@ -971,7 +1190,7 @@
                 this.Abasto.total = 0.00;
                 this.Abasto.pagoInicial = '';
                 this.Abasto.centro_to_id = 0;
-                this.Abasto.tipo = 1;
+                this.Abasto.tipo_abasto = 1;
 
                 this.DatosServicio.tipo = 0;
                 this.DatosProveedor.id = 0;
@@ -984,6 +1203,7 @@
                 this.Pago.monto = '';
 
                 this.ListaDetalleAbasto = [];
+                this.ListaDetalleAbastoVer = [];
                 this.BusquedaFiltro.texto = '';
             },
             anularAbasto(id){
@@ -1011,7 +1231,7 @@
                                 position: 'top-end',
                                 toast: true,
                                 type: 'success',
-                                title: 'El abasto se anuló correctamente',
+                                title: 'El abasto se ANULÓ correctamente',
                                 showConfirmButton: false,
                                 timer: 4500,
                                 animation:false,
