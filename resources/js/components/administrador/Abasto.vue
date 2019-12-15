@@ -359,7 +359,7 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div v-if="Modal.numero == 2">
                                 <div class="row">
                                     <div class="col-md-2 pl-2">
@@ -506,14 +506,16 @@
                                             <table class="table tableless table-striped table-sm text-gray-900">
                                                 <thead>
                                                     <tr class="table-success">
+                                                        <th class="text-center">#</th>
                                                         <th class="text-center">Nombre</th>
                                                         <th style="width: 5rem;">Cant.</th>
                                                         <th style="width: 5rem;">P. Unit.</th>
-                                                        <th class="text-center">Subtotal</th>
+                                                        <th class="text-right pr-4">Subtotal</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr v-for="detalle in ListaDetalleAbastoVer" :key="detalle.id">
+                                                    <tr v-for="(detalle, index) in ListaDetalleAbastoVer" :key="index">
+                                                        <td class="text-center">{{index+1}}</td>
                                                         <td class="text-center" v-text="detalle.nombre_producto"></td>
                                                         <td >
                                                             {{detalle.cantidad}}
@@ -521,7 +523,7 @@
                                                         <td>
                                                             {{detalle.costo_abasto}}
                                                         </td>
-                                                        <td class="text-right pr-3">
+                                                        <td class="text-right pr-4">
                                                             {{detalle.subtotal}}
                                                         </td>
                                                     </tr>
@@ -529,16 +531,10 @@
                                             </table>
                                         </div>
                                         <div class="row">
-                                            <div class="col-md-4">
-                                                <div class="input-group" style="width: 12.4rem;" v-if="Abasto.tipo == '1'"> 
-                                                    <label for="">Pago inicial</label>&nbsp;<span class="text-danger">*</span>&nbsp;
-                                                    <input type="number" class="form-control form-control-sm" v-model="Abasto.pagoInicial" min="0">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-3">
+                                            <div class="col-md-7">
                                             </div>
                                             <div class="col-md-5">
-                                                <p class="text-right pr-1">Desembolso total: s/ {{getDesembolso}}</p>
+                                                <p class="text-right pr-2">Desembolso total: s/ {{Abasto.total_ver}}</p>
                                             </div>
                                         </div>
                                     </div>
