@@ -90,7 +90,8 @@
                                 <td v-text="abasto.nombre_centro"></td>
                                 <td v-text="formatearFecha(abasto.fecha_envio)"></td>
                                 <td v-text="abasto.total"></td>
-                                <td v-text="abasto.tipo_abasto? 'Crédito' : 'Contado'"></td>
+                                <td v-text="abasto.tipo_abasto? 'Crédito' : 'Contado'">
+                                </td>
                                 <td class="text-center">
                                     <div v-if="abasto.estado_envio == 0">
                                         <span class="badge badge-primary">Enviado</span>
@@ -345,7 +346,7 @@
                                         </div>
                                         <div class="row">
                                             <div class="col-md-4">
-                                                <div class="input-group" style="width: 12.4rem;" v-if="Abasto.tipo == '1'"> 
+                                                <div class="input-group" style="width: 12.4rem;" v-if="Abasto.tipo_abasto == '1'"> 
                                                     <label for="">Pago inicial</label>&nbsp;<span class="text-danger">*</span>&nbsp;
                                                     <input type="number" class="form-control form-control-sm" v-model="Abasto.pagoInicial" min="0">
                                                 </div>
@@ -1033,7 +1034,7 @@
                         this.validarNegativos();
                     }
 
-                    if(this.Abasto.tipo == 1){
+                    if(this.Abasto.tipo_abasto == 1){
                         if(this.Abasto.pagoInicial<0 || this.Abasto.pagoInicial == ''){
                             this.Error.mensaje.push('El pago inicial debe ser mayor o igual a 0')
                         }else if(this.Abasto.pagoInicial > this.Abasto.total){
@@ -1189,7 +1190,7 @@
                 this.Abasto.total = 0.00;
                 this.Abasto.pagoInicial = '';
                 this.Abasto.centro_to_id = 0;
-                this.Abasto.tipo = 1;
+                this.Abasto.tipo_abasto = 1;
 
                 this.DatosServicio.tipo = 0;
                 this.DatosProveedor.id = 0;
