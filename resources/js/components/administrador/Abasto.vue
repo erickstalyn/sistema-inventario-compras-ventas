@@ -368,7 +368,7 @@
                                     <div class="col-md-6">
                                     </div>
                                 </div>
-                                <div v-if="DatosProveedor.dni">
+                                <div v-if="DatosProveedor.documento.length == 8">
                                     <div class="row form-group">
                                         <div class="col-md-2">
                                             <div class="input-group"> 
@@ -376,7 +376,7 @@
                                                 <input type="text" class="form-control form-control-sm" readonly v-model="DatosProveedor.documento">
                                             </div>
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-6">
                                             <div class="input-group">
                                                 <label >Nombres</label>&nbsp;
                                                 <input type="text" class="form-control form-control-sm" readonly v-model="DatosProveedor.nombres">
@@ -392,10 +392,10 @@
                                                 <input type="text" class="form-control form-control-sm" readonly v-model="DatosProveedor.documento">
                                             </div>
                                         </div>
-                                        <div class="" :class="Modal.numero == 2 ? 'col-md-6': 'col-md-10'">
+                                        <div class="col-ms-6">
                                             <div class="input-group">
                                                 <label >Razón social</label>&nbsp;
-                                                <input type="text" class="form-control form-control-sm" v-model="DatosProveedor.razon_social" :readonly="DatosServicio.readonly">
+                                                <input type="text" class="form-control form-control-sm" v-model="DatosProveedor.razon_social" readonly>
                                             </div>
                                         </div>
                                     </div>
@@ -966,7 +966,7 @@
                     this.DatosProveedor.nombres = abasto['proveedor_persona'];
                 }else{
                     this.DatosProveedor.documento = abasto['ruc'];
-                    this.DatosProveedor.razon_social = abasto['razon_social'];
+                    this.DatosProveedor.razon_social = abasto['proveedor_empresa'];
                 }
 
                 this.abrirModal(2, 'Ver Abasto', '', 'Cerrar', 'modal-xl')
