@@ -413,12 +413,12 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-md-12 text-right pr-5">
-                                        <span class="">Monto pagado: s/{{getSumaPagos}}</span>
+                                        <span class="text-success">Monto pagado: s/{{getSumaPagos}}</span>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-12 text-right pr-5">
-                                        <span class="">Monto faltante: s/{{this.Abasto.total_faltante = Abasto.total - getSumaPagos}}</span>
+                                        <span class="text-danger">Monto faltante: s/{{this.Abasto.total_faltante = Abasto.total - getSumaPagos}}</span>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -926,6 +926,9 @@
                     this.Pago.monto = '';
                 }else{
                     console.log('error en el monto');
+                    this.Error.estado = 1;
+                    this.Error.mensaje = [];
+                    this.Error.mensaje.push('Error en el monto')
                 }
             },
             
