@@ -623,12 +623,12 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-md-12 text-right pr-5">
-                                        <span class="text-danger">Monto faltante: s/{{this.Abasto.total_faltante = (Abasto.total - getSumaPagos).toFixed(2)}}</span>
+                                        <span class="text-danger">Monto faltante: s/{{(Abasto.total_ver - getSumaPagos).toFixed(2)}}</span>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-12 text-right pr-5">
-                                        <span>Costo total: s/{{Abasto.total}}</span>
+                                        <span>Costo total: s/{{Abasto.total_ver}}</span>
                                     </div>
                                 </div>
                             </div>
@@ -785,13 +785,13 @@
 
                 return false;
             },
-            // getDesembolso: function(){
-            //     this.Abasto.total = 0.00;
-            //     this.ListaDetalleAbasto.forEach( detalle => {
-            //         this.Abasto.total = this.Abasto.total + detalle.costo_abasto * detalle.cantidad;
-            //     });
-            //     return (this.Abasto.total).toFixed(2);
-            // },
+            getDesembolso: function(){
+                this.Abasto.total = 0.00;
+                this.ListaDetalleAbasto.forEach( detalle => {
+                    this.Abasto.total = this.Abasto.total + detalle.costo_abasto * detalle.cantidad;
+                });
+                return (this.Abasto.total).toFixed(2);
+            },
             getSumaPagos: function(){
                 let sumaPagos = 0.00;
                 this.ListaPago.forEach( detalle => {
@@ -1068,7 +1068,7 @@
                     }
 
                 }else{ //Modal editar
-                    if (this.Pago.monto == '' || this.Pago.monto <= 0 || this.Pago.monto > this.Abasto.total_faltante) this.Error.mensaje.push('Debe ingresar un monto válido');
+                    if (this.Pago.monto == '' || this.Pago.monto <= 0 || this.Pago.monto > (this.Abasto.total_ver - this.getSumaPagos)) this.Error.mensaje.push('Debe ingresar un monto válido');
                 }
                 if ( this.Error.mensaje.length ) this.Error.estado = 1;
                 return this.Error.estado;
@@ -1135,8 +1135,8 @@
             },
             abrirModalPagar(abasto = []){
                 this.Abasto.id = abasto['id'];
-                this.Abasto.total = abasto['total'];
-                this.listarPagos(abasto['id'], abasto['total']);
+                this.Abasto.total_ver = abasto['total'];
+                this.listarPagos(abasto['id']);
 
                 this.abrirModal(3, 'Realizar Pago', 'Guardar', 'Cancelar', '');
             },
