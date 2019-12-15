@@ -16,7 +16,7 @@
             <!-- Inputs de busqueda -->
             <div class="row form-group">
                 <div class="col-md-4 input-group"> 
-                    <select class="custom-select text-gray-900" v-model="Busqueda.tipo">
+                    <select class="custom-select text-gray-900" v-model="Busqueda.type">
                         <option value="2">Todos</option>
                         <option value="0">Contado</option>
                         <option value="1">Credito</option>
@@ -27,7 +27,7 @@
                 </div>
                 <div class="col-md-5"></div>
                 <label class="col-md-2 text-right">N° filas:</label>
-                <select class="col-md-1 text-right custom-select custom-select-sm text-gray-900" v-model="Busqueda.filas">
+                <select class="col-md-1 text-right custom-select custom-select-sm text-gray-900" v-model="Busqueda.rows">
                     <option v-for="item in Filas" :key="item" :value="item" v-text="item"></option>
                 </select>
             </div>
@@ -39,57 +39,45 @@
                     <table class="table table-borderless table-sm text-gray-900">
                         <thead>
                             <tr class="table-info">
+                                <th class="text-center">Codigo</th>
+                                <th class="text-center">Tipo</th>
+                                <th class="text-center">Cliente</th>
                                 <th class="text-center">Total</th>
-                                <th class="text-center">Faltante</th>
-                                <th class="text-center">Tipo</th>
                                 <th class="text-center">Realizado</th>
-                                <th class="text-center">Tipo</th>
                                 <th class="text-center">Opciones</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr v-for="venta in ListaVenta" :key="venta.id" >
-                                <td class="text-right" v-text="venta.total"></td>
-                                <td class="text-right" v-text="venta.faltante!=0?venta.faltante:'---'"></td>
-                                <td v-text="venta.tipo"></td>
-                                <td v-text="venta.tipo_venta? 'Crédito' : 'Contado'"></td>
-                                <td>
-                                    <div v-if="venta.estado_envio == 0">
-                                        <span class="badge badge-primary">Enviado</span>
-                                    </div>
-                                    <div v-else-if="venta.estado_envio == 1">
-                                        <span class="badge badge-success">Aceptado</span>
-                                    </div>
-                                    <div v-else>
-                                        <span class="badge badge-danger">Rechazado</span>
-                                    </div>
+                                <td class="text-right" v-text="venta.codigo"></td>
+                                <td class="text-right">
+                                    <label v-if="venta.tipo==0">Contado</label>
+                                    <label v-if="venta.tipo==1">Credito</label>
                                 </td>
+                                <td class="text-right" v-text="venta.cliente_nombre"></td>
+                                <td class="text-right" v-text="venta.total"></td>
+                                <td class="text-center" v-text="venta.created_at"></td>
                                 <td class="text-center">
-                                    
-                                    <template v-if="venta.tipo_venta == 1 && venta.total_faltante != 0">
-                                        <button type="button"  title="Pagar Cuota" class="btn btn-warning btn-sm" @click="abrirModalPagar(venta)">
+                                    <template>
+                                        <button type="button" title="VER" class="btn btn-warning btn-sm" @click="abrirModalVer(venta)">
+                                            <i class="far fa-eye"></i>
+                                        </button>
+                                    </template>
+                                    <template>
+                                        <button type="button" title="EDITAR" class="btn btn-primary btn-sm">
+                                            <i class="far fa-eye"></i>
+                                        </button>
+                                    </template>
+                                    <template v-if="venta.tipo==1">
+                                        <button type="button"  title="PAGAR" class="btn btn-warning btn-sm" @click="abrirModalPagar(venta)">
                                             <i class="fas fa-hand-holding-usd"></i>
                                         </button>
                                     </template>
                                     <template>
-                                        <button type="button"  title="Ver venta" class="btn btn-primary btn-sm">
-                                            <i class="far fa-eye"></i>
+                                        <button type="button" title="ANULAR" class="btn btn-danger btn-sm" @click="abrirModalAnular(venta.id)">
+                                            <i class="fas fa-trash-alt"></i>
                                         </button>
                                     </template>
-                                    <template v-if="venta.estado_envio == 0">
-                                        <button type="button"  title="Anular" class="btn btn-danger btn-sm" @click="anularventa(venta.id)">
-                                                <i class="fas fa-trash-alt"></i>
-                                        </button>
-                                    </template>
-                                    <template v-else-if="venta.estado_envio == 2">
-                                        <button type="button"  title="Reenviar" class="btn btn-info btn-sm">
-                                            <i class="fas fa-plane"></i>
-                                        </button>
-                                        <button type="button"  title="Anular" class="btn btn-danger btn-sm">
-                                                <i class="fas fa-trash-alt"></i>
-                                        </button>
-                                    </template>
-                                    
                                 </td>
                             </tr>
                         </tbody>
@@ -116,292 +104,13 @@
 
         </div>
 
-        <!-- Modales de Agregar/Editar -->
-        <div class="modal text-gray-900" :class="{'mostrar': Modal.estado}">
-            <div class="modal-dialog modal-dialog-centered animated bounceIn fast" :class="Modal.size">
-                <div class="modal-content">
 
-                    <div class="modal-header">
-                        <h3 v-text="Modal.titulo" class="modal-title" ></h3>
-                        <button type="button" @click="cerrarModal()" class="close">X</button>
-                    </div>
-                    
-                    <div class="modal-body">
-                        <div class="container-fluid">
-                        <!-- Modal Numero 1 de AGREGAR-->
-                            <div v-if="Modal.numero == 1 || Modal.numero == 2">
-                                <!-- Filtro de productos -->
-                                <div v-if="Error.estado" class="row d-flex justify-content-center">
-                                    <div class="alert alert-danger">
-                                        <button type="button" @click="Error.estado=0" class="close text-primary" data-dismiss="alert">×</button>
-                                        <strong>Corregir los siguentes errores:</strong>
-                                        <ul> 
-                                            <li v-for="error in Error.mensaje" :key="error" v-text="error"></li> 
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-2 pl-2">
-                                        <p class="font-weight-bold">PROVEEDOR</p>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="input-group"> 
-                                            RUC/DNI&nbsp;<span class="text-danger">*</span>&nbsp;
-                                            <input type="text" class="form-control form-control-sm" v-model="DatosServicio.documento" autofocus @keyup.enter="consultar()">
-                                            <button type="button" class="btn btn-sm btn-primary" @click="consultar()">
-                                                <i class="fas fa-sync-alt"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <h5>
-                                            <span role="status" :class="Carga.clase">
-                                            </span>&nbsp;
-                                            <span v-text="DatosServicio.mensaje" :class="DatosServicio.alert"></span>
-                                        </h5>
-                                    </div>
-                                </div>
-                                <div v-if="DatosServicio.tipo == 1">
-                                    <div class="row form-group">
-                                        <div class="col-md-2">
-                                            <div class="input-group"> 
-                                                DNI&nbsp;
-                                                <input type="text" class="form-control form-control-sm" readonly v-model="DatosProveedor.documento">
-                                            </div>
-                                        </div>
-                                        <div class="" :class="Modal.numero == 2 ? 'col-md-3': 'col-md-4'">
-                                            <div class="input-group">
-                                                <label >Nombres</label>&nbsp;
-                                                <input type="text" class="form-control form-control-sm" readonly v-model="DatosProveedor.nombres">
-                                            </div>
-                                        </div>
-                                        <div class="" :class="Modal.numero == 2 ? 'col-md-3': 'col-md-6'">
-                                            <div class="input-group">
-                                                <label >Apellidos</label>&nbsp;
-                                                <input type="text" class="form-control form-control-sm" readonly v-model="DatosProveedor.apellidos">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div v-else-if="DatosServicio.tipo == 2">
-                                    <div class="row form-group">
-                                        <div class="col-md-2">
-                                            <div class="input-group"> 
-                                                RUC&nbsp;
-                                                <input type="text" class="form-control form-control-sm" readonly v-model="DatosProveedor.documento">
-                                            </div>
-                                        </div>
-                                        <div class="" :class="Modal.numero == 2 ? 'col-md-6': 'col-md-10'">
-                                            <div class="input-group">
-                                                <label >Razón social</label>&nbsp;
-                                                <input type="text" class="form-control form-control-sm" v-model="DatosProveedor.razon_social" :readonly="DatosServicio.readonly">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row shadow bg-white rounded p-2">
-                                    <div class="col-md-4">
-                                        <div class="row">
-                                            <p class="font-weight-bold">PRODUCTOS</p>
-                                        </div>
-                                        <div class="row">
-                                            <div class="input-group"> 
-                                                <input type="search" class="form-control form-control-sm" v-model="BusquedaFiltro.texto" @keyup.enter="listarFiltro()" id="filtroProducto" placeholder="Producto,marca,modelo,tamaño,color">
-                                                <button type="button" class="btn btn-sm btn-primary" @click="listarFiltro()">
-                                                    <i class="fa fa-search"></i>&nbsp; Buscar
-                                                </button>
-                                            </div>
-                                        </div>
-                                        <br>
-                                        <div class="row form-group overflow-auto" style="height: 17.5rem;">
-                                            <div v-if="ListaProducto.length">
-                                                <table class="table table-borderless table-striped table-sm text-gray-900">
-                                                    <thead>
-                                                        <tr class="table-danger">
-                                                            <th class="text-center" style="width: 3rem;">Agregar</th>
-                                                            <th>Nombre</th>
-                                                            <th>Stock</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr v-for="producto in ListaProducto" :key="producto.id" >
-                                                            <td class="text-center">
-                                                                <button type="button" title="Editar" class="btn btn-circle btn-sm btn-outline-success" @click="agregarDetalle(producto)">
-                                                                    <i class="fas fa-plus"></i>
-                                                                </button>
-                                                            </td>
-                                                            <td v-text="producto.nombre"></td>
-                                                            <td v-text="producto.stock"></td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                            <div v-else>
-                                                <p>No se han encontrado resultados</p>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <div class="input-group"> 
-                                                    <label for="">Enviar a</label>&nbsp;<span class="text-danger">*</span>&nbsp;
-                                                    <select v-model="Abasto.centro_to_id" class="custom-select custom-select-sm text-gray-900">
-                                                        <option value="0">Seleccione</option>
-                                                        <option v-for="item in SelectAlmacen" :key="item.id" :value="item.id" v-text="item.nombre" ></option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-8 ml-auto container">
-                                        <div class="row">
-                                            <div class="col-md-3 p-0">
-                                                <p class="font-weight-bold">LISTA DE ITEMS</p>
-                                            </div>
-                                            <div class="col-md-6"></div>
-                                            <div class="col-md-3">
-                                                <div class="input-group">
-                                                    <label for="tipo" class="font-weight-bold">Tipo</label>&nbsp;<span class="text-danger">*</span>&nbsp;
-                                                    <select v-model="Abasto.tipo" class="custom-select custom-select-sm" id="tipo">
-                                                        <option value="0">Contado</option>
-                                                        <option value="1">Credito</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row form-group ec-table-modal overflow-auto">
-                                            <div v-if="ListaDetalleAbasto.length">
-                                                <table class="table tableless table-striped table-sm text-gray-900">
-                                                    <thead>
-                                                        <tr class="table-success">
-                                                            <th class="text-center" style="width: 3rem;">Quitar</th>
-                                                            <th>Nombre</th>
-                                                            <th style="width: 5rem;">Cant.</th>
-                                                            <th style="width: 5rem;">P. Unit.</th>
-                                                            <th class="text-center">Subtotal</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr v-for="(detalle, indice) in ListaDetalleAbasto" :key="detalle.id">
-                                                            <td class="text-center">
-                                                                <button type="button" title="Editar" class="btn btn-circle btn-outline-danger btn-sm" @click="quitarDetalle(indice)">
-                                                                    <i class="fas fa-minus"></i>
-                                                                </button>
-                                                            </td>
-                                                            <td v-text="detalle.nombre"></td>
-                                                            <td >
-                                                                <input type="number" v-model="detalle.cantidad" class="form-control form-control-sm" min="1">
-                                                            </td>
-                                                            <td>
-                                                                <input type="number" v-model="detalle.costo_abasto" class="form-control form-control-sm" min="0">
-                                                            </td>
-                                                            <td class="text-right pr-3">
-                                                                {{detalle.subtotal = (detalle.costo_abasto * detalle.cantidad).toFixed(2)}}
-                                                            </td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                            <div v-else>
-                                                <br>
-                                                <p>Sin detalles de abasto</p>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-4">
-                                                <div class="input-group" style="width: 12.4rem;" v-if="Abasto.tipo == '1'"> 
-                                                    <label for="">Pago inicial</label>&nbsp;<span class="text-danger">*</span>&nbsp;
-                                                    <input type="number" class="form-control form-control-sm" v-model="Abasto.pagoInicial" min="0">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-3">
-                                            </div>
-                                            <div class="col-md-5">
-                                                <p class="text-right pr-1">Desembolso total: s/ {{getDesembolso}}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div v-if="Modal.numero == 3">
-                                <div v-if="Error.estado" class="row d-flex justify-content-center">
-                                    <div class="alert alert-danger" style="height: 4.5rem;">
-                                        <button type="button" @click="Error.estado=0" class="close text-primary" data-dismiss="alert">×</button>
-                                        <strong>Corregir los siguentes errores:</strong>
-                                        <ul> 
-                                            <li v-for="error in Error.mensaje" :key="error" v-text="error"></li> 
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="row form-group ">
-                                    <div class="col-md-3">
-                                        <span class="font-weight-bold">Registrar</span>
-                                    </div>
-                                    <div class="col-md-1"></div>
-                                    <div class="col-md-7">
-                                        <div class="input-group"> 
-                                            Monto&nbsp;
-                                            <input type="number" class="form-control form-control-sm" v-model="Pago.monto" @keyup.enter="agregarListaPago()">&nbsp;
-                                            <button type="button" class="btn btn-sm btn-primary" @click="agregarListaPago()">
-                                                Registrar
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-1"></div>
-                                </div>
-                                <div class="row form-group overflow-auto" style="height: 17.5rem;">
-                                    <div class="col-md-12">
-                                        <div v-if="ListaPago.length">
-                                            <table class="table table-borderless table-striped table-sm text-gray-900">
-                                                <thead>
-                                                    <tr class="table-info">
-                                                        <th class="text-center">#</th>
-                                                        <th class="text-center">Fecha de pago</th>
-                                                        <th class="text-right pr-5">Monto</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr v-for="(pago, index) in ListaPago" :key="index" :class="pago.color">
-                                                        <td class="text-center">{{index+1}}</td>
-                                                        <td class="text-center" v-text="pago.created_at"></td>
-                                                        <td class="text-right pr-5" v-text="pago.monto"></td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                        <div v-else>
-                                            <p>Ningun pago registrado</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-12 text-right pr-5">
-                                        <span class="text-success">Monto pagado: s/{{getSumaPagos}}</span>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-12 text-right pr-5">
-                                        <span class="text-danger">Monto faltante: s/{{this.Abasto.total_faltante = Abasto.total - getSumaPagos}}</span>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-12 text-right pr-5">
-                                        <span>Costo total: s/{{Abasto.total}}</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
 
-                    <div class="modal-footer" v-if="permisoModalFooter">
-                        <div class="row form-group col-md-12 d-flex justify-content-around">
-                            <button type="button" @click="accionar(Modal.accion)" class="btn btn-success" v-text="Modal.accion"></button>
-                            <button type="button" @click="cerrarModal()" class="btn btn-secondary">Cancelar</button>
-                        </div>
-                    </div>
-                
-                </div>
-            </div>
-        </div>
+
+
+
+
+
     </main>
 </template>
 <script>
@@ -409,37 +118,43 @@
         data(){
             return {
                 //datos generales
-                ListaAbasto: [],
-                Abasto: {
+                ListaVenta: [],
+                Venta: {
                     id: 0,
+                    codigo: '',
                     total: 0.00,
                     total_faltante: 0.00,
                     tipo: 1, // 0: Contado, 1: Credito
-                    centro_to_id: 0, //Almacén donde se enviará el abasto
                     created_at : '',
-                    pagoInicial: '',
                 },
-                DatosProveedor:{
+                ListaDetalle: [],
+                Detalle: {
+
+                },
+                
+                Cliente:{
                     id: 0,
                     documento: '',
                     nombres: '',
                     apellidos: '',
                     razon_social: ''
                 },
+
                 //datos de busqueda y filtracion general
                 Busqueda: {
-                    texto: '',
-                    tipo: 2,
-                    filas: 5
+                    text: '',
+                    type: 2,
+                    rows: 5
                 },
 
                 //datos de modales
                 Modal: {
-                    numero: 0, // 1: Agregar, 2: Ver, 3: Pagar
+                    numero: 0, // 1 Agregar, 2 Ver, 3 Pagar
                     estado: 0,
                     titulo: '',
-                    accion: '',
-                    size: ''
+                    size: '',
+                    btnA: '',
+                    btnC: ''
                 },
 
                 //datos de paginacion
@@ -451,17 +166,18 @@
                     firstItem: 0,
                     lastItem: 0
                 },
+
                 Navegacion:{
-                    offset: 3,
-                    ordenarPor: 'abasto.id',
-                    orden: 'desc'
+                    offset: 3
                 },
 
                 //datos de errores
                 Error: {
                     estado: 0,
+                    numero: 0,
                     mensaje: []
                 },
+
                 Carga: {
                     clase: ''
                 },
@@ -487,6 +203,11 @@
                 Pago:{
                     monto: '',
                     sumaPagos: 0.00,
+                },
+
+                //datos de Rutas
+                Ruta: {
+                    venta: '/venta'
                 }
             }
         },
@@ -526,13 +247,6 @@
 
                 return filas;
             },
-            permisoModalFooter: function(){
-                if ( this.Modal.numero == 1 ) return true;
-                if ( this.Modal.numero == 2 ) return true;
-                if ( this.Modal.numero == 3 ) return true;
-
-                return false;
-            },
             getDesembolso: function(){
                 this.Abasto.total = 0.00;
                 this.ListaDetalleAbasto.forEach( detalle => {
@@ -549,32 +263,183 @@
             }
         },
         methods: {
-            listar(page = 1, ordenarPor = ''){
-                if ( ordenarPor == this.Navegacion.ordenarPor ) {
-                    this.Navegacion.orden = (this.Navegacion.orden == 'asc' ? 'desc' : 'asc');
-                } else {
-                    this.Navegacion.ordenarPor = (ordenarPor != '' ? ordenarPor: this.Navegacion.ordenarPor);
-                    // this.Navegacion.orden = 'asc';
-                }
-                this.Paginacion.currentPage = page==1?1:page;
+            listar(page = 1){
+                this.Paginacion.currentPage = page;
 
-                var url = '/abasto?page='+this.Paginacion.currentPage
-                        +'&estado='+this.Busqueda.estado
-                        +'&texto='+this.Busqueda.texto
-                        +'&filas='+this.Busqueda.filas
-                        +'&dia='+this.Busqueda.dia
-                        +'&mes='+this.Busqueda.mes
-                        +'&year='+this.Busqueda.year
-                        +'&ordenarPor='+this.Navegacion.ordenarPor
-                        +'&orden='+this.Navegacion.orden;
-                
                 var me = this;
+                var url = this.Ruta.venta+'?'
+                        +'page='+this.Paginacion.currentPage
+                        +'&type='+this.Busqueda.type
+                        +'&text='+this.Busqueda.text
+                        +'&rows='+this.Busqueda.rows;
+                
                 axios.get(url).then(function (response) {
-                    me.ListaAbasto = response.data.abastos.data;
+                    me.ListaVenta = response.data.ventas.data;
                     me.Paginacion = response.data.paginacion;
                 }).catch(function (error) {
                     console.log(error)
                 });
+            },
+            agregar(){
+                if ( this.validar() ) return;
+                
+                var me = this;
+                axios.post('/abasto/agregar', {
+                    //Datos del abasto
+                    'id' : this.Abasto.id,
+                    'total': this.Abasto.total,
+                    'tipo': this.Abasto.tipo, 
+                    'centro_to_id': this.Abasto.centro_to_id,
+                    'pagoInicial': this.Abasto.pagoInicial,
+                    'proveedor': this.DatosProveedor,
+                    //Datos del detalle de abasto
+                    'listaDetalleAbasto': this.ListaDetalleAbasto
+                    
+                }).then(function(response){
+                    me.cerrarModal();
+                    me.listar();
+                    Swal.fire({
+                        position: 'top-end',
+                        toast: true,
+                        type: 'success',
+                        title: 'El abasto se ha REGISTRADO correctamente',
+                        showConfirmButton: false,
+                        timer: 4500,
+                        animation:false,
+                        customClass:{
+                            popup: 'animated bounceIn fast'
+                        }
+                    });
+                }).catch(function(error){
+                    console.log(error);
+                });
+            },
+            abrirModalAgregar(){
+                this.abrirModal(1, 'Registrar Venta', 'modal-xl', 'Agregar', 'Cancelar');
+
+                if(!this.SelectAlmacen.length) this.selectAlmacen();
+            },
+            abrirModalPagar(abasto = []){
+                this.Abasto.id = abasto['id'];
+                this.Abasto.total = abasto['total'];
+                this.abrirModal(3, 'Realizar Pago', 'Guardar', '');
+                this.listarPagos(abasto['id'], abasto['total']);
+            },
+            anularAbasto(id){
+                Swal.fire({
+                    title: '¿Está seguro que desea ANULAR el abasto?',
+                    type: 'error',
+                    showCancelButton: true,
+                    confirmButtonText: 'Si, anular',
+                    cancelButtonText: 'Cancelar',
+                    // reverseButtons: true,
+                    customClass: {
+                        confirmButton: 'btn btn-success',
+                        cancelButton: 'btn btn-secondary'
+                    },
+                    buttonsStyling: false
+                }).then((result) => {
+                    if (result.value) {
+                        var me = this;
+                
+                        axios.put('/abasto/anular', {
+                            'id' : id
+                        }).then(function (response) {
+                            me.listar();
+                            Swal.fire({
+                                position: 'top-end',
+                                toast: true,
+                                type: 'success',
+                                title: 'El abasto se anuló correctamente',
+                                showConfirmButton: false,
+                                timer: 4500,
+                                animation:false,
+                                customClass:{
+                                    popup: 'animated bounceIn fast'
+                                }
+                            });
+                        }).catch(function (error) {
+                            console.log(error);
+                        });
+                    } else if ( result.dismiss === Swal.DismissReason.cancel ) {
+                    }
+                });
+            },
+            abrirModal(numero, titulo, accion, size){
+                this.Modal.estado = 1;
+                this.Modal.numero = numero;
+                this.Modal.titulo = titulo;
+                this.Modal.size = size;
+                this.Modal.btnA = btnA;
+                this.Modal.btnC = btnC;
+            },
+            cerrarModal(){
+                this.Modal.numero = 0;
+                this.Modal.estado = 0;
+                this.Modal.mensaje = [];
+
+                this.Error.estado = 0;
+                this.Error.mensaje = [];
+
+                this.DatosServicio.documento = '';
+                this.DatosServicio.alert = '';
+                this.DatosServicio.mensaje = '';
+
+                this.Abasto.id = 0;
+                this.Abasto.total = 0.00;
+                this.Abasto.pagoInicial = '';
+                this.Abasto.centro_to_id = 0;
+                this.Abasto.tipo = 1;
+
+                this.DatosServicio.tipo = 0;
+                this.DatosProveedor.id = 0;
+                this.DatosProveedor.documento = '';
+                this.DatosProveedor.nombres = '';
+                this.DatosProveedor.apellidos = '';
+                this.DatosProveedor.razon_social = '';
+
+                this.ListaPago = [];
+                this.Pago.monto = '';
+
+                this.ListaDetalleAbasto = [];
+                this.BusquedaFiltro.texto = '';
+            },
+            accionar(){
+                switch( this.Modal.numero ){
+                    case 1: this.agregar(); break;
+                    case 'Guardar': this.agregarPago(); break;
+                }
+            },
+            validar(){
+                this.Error.estado = 0;
+                this.Error.mensaje = [];
+
+                //Recorrere la lista de Material
+                if(this.Modal.numero == 1){ //Modal agregar
+                    if (this.DatosProveedor.documento == '') this.Error.mensaje.push('Debe ingresar datos del proveedor');
+                    if (!this.ListaDetalleAbasto.length ) {
+                        this.Error.mensaje.push("No existe ningun detalle de abasto");
+                    }else if(this.Abasto.centro_to_id == 0){
+                        this.Error.mensaje.push('Debe seleccionar el almacén receptor');
+                    }else{
+                        this.validarNegativos();
+                    }
+
+                    if(this.Abasto.tipo == 1){
+                        if(this.Abasto.pagoInicial<0 || this.Abasto.pagoInicial == ''){
+                            this.Error.mensaje.push('El pago inicial debe ser mayor o igual a 0')
+                        }else if(this.Abasto.pagoInicial > this.Abasto.total){
+                            this.Error.mensaje.push('El pago inicial no debe ser mayor al desembolso total')
+                        }else if(this.Abasto.pagoInicial == this.Abasto.total){
+                            this.Error.mensaje.push('El pago inicial es igual al desembolso total, se recomienda cambiarlo a una venta al contado')
+                        }
+                    }
+
+                }else{ //Modal editar
+                    if (this.Pago.monto == '' || this.Pago.monto <= 0 || this.Pago.monto > this.Abasto.total_faltante) this.Error.mensaje.push('Debe ingresar un monto válido');
+                }
+                if ( this.Error.mensaje.length ) this.Error.estado = 1;
+                return this.Error.estado;
             },
             formatearFecha(fecha){
                 let arrayFecha = fecha.split('-');
@@ -750,60 +615,6 @@
                 }).fail(function(){
                 });
             },
-            abrirModalAgregar(){
-                this.abrirModal(1, 'Registrar Abasto', 'Agregar', 'modal-xl modal-dialog-scrollable');
-                if(!this.SelectAlmacen.length) this.selectAlmacen();
-            },
-            abrirModal(numero, titulo, accion, size){
-                this.Modal.estado = 1;
-                this.Modal.numero = numero;
-                this.Modal.titulo = titulo;
-                this.Modal.accion = accion;
-                this.Modal.size = size;
-            },
-            accionar(accion){
-                switch( accion ){
-                    case 'Agregar': {
-                        this.agregar();
-                        break;
-                    }
-                    case 'Guardar': {
-                        this.agregarPago();
-                        break;
-                    }
-                }
-            },
-            validar(){
-                this.Error.estado = 0;
-                this.Error.mensaje = [];
-
-                //Recorrere la lista de Material
-                if(this.Modal.numero == 1){ //Modal agregar
-                    if (this.DatosProveedor.documento == '') this.Error.mensaje.push('Debe ingresar datos del proveedor');
-                    if (!this.ListaDetalleAbasto.length ) {
-                        this.Error.mensaje.push("No existe ningun detalle de abasto");
-                    }else if(this.Abasto.centro_to_id == 0){
-                        this.Error.mensaje.push('Debe seleccionar el almacén receptor');
-                    }else{
-                        this.validarNegativos();
-                    }
-
-                    if(this.Abasto.tipo == 1){
-                        if(this.Abasto.pagoInicial<0 || this.Abasto.pagoInicial == ''){
-                            this.Error.mensaje.push('El pago inicial debe ser mayor o igual a 0')
-                        }else if(this.Abasto.pagoInicial > this.Abasto.total){
-                            this.Error.mensaje.push('El pago inicial no debe ser mayor al desembolso total')
-                        }else if(this.Abasto.pagoInicial == this.Abasto.total){
-                            this.Error.mensaje.push('El pago inicial es igual al desembolso total, se recomienda cambiarlo a una venta al contado')
-                        }
-                    }
-
-                }else{ //Modal editar
-                    if (this.Pago.monto == '' || this.Pago.monto <= 0 || this.Pago.monto > this.Abasto.total_faltante) this.Error.mensaje.push('Debe ingresar un monto válido');
-                }
-                if ( this.Error.mensaje.length ) this.Error.estado = 1;
-                return this.Error.estado;
-            },
             validarNegativos(){
                 for (let i = 0; i < this.ListaDetalleAbasto.length; i++) {
                     const detalle = this.ListaDetalleAbasto[i];
@@ -815,40 +626,6 @@
                         break;
                     }
                 }
-            },
-            agregar(){
-                if ( this.validar() ) return;
-                
-                var me = this;
-                axios.post('/abasto/agregar', {
-                    //Datos del abasto
-                    'id' : this.Abasto.id,
-                    'total': this.Abasto.total,
-                    'tipo': this.Abasto.tipo, 
-                    'centro_to_id': this.Abasto.centro_to_id,
-                    'pagoInicial': this.Abasto.pagoInicial,
-                    'proveedor': this.DatosProveedor,
-                    //Datos del detalle de abasto
-                    'listaDetalleAbasto': this.ListaDetalleAbasto
-                    
-                }).then(function(response){
-                    me.cerrarModal();
-                    me.listar();
-                    Swal.fire({
-                        position: 'top-end',
-                        toast: true,
-                        type: 'success',
-                        title: 'El abasto se ha REGISTRADO correctamente',
-                        showConfirmButton: false,
-                        timer: 4500,
-                        animation:false,
-                        customClass:{
-                            popup: 'animated bounceIn fast'
-                        }
-                    });
-                }).catch(function(error){
-                    console.log(error);
-                });
             },
             listarPagos(id,total){
                 let me = this;
@@ -864,12 +641,6 @@
                 }).catch(function(error){
                     console.log(error);
                 });
-            },
-            abrirModalPagar(abasto = []){
-                this.Abasto.id = abasto['id'];
-                this.Abasto.total = abasto['total'];
-                this.abrirModal(3, 'Realizar Pago', 'Guardar', '');
-                this.listarPagos(abasto['id'], abasto['total']);
             },
             agregarListaPago(){//Agrega pagos a la lista de pagos
                 if ( this.validar() ) return;
@@ -913,97 +684,6 @@
                     if(pago.estado) pagosNuevos.push(pago);
                 });
                 return pagosNuevos;
-            },
-            cerrarModal(){
-                this.Modal.numero = 0;
-                this.Modal.estado = 0;
-                this.Modal.mensaje = [];
-
-                this.Error.estado = 0;
-                this.Error.mensaje = [];
-
-                this.DatosServicio.documento = '';
-                this.DatosServicio.alert = '';
-                this.DatosServicio.mensaje = '';
-
-                this.Abasto.id = 0;
-                this.Abasto.total = 0.00;
-                this.Abasto.pagoInicial = '';
-                this.Abasto.centro_to_id = 0;
-                this.Abasto.tipo = 1;
-
-                this.DatosServicio.tipo = 0;
-                this.DatosProveedor.id = 0;
-                this.DatosProveedor.documento = '';
-                this.DatosProveedor.nombres = '';
-                this.DatosProveedor.apellidos = '';
-                this.DatosProveedor.razon_social = '';
-
-                this.ListaPago = [];
-                this.Pago.monto = '';
-
-                this.ListaDetalleAbasto = [];
-                this.BusquedaFiltro.texto = '';
-            },
-            anularAbasto(id){
-                Swal.fire({
-                    title: '¿Está seguro que desea ANULAR el abasto?',
-                    type: 'error',
-                    showCancelButton: true,
-                    confirmButtonText: 'Si, anular',
-                    cancelButtonText: 'Cancelar',
-                    // reverseButtons: true,
-                    customClass: {
-                        confirmButton: 'btn btn-success',
-                        cancelButton: 'btn btn-secondary'
-                    },
-                    buttonsStyling: false
-                }).then((result) => {
-                    if (result.value) {
-                        var me = this;
-                
-                        axios.put('/abasto/anular', {
-                            'id' : id
-                        }).then(function (response) {
-                            me.listar();
-                            Swal.fire({
-                                position: 'top-end',
-                                toast: true,
-                                type: 'success',
-                                title: 'El abasto se anuló correctamente',
-                                showConfirmButton: false,
-                                timer: 4500,
-                                animation:false,
-                                customClass:{
-                                    popup: 'animated bounceIn fast'
-                                }
-                            });
-                        }).catch(function (error) {
-                            console.log(error);
-                        });
-                    } else if ( result.dismiss === Swal.DismissReason.cancel ) {
-                    }
-                });
-            },
-            getTitulo(titulo){
-                var seleccionada = 0;
-
-                for (let i = 0; i < this.Headers.length; i++) {
-                    if ( titulo == this.Headers[i].titulo && this.Navegacion.ordenarPor == this.Headers[i].nombre ) {
-                        seleccionada = 1;
-                        break;
-                    }
-                }
-
-                if ( seleccionada == 1 ) {
-                    if ( this.Navegacion.orden == 'asc' ) {
-                        titulo = titulo + ' ^';
-                    } else {
-                        titulo = titulo + ' v';
-                    }
-                }
-
-                return titulo;
             },
             cambiarPagina(page){
                 if ( page >= 1 && page <= this.Paginacion.lastPage) {
@@ -1081,7 +761,7 @@
             },
         },
         mounted() {
-            // this.listar();
+            this.listar();
         }
     }
 
