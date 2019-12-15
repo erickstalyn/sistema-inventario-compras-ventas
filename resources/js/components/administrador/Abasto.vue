@@ -319,7 +319,7 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <tr v-for="(detalle, indice) in ListaDetalleAbasto" :key="detalle.id">
+                                                        <tr v-for="(detalle, indice) in ListaDetalleAbastoVer" :key="detalle.id">
                                                             <td class="text-center">
                                                                 <button type="button" title="Editar" class="btn btn-circle btn-outline-danger btn-sm" @click="quitarDetalle(indice)">
                                                                     <i class="fas fa-minus"></i>
@@ -483,17 +483,6 @@
                                                 <span>Costo total: s/{{Abasto.total_ver}}</span>
                                             </div>
                                         </div>
-                                        <!-- <div class="row">
-                                            <div class="col-md-12">
-                                                <div class="input-group"> 
-                                                    <label for="">Enviar a</label>&nbsp;<span class="text-danger">*</span>&nbsp;
-                                                    <select v-model="Abasto.centro_to_id" class="custom-select custom-select-sm text-gray-900">
-                                                        <option value="0">Seleccione</option>
-                                                        <option v-for="item in SelectAlmacen" :key="item.id" :value="item.id" v-text="item.nombre" ></option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </div> -->
                                     </div>
                                     <div class="ml-auto container" :class="[Abasto.tipo_abasto ? 'col-md-8' : 'col-md-12']">
                                         <div class="row">
@@ -503,51 +492,41 @@
                                             <div class="col-md-6"></div>
                                             <div class="col-md-3">
                                                 <div class="input-group">
-                                                    <label for="tipo" class="font-weight-bold">Tipo</label>&nbsp;<span class="text-danger">*</span>&nbsp;
-                                                    <select v-model="Abasto.tipo" class="custom-select custom-select-sm" id="tipo">
-                                                        <option value="0">Contado</option>
-                                                        <option value="1">Credito</option>
-                                                    </select>
+                                                    <label for="tipo" class="font-weight-bold">Tipo: </label>&nbsp;
+                                                    <div v-if="Abasto.tipo_abasto">
+                                                        Crédito
+                                                    </div>
+                                                    <div v-else>
+                                                        Contado
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="row form-group ec-table-modal overflow-auto">
-                                            <div v-if="ListaDetalleAbasto.length">
-                                                <table class="table tableless table-striped table-sm text-gray-900">
-                                                    <thead>
-                                                        <tr class="table-success">
-                                                            <th class="text-center" style="width: 3rem;">Quitar</th>
-                                                            <th>Nombre</th>
-                                                            <th style="width: 5rem;">Cant.</th>
-                                                            <th style="width: 5rem;">P. Unit.</th>
-                                                            <th class="text-center">Subtotal</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr v-for="(detalle, indice) in ListaDetalleAbasto" :key="detalle.id">
-                                                            <td class="text-center">
-                                                                <button type="button" title="Editar" class="btn btn-circle btn-outline-danger btn-sm" @click="quitarDetalle(indice)">
-                                                                    <i class="fas fa-minus"></i>
-                                                                </button>
-                                                            </td>
-                                                            <td v-text="detalle.nombre"></td>
-                                                            <td >
-                                                                <input type="number" v-model="detalle.cantidad" class="form-control form-control-sm" min="1">
-                                                            </td>
-                                                            <td>
-                                                                <input type="number" v-model="detalle.costo_abasto" class="form-control form-control-sm" min="0">
-                                                            </td>
-                                                            <td class="text-right pr-3">
-                                                                {{detalle.subtotal = (detalle.costo_abasto * detalle.cantidad).toFixed(2)}}
-                                                            </td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                            <div v-else>
-                                                <br>
-                                                <p>Sin detalles de abasto</p>
-                                            </div>
+                                            <table class="table tableless table-striped table-sm text-gray-900">
+                                                <thead>
+                                                    <tr class="table-success">
+                                                        <th class="text-center">Nombre</th>
+                                                        <th style="width: 5rem;">Cant.</th>
+                                                        <th style="width: 5rem;">P. Unit.</th>
+                                                        <th class="text-center">Subtotal</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr v-for="detalle in ListaDetalleAbastoVer" :key="detalle.id">
+                                                        <td class="text-center" v-text="detalle.nombre_producto"></td>
+                                                        <td >
+                                                            {{detalle.cantidad}}
+                                                        </td>
+                                                        <td>
+                                                            {{detalle.costo_abasto}}
+                                                        </td>
+                                                        <td class="text-right pr-3">
+                                                            {{detalle.subtotal}}
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-4">
@@ -1020,6 +999,7 @@
                 this.Abasto.total_ver = abasto['total'];
 
                 this.listarPagos(abasto['id']);
+                this.listarDetallesAbasto(abasto['id']);
                 this.abrirModal(2, 'Ver Abasto', '', 'Cerrar', 'modal-xl modal-dialog-scrollable')
             },
             abrirModal(numero, titulo, accion, cancelar, size){
@@ -1129,6 +1109,20 @@
                     }
                 }).then(function(response){
                     me.ListaPago = response.data;
+                }).catch(function(error){
+                    console.log(error);
+                });
+            },
+            listarDetallesAbasto(id){
+                let me = this;
+                let url = '/abasto/getDetalles';
+
+                axios.get(url,{
+                    params: {
+                        'id': id
+                    }
+                }).then(function(response){
+                    me.ListaDetalleAbastoVer = response.data;
                 }).catch(function(error){
                     console.log(error);
                 });

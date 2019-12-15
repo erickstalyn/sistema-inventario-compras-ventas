@@ -22,11 +22,16 @@ class Abasto extends Model
     //Relación de muchos a muchos con Producto
     public function getProductos()
     {
-        return $this->belongsToMany('App\Producto', 'detalle_abasto');
+        return $this->belongsToMany('App\Producto', 'detalle_abasto', 'abasto_id', 'producto_id');
     }
     //Relacion de de uno a muchos con pagos 
     public function getPagos(){
         return $this->hasMany('App\Pago', 'abasto_id');
     }
+
+    public function getDetalles(){
+        return $this->hasMany('App\Detalle_abasto', 'abasto_id');
+    }
+
 
 }

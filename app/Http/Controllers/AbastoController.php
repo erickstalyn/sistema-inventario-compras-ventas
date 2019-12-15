@@ -177,6 +177,13 @@ class AbastoController extends Controller
         return $pagos;
     }
 
+
+    public function getDetalles(Request $request){
+        if ( !$request->ajax() ) return redirect('/') ;
+        $detalles = Abasto::findOrFail($request->id)->getDetalles;
+        return $detalles;
+    }
+
     public function anular(Request $request){
         try {
             DB::beginTransaction();
