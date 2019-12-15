@@ -80,7 +80,7 @@
                                 <th>Fecha de envío</th>
                                 <th>Costo total</th>
                                 <th>Tipo</th>
-                                <th>Estado de envío</th>
+                                <th class="text-center">Estado de envío</th>
                                 <th class="text-center">Opciones</th>
                             </tr>
                         </thead>
@@ -91,7 +91,7 @@
                                 <td v-text="formatearFecha(abasto.fecha_envio)"></td>
                                 <td v-text="abasto.total"></td>
                                 <td v-text="abasto.tipo_abasto? 'Crédito' : 'Contado'"></td>
-                                <td>
+                                <td class="text-center">
                                     <div v-if="abasto.estado_envio == 0">
                                         <span class="badge badge-primary">Enviado</span>
                                     </div>
@@ -298,7 +298,7 @@
                                             <div class="col-md-3">
                                                 <div class="input-group">
                                                     <label for="tipo" class="font-weight-bold">Tipo</label>&nbsp;<span class="text-danger">*</span>&nbsp;
-                                                    <select v-model="Abasto.tipo" class="custom-select custom-select-sm" id="tipo">
+                                                    <select v-model="Abasto.tipo_abasto" class="custom-select custom-select-sm" id="tipo">
                                                         <option value="0">Contado</option>
                                                         <option value="1">Credito</option>
                                                     </select>
@@ -1069,7 +1069,7 @@
                     //Datos del abasto
                     'id' : this.Abasto.id,
                     'total': this.Abasto.total,
-                    'tipo': this.Abasto.tipo, 
+                    'tipo': this.Abasto.tipo_abasto, 
                     'centro_to_id': this.Abasto.centro_to_id,
                     'pagoInicial': this.Abasto.pagoInicial,
                     'proveedor': this.DatosProveedor,
