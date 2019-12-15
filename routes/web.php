@@ -107,14 +107,9 @@ Route::group(['middleware' => ['auth']], function () {
     });
     Route::group(['middleware' => ['Puesto']], function (){
         
-        //RUTAS PARA PRODUCTOS DE CENTROS
-        // Route::get('/centro/listProductos', 'CentroController@listProductos'); //metodos generales
-
     });
     Route::group(['middleware' => ['Almacen']], function (){
 
-        //RUTAS PARA PRODUCTOS DE CENTROS
-        // Route::get('/centro/listProductos', 'CentroController@listProductos'); //metodos generales
         
         // RUTAS PARA PRODUCCIONES
         Route::get('/produccion', 'ProduccionController@listar'); //métodos generales

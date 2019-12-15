@@ -16,6 +16,7 @@ class CreateVentaTable extends Migration
             $table->mediumIncrements('id'); // usa 3 bytes, Cantiada max: 8 388 607
             $table->decimal('total', 8, 2);
             $table->decimal('total_faltante', 8, 2)->nullable();
+            $table->char('codigo', 13)->nullable();
             $table->char('tipo', 1);
             /*  0 -> VENTA AL CONTADO
                 1 -> VENTA AL CREDITO
