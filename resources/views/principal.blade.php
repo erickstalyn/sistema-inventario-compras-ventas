@@ -9,6 +9,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
   <meta name="idCentro" content="{{Auth::check() ? Auth::user()->centro_id : ''}}">
+  <meta name="rol" content="{{Auth::check() ? Auth::user()->rol : ''}}">
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>Control de inventario</title>
   <link href="fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">

@@ -14,11 +14,9 @@ use Exception;
 class ProductoController extends Controller {
     
     public function listar(Request $request){
-        // if ( !$request->ajax() ) return redirect('/') ;
+        if ( !$request->ajax() ) return redirect('/') ;
         
-        $estado = $request->estado;
         $texto = $request->texto;
-        $filas = $request->filas;
 
         $productos = Producto::where(function ($query) use ($texto) {
                                 if ( $texto != '' ) {
@@ -26,7 +24,7 @@ class ProductoController extends Controller {
                                         ->orWhere('codigo', 'like', '%'.$texto.'%');
                                 }
                             })
-                            ->orderBy('id', 'desc')->paginate($filas);
+                            ->orderBy('id', 'desc')->paginate($request->filas);
 
         return [
             'paginacion' => [
