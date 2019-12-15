@@ -1202,6 +1202,7 @@
                 this.Pago.monto = '';
 
                 this.ListaDetalleAbasto = [];
+                this.ListaDetalleAbastoVer = [];
                 this.BusquedaFiltro.texto = '';
             },
             anularAbasto(id){
@@ -1229,7 +1230,7 @@
                                 position: 'top-end',
                                 toast: true,
                                 type: 'success',
-                                title: 'El abasto se anuló correctamente',
+                                title: 'El abasto se ANULÓ correctamente',
                                 showConfirmButton: false,
                                 timer: 4500,
                                 animation:false,
