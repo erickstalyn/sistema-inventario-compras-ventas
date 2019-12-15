@@ -378,8 +378,8 @@
                                     <div class="col-md-7">
                                         <div class="input-group"> 
                                             Monto&nbsp;
-                                            <input type="number" class="form-control form-control-sm" v-model="Pago.monto" @keyup.enter="agregarPago()">&nbsp;
-                                            <button type="button" class="btn btn-sm btn-primary" @click="agregarPago()">
+                                            <input type="number" class="form-control form-control-sm" v-model="Pago.monto" @keyup.enter="agregarListaPago()">&nbsp;
+                                            <button type="button" class="btn btn-sm btn-primary" @click="agregarListaPago()">
                                                 Registrar
                                             </button>
                                         </div>
@@ -808,12 +808,8 @@
                         this.agregar();
                         break;
                     }
-                    case 'Editar': {
-                        this.editar();
-                        break;
-                    }
                     case 'Guardar': {
-                        this.editar();
+                        this.agregarPago();
                         break;
                     }
                 }
@@ -911,28 +907,54 @@
                 });
             },
             abrirModalPagar(abasto = []){
+                this.Abasto.id = abasto['id'];
                 this.Abasto.total = abasto['total'];
                 this.abrirModal(3, 'Realizar Pago', 'Guardar', '');
                 this.listarPagos(abasto['id'], abasto['total']);
             },
-            agregarPago(){//Agrega pagos a la lista de pagos
-                // if(this.Pago.monto != '' && this.Pago.monto > 0 && this.Pago.monto <= this.Abasto.total_faltante){
-                    if ( this.validar() ) return;
-                    let pago = {
-                        monto: Number.parseFloat(this.Pago.monto).toFixed(2),
-                        created_at: this.getFechaHoraHoy(),
-                        color: 'table-success'
-                    }
-                    this.ListaPago.push(pago);
-                    this.Pago.monto = '';
-                // }else{
-                //     console.log('error en el monto');
-                //     this.Error.estado = 1;
-                //     this.Error.mensaje = [];
-                //     this.Error.mensaje.push('Error en el monto')
-                // }
+            agregarListaPago(){//Agrega pagos a la lista de pagos
+                if ( this.validar() ) return;
+                let pago = {
+                    monto: Number.parseFloat(this.Pago.monto).toFixed(2),
+                    created_at: this.getFechaHoraHoy(),
+                    color: 'table-success',
+                    estado: 1 // 1: nuevo
+                }
+                this.ListaPago.push(pago);
+                this.Pago.monto = '';
             },
-            
+            agregarPago(){
+                let me = this;
+                let pagosNuevos = me.filtrarPagosNuevos();
+                axios.post('/pago/agregar', {
+                    'idAbasto': this.Abasto.id,
+                    'listaPagos': pagosNuevos
+                }).then(function(response){
+                    me.cerrarModal();
+                    me.listar();
+                    Swal.fire({
+                        position: 'top-end',
+                        toast: true,
+                        type: 'success',
+                        title: 'El pago se ha REGISTRADO correctamente',
+                        showConfirmButton: false,
+                        timer: 4500,
+                        animation:false,
+                        customClass:{
+                            popup: 'animated bounceIn fast'
+                        }
+                    });
+                }).catch(function(error){
+                    console.log(error);
+                });
+            },
+            filtrarPagosNuevos(){
+                let pagosNuevos = [];
+                this.ListaPago.forEach(pago => {
+                    if(pago.estado) pagosNuevos.push(pago);
+                });
+                return pagosNuevos;
+            },
             cerrarModal(){
                 this.Modal.numero = 0;
                 this.Modal.estado = 0;

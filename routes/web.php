@@ -91,6 +91,9 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/data/selectUnidad', 'DataController@selectUnidad'); //metodos secundarios
 
         Route::get('/centro/selectAlmacen', 'CentroController@selectAlmacen');
+
+        //RUTAS DE PAGOS
+        Route::post('/pago/agregar', 'PagoController@agregar');
         
 
     });
