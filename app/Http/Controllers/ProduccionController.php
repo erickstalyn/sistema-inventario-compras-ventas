@@ -96,7 +96,7 @@ class ProduccionController extends Controller
 
             foreach($listaDetalleProduccion as $ep => $det){
                 $detalle = new Detalle_produccion();
-                $detalle->nombre_producto = $det['nombre'];
+                $detalle->nombre_producto = $det['nombre_producto'];
                 $detalle->costo_produccion = $det['costo_produccion'];
                 $detalle->cantidad = $det['cantidad'];
                 // $detalle->subtotal = floatval($det['cantidad']) * floatval($det['costo_produccion']);
@@ -112,6 +112,13 @@ class ProduccionController extends Controller
         }
 
     }
+
+    public function getDetalles(Request $request){
+        if ( !$request->ajax() ) return redirect('/') ;
+        $detalles = Produccion::findOrFail($request->id)->getDetalles;
+        return $detalles;
+    }
+
     public function finalizar(Request $request){
         try {
             DB::beginTransaction();
