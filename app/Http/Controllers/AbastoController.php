@@ -30,8 +30,8 @@ class AbastoController extends Controller
 
         $abastos = Abasto::select('abasto.id as id', DB::raw("concat_ws(' ', persona.nombres, persona.apellidos) as proveedor_persona"),
                         'persona.razon_social as proveedor_empresa',
-                        'centro_to_id', 'centro.nombre as nombre_centro', 
-                        'abasto.created_at as fecha_envio', 'abasto.total as costo_total', 'abasto.total_faltante as total_faltante',
+                        'centro_to_id', 'centro.nombre as nombre_centro', 'abasto.created_at as fecha_envio',
+                        'abasto.total as total', 'abasto.total_faltante as total_faltante',
                         'abasto.tipo as tipo_abasto', 'envio.estado as estado_envio')
                         ->join('persona', 'abasto.proveedor_id', '=', 'persona.id')
                         ->leftjoin('envio', 'abasto.id', '=', 'envio.abasto_id')
@@ -100,6 +100,7 @@ class AbastoController extends Controller
             $abasto = new Abasto();//AQUI ME QUEDE
             $abasto->total = $request->total;
             $abasto->tipo = $request->tipo;
+            $abasto->total_faltante = $request->total;
 
             $abasto->created_at = $now;
             //Verifico si existe el proveedor

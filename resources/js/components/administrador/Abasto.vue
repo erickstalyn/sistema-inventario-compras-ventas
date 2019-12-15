@@ -89,7 +89,7 @@
                                 <td v-text="abasto.proveedor_persona ? abasto.proveedor_persona : abasto.proveedor_empresa"></td>
                                 <td v-text="abasto.nombre_centro"></td>
                                 <td v-text="formatearFecha(abasto.fecha_envio)"></td>
-                                <td v-text="abasto.costo_total"></td>
+                                <td v-text="abasto.total"></td>
                                 <td v-text="abasto.tipo_abasto? 'Crédito' : 'Contado'"></td>
                                 <td>
                                     <div v-if="abasto.estado_envio == 0">
@@ -105,7 +105,7 @@
                                 <td class="text-center">
                                     
                                     <template v-if="abasto.tipo_abasto == 1 && abasto.total_faltante != 0">
-                                        <button type="button"  title="Pagar Cuota" class="btn btn-warning btn-sm" @click="abrirModalPagar(abasto.id)">
+                                        <button type="button"  title="Pagar Cuota" class="btn btn-warning btn-sm" @click="abrirModalPagar(abasto)">
                                             <i class="fas fa-hand-holding-usd"></i>
                                         </button>
                                     </template>
@@ -300,7 +300,6 @@
                                                 <div class="input-group">
                                                     <label for="tipo" class="font-weight-bold">Tipo</label>&nbsp;<span class="text-danger">*</span>&nbsp;
                                                     <select v-model="Abasto.tipo" class="custom-select custom-select-sm" id="tipo">
-                                                        <!-- <option value="-1">Seleccione</option> -->
                                                         <option value="0">Contado</option>
                                                         <option value="1">Credito</option>
                                                     </select>
@@ -379,7 +378,7 @@
                                     <div class="col-md-7">
                                         <div class="input-group"> 
                                             Monto&nbsp;
-                                            <input type="number" class="form-control form-control-sm" v-model="Pago.monto" autofocus>&nbsp;
+                                            <input type="number" class="form-control form-control-sm" v-model="Pago.monto" @keyup.enter="agregarPago()">&nbsp;
                                             <button type="button" class="btn btn-sm btn-primary" @click="agregarPago()">
                                                 Registrar
                                             </button>
@@ -399,7 +398,7 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr v-for="(pago, index) in ListaPago" :key="index" >
+                                                    <tr v-for="(pago, index) in ListaPago" :key="index" :class="pago.color">
                                                         <td class="text-center">{{index+1}}</td>
                                                         <td class="text-center" v-text="pago.created_at"></td>
                                                         <td class="text-right pr-5" v-text="pago.monto"></td>
@@ -413,8 +412,18 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-12">
-                                        <p class="text-right pr-5">Monto faltante: s/200.60</p>
+                                    <div class="col-md-12 text-right pr-5">
+                                        <span class="">Monto pagado: s/{{getSumaPagos}}</span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12 text-right pr-5">
+                                        <span class="">Monto faltante: s/{{this.Abasto.total_faltante = Abasto.total - getSumaPagos}}</span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12 text-right pr-5">
+                                        <span>Costo total: s/{{Abasto.total}}</span>
                                     </div>
                                 </div>
                             </div>
@@ -518,6 +527,7 @@
                 ListaPago: [],
                 Pago:{
                     monto: '',
+                    sumaPagos: 0.00,
                 }
             }
         },
@@ -570,6 +580,13 @@
                     this.Abasto.total = this.Abasto.total + detalle.costo_abasto * detalle.cantidad;
                 });
                 return (this.Abasto.total).toFixed(2);
+            },
+            getSumaPagos: function(){
+                let sumaPagos = 0.00;
+                this.ListaPago.forEach( detalle => {
+                    sumaPagos = sumaPagos + Number.parseFloat(detalle.monto);
+                });
+                return sumaPagos;
             }
         },
         methods: {
@@ -878,7 +895,7 @@
                     console.log(error);
                 });
             },
-            listarPagos(id){
+            listarPagos(id,total){
                 let me = this;
                 let url = '/abasto/getPagos';
 
@@ -887,23 +904,29 @@
                         'id': id
                     }
                 }).then(function(response){
+                    // me.Abasto.total_faltante = total;
                     me.ListaPago = response.data;
                 }).catch(function(error){
                     console.log(error);
                 });
             },
-            abrirModalPagar(id){
+            abrirModalPagar(abasto = []){
+                this.Abasto.total = abasto['total'];
                 this.abrirModal(3, 'Realizar Pago', 'Guardar', '');
-                this.listarPagos(id);
+                this.listarPagos(abasto['id'], abasto['total']);
             },
             agregarPago(){//Agrega pagos a la lista de pagos
-            
-                let pago = {
-                    monto: Number.parseFloat(this.Pago.monto).toFixed(2),
-                    created_at: this.getFechaHoraHoy()
+                if(this.Pago.monto != '' && this.Pago.monto > 0 && this.Pago.monto <= this.Abasto.total_faltante){
+                    let pago = {
+                        monto: Number.parseFloat(this.Pago.monto).toFixed(2),
+                        created_at: this.getFechaHoraHoy(),
+                        color: 'table-success'
+                    }
+                    this.ListaPago.push(pago);
+                    this.Pago.monto = '';
+                }else{
+                    console.log('error en el monto');
                 }
-                this.ListaPago.push(pago);
-                this.Pago.monto = '';
             },
             
             cerrarModal(){
@@ -930,6 +953,9 @@
                 this.DatosProveedor.nombres = '';
                 this.DatosProveedor.apellidos = '';
                 this.DatosProveedor.razon_social = '';
+
+                this.ListaPago = [];
+                this.Pago.monto = '';
 
                 this.ListaDetalleAbasto = [];
                 this.BusquedaFiltro.texto = '';
@@ -968,7 +994,7 @@
                 let h = n.getHours();
                 let minu = n.getMinutes();
                 let seg = n.getSeconds();
-                let hoy =  y + '-' + m + '-' + d + ' ' + h + ':' + minu + ':' + this.addCero(seg);
+                let hoy =  y + '-' + m + '-' + d + ' ' + h + ':' + this.addCero(minu) + ':' + this.addCero(seg);
                 return hoy;
             },
             addCero(i) {
