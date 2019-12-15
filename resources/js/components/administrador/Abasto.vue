@@ -443,7 +443,7 @@
                                             <p class="font-weight-bold">PAGOS</p>
                                         </div>
                                         <br>
-                                        <div class="row form-group overflow-auto" style="height: 17.5rem;">
+                                        <div class="row form-group overflow-auto" style="height: 15.5rem;">
                                             <div class="col-md-12">
                                                 <div v-if="ListaPago.length">
                                                     <table class="table table-borderless table-striped table-sm text-gray-900">
@@ -451,14 +451,14 @@
                                                             <tr class="table-info">
                                                                 <th class="text-center">#</th>
                                                                 <th class="text-center">Fecha de pago</th>
-                                                                <th class="text-right pr-5">Monto</th>
+                                                                <th class="text-right pr-4">Monto</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
                                                             <tr v-for="(pago, index) in ListaPago" :key="index" :class="pago.color">
                                                                 <td class="text-center">{{index+1}}</td>
                                                                 <td class="text-center" v-text="pago.created_at"></td>
-                                                                <td class="text-right pr-5" v-text="pago.monto"></td>
+                                                                <td class="text-right pr-4" v-text="pago.monto"></td>
                                                             </tr>
                                                         </tbody>
                                                     </table>
@@ -469,6 +469,21 @@
                                             </div>
                                         </div>
                                         <div class="row">
+                                            <div class="col-md-12 text-right pr-4">
+                                                <span class="text-success">Monto pagado: s/{{getSumaPagos}}</span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12 text-right pr-4">
+                                                <span class="text-danger">Monto faltante: s/{{(Abasto.total_ver - getSumaPagos).toFixed(2)}}</span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12 text-right pr-4">
+                                                <span>Costo total: s/{{Abasto.total_ver}}</span>
+                                            </div>
+                                        </div>
+                                        <!-- <div class="row">
                                             <div class="col-md-12">
                                                 <div class="input-group"> 
                                                     <label for="">Enviar a</label>&nbsp;<span class="text-danger">*</span>&nbsp;
@@ -478,7 +493,7 @@
                                                     </select>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div> -->
                                     </div>
                                     <div class="ml-auto container" :class="[Abasto.tipo_abasto ? 'col-md-8' : 'col-md-12']">
                                         <div class="row">
@@ -608,7 +623,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-md-12 text-right pr-5">
-                                        <span class="text-danger">Monto faltante: s/{{this.Abasto.total_faltante = Abasto.total - getSumaPagos}}</span>
+                                        <span class="text-danger">Monto faltante: s/{{this.Abasto.total_faltante = (Abasto.total - getSumaPagos).toFixed(2)}}</span>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -643,6 +658,7 @@
                 Abasto: {
                     id: 0,
                     total: 0.00,
+                    total_ver: 0.00,
                     total_faltante: 0.00,
                     tipo_abasto: 1, // 0: Contado, 1: Credito
                     centro_to_id: 0, //Almacén donde se enviará el abasto
@@ -708,6 +724,7 @@
                 ListaProducto:[
                 ],
                 ListaDetalleAbasto:[],
+                ListaDetalleAbastoVer:[],
                 //DATOS PARA ENVIAR UNA PRODUCCION
                 SelectAlmacen: [],
                 //DATOS PARA CONSULTA SUNAT Y RENIEC
@@ -768,19 +785,19 @@
 
                 return false;
             },
-            getDesembolso: function(){
-                this.Abasto.total = 0.00;
-                this.ListaDetalleAbasto.forEach( detalle => {
-                    this.Abasto.total = this.Abasto.total + detalle.costo_abasto * detalle.cantidad;
-                });
-                return (this.Abasto.total).toFixed(2);
-            },
+            // getDesembolso: function(){
+            //     this.Abasto.total = 0.00;
+            //     this.ListaDetalleAbasto.forEach( detalle => {
+            //         this.Abasto.total = this.Abasto.total + detalle.costo_abasto * detalle.cantidad;
+            //     });
+            //     return (this.Abasto.total).toFixed(2);
+            // },
             getSumaPagos: function(){
                 let sumaPagos = 0.00;
                 this.ListaPago.forEach( detalle => {
                     sumaPagos = sumaPagos + Number.parseFloat(detalle.monto);
                 });
-                return sumaPagos;
+                return (sumaPagos).toFixed(2);
             }
         },
         methods: {
@@ -1000,8 +1017,10 @@
                 this.Abasto.nombre_centro = abasto['nombre_centro'];
                 this.Abasto.estado_envio = abasto['estado_envio'];
                 this.Abasto.tipo_abasto = abasto['tipo_abasto'];
+                this.Abasto.total_ver = abasto['total'];
 
-                this.abrirModal(2, 'Ver Abasto', '', 'Cerrar', 'modal-xl')
+                this.listarPagos(abasto['id']);
+                this.abrirModal(2, 'Ver Abasto', '', 'Cerrar', 'modal-xl modal-dialog-scrollable')
             },
             abrirModal(numero, titulo, accion, cancelar, size){
                 this.Modal.estado = 1;
@@ -1100,7 +1119,7 @@
                     console.log(error);
                 });
             },
-            listarPagos(id,total){
+            listarPagos(id){
                 let me = this;
                 let url = '/abasto/getPagos';
 
@@ -1109,7 +1128,6 @@
                         'id': id
                     }
                 }).then(function(response){
-                    // me.Abasto.total_faltante = total;
                     me.ListaPago = response.data;
                 }).catch(function(error){
                     console.log(error);
@@ -1118,8 +1136,9 @@
             abrirModalPagar(abasto = []){
                 this.Abasto.id = abasto['id'];
                 this.Abasto.total = abasto['total'];
-                this.abrirModal(3, 'Realizar Pago', 'Guardar', 'Cancelar', '');
                 this.listarPagos(abasto['id'], abasto['total']);
+
+                this.abrirModal(3, 'Realizar Pago', 'Guardar', 'Cancelar', '');
             },
             agregarListaPago(){//Agrega pagos a la lista de pagos
                 if ( this.validar() ) return;
