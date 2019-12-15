@@ -123,7 +123,7 @@
                                         <button type="button"  title="Reenviar" class="btn btn-info btn-sm">
                                             <i class="fas fa-plane"></i>
                                         </button>
-                                        <button type="button"  title="Anular" class="btn btn-danger btn-sm">
+                                        <button type="button"  title="Anular" class="btn btn-danger btn-sm" @click="anularAbasto(abasto.id)">
                                                 <i class="fas fa-trash-alt"></i>
                                         </button>
                                     </template>
