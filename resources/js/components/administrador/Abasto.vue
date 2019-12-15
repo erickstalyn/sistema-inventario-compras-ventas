@@ -362,7 +362,7 @@
                             </div>
                             <div v-if="Modal.numero == 3">
                                 <div v-if="Error.estado" class="row d-flex justify-content-center">
-                                    <div class="alert alert-danger">
+                                    <div class="alert alert-danger" style="height: 4.5rem;">
                                         <button type="button" @click="Error.estado=0" class="close text-primary" data-dismiss="alert">×</button>
                                         <strong>Corregir los siguentes errores:</strong>
                                         <ul> 
@@ -844,7 +844,7 @@
                     }
 
                 }else{ //Modal editar
-                    
+                    if (this.Pago.monto == '' || this.Pago.monto <= 0 || this.Pago.monto > this.Abasto.total_faltante) this.Error.mensaje.push('Debe ingresar un monto válido');
                 }
                 if ( this.Error.mensaje.length ) this.Error.estado = 1;
                 return this.Error.estado;
@@ -916,7 +916,8 @@
                 this.listarPagos(abasto['id'], abasto['total']);
             },
             agregarPago(){//Agrega pagos a la lista de pagos
-                if(this.Pago.monto != '' && this.Pago.monto > 0 && this.Pago.monto <= this.Abasto.total_faltante){
+                // if(this.Pago.monto != '' && this.Pago.monto > 0 && this.Pago.monto <= this.Abasto.total_faltante){
+                    if ( this.validar() ) return;
                     let pago = {
                         monto: Number.parseFloat(this.Pago.monto).toFixed(2),
                         created_at: this.getFechaHoraHoy(),
@@ -924,12 +925,12 @@
                     }
                     this.ListaPago.push(pago);
                     this.Pago.monto = '';
-                }else{
-                    console.log('error en el monto');
-                    this.Error.estado = 1;
-                    this.Error.mensaje = [];
-                    this.Error.mensaje.push('Error en el monto')
-                }
+                // }else{
+                //     console.log('error en el monto');
+                //     this.Error.estado = 1;
+                //     this.Error.mensaje = [];
+                //     this.Error.mensaje.push('Error en el monto')
+                // }
             },
             
             cerrarModal(){
