@@ -166,7 +166,6 @@
                     
                     <div class="modal-body">
                         <div class="container-fluid">
-                        <!-- Modal Numero 1 de AGREGAR-->
                             <div v-if="Modal.numero == 1">
                                 <!-- Filtro de productos -->
                                 <div v-if="Error.estado" class="row d-flex justify-content-center">
@@ -319,7 +318,7 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <tr v-for="(detalle, indice) in ListaDetalleAbastoVer" :key="detalle.id">
+                                                        <tr v-for="(detalle, indice) in ListaDetalleAbasto" :key="detalle.id">
                                                             <td class="text-center">
                                                                 <button type="button" title="Editar" class="btn btn-circle btn-outline-danger btn-sm" @click="quitarDetalle(indice)">
                                                                     <i class="fas fa-minus"></i>
@@ -360,6 +359,7 @@
                                     </div>
                                 </div>
                             </div>
+                            
                             <div v-if="Modal.numero == 2">
                                 <div class="row">
                                     <div class="col-md-2 pl-2">
