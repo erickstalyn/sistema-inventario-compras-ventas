@@ -213,7 +213,7 @@
                                                 <input type="text" class="form-control form-control-sm" readonly v-model="DatosProveedor.nombres">
                                             </div>
                                         </div>
-                                        <div class="" :class="Modal.numero == 2 ? 'col-md-3': 'col-md-6'">
+                                        <div class="col-md-6">
                                             <div class="input-group">
                                                 <label >Apellidos</label>&nbsp;
                                                 <input type="text" class="form-control form-control-sm" readonly v-model="DatosProveedor.apellidos">
@@ -229,7 +229,7 @@
                                                 <input type="text" class="form-control form-control-sm" readonly v-model="DatosProveedor.documento">
                                             </div>
                                         </div>
-                                        <div class="" :class="Modal.numero == 2 ? 'col-md-6': 'col-md-10'">
+                                        <div class="col-md-10">
                                             <div class="input-group">
                                                 <label >Razón social</label>&nbsp;
                                                 <input type="text" class="form-control form-control-sm" v-model="DatosProveedor.razon_social" :readonly="DatosServicio.readonly">
@@ -367,6 +367,11 @@
                                     </div>
                                     <div class="col-md-6">
                                     </div>
+                                    <div class="col-md-4">
+                                        <div class="input-group">
+                                            <span class="font-weight-bold">Enviado a:</span>&nbsp;{{Abasto.nombre_centro}}
+                                        </div>
+                                    </div>
                                 </div>
                                 <div v-if="DatosProveedor.documento.length == 8">
                                     <div class="row form-group">
@@ -382,6 +387,22 @@
                                                 <input type="text" class="form-control form-control-sm" readonly v-model="DatosProveedor.nombres">
                                             </div>
                                         </div>
+                                        <div class="col-md-4">
+                                            <div class="input-group">
+                                                <span class="font-weight-bold">Estado de envío:</span>&nbsp;&nbsp;
+                                                <h5>
+                                                    <div v-if="Abasto.estado_envio == 0">
+                                                        <span class="badge badge-primary">Enviado</span>
+                                                    </div>
+                                                    <div v-else-if="Abasto.estado_envio == 1">
+                                                        <span class="badge badge-success">Aceptado</span>
+                                                    </div>
+                                                    <div v-else>
+                                                        <span class="badge badge-danger">Rechazado</span>
+                                                    </div>
+                                                </h5>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div v-else="">
@@ -392,53 +413,59 @@
                                                 <input type="text" class="form-control form-control-sm" readonly v-model="DatosProveedor.documento">
                                             </div>
                                         </div>
-                                        <div class="col-ms-6">
+                                        <div class="col-md-6">
                                             <div class="input-group">
                                                 <label >Razón social</label>&nbsp;
                                                 <input type="text" class="form-control form-control-sm" v-model="DatosProveedor.razon_social" readonly>
                                             </div>
                                         </div>
+                                        <div class="col-md-4">
+                                            <div class="input-group">
+                                                <span class="font-weight-bold">Estado de envío:</span>&nbsp;&nbsp;
+                                                <h5>
+                                                    <div v-if="Abasto.estado_envio == 0">
+                                                        <span class="badge badge-primary">Enviado</span>
+                                                    </div>
+                                                    <div v-else-if="Abasto.estado_envio == 1">
+                                                        <span class="badge badge-success">Aceptado</span>
+                                                    </div>
+                                                    <div v-else>
+                                                        <span class="badge badge-danger">Rechazado</span>
+                                                    </div>
+                                                </h5>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="row shadow bg-white rounded p-2">
-                                    <div class="col-md-4">
+                                    <div class="col-md-4" v-if="Abasto.tipo_abasto == 1">
                                         <div class="row">
-                                            <p class="font-weight-bold">PRODUCTOS</p>
-                                        </div>
-                                        <div class="row">
-                                            <div class="input-group"> 
-                                                <input type="search" class="form-control form-control-sm" v-model="BusquedaFiltro.texto" @keyup.enter="listarFiltro()" id="filtroProducto" placeholder="Producto,marca,modelo,tamaño,color">
-                                                <button type="button" class="btn btn-sm btn-primary" @click="listarFiltro()">
-                                                    <i class="fa fa-search"></i>&nbsp; Buscar
-                                                </button>
-                                            </div>
+                                            <p class="font-weight-bold">PAGOS</p>
                                         </div>
                                         <br>
                                         <div class="row form-group overflow-auto" style="height: 17.5rem;">
-                                            <div v-if="ListaProducto.length">
-                                                <table class="table table-borderless table-striped table-sm text-gray-900">
-                                                    <thead>
-                                                        <tr class="table-danger">
-                                                            <th class="text-center" style="width: 3rem;">Agregar</th>
-                                                            <th>Nombre</th>
-                                                            <th>Stock</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr v-for="producto in ListaProducto" :key="producto.id" >
-                                                            <td class="text-center">
-                                                                <button type="button" title="Editar" class="btn btn-circle btn-sm btn-outline-success" @click="agregarDetalle(producto)">
-                                                                    <i class="fas fa-plus"></i>
-                                                                </button>
-                                                            </td>
-                                                            <td v-text="producto.nombre"></td>
-                                                            <td v-text="producto.stock"></td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                            <div v-else>
-                                                <p>No se han encontrado resultados</p>
+                                            <div class="col-md-12">
+                                                <div v-if="ListaPago.length">
+                                                    <table class="table table-borderless table-striped table-sm text-gray-900">
+                                                        <thead>
+                                                            <tr class="table-info">
+                                                                <th class="text-center">#</th>
+                                                                <th class="text-center">Fecha de pago</th>
+                                                                <th class="text-right pr-5">Monto</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr v-for="(pago, index) in ListaPago" :key="index" :class="pago.color">
+                                                                <td class="text-center">{{index+1}}</td>
+                                                                <td class="text-center" v-text="pago.created_at"></td>
+                                                                <td class="text-right pr-5" v-text="pago.monto"></td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                <div v-else>
+                                                    <p>Ningun pago registrado</p>
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="row">
@@ -453,7 +480,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-8 ml-auto container">
+                                    <div class="ml-auto container" :class="[Abasto.tipo_abasto ? 'col-md-8' : 'col-md-12']">
                                         <div class="row">
                                             <div class="col-md-3 p-0">
                                                 <p class="font-weight-bold">LISTA DE ITEMS</p>
@@ -617,10 +644,12 @@
                     id: 0,
                     total: 0.00,
                     total_faltante: 0.00,
-                    tipo: 1, // 0: Contado, 1: Credito
+                    tipo_abasto: 1, // 0: Contado, 1: Credito
                     centro_to_id: 0, //Almacén donde se enviará el abasto
                     created_at : '',
                     pagoInicial: '',
+                    nombre_centro: '', //Nombre del centro al que se envia
+                    estado_envio: -1
                 },
                 DatosProveedor:{
                     id: 0,
@@ -968,6 +997,9 @@
                     this.DatosProveedor.documento = abasto['ruc'];
                     this.DatosProveedor.razon_social = abasto['proveedor_empresa'];
                 }
+                this.Abasto.nombre_centro = abasto['nombre_centro'];
+                this.Abasto.estado_envio = abasto['estado_envio'];
+                this.Abasto.tipo_abasto = abasto['tipo_abasto'];
 
                 this.abrirModal(2, 'Ver Abasto', '', 'Cerrar', 'modal-xl')
             },
