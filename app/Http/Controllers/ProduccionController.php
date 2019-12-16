@@ -96,12 +96,12 @@ class ProduccionController extends Controller
 
             foreach($listaDetalleProduccion as $ep => $det){
                 $detalle = new Detalle_produccion();
-                $detalle->nombre_producto = $det['nombre'];
+                $detalle->nombre_producto = $det['nombre_producto'];
                 $detalle->costo_produccion = $det['costo_produccion'];
                 $detalle->cantidad = $det['cantidad'];
                 // $detalle->subtotal = floatval($det['cantidad']) * floatval($det['costo_produccion']);
                 $detalle->subtotal = $det['subtotal'];
-                $detalle->producto_id = $det['id'];
+                $detalle->producto_id = $det['producto_id'];
                 $detalle->produccion_id = $produccion->id;
                 $detalle->save();
             }
@@ -112,6 +112,62 @@ class ProduccionController extends Controller
         }
 
     }
+
+    public function editar(Request $request) {
+        // if ( !$request->ajax() ) return redirect('/');
+        $lista = $request->listaDetalleProduccion;
+        try {
+            DB::beginTransaction();
+
+            for ($i = 0; $i < count($lista); $i++) {
+                if ( $lista[$i]['id'] == 0 ) {
+                    $productomaterial = new ProductoMaterial();
+                    $productomaterial->producto_id = $request->producto_id;
+                    $productomaterial->material_id = $lista[$i]['material_id'];
+                    $productomaterial->nombre = $lista[$i]['nombre'];
+                    $productomaterial->unidad = $lista[$i]['unidad'];
+                    $productomaterial->costo_unitario = $lista[$i]['costo_unitario'];
+                    $productomaterial->cantidad = $lista[$i]['cantidad'];
+                    $productomaterial->subtotal = $lista[$i]['subtotal'];
+                    $productomaterial->save();
+                } else if ( $lista[$i]['estado'] == 1 ) {
+                    $productomaterial = ProductoMaterial::findOrFail($lista[$i]['id']);
+                    $productomaterial->producto_id = $request->producto_id;
+                    $productomaterial->material_id = $lista[$i]['material_id'];
+                    $productomaterial->nombre = $lista[$i]['nombre'];
+                    $productomaterial->unidad = $lista[$i]['unidad'];
+                    $productomaterial->costo_unitario = $lista[$i]['costo_unitario'];
+                    $productomaterial->cantidad = $lista[$i]['cantidad'];
+                    $productomaterial->subtotal = $lista[$i]['subtotal'];
+                    $productomaterial->save();
+                } else {
+                    ProductoMaterial::where('id', '=', $lista[$i]['id'])->delete();
+                }
+            }
+
+            $producto = Producto::findOrFail($request->producto_id);
+            $producto->costo_produccion = $request->costo_produccion;
+            $producto->save();
+
+            DB::commit();
+            $error = NULL;
+        } catch (Exception $e) {
+            DB::rollback();
+            $error = $e;
+        }
+
+        return [
+            'estado' => $error==NULL?1:0,
+            'error' => $error
+        ];
+    }
+
+    public function getDetalles(Request $request){
+        if ( !$request->ajax() ) return redirect('/') ;
+        $detalles = Produccion::findOrFail($request->id)->getDetalles;
+        return $detalles;
+    }
+
     public function finalizar(Request $request){
         try {
             DB::beginTransaction();
