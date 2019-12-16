@@ -425,8 +425,6 @@
             getTotal: function(){
                 this.Produccion.total = 0.00;
                 this.ListaDetalleProduccion.forEach( detalle => {
-                    // console.log(Number.parseFloat(detalle.costo_produccion * detalle.cantidad).toFixed(2));
-                    // this.Produccion.total = this.Produccion.total + detalle.costo_produccion * detalle.cantidad;
                     this.Produccion.total = this.Produccion.total + detalle.costo_produccion * detalle.cantidad;
                 });
                 return (this.Produccion.total).toFixed(2);
@@ -571,9 +569,11 @@
             },
             editar(){
                 if ( this.validar(1) ) return;
+                if ( this.validar(2) ) return;
                 let me = this;
                 axios.put('/produccion/editar', {
                     //Datos de la produccion
+                    'id' : this.Produccion.id,
                     'total' : this.Produccion.total,
                     'fecha_inicio' : this.Produccion.fecha_inicio,
                     'fecha_programada' : this.Produccion.fecha_programada,
@@ -605,13 +605,12 @@
                 switch(numero){
                     case 1://Modal agregar y editar
                         if ( !this.ListaDetalleProduccion.length ) {
-                            this.Error.mensaje.push("No existe ningun detalle de producción");
+                            this.Error.mensaje.push('No existe ningun detalle de producción');
                         }else{//Valido si hay negativos en las cantidades de los detalles de producción
                             for (let i = 0; i < this.ListaDetalleProduccion.length; i++) {
                                 const detalle = this.ListaDetalleProduccion[i];
                                 if(detalle.cantidad<1){
-                                    this.Error.mensaje.push('Las cantidades de los detalles deben ser mayores o iguales a 1');
-                                    break;
+                                    this.Error.mensaje.push('Las cantidades de los detalles deben ser mayores o iguales a 1'); break;
                                 }
                             }
                         }
@@ -632,6 +631,16 @@
                                 this.Error.mensaje.push('La fecha programada debe ser después que la fecha de inicio de la producción');
                             }
                         }
+                        break;
+                    case 2:
+                        let found = 0;
+                        for (let i = 0; i < this.ListaDetalleProduccion.length; i++) {
+                            const detalle = this.ListaDetalleProduccion[i];
+                            if(detalle.estado == 1) {
+                                found = 1; break;
+                            }
+                        }
+                        if(!found) this.Error.mensaje.push('No existe ningun detalle de producción');
                         break;
                 }
                 if ( this.Error.mensaje.length ) this.Error.estado = 1;
@@ -683,9 +692,11 @@
             },
             abrirModalEditar(produccion = []){
 
-                this.listarDetallesProduccion(produccion['id']);
+                this.Produccion.id = produccion['id'];
+                this.Produccion.total = produccion['total'];
                 this.Produccion.fecha_inicio = produccion['fecha_inicio'];
                 this.Produccion.fecha_programada = produccion['fecha_programada'];
+                this.listarDetallesProduccion(produccion['id']);
 
                 this.abrirModal(2, 'Editar Producción', 'Editar', 'Cancelar', 'modal-xl modal-dialog-scrollable');
             },
