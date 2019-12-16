@@ -53,19 +53,12 @@
                     </select>
                 </div>
                 <div class="col-md-1"></div>
-                <!-- <div class="col-md-1" align="right">
-                    <label>N° filas:</label>
-                </div> -->
                 <div class="col-md-1">
                     N° filas:
                     <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.filas">
                         <option v-for="item in Filas" :key="item" :value="item" v-text="item"></option>
                     </select>
                 </div>
-                <!-- <div class="col-md-1"></div> -->
-                <!-- <button type="button" class="btn btn-primary" @click="listar()">
-                    <i class="fa fa-search"></i>&nbsp; Buscar
-                </button> -->
                 <div class="col-md-2">
                     <button type="button" class="btn btn-primary" @click="listar()">
                         <i class="fa fa-search"></i>&nbsp; Buscar
@@ -106,15 +99,15 @@
                                     </div>
                                 </td>
                                 <td class="text-center">
-                                    <button type="button"  title="Ver" class="btn btn-primary btn-sm">
+                                    <button type="button"  title="Ver" class="btn btn-primary btn-sm" @click="abrirModalVer(produccion)">
                                         <i class="far fa-eye"></i>
                                     </button>
                                     <!-- Sin iniciar -->
                                     <template v-if="produccion.fecha_inicio > getFechaHoy()">
-                                        <button type="button"  title="Editar" class="btn btn-warning btn-sm">
+                                        <button type="button"  title="Editar" class="btn btn-warning btn-sm" @click="abrirModalEditar(produccion)">
                                             <i class="fas fa-edit"></i>
                                         </button>
-                                        <button type="button"  title="Eliminar" class="btn btn-danger btn-sm">
+                                        <button type="button"  title="Eliminar" class="btn btn-danger btn-sm" @click="anularProduccion(produccion.id)">
                                             <i class="fas fa-trash-alt"></i>
                                         </button>
                                     </template>
@@ -126,10 +119,10 @@
                                     </template>
                                     <!-- En proceso -->
                                     <template v-else="">
-                                        <button type="button"  title="Editar" class="btn btn-warning btn-sm">
+                                        <button type="button"  title="Editar" class="btn btn-warning btn-sm" @click="abrirModalEditar(produccion)">
                                             <i class="fas fa-edit"></i>
                                         </button>
-                                        <button type="button"  title="Eliminar" class="btn btn-danger btn-sm">
+                                        <button type="button"  title="Eliminar" class="btn btn-danger btn-sm" @click="anularProduccion(produccion.id)">
                                             <i class="fas fa-trash-alt"></i>
                                         </button>
                                         <button type="button"  title="Finalizar" class="btn btn-outline-success btn-sm" @click="finalizar(produccion)">
@@ -165,18 +158,15 @@
 
         <!-- Modales de Agregar/Editar -->
         <div class="modal text-gray-900" :class="{'mostrar': Modal.estado}">
-            <div class="modal-dialog modal-dialog-centered animated bounceIn fast" :class="[Modal.numero != 3 ? 'modal-xl modal-dialog-scrollable' : '']">
+            <div class="modal-dialog modal-dialog-centered animated bounceIn fast" :class="Modal.size">
                 <div class="modal-content">
-
                     <div class="modal-header">
                         <h3 v-text="Modal.titulo" class="modal-title" ></h3>
                         <button type="button" @click="cerrarModal()" class="close">X</button>
                     </div>
-                    
                     <div class="modal-body">
                         <div class="container-fluid">
-                        <!-- Modal Numero 1 de AGREGAR-->
-                            <div v-if="Modal.numero==1">
+                            <div v-if="Modal.numero==1 || Modal.numero == 2">
                                 <!-- Filtro de productos -->
                                 <div v-if="Error.estado" class="row d-flex justify-content-center">
                                     <div class="alert alert-danger">
@@ -246,13 +236,13 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <tr v-for="(detalle, indice) in ListaDetalleProduccion" :key="detalle.id">
+                                                        <tr v-for="detalle in ListaDetalleProduccionFiltrada" :key="detalle.producto_id">
                                                             <td class="text-center">
-                                                                <button type="button" title="Editar" class="btn btn-circle btn-outline-danger btn-sm" @click="quitarDetalle(indice)">
+                                                                <button type="button" title="Quitar" class="btn btn-circle btn-outline-danger btn-sm" @click="quitarDetalle(detalle.producto_id)">
                                                                     <i class="fas fa-minus"></i>
                                                                 </button>
                                                             </td>
-                                                            <td v-text="detalle.nombre"></td>
+                                                            <td v-text="detalle.nombre_producto"></td>
                                                             <td>
                                                                 <input type="number" v-model="detalle.cantidad" class="form-control form-control-sm" min="1">
                                                             </td>
@@ -292,33 +282,66 @@
                                 </div>
                                 
                             </div>
-                            <!-- <div v-if="Modal.numero==3">
-                                <div v-if="Error.estado" class="row d-flex justify-content-center">
-                                    <div class="alert alert-danger">
-                                        <button type="button" @click="Error.estado=0" class="close text-primary" data-dismiss="alert">×</button>
-                                        <strong>Corregir los siguentes errores:</strong>
-                                        <ul> 
-                                            <li v-for="error in Error.mensaje" :key="error" v-text="error"></li> 
-                                        </ul>
+                            <div v-if="Modal.numero == 3">
+                                <div class="row shadow bg-white rounded p-2">
+                                    <div class="col-md-12 ml-auto container">
+                                        <div class="row">
+                                            <h5 class="font-weight-bold">Lista de items</h5>
+                                        </div>
+                                        <div class="row form-group ec-table-modal overflow-auto">
+                                            <table class="table tableless table-striped table-sm text-gray-900">
+                                                <thead>
+                                                    <tr class="table-success">
+                                                        <th class="text-center">#</th>
+                                                        <th class="text-center">Nombre</th>
+                                                        <th style="width: 5rem;">Cant.</th>
+                                                        <th>Costo Unit.</th>
+                                                        <th class="text-right pr-4">Subtotal</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr v-for="(detalle, indice) in ListaDetalleProduccion" :key="indice">
+                                                        <td class="text-center">{{indice+1}}</td>
+                                                        <td class="text-left pl-5" v-text="detalle.nombre_producto"></td>
+                                                        <td v-text="detalle.cantidad"></td>
+                                                        <td v-text="detalle.costo_produccion"></td>
+                                                        <td class="text-right pr-4">
+                                                            {{detalle.subtotal = (detalle.costo_produccion * detalle.cantidad).toFixed(2)}}
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-8">
+                                            </div>
+                                            <div class="col-md-4">
+                                                <p class="text-right pr-2">Inversión total: s/ {{getTotal}}</p>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="row form-group">
-                                    <label class="col-md-5 font-weight-bold" for="des">Seleccione almacén&nbsp;<span class="text-danger">*</span></label>
-                                    <div class="col-md-7">
-                                        <select  class="custom-select">
-                                            <option value="" disabled>Almacen</option>
-                                            <option v-for="item in SelectAlmacen" :key="item.id" :value="item.id" v-text="item.nombre"></option>
-                                        </select>
+                                
+                                <div class="row">
+                                    <div class="col-md-3"></div>
+                                    <div class="col-md-4 form-inline">
+                                        Fecha de inicio&nbsp;<span class="text-danger">*</span>
+                                        <input type="date" class="form-control form-control-sm" v-model="Produccion.fecha_inicio">
+                                    </div>
+                                    <div class="col-md-5 form-inline">
+                                        Fecha prog. finalización&nbsp;<span class="text-danger">*</span>
+                                        <input type="date" class="form-control form-control-sm" v-model="Produccion.fecha_programada">
                                     </div>
                                 </div>
-                            </div> -->
+                            </div>
                         </div>
                     </div>
-
                     <div class="modal-footer" v-if="permisoModalFooter">
                         <div class="row form-group col-md-12 d-flex justify-content-around">
-                            <button type="button" @click="accionar(Modal.accion)" class="btn btn-success" v-text="Modal.accion"></button>
-                            <button type="button" @click="cerrarModal()" class="btn btn-secondary">Cancelar</button>
+                            <div v-if="Modal.accion">
+                                <button type="button" @click="accionar(Modal.accion)" class="btn btn-success" v-text="Modal.accion"></button>
+                            </div>
+                            <button type="button" @click="cerrarModal()" class="btn btn-secondary" v-text="Modal.cancelar"></button>
                         </div>
                     </div>
                 
@@ -355,10 +378,12 @@
 
                 //datos de modales
                 Modal: {
-                    numero: 0,
+                    numero: 0, // 1: Agregar, 2: Editar, 3: Ver más
                     estado: 0,
                     titulo: '',
-                    accion: ''
+                    accion: '',
+                    cancelar: '',
+                    size: ''
                 },
 
                 //datos de paginacion
@@ -386,13 +411,10 @@
                     texto: ''
                 },
                 ListaProducto:[
-                    // {nombre: 'Camperita Silmar Roja Grande', stock: 56},
-                    // {nombre: 'Mochila Porta Verde mediana', stock: 100}
                 ],
                 ListaDetalleProduccion:[
-                    // {nombre: 'Camperita Silmar Roja Grande', stock: 56},
-                    // {nombre: 'Mochila Porta Verde mediana', stock: 100}
                 ],
+                ListaDetalleProduccionFiltrada: [],
                 //DATOS PARA ENVIAR UNA PRODUCCION
                 SelectAlmacen: [],
             }
@@ -436,6 +458,7 @@
             permisoModalFooter: function(){
                 if ( this.Modal.numero == 1 ) return true;
                 if ( this.Modal.numero == 2 ) return true;
+                if ( this.Modal.numero == 3 ) return true;
 
                 return false;
             },
@@ -452,8 +475,6 @@
             getTotal: function(){
                 this.Produccion.total = 0.00;
                 this.ListaDetalleProduccion.forEach( detalle => {
-                    // console.log(Number.parseFloat(detalle.costo_produccion * detalle.cantidad).toFixed(2));
-                    // this.Produccion.total = this.Produccion.total + detalle.costo_produccion * detalle.cantidad;
                     this.Produccion.total = this.Produccion.total + detalle.costo_produccion * detalle.cantidad;
                 });
                 return (this.Produccion.total).toFixed(2);
@@ -515,32 +536,60 @@
                 //Verifico si el producto ya esta en la lista de detalle
                 let incluido = false;
                 for (let i = 0; i < this.ListaDetalleProduccion.length; i++) {
-                    if(this.ListaDetalleProduccion[i].id == producto.id){
+                    if(this.ListaDetalleProduccion[i].producto_id == producto.id){
                         incluido = true;
-                        //adiciono uno más a la cantidad de este producto en la tabla de detalles
-                        this.ListaDetalleProduccion[i].cantidad ++;
+                        
+                        if(this.ListaDetalleProduccion[i].estado == 0){
+                            this.ListaDetalleProduccion[i].cantidad = 1;
+                            this.ListaDetalleProduccion[i].estado = 1;
+                        }else{
+                            this.ListaDetalleProduccion[i].cantidad ++;
+                        }
+                        this.filtrarDetalleProduccion();
                         break;
                     }
                 }
 
                 if(!incluido){
-                    let elProducto = {
-                        id: producto.id,
-                        nombre: producto.nombre,
+                    let detalleProduccion = {
+                        id: 0,
+                        producto_id: producto.id,
+                        nombre_producto: producto.nombre,
                         cantidad: 1,
                         costo_produccion: producto.costo_produccion,
-                        subtotal: 0.00
+                        subtotal: 0.00,
+                        estado: 1 // 1: Muestra, 0: Se elimino
                     }
-                    this.ListaDetalleProduccion.push(elProducto);
+                    this.ListaDetalleProduccion.push(detalleProduccion);
+                    this.filtrarDetalleProduccion();
                 }
             },
-            quitarDetalle(indice){
-                this.ListaDetalleProduccion.splice(indice,1);
+            quitarDetalle(producto_id){
+                for (let i = 0; i < this.ListaDetalleProduccion.length; i++) {
+                    // let detalle = this.ListaDetalleProduccion[i];
+                    if(this.ListaDetalleProduccion[i].producto_id == producto_id){
+                        
+                        if(this.ListaDetalleProduccion[i].id == 0){
+                            this.ListaDetalleProduccion.splice(i,1);
+                        }else{
+                            this.ListaDetalleProduccion[i].estado = 0;
+                        }
+                        this.filtrarDetalleProduccion();
+                        break;
+                    }
+                }
+            },
+            filtrarDetalleProduccion: function(){
+                this.ListaDetalleProduccionFiltrada = [];
+                for (let i = 0; i < this.ListaDetalleProduccion.length; i++) {
+                    if ( this.ListaDetalleProduccion[i].estado == 1) {
+                        this.ListaDetalleProduccionFiltrada.push(this.ListaDetalleProduccion[i]);
+                    }
+                }
             },
             agregar(){
-                if ( this.validar() ) return;
-                
-                var me = this;
+                if ( this.validar(1) ) return;
+                let me = this;
                 axios.post('/produccion/agregar', {
                     //Datos de la produccion
                     'total' : this.Produccion.total,
@@ -568,86 +617,85 @@
                     console.log(error);
                 });
             },
-            validar(){
+            editar(){
+                if ( this.validar(1) ) return;
+                if ( this.validar(2) ) return;
+                let me = this;
+                axios.put('/produccion/editar', {
+                    //Datos de la produccion
+                    'id' : this.Produccion.id,
+                    'total' : this.Produccion.total,
+                    'fecha_inicio' : this.Produccion.fecha_inicio,
+                    'fecha_programada' : this.Produccion.fecha_programada,
+                    'almacen_id': this.Produccion.almacen_id,
+                    //Datos del detalle de venta
+                    'listaDetalleProduccion' : this.ListaDetalleProduccion
+                }).then(function(response){
+                    me.cerrarModal();
+                    me.listar();
+                    Swal.fire({
+                        position: 'top-end',
+                        toast: true,
+                        type: 'success',
+                        title: 'La produccion se ha EDITADO correctamente',
+                        showConfirmButton: false,
+                        timer: 4500,
+                        animation:false,
+                        customClass:{
+                            popup: 'animated bounceIn fast'
+                        }
+                    });
+                }).catch(function(error){
+                    console.log(error);
+                });
+            },
+            validar(numero){
                 this.Error.estado = 0;
                 this.Error.mensaje = [];
+                switch(numero){
+                    case 1://Modal agregar y editar
+                        if ( !this.ListaDetalleProduccion.length ) {
+                            this.Error.mensaje.push('No existe ningun detalle de producción');
+                        }else{//Valido si hay negativos en las cantidades de los detalles de producción
+                            for (let i = 0; i < this.ListaDetalleProduccion.length; i++) {
+                                const detalle = this.ListaDetalleProduccion[i];
+                                if(detalle.cantidad<1){
+                                    this.Error.mensaje.push('Las cantidades de los detalles deben ser mayores o iguales a 1'); break;
+                                }
+                            }
+                        }
+                        if ( !this.Produccion.fecha_inicio || !this.Produccion.fecha_programada){
+                            this.Error.mensaje.push('Debe ingresar una fecha de inicio y una fecha programada de la producción');
+                        }else {
+                            let arrayfechaInicio = this.Produccion.fecha_inicio.split('-');
+                            let arrayFechaProgramada = this.Produccion.fecha_programada.split('-');
+                            let fecha_inicio = new Date(parseInt(arrayfechaInicio[0]),parseInt(arrayfechaInicio[1]-1),parseInt(arrayfechaInicio[2]));
+                            let fecha_programada = new Date(parseInt(arrayFechaProgramada[0]),parseInt(arrayFechaProgramada[1]-1),parseInt(arrayFechaProgramada[2]));
 
-                //Recorrere la lista de Material
-                if(this.Modal.numero == 1){
-                    //Modal agregar
-                    if ( !this.ListaDetalleProduccion.length ) {
-                        this.Error.mensaje.push("No existe ningun detalle de producción");
-                    }else{//Valido si hay negativos en las cantidades de los detalles de producción
-                        this.ValidarNegativosCantidades();
-                    }
-                    if ( !this.Produccion.fecha_inicio || !this.Produccion.fecha_programada){
-                        this.Error.mensaje.push('Debe ingresar una fecha de inicio y una fecha programada de la producción');
-                    }else {
-                        this.validarFechasLogicas();
-                    }
-                }else{
-                    //Modal editar
+                            let hoyBase =  new Date();
+                            let hoyFirme = new Date(hoyBase.getFullYear(), hoyBase.getMonth(), hoyBase.getDate());
+
+                            if(fecha_inicio <  hoyFirme){//Aqui me quede
+                                this.Error.mensaje.push('La fecha de inicio es incorrecta');
+                            }else if(fecha_inicio >= fecha_programada){
+                                this.Error.mensaje.push('La fecha programada debe ser después que la fecha de inicio de la producción');
+                            }
+                        }
+                        break;
+                    case 2:
+                        let found = 0;
+                        for (let i = 0; i < this.ListaDetalleProduccion.length; i++) {
+                            const detalle = this.ListaDetalleProduccion[i];
+                            if(detalle.estado == 1) {
+                                found = 1; break;
+                            }
+                        }
+                        if(!found) this.Error.mensaje.push('No existe ningun detalle de producción');
+                        break;
                 }
                 if ( this.Error.mensaje.length ) this.Error.estado = 1;
                 return this.Error.estado;
             },
-            ValidarNegativosCantidades(){
-                for (let i = 0; i < this.ListaDetalleProduccion.length; i++) {
-                    const detalle = this.ListaDetalleProduccion[i];
-                    if(detalle.cantidad<1){
-                        this.Error.mensaje.push('Las cantidades de los detalles deben ser mayores o iguales a 1');
-                        break;
-                    }
-                }
-            },
-            validarFechasLogicas(){
-                let arrayfechaInicio = this.Produccion.fecha_inicio.split('-');
-                let arrayFechaProgramada = this.Produccion.fecha_programada.split('-');
-                let fecha_inicio = new Date(parseInt(arrayfechaInicio[0]),parseInt(arrayfechaInicio[1]-1),parseInt(arrayfechaInicio[2]));
-                let fecha_programada = new Date(parseInt(arrayFechaProgramada[0]),parseInt(arrayFechaProgramada[1]-1),parseInt(arrayFechaProgramada[2]));
-
-                let hoyBase =  new Date();
-                let hoyFirme = new Date(hoyBase.getFullYear(), hoyBase.getMonth(), hoyBase.getDate());
-
-                if(fecha_inicio <  hoyFirme){//Aqui me quede
-                    this.Error.mensaje.push('La fecha de inicio es incorrecta');
-                }else if(fecha_inicio >= fecha_programada){
-                    this.Error.mensaje.push('La fecha programada debe ser después que la fecha de inicio de la producción');
-                }
-                //Pruebas
-                // this.Produccion.fecha_inicio = arrayfechaInicio[2] + '-' + parseInt(arrayfechaInicio[1]-1) + '-' + arrayfechaInicio[0];
-                // this.Produccion.fecha_programada = arrayFechaProgramada[2] + '-' + parseInt(arrayFechaProgramada[1]-1) + '-' + arrayFechaProgramada[0];
-
-            },
-            // editar(){
-            //     if ( this.validar() ) return;
-
-            //     var me = this;
-            //     axios.put('/material/editar', {
-            //         'id' : this.Material.id,
-            //         'nombre' : this.Material.nombre,
-            //         'subtipo' : this.Material.subtipo,
-            //         'unidad' : this.Material.unidad,
-            //         'costo' : this.Material.costo,
-            //     }).then(function(response){
-            //         me.cerrarModal();
-            //         me.listar();
-            //         Swal.fire({
-            //             position: 'top-end',
-            //             toast: true,
-            //             type: 'success',
-            //             title: 'El Material se ha EDITADO correctamente',
-            //             showConfirmButton: false,
-            //             timer: 4500,
-            //             animation:false,
-            //             customClass:{
-            //                 popup: 'animated bounceIn fast'
-            //             }
-            //         });
-            //     }).catch(function(error){
-            //         console.log(error);
-            //     });
-            // },
             finalizar(produccion = []){
                 this.Produccion.id = produccion['id'];
                 Swal.fire({
@@ -690,38 +738,73 @@
                 });
             },
             abrirModalAgregar(){
-                this.abrirModal(1, 'Registrar Produccion', 'Agregar');
-                // let inputFiltro = document.getElementById('filtroProducto');
-                // inputFiltro.focus();
+                this.abrirModal(1, 'Registrar Produccion', 'Agregar', 'Cancelar', 'modal-xl modal-dialog-scrollable');
             },
-            // abrirModalEnviar(){
-            //     this.abrirModal(3, 'Enviar Produccion', 'Enviar');
-            //     if(this.SelectAlmacen == 0) this.selectAlmacen();
-            // },
-            // abrirModalEditar(data = []){
-            //     this.abrirModal(2, 'Editar Material', 'Editar');
-                
-            //     this.Material.id = data['id'];
-            //     this.Material.nombre = data['nombre'];
-            //     this.Material.subtipo = data['subtipo'];
-            //     this.Material.unidad = data['unidad'];
-            //     this.Material.costo  = data['costo'];
+            abrirModalEditar(produccion = []){
 
-            //     //Lleno los campos de mi Material Original
-            //     this.MaterialOrigen.id = data['id'];
-            //     this.MaterialOrigen.nombre = data['nombre'];
-            //     this.MaterialOrigen.subtipo = data['subtipo'];
-            //     this.MaterialOrigen.unidad = data['unidad'];
-            //     this.MaterialOrigen.costo  = data['costo'];
-                
-            //     //Verifico si el arreglo SelectUnidad esta vacia
-            //     if(!this.SelectUnidad.length) this.selectUnidad();
-            // },
-            abrirModal(numero, titulo, accion){
+                this.Produccion.id = produccion['id'];
+                this.Produccion.total = produccion['total'];
+                this.Produccion.fecha_inicio = produccion['fecha_inicio'];
+                this.Produccion.fecha_programada = produccion['fecha_programada'];
+                this.listarDetallesProduccion(produccion['id']);
+
+                this.abrirModal(2, 'Editar Producción', 'Editar', 'Cancelar', 'modal-xl modal-dialog-scrollable');
+            },
+            abrirModalVer(produccion = []){
+                this.Produccion.id = produccion['id'];
+                this.Produccion.total = produccion['total'];
+                this.Produccion.fecha_inicio = produccion['fecha_inicio'];
+                this.Produccion.fecha_programada = produccion['fecha_programada'];
+                this.listarDetallesProduccion(produccion['id']);
+                this.abrirModal(3, 'Ver Producción', '', 'Cerrar', 'modal-xl modal-dialog-scrollable');
+            },
+            abrirModal(numero, titulo, accion, cancelar, size){
                 this.Modal.estado = 1;
                 this.Modal.numero = numero;
                 this.Modal.titulo = titulo;
                 this.Modal.accion = accion;
+                this.Modal.cancelar = cancelar;
+                this.Modal.size = size;
+            },
+            anularProduccion(id){
+                Swal.fire({
+                    title: '¿Está seguro que desea ANULAR la producción?',
+                    type: 'error',
+                    showCancelButton: true,
+                    confirmButtonText: 'Si, anular',
+                    cancelButtonText: 'Cancelar',
+                    // reverseButtons: true,
+                    customClass: {
+                        confirmButton: 'btn btn-success',
+                        cancelButton: 'btn btn-secondary'
+                    },
+                    buttonsStyling: false
+                }).then((result) => {
+                    if (result.value) {
+                        var me = this;
+                
+                        axios.put('/produccion/anular', {
+                            'id' : id
+                        }).then(function (response) {
+                            me.listar();
+                            Swal.fire({
+                                position: 'top-end',
+                                toast: true,
+                                type: 'success',
+                                title: 'La producción se ANULÓ correctamente',
+                                showConfirmButton: false,
+                                timer: 4500,
+                                animation:false,
+                                customClass:{
+                                    popup: 'animated bounceIn fast'
+                                }
+                            });
+                        }).catch(function (error) {
+                            console.log(error);
+                        });
+                    } else if ( result.dismiss === Swal.DismissReason.cancel ) {
+                    }
+                });
             },
             cerrarModal(){
                 this.Modal.numero = 0;
@@ -754,40 +837,31 @@
                         this.finalizar();
                         break;
                     }
-                    // case 'Activar': {
-                    //     this.activar();
-                    //     break;
-                    // }
-                    // case 'Desactivar': {
-                    //     this.desactivar();
-                    //     break;
-                    // }
                 }
             },
-            // getTitulo(titulo){
-            //     var seleccionada = 0;
-
-            //     for (let i = 0; i < this.Headers.length; i++) {
-            //         if ( titulo == this.Headers[i].titulo && this.Navegacion.ordenarPor == this.Headers[i].nombre ) {
-            //             seleccionada = 1;
-            //             break;
-            //         }
-            //     }
-
-            //     if ( seleccionada == 1 ) {
-            //         if ( this.Navegacion.orden == 'asc' ) {
-            //             titulo = titulo + ' ^';
-            //         } else {
-            //             titulo = titulo + ' v';
-            //         }
-            //     }
-
-            //     return titulo;
-            // },
             cambiarPagina(page){
                 if ( page >= 1 && page <= this.Paginacion.lastPage) {
                     this.listar(page);
                 }
+            },
+            listarDetallesProduccion(id){
+                let me = this;
+                let url = '/produccion/getDetalles';
+
+                axios.get(url,{
+                    params: {
+                        'id': id
+                    }
+                }).then(function(response){
+                    me.ListaDetalleProduccion = response.data;
+                    console.log('Ejecute la consulta satisfactoriamente');
+                    me.ListaDetalleProduccion.forEach(detalle => {
+                        detalle.estado = 1;
+                    });
+                    if(me.Modal.numero == 2) me.filtrarDetalleProduccion();
+                }).catch(function(error){
+                    console.log(error);
+                });
             },
             getFechaHoy(){
                 let n =  new Date();

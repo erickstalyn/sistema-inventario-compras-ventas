@@ -23,7 +23,7 @@ class CreateDetalleProduccionTable extends Migration
             $table->unsignedMediumInteger('producto_id');
             $table->foreign('producto_id')->references('id')->on('producto');
             $table->unsignedMediumInteger('produccion_id');
-            $table->foreign('produccion_id')->references('id')->on('produccion');
+            $table->foreign('produccion_id')->references('id')->on('produccion')->onDelete('cascade');
         });
     }
 
