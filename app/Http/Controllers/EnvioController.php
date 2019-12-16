@@ -217,4 +217,10 @@ class EnvioController extends Controller
             DB::rollback();
         }
     }
+
+    public function getDetalles(Request $request){
+        if ( !$request->ajax() ) return redirect('/') ;
+        $detalles = Envio::findOrFail($request->id)->getDetalles;
+        return $detalles;
+    }
 }

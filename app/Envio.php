@@ -33,4 +33,8 @@ class Envio extends Model
         return $this->belongsToMany('App\Producto', 'detalle_envio')->withPivot('cantidad')->as('detalle_envio');
     }
 
+    public function getDetalles(){
+        return $this->hasMany('App\Detalle_envio', 'envio_id');
+    }
+
 }

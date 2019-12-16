@@ -607,6 +607,16 @@
                 this.abrirModal(3, 'Reenviar', 'Reenviar', '');
                 if(!this.SelectCentro.length) this.selectCentro();
             },
+            abrirModalVer(envio = []){
+                this.EnvioRealizado.id = envio['id'];
+                this.EnvioRealizado.fecha_envio = envio['fecha_envio'];
+                this.EnvioRealizado.fecha_cambio = envio['fecha_cambio'];
+                this.EnvioRealizado.centro_destino = envio['centro_destino'];
+                this.EnvioRealizado.estado = envio['estado'];
+
+                this.list(1);
+                this.abrirModal(2, 'Ver Abasto', '', 'Cerrar', 'modal-xl modal-dialog-scrollable')
+            },
             abrirModal(numero, titulo, accion, size){
                 this.Modal.estado = 1;
                 this.Modal.numero = numero;
@@ -647,6 +657,24 @@
             cambiarPagina(page){
                 if ( page >= 1 && page <= this.Paginacion.lastPage) {
                     this.listar(page);
+                }
+            },
+            list(numero){
+                switch (numero) {
+                    case 1:
+                        let me = this;
+                        let url = '/envioRealizado/getDetalles';
+
+                        axios.get(url,{
+                            params: {
+                                'id': me.EnvioRealizado.id
+                            }
+                        }).then(function(response){
+                            me.ListaDetalleEnvio = response.data;
+                        }).catch(function(error){
+                            console.log(error);
+                        });
+                        break;
                 }
             },
             getFechaHoy(){

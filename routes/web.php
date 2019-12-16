@@ -126,6 +126,9 @@ Route::group(['middleware' => ['auth']], function () {
 
         Route::get('/detalle_producto/getDetalle_productoFiltrado', 'Detalle_productoController@getDetalle_productoFiltrado');
         Route::get('/centro/selectCentro', 'CentroController@selectCentro');
+
+        //Rutas de ENVIOS REALIZADOS
+        Route::get('/envioRealizado/getDetalles', 'EnvioController@getDetalles');
     });
 
 });
