@@ -574,7 +574,7 @@
                     console.log(error);
                 });
             },
-            validar(numero){
+            validar(numero){u
                 this.Error.estado = 0;
                 this.Error.mensaje = [];
                 switch(numero){
