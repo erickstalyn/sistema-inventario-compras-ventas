@@ -885,7 +885,7 @@
                     case 3:
                         var found = 0;
                         for (var i = 0; i < this.ListaProductoMaterial.length; i++) {
-                            if ( this.ProductoMaterial.material_id == this.ListaProductoMaterial[i].material_id && this.ProductoMaterial.estado == 1 ) {
+                            if ( this.ProductoMaterial.material_id == this.ListaProductoMaterial[i].material_id && this.ListaProductoMaterial[i].estado == 1 ) {
                                 found = 1; break;
                             }
                         }

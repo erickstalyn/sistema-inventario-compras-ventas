@@ -161,7 +161,7 @@
                                     </div>
                                     <div class="" :class="Modal.numero == 2 ? 'col-md-3': 'col-md-6'">
                                         <div class="input-group">
-                                            <label >Apellidos</label>&nbsp;
+                                            <label>Apellidos</label>&nbsp;
                                             <input type="text" class="form-control form-control-sm" readonly v-model="DatosProveedor.apellidos">
                                         </div>
                                     </div>
@@ -184,10 +184,9 @@
                                 </div>
                             </div>
                             
-                            
-                            <div class="row shadow bg-white rounded p-2">
-                                <div class="col-md-4">
-                                    <div class="row">
+                            <div class="row shadow bg-aqua rounded p-2">
+                                <!-- <div class="col-md-4">
+                                    <div class="row form-group">
                                         <p class="font-weight-bold">PRODUCTOS</p>
                                     </div>
                                     <div class="row">
@@ -204,7 +203,7 @@
                                             <table class="table table-borderless table-striped table-sm text-gray-900">
                                                 <thead>
                                                     <tr class="table-danger">
-                                                        <th class="text-center" style="width: 3rem;">Agregar</th>
+                                                        <th class="text-center" style="width: 10%;">Agregar</th>
                                                         <th>Nombre</th>
                                                         <th>Stock</th>
                                                     </tr>
@@ -226,20 +225,9 @@
                                             <p>No se han encontrado resultados</p>
                                         </div>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="input-group"> 
-                                                <label for="">Enviar a</label>&nbsp;<span class="text-danger">*</span>&nbsp;
-                                                <select v-model="Abasto.centro_to_id" class="custom-select custom-select-sm text-gray-900">
-                                                    <option value="0">Seleccione</option>
-                                                    <option v-for="item in SelectAlmacen" :key="item.id" :value="item.id" v-text="item.nombre" ></option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                </div> -->
                                 <div class="col-md-8 ml-auto container">
-                                    <div class="row">
+                                    <!-- <div class="row">
                                         <div class="col-md-3 p-0">
                                             <p class="font-weight-bold">LISTA DE ITEMS</p>
                                         </div>
@@ -247,15 +235,15 @@
                                         <div class="col-md-3">
                                             <div class="input-group">
                                                 <label for="tipo" class="font-weight-bold">Tipo</label>&nbsp;<span class="text-danger">*</span>&nbsp;
-                                                <select v-model="Abasto.tipo" class="custom-select custom-select-sm" id="tipo">
+                                                <select v-model="Venta.tipo" class="custom-select custom-select-sm" id="tipo">
                                                     <option value="0">Contado</option>
                                                     <option value="1">Credito</option>
                                                 </select>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="row form-group ec-table-modal overflow-auto">
-                                        <div v-if="ListaDetalleAbasto.length">
+                                    </div> -->
+                                    <!-- <div class="row form-group ec-table-modal overflow-auto">
+                                        <div v-if="ListaDetalle.length">
                                             <table class="table tableless table-striped table-sm text-gray-900">
                                                 <thead>
                                                     <tr class="table-success">
@@ -267,7 +255,7 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr v-for="(detalle, indice) in ListaDetalleAbasto" :key="detalle.id">
+                                                    <tr v-for="(detalle, indice) in ListaDetalle" :key="detalle.id">
                                                         <td class="text-center">
                                                             <button type="button" title="Editar" class="btn btn-circle btn-outline-danger btn-sm" @click="quitarDetalle(indice)">
                                                                 <i class="fas fa-minus"></i>
@@ -289,14 +277,14 @@
                                         </div>
                                         <div v-else>
                                             <br>
-                                            <p>Sin detalles de abasto</p>
+                                            <p>Sin detalles de venta</p>
                                         </div>
-                                    </div>
-                                    <div class="row">
+                                    </div> -->
+                                    <!-- <div class="row">
                                         <div class="col-md-4">
-                                            <div class="input-group" style="width: 12.4rem;" v-if="Abasto.tipo == '1'"> 
+                                            <div class="input-group" style="width: 12.4rem;" v-if="Venta.tipo == '1'"> 
                                                 <label for="">Pago inicial</label>&nbsp;<span class="text-danger">*</span>&nbsp;
-                                                <input type="number" class="form-control form-control-sm" v-model="Abasto.pagoInicial" min="0">
+                                                <input type="number" class="form-control form-control-sm" v-model="Pago.pagoInicial" min="0">
                                             </div>
                                         </div>
                                         <div class="col-md-3">
@@ -304,7 +292,7 @@
                                         <div class="col-md-5">
                                             <p class="text-right pr-1">Desembolso total: s/ {{getDesembolso}}</p>
                                         </div>
-                                    </div>
+                                    </div> -->
                                 </div>
                             </div>
                         </div>
@@ -469,13 +457,11 @@
                 ListaDetalleAbasto:[
                 ],
                 //DATOS PARA ENVIAR UNA PRODUCCION
-                SelectAlmacen: [],
-                //DATOS PARA CONSULTA SUNAT Y RENIEC
-                DatosServicio: {
-                    documento: '',
-                    tipo: 0, //1->PERSONA, 2-> EMPRESA
-                    mensaje: '',
-                    alert: '',
+                Service: {
+                    document: '',
+                    type: 0, //1->PERSONA, 2-> EMPRESA
+                    msm: '',
+                    class: '',
                     readonly: false
                 },
                 ListaPago: [],
@@ -777,8 +763,9 @@
                 this.ListaDetalleAbasto.splice(indice,1);
             },
             consultar(){
-                this.DatosServicio.alert = '';
-                this.DatosServicio.mensaje = '';
+                this.Service.class = '';
+                this.Service.msm = '';
+
                 switch (this.DatosServicio.documento.length) {
                     case 0:
                         this.DatosServicio.alert = 'badge badge-warning';
