@@ -129,11 +129,11 @@
                                     </ul>
                                 </div>
                             </div>
-                            <div class="row">
+                            <div class="row form-group">
                                 <label class="col-md-2 font-weight-bold">PROVEEDOR</label>
                                 <label class="col-md-1 font-weight-bold">RUC/DNI&nbsp;<span class="text-danger">*</span></label>
                                 <div class="col-md-2 input-group">
-                                    <input type="text" class="form-control form-control-sm" v-model="Cliente.documento" @keyup.enter="consultar()">
+                                    <input type="text" class="form-control form-control-sm" v-model="Service.document" @keyup.enter="consultar()">
                                     <button type="button" class="btn btn-sm btn-primary" @click="consultar()">
                                         <i class="fas fa-sync-alt"></i>
                                     </button>
@@ -141,45 +141,33 @@
                                 <div class="col-md-3">
                                     <h5>
                                         <span role="status" :class="Carga.clase"></span>&nbsp;
-                                        <span v-text="DatosServicio.mensaje" :class="DatosServicio.alert"></span>
+                                        <span v-text="Service.msm" :class="Service.msmclass"></span>
                                     </h5>
                                 </div>
                             </div>
                             <div>
                                 <div v-if="Cliente.tipo==1" class="row form-group">
-                                    <div class="col-md-2">
-                                        <div class="input-group"> 
-                                            DNI&nbsp;
-                                            <input type="text" class="form-control form-control-sm" readonly v-model="DatosProveedor.documento">
-                                        </div>
+                                    <div class="col-md-2 input-group">
+                                        <label class="col-md-4">DNI</label>
+                                        <input type="text" class="col-md-8 form-control form-control-sm" readonly v-model="Cliente.documento">
                                     </div>
-                                    <div class="" :class="Modal.numero == 2 ? 'col-md-3': 'col-md-4'">
-                                        <div class="input-group">
-                                            <label >Nombres</label>&nbsp;
-                                            <input type="text" class="form-control form-control-sm" readonly v-model="DatosProveedor.nombres">
-                                        </div>
+                                    <div class="col-md-4 input-group">
+                                        <label class="col-md-3">Nombres</label>
+                                        <input type="text" class="col-md-9 form-control form-control-sm" readonly v-model="Cliente.nombres">
                                     </div>
-                                    <div class="" :class="Modal.numero == 2 ? 'col-md-3': 'col-md-6'">
-                                        <div class="input-group">
-                                            <label>Apellidos</label>&nbsp;
-                                            <input type="text" class="form-control form-control-sm" readonly v-model="DatosProveedor.apellidos">
-                                        </div>
+                                    <div class="col-md-6 input-group">
+                                        <label class="col-md-2">Apellidos</label>
+                                        <input type="text" class="col-md-10 form-control form-control-sm" readonly v-model="Cliente.apellidos">
                                     </div>
                                 </div>
-                                <div v-else-if="Cliente.tipo == 2">
-                                    <div class="row form-group">
-                                        <div class="col-md-2">
-                                            <div class="input-group"> 
-                                                RUC&nbsp;
-                                                <input type="text" class="form-control form-control-sm" readonly v-model="DatosProveedor.documento">
-                                            </div>
-                                        </div>
-                                        <div class="" :class="Modal.numero == 2 ? 'col-md-6': 'col-md-10'">
-                                            <div class="input-group">
-                                                <label >Razón social</label>&nbsp;
-                                                <input type="text" class="form-control form-control-sm" v-model="DatosProveedor.razon_social" :readonly="DatosServicio.readonly">
-                                            </div>
-                                        </div>
+                                <div v-else-if="Cliente.tipo==2" class="row form-group">
+                                    <div class="col-md-2 input-group">
+                                        <label class="col-md-4">RUC</label>
+                                        <input type="text" class="col-md-8 form-control form-control-sm" readonly v-model="Cliente.documento">
+                                    </div>
+                                    <div class="col-md-10 input-group">
+                                        <label class="col-md-2">Razón social</label>&nbsp;
+                                        <input type="text" class="col-md-10 form-control form-control-sm" v-model="Cliente.razon_social" :readonly="Service.readonly">
                                     </div>
                                 </div>
                             </div>
@@ -458,10 +446,11 @@
                 ],
                 //DATOS PARA ENVIAR UNA PRODUCCION
                 Service: {
-                    document: '',
                     type: 0, //1->PERSONA, 2-> EMPRESA
+                    document: '',
                     msm: '',
-                    class: '',
+                    msmclass: '',
+                    loadclass: '',
                     readonly: false
                 },
                 ListaPago: [],
@@ -472,7 +461,8 @@
 
                 //datos de Rutas
                 Ruta: {
-                    venta: '/venta'
+                    venta: '/venta',
+                    persona: '/persona'
                 }
             }
         },
@@ -582,6 +572,10 @@
             abrirModalAgregar(){
                 this.abrirModal(1, 'Registrar Venta', 'modal-xl', 'Registrar', 'Cancelar');
 
+                this.Error.numero = 0;
+                this.Error.estado = 0;
+                this.Error.mensaje = [];
+
                 this.Cliente.id = 0;
                 this.Cliente.documento = '';
                 this.Cliente.nombres = '';
@@ -589,7 +583,12 @@
                 this.Cliente.razon_social = '';
                 this.Cliente.tipo = 0;
                 
-                // this.ListaDetalle.id
+                this.Service.type = 0;
+                this.Service.document = '';
+                this.Service.msm = '';
+                this.Service.msmclass = '';
+                this.Service.loadclass = '';
+                this.Service.readonly = false;
             },
             abrirModalPagar(abasto = []){
                 this.Abasto.id = abasto['id'];
@@ -713,6 +712,138 @@
                 if ( this.Error.mensaje.length ) this.Error.estado = 1;
                 return this.Error.estado;
             },
+            consultar(){
+                this.Service.msm = '';
+                this.Service.msmclass = '';
+
+                switch (this.Service.document.length) {
+                    case 0:
+                        this.Service.msm = 'Ingrese un DNI o RUC';
+                        this.Service.msmclass = 'badge badge-warning';
+                        break;
+                    case 8: 
+                    case 11:
+                        this.Service.msm = 'Consultado...';
+                        this.Service.msmclass = 'badge badge-info';
+                        this.Service.loadclass = 'spinner-border spinner-border-sm text-success';
+                        this.consultarDB();
+                        break;
+                    default:
+                        this.Service.msm = 'Documento inválido'
+                        this.Service.msmclass = 'badge badge-primary';
+                        break;
+                }
+            },
+            consultarDB(){
+                var me = this;
+                var url = this.Ruta.persona+'/getPersona';
+
+                axios.get(url, {
+                    params: {
+                        'documento': me.Service.document
+                    }
+                }).then(function(response){
+                    if (response.data.persona.length){ //Si existe la persona en la db
+                        me.Service.msm = '';
+                        me.Service.msmclass = '';
+                        me.Service.loadclass = '';
+
+                        const persona = response.data.persona[0];
+                        
+                        if (persona.razon_social){//Es una EMPRESA
+                            me.Service.type = 2;
+                            me.Service.readonly = true;
+                            
+                            me.Cliente.tipo = 2;
+                            me.Cliente.razon_social = persona.razon_social;
+                        } else {//Es una PERSONA
+                            me.Service.type = 1;
+
+                            me.Cliente.tipo = 1;
+                            me.Cliente.nombres = persona.nombres;
+                            me.Cliente.apellidos = persona.apellidos;
+                        }
+
+                        me.Cliente.id = persona.id;
+                        me.Cliente.documento = me.Service.document;
+
+                        me.Service.document = '';
+                    } else {//No esxiste la persona en la db
+                        if ( me.Service.document.length == 8 ){
+                            me.consultarDNI();
+                        }else{
+                            me.consultarRUC();
+                        }
+                    }
+                }).catch(function(error){
+                    console.log(error);
+                });
+            },
+            consultarDNI(){
+                let me = this;
+                let dni = me.Service.document;
+
+                $.ajax({
+                    type: 'GET',
+                    url: "http://localhost:8080/Reniec/demo.php",
+                    data: "dni="+dni,
+                    beforeSend(){
+                        me.Service.msm = 'Consultado...';
+                        me.Service.msmclass = 'badge badge-info';
+                        me.Service.loadclass = 'spinner-border spinner-border-sm text-primary';
+                    },
+                    success: function (data, textStatus, jqXHR) {
+                        let persona = JSON.parse(data);
+                        if (persona.estado == true){
+                            me.Service.type = 1;
+                            me.Service.document = '';
+                            me.Service.msm = '';
+                            me.Service.msmclass = '';
+                            me.Cliente.tipo = 1;
+                            me.Cliente.documento = persona.dni;
+                            me.Cliente.nombres = persona.nombres;
+                            me.Cliente.apellidos = persona.apellidos;
+                        } else {
+                            me.Service.msm = 'El DNI no existe';
+                            me.Service.msmclass = 'badge badge-primary';
+                        }
+                        me.Service.loadclass = '';
+                    }
+                }).fail(function(){
+                });
+            },
+            consultarRUC(){
+                let me = this;
+                let ruc = me.Service.document;
+
+                $.ajax({
+                    type: 'GET',
+                    url: "http://localhost:8080/SunatPHP/demo.php",
+                    data: "ruc="+ruc,
+                    beforeSend(){
+                        me.Service.msm = 'Consultado...';
+                        me.Service.msmclass = 'badge badge-info';
+                        me.Service.loadclass = 'spinner-border spinner-border-sm text-primary';
+                    },
+                    success: function (data, textStatus, jqXHR) {
+                        if (data.RazonSocial){
+                            me.Service.type = 2;
+                            me.Service.document = '';
+                            me.Service.msm = '';
+                            me.Service.msmclass = '';
+                            me.Service.readonly = false;
+                            me.Cliente.tipo = 2;
+                            me.Cliente.documento = data.RUC;
+                            me.Cliente.razon_social = data.RazonSocial;
+                        } else {
+                            me.Service.msm = 'El RUC no existe';
+                            me.Service.msmclass = 'badge badge-primary';
+                        }
+                        me.Service.loadclass = '';
+                    }
+                }).fail(function(){
+                });
+            },
             formatearFecha(fecha){
                 let arrayFecha = fecha.split('-');
                 let newFecha = arrayFecha[2] + '-' + arrayFecha[1] + '-' + arrayFecha[0];
@@ -761,132 +892,6 @@
             },
             quitarDetalle(indice){
                 this.ListaDetalleAbasto.splice(indice,1);
-            },
-            consultar(){
-                this.Service.class = '';
-                this.Service.msm = '';
-
-                switch (this.DatosServicio.documento.length) {
-                    case 0:
-                        this.DatosServicio.alert = 'badge badge-warning';
-                        this.DatosServicio.mensaje = 'Ingrese un DNI o RUC';
-                        break;
-                    case 8: case 11:
-                        this.consultarDB();
-                        break;
-                    default:
-                        // this.DatosServicio.alert = 'alert alert-danger';
-                        this.DatosServicio.alert = 'badge badge-primary';
-                        this.DatosServicio.mensaje = 'Documento inválido'
-                        break;
-                }
-            },
-            consultarDB(){
-                var me = this;
-                var url = '/persona/getPersona';
-
-                me.DatosServicio.alert = 'badge badge-info';
-                me.DatosServicio.mensaje = 'Consultado...';
-                me.Carga.clase = 'spinner-border spinner-border-sm text-success';
-                axios.get(url,{
-                    params: {
-                        'documento': me.DatosServicio.documento
-                    }
-                }).then(function(response){
-                    if(response.data.persona.length){//Si existe la persona en la db
-                        me.DatosServicio.alert = '';
-                        me.DatosServicio.mensaje = '';
-                        me.Carga.clase = '';
-
-                        const persona = response.data.persona[0];
-                        me.DatosProveedor.id = persona.id;
-                        if(persona.razon_social){//Es una EMPRESA
-                            me.DatosServicio.tipo = 2;
-                            me.DatosServicio.readonly = true;
-                            me.DatosProveedor.documento = me.DatosServicio.documento;
-                            me.DatosProveedor.razon_social = persona.razon_social;
-
-                            me.DatosServicio.documento = '';
-                        }else{//Es una PERSONA
-                            me.DatosServicio.tipo = 1;
-                            me.DatosProveedor.documento = me.DatosServicio.documento;
-                            me.DatosProveedor.nombres = persona.nombres;
-                            me.DatosProveedor.apellidos = persona.apellidos;
-                            
-                            me.DatosServicio.documento = '';
-                        }
-                    }else{//No esxiste la persona en la db
-                        me.DatosProveedor.id = 0;
-                        if(me.DatosServicio.documento.length == 8){
-                            me.consultarDNI();
-                        }else{
-                            me.consultarRUC();
-                        }
-                    }
-                }).catch(function(error){
-                    console.log(error);
-                });
-            },
-            consultarRUC(){
-                let me = this;
-                let ruc = me.DatosServicio.documento;
-                $.ajax({
-                    type: 'GET',
-                    url: "http://localhost:80/SunatPHP/demo.php",
-                    data: "ruc="+ruc,
-                    beforeSend(){
-                        me.Carga.clase = 'spinner-border spinner-border-sm text-primary';
-                        me.DatosServicio.alert = 'badge badge-info';
-                        me.DatosServicio.mensaje = 'Consultado...';
-                    },
-                    success: function (data, textStatus, jqXHR) {
-                        if(data.RazonSocial){
-                            me.DatosServicio.documento = '';
-                            me.DatosServicio.alert = '';
-                            me.DatosServicio.mensaje = '';
-                            me.DatosServicio.tipo = 2;
-                            me.DatosServicio.readonly = false;
-                            me.DatosProveedor.documento = data.RUC;
-                            me.DatosProveedor.razon_social = data.RazonSocial;
-                        }else{
-                            me.DatosServicio.alert = 'badge badge-primary';
-                            me.DatosServicio.mensaje = 'El RUC no existe';
-                        }
-                        me.Carga.clase = '';
-                    }
-                }).fail(function(){
-                });
-            },
-            consultarDNI(){
-                let me = this;
-                let dni = me.DatosServicio.documento;
-                $.ajax({
-                    type: 'GET',
-                    url: "http://localhost:80/Reniec/demo.php",
-                    data: "dni="+dni,
-                    beforeSend(){
-                        me.Carga.clase = 'spinner-border spinner-border-sm text-primary';
-                        me.DatosServicio.alert = 'badge badge-info';
-                        me.DatosServicio.mensaje = 'Consultado...';
-                    },
-                    success: function (data, textStatus, jqXHR) {
-                        let persona = JSON.parse(data);
-                        if(persona.estado == true){
-                            me.DatosServicio.documento = '';
-                            me.DatosServicio.alert = '';
-                            me.DatosServicio.mensaje = '';
-                            me.DatosServicio.tipo = 1;
-                            me.DatosProveedor.documento = persona.dni;
-                            me.DatosProveedor.nombres = persona.nombres;
-                            me.DatosProveedor.apellidos = persona.apellidos;
-                        }else{
-                            me.DatosServicio.alert = 'badge badge-primary';
-                            me.DatosServicio.mensaje = 'El DNI no existe';
-                        }
-                        me.Carga.clase = '';
-                    }
-                }).fail(function(){
-                });
             },
             validarNegativos(){
                 for (let i = 0; i < this.ListaDetalleAbasto.length; i++) {

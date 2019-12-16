@@ -838,10 +838,14 @@
                 this.ProductoMaterial.subtotal = 0;
             },
             remove(indice){
-                if ( this.ListaProductoMaterial[indice].id != 0 ) {
-                    this.ListaProductoMaterial[indice].estado = 0;
+                if ( this.listaProductoMaterialFiltrada[indice].id != 0 ) {
+                    this.listaProductoMaterialFiltrada[indice].estado = 0;
                 } else {
-                    this.ListaProductoMaterial.splice(indice,1);
+                    for (let i = 0; i < this.ListaProductoMaterial.length; i++) {
+                        if ( this.listaProductoMaterialFiltrada[indice].material_id == this.ListaProductoMaterial[i].material_id) {
+                            this.ListaProductoMaterial.splice(i, 1); break;
+                        }
+                    }
                 }
             },
             update(numero, data = null){
@@ -903,12 +907,9 @@
                         break;
                     case 5:
                         for (let i = 0; i < this.ListaProducto.length; i++) {
-                            console.log("entro al for");
                             if ( this.Producto.id == this.ListaProducto[i].id ) {
-                                console.log("encontro el producto");
                                 if ( this.Producto.size == this.ListaProducto[i].size && this.Producto.color == this.ListaProducto[i].color && this.Producto.precio_menor == this.ListaProducto[i].precio_menor && this.Producto.precio_mayor == this.ListaProducto[i].precio_mayor ) {
                                     this.Error.mensaje.push("Ningun cambio realizado");    //sin cambios
-                                    console.log("deberia salir el error");
                                 }
                                 break;
                             }
