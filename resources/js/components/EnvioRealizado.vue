@@ -99,7 +99,7 @@
                                     </div>
                                 </td>
                                 <td class="text-center">
-                                    <button type="button" title="Ver" class="btn btn-sm btn-primary">
+                                    <button type="button" title="Ver" class="btn btn-sm btn-primary" @click="abrirModalVer(envio)">
                                         <i class="far fa-eye"></i>
                                     </button>
                                     <template v-if="envio.estado == 2">
@@ -151,7 +151,7 @@
                     <div class="modal-body">
                         <div class="container-fluid">
                         <!-- Modal Numero 1 de AGREGAR-->
-                            <div v-if="Modal.numero==1">
+                            <div v-if="Modal.numero==1 || Modal.numero == 2">
                                 <!-- Filtro de productos -->
                                 <div v-if="Error.estado" class="row d-flex justify-content-center">
                                     <div class="alert alert-danger">
@@ -163,7 +163,7 @@
                                     </div>
                                 </div>
                                 <div class="row shadow bg-white rounded p-2">
-                                    <div class="col-md-6">
+                                    <div class="col-md-6" v-if="Modal.numero == 1">
                                         <div class="row">
                                             <h5 class="font-weight-bold">Productos</h5>
                                         </div>
@@ -204,53 +204,37 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-6 ml-auto container">
+                                    <div class="ml-auto container" :class="Modal.numero == 1 ? 'col-md-6' : 'col-md-12'">
                                         <div class="row">
                                             <h5 class="font-weight-bold">Lista de items</h5>
                                         </div>
                                         <div class="row form-group ec-table-modal overflow-auto">
-                                            <div v-if="ListaDetalleEnvio.length">
-                                                <table class="table tableless table-striped table-sm text-gray-900">
-                                                    <thead>
-                                                        <tr class="table-success">
-                                                            <th class="text-center" style="width: 3rem;">Quitar</th>
-                                                            <th >Nombre</th>
-                                                            <th style="width: 5rem;" class="text-center">Cantidad</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr v-for="(detalle, indice) in ListaDetalleEnvio" :key="detalle.id">
-                                                            <td class="text-center">
-                                                                <button type="button" title="Editar" class="btn btn-circle btn-outline-danger btn-sm" @click="quitarDetalle(indice)">
-                                                                    <i class="fas fa-minus"></i>
-                                                                </button>
-                                                            </td>
-                                                            <td v-text="detalle.nombre"></td>
-                                                            <td >
-                                                                <input type="number" v-model="detalle.cantidad" class="form-control form-control-sm text-right" min="1">
-                                                            </td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                            <div v-else>
-                                                <br>
-                                                <h5>Sin detalles del envío</h5>
-                                            </div>
+                                            <table class="table tableless table-striped table-sm text-gray-900">
+                                                <thead>
+                                                    <tr class="table-success">
+                                                        <th class="text-center" >#</th>
+                                                        <th class="text-center">Nombre</th>
+                                                        <th style="width: 5rem;" class="text-center">Cantidad</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr v-for="(detalle, indice) in ListaDetalleEnvio" :key="indice">
+                                                        <td class="text-center">{{indice+1}}</td>
+                                                        <td v-text="detalle.nombre_producto"></td>
+                                                        <td class="text-right pr-3" v-text="detalle.cantidad"></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="input-group"> 
-                                                    <label for="">Enviar a</label>&nbsp;<span class="text-danger">*</span>&nbsp;
-                                                    <select v-model="EnvioRealizado.centro_to_id" class="custom-select custom-select-sm text-gray-900">
-                                                        <option value="0">Seleccione</option>
-                                                        <option v-for="item in SelectCentro" :key="item.id" :value="item.id" v-text="item.nombre" ></option>
-                                                    </select>
+                                                    <label class="font-weight-bold">Enviar a:</label>&nbsp;
+                                                    {{EnvioRealizado.centro_destino}}
                                                 </div>
                                             </div>
-                                            <!-- <div class="col-md-2"></div> -->
                                             <div class="col-md-6">
-                                                <p class="text-right pr-3">Total de productos: {{getTotal}}</p>
+                                                <p class="text-right"><span class="font-weight-bold">Total de productos: </span>{{getTotal}}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -282,8 +266,10 @@
 
                     <div class="modal-footer" v-if="permisoModalFooter">
                         <div class="row form-group col-md-12 d-flex justify-content-around">
-                            <button type="button" @click="accionar(Modal.accion)" class="btn btn-success" v-text="Modal.accion"></button>
-                            <button type="button" @click="cerrarModal()" class="btn btn-secondary">Cancelar</button>
+                            <div v-if="Modal.accion">
+                                <button type="button" @click="accionar(Modal.accion)" class="btn btn-success" v-text="Modal.accion"></button>
+                            </div>
+                            <button type="button" @click="cerrarModal()" class="btn btn-secondary" v-text="Modal.cancelar"></button>
                         </div>
                     </div>
                 
@@ -323,6 +309,7 @@
                     estado: 0,
                     titulo: '',
                     accion: '',
+                    cancelar: '',
                     size: ''
                 },
 
@@ -615,13 +602,14 @@
                 this.EnvioRealizado.estado = envio['estado'];
 
                 this.list(1);
-                this.abrirModal(2, 'Ver Abasto', '', 'Cerrar', 'modal-xl modal-dialog-scrollable')
+                this.abrirModal(2, 'Ver Envio', '', 'Cerrar', '')
             },
-            abrirModal(numero, titulo, accion, size){
+            abrirModal(numero, titulo, accion, cancelar, size){
                 this.Modal.estado = 1;
                 this.Modal.numero = numero;
                 this.Modal.titulo = titulo;
                 this.Modal.accion = accion;
+                this.Modal.cancelar = cancelar;
                 this.Modal.size = size;
             },
             cerrarModal(){
