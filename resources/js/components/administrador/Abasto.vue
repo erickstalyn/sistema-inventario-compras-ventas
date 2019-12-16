@@ -517,16 +517,10 @@
                                                 <tbody>
                                                     <tr v-for="(detalle, index) in ListaDetalleAbastoVer" :key="index">
                                                         <td class="text-center">{{index+1}}</td>
-                                                        <td class="text-center" v-text="detalle.nombre_producto"></td>
-                                                        <td >
-                                                            {{detalle.cantidad}}
-                                                        </td>
-                                                        <td>
-                                                            {{detalle.costo_abasto}}
-                                                        </td>
-                                                        <td class="text-right pr-4">
-                                                            {{detalle.subtotal}}
-                                                        </td>
+                                                        <td class="text-left pl-5" v-text="detalle.nombre_producto"></td>
+                                                        <td v-text="detalle.cantidad"></td>
+                                                        <td v-text="detalle.costo_abasto"></td>
+                                                        <td class="text-right pr-4" v-text="detalle.subtotal"></td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -922,7 +916,7 @@
                 let ruc = me.DatosServicio.documento;
                 $.ajax({
                     type: 'GET',
-                    url: "http://localhost:8080/SunatPHP/demo.php",
+                    url: "http://localhost:80/SunatPHP/demo.php",
                     data: "ruc="+ruc,
                     beforeSend(){
                         me.Carga.clase = 'spinner-border spinner-border-sm text-primary';
@@ -952,7 +946,7 @@
                 let dni = me.DatosServicio.documento;
                 $.ajax({
                     type: 'GET',
-                    url: "http://localhost:8080/Reniec/demo.php",
+                    url: "http://localhost:80/Reniec/demo.php",
                     data: "dni="+dni,
                     beforeSend(){
                         me.Carga.clase = 'spinner-border spinner-border-sm text-primary';

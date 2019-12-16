@@ -99,7 +99,7 @@
                                     </div>
                                 </td>
                                 <td class="text-center">
-                                    <button type="button"  title="Ver" class="btn btn-primary btn-sm">
+                                    <button type="button"  title="Ver" class="btn btn-primary btn-sm" @click="abrirModalVer(produccion)">
                                         <i class="far fa-eye"></i>
                                     </button>
                                     <!-- Sin iniciar -->
@@ -160,15 +160,12 @@
         <div class="modal text-gray-900" :class="{'mostrar': Modal.estado}">
             <div class="modal-dialog modal-dialog-centered animated bounceIn fast" :class="Modal.size">
                 <div class="modal-content">
-
                     <div class="modal-header">
                         <h3 v-text="Modal.titulo" class="modal-title" ></h3>
                         <button type="button" @click="cerrarModal()" class="close">X</button>
                     </div>
-                    
                     <div class="modal-body">
                         <div class="container-fluid">
-                        <!-- Modal Numero 1 de AGREGAR-->
                             <div v-if="Modal.numero==1 || Modal.numero == 2">
                                 <!-- Filtro de productos -->
                                 <div v-if="Error.estado" class="row d-flex justify-content-center">
@@ -285,12 +282,65 @@
                                 </div>
                                 
                             </div>
+                            <div v-if="Modal.numero == 3">
+                                <div class="row shadow bg-white rounded p-2">
+                                    <div class="col-md-12 ml-auto container">
+                                        <div class="row">
+                                            <h5 class="font-weight-bold">Lista de items</h5>
+                                        </div>
+                                        <div class="row form-group ec-table-modal overflow-auto">
+                                            <table class="table tableless table-striped table-sm text-gray-900">
+                                                <thead>
+                                                    <tr class="table-success">
+                                                        <th class="text-center">#</th>
+                                                        <th class="text-center">Nombre</th>
+                                                        <th style="width: 5rem;">Cant.</th>
+                                                        <th>Costo Unit.</th>
+                                                        <th class="text-right pr-4">Subtotal</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr v-for="(detalle, indice) in ListaDetalleProduccion" :key="indice">
+                                                        <td class="text-center">{{indice+1}}</td>
+                                                        <td class="text-left pl-5" v-text="detalle.nombre_producto"></td>
+                                                        <td v-text="detalle.cantidad"></td>
+                                                        <td v-text="detalle.costo_produccion"></td>
+                                                        <td class="text-right pr-4">
+                                                            {{detalle.subtotal = (detalle.costo_produccion * detalle.cantidad).toFixed(2)}}
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-8">
+                                            </div>
+                                            <div class="col-md-4">
+                                                <p class="text-right pr-2">Inversión total: s/ {{getTotal}}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-3"></div>
+                                    <div class="col-md-4 form-inline">
+                                        Fecha de inicio&nbsp;<span class="text-danger">*</span>
+                                        <input type="date" class="form-control form-control-sm" v-model="Produccion.fecha_inicio">
+                                    </div>
+                                    <div class="col-md-5 form-inline">
+                                        Fecha prog. finalización&nbsp;<span class="text-danger">*</span>
+                                        <input type="date" class="form-control form-control-sm" v-model="Produccion.fecha_programada">
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-
                     <div class="modal-footer" v-if="permisoModalFooter">
                         <div class="row form-group col-md-12 d-flex justify-content-around">
-                            <button type="button" @click="accionar(Modal.accion)" class="btn btn-success" v-text="Modal.accion"></button>
+                            <div v-if="Modal.accion">
+                                <button type="button" @click="accionar(Modal.accion)" class="btn btn-success" v-text="Modal.accion"></button>
+                            </div>
                             <button type="button" @click="cerrarModal()" class="btn btn-secondary" v-text="Modal.cancelar"></button>
                         </div>
                     </div>
@@ -700,6 +750,14 @@
 
                 this.abrirModal(2, 'Editar Producción', 'Editar', 'Cancelar', 'modal-xl modal-dialog-scrollable');
             },
+            abrirModalVer(produccion = []){
+                this.Produccion.id = produccion['id'];
+                this.Produccion.total = produccion['total'];
+                this.Produccion.fecha_inicio = produccion['fecha_inicio'];
+                this.Produccion.fecha_programada = produccion['fecha_programada'];
+                this.listarDetallesProduccion(produccion['id']);
+                this.abrirModal(3, 'Ver Producción', '', 'Cerrar', 'modal-xl modal-dialog-scrollable');
+            },
             abrirModal(numero, titulo, accion, cancelar, size){
                 this.Modal.estado = 1;
                 this.Modal.numero = numero;
@@ -760,7 +818,7 @@
                     me.ListaDetalleProduccion.forEach(detalle => {
                         detalle.estado = 1;
                     });
-                    me.filtrarDetalleProduccion();
+                    if(me.Modal.numero == 2) me.filtrarDetalleProduccion();
                 }).catch(function(error){
                     console.log(error);
                 });
