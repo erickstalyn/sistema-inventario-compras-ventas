@@ -107,7 +107,7 @@
                                         <button type="button"  title="Editar" class="btn btn-warning btn-sm" @click="abrirModalEditar(produccion)">
                                             <i class="fas fa-edit"></i>
                                         </button>
-                                        <button type="button"  title="Eliminar" class="btn btn-danger btn-sm">
+                                        <button type="button"  title="Eliminar" class="btn btn-danger btn-sm" @click="anularProduccion(produccion.id)">
                                             <i class="fas fa-trash-alt"></i>
                                         </button>
                                     </template>
@@ -122,7 +122,7 @@
                                         <button type="button"  title="Editar" class="btn btn-warning btn-sm" @click="abrirModalEditar(produccion)">
                                             <i class="fas fa-edit"></i>
                                         </button>
-                                        <button type="button"  title="Eliminar" class="btn btn-danger btn-sm">
+                                        <button type="button"  title="Eliminar" class="btn btn-danger btn-sm" @click="anularProduccion(produccion.id)">
                                             <i class="fas fa-trash-alt"></i>
                                         </button>
                                         <button type="button"  title="Finalizar" class="btn btn-outline-success btn-sm" @click="finalizar(produccion)">
@@ -765,6 +765,46 @@
                 this.Modal.accion = accion;
                 this.Modal.cancelar = cancelar;
                 this.Modal.size = size;
+            },
+            anularProduccion(id){
+                Swal.fire({
+                    title: '¿Está seguro que desea ANULAR la producción?',
+                    type: 'error',
+                    showCancelButton: true,
+                    confirmButtonText: 'Si, anular',
+                    cancelButtonText: 'Cancelar',
+                    // reverseButtons: true,
+                    customClass: {
+                        confirmButton: 'btn btn-success',
+                        cancelButton: 'btn btn-secondary'
+                    },
+                    buttonsStyling: false
+                }).then((result) => {
+                    if (result.value) {
+                        var me = this;
+                
+                        axios.put('/produccion/anular', {
+                            'id' : id
+                        }).then(function (response) {
+                            me.listar();
+                            Swal.fire({
+                                position: 'top-end',
+                                toast: true,
+                                type: 'success',
+                                title: 'La producción se ANULÓ correctamente',
+                                showConfirmButton: false,
+                                timer: 4500,
+                                animation:false,
+                                customClass:{
+                                    popup: 'animated bounceIn fast'
+                                }
+                            });
+                        }).catch(function (error) {
+                            console.log(error);
+                        });
+                    } else if ( result.dismiss === Swal.DismissReason.cancel ) {
+                    }
+                });
             },
             cerrarModal(){
                 this.Modal.numero = 0;

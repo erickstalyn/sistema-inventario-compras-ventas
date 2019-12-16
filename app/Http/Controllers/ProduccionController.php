@@ -182,4 +182,17 @@ class ProduccionController extends Controller
             DB::rollback();
         }
     }
+
+    public function anular(Request $request){
+        try {
+            DB::beginTransaction();
+
+            $produccion = Produccion::findOrFail($request->id);
+            $produccion->delete();
+            DB::commit();
+        } catch (Exception $e) {
+            echo($e);
+            DB::rollback();
+        }
+    }
 }
