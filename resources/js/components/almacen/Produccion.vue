@@ -99,7 +99,7 @@
                                     </div>
                                 </td>
                                 <td class="text-center">
-                                    <button type="button"  title="Ver" class="btn btn-primary btn-sm">
+                                    <button type="button"  title="Ver" class="btn btn-primary btn-sm" @click="abrirModalVer(produccion)">
                                         <i class="far fa-eye"></i>
                                     </button>
                                     <!-- Sin iniciar -->
@@ -107,7 +107,7 @@
                                         <button type="button"  title="Editar" class="btn btn-warning btn-sm" @click="abrirModalEditar(produccion)">
                                             <i class="fas fa-edit"></i>
                                         </button>
-                                        <button type="button"  title="Eliminar" class="btn btn-danger btn-sm">
+                                        <button type="button"  title="Eliminar" class="btn btn-danger btn-sm" @click="anularProduccion(produccion.id)">
                                             <i class="fas fa-trash-alt"></i>
                                         </button>
                                     </template>
@@ -122,7 +122,7 @@
                                         <button type="button"  title="Editar" class="btn btn-warning btn-sm" @click="abrirModalEditar(produccion)">
                                             <i class="fas fa-edit"></i>
                                         </button>
-                                        <button type="button"  title="Eliminar" class="btn btn-danger btn-sm">
+                                        <button type="button"  title="Eliminar" class="btn btn-danger btn-sm" @click="anularProduccion(produccion.id)">
                                             <i class="fas fa-trash-alt"></i>
                                         </button>
                                         <button type="button"  title="Finalizar" class="btn btn-outline-success btn-sm" @click="finalizar(produccion)">
@@ -160,15 +160,12 @@
         <div class="modal text-gray-900" :class="{'mostrar': Modal.estado}">
             <div class="modal-dialog modal-dialog-centered animated bounceIn fast" :class="Modal.size">
                 <div class="modal-content">
-
                     <div class="modal-header">
                         <h3 v-text="Modal.titulo" class="modal-title" ></h3>
                         <button type="button" @click="cerrarModal()" class="close">X</button>
                     </div>
-                    
                     <div class="modal-body">
                         <div class="container-fluid">
-                        <!-- Modal Numero 1 de AGREGAR-->
                             <div v-if="Modal.numero==1 || Modal.numero == 2">
                                 <!-- Filtro de productos -->
                                 <div v-if="Error.estado" class="row d-flex justify-content-center">
@@ -239,7 +236,7 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <tr v-for="detalle in listaDetalleProduccionFiltrada" :key="detalle.producto_id">
+                                                        <tr v-for="detalle in ListaDetalleProduccionFiltrada" :key="detalle.producto_id">
                                                             <td class="text-center">
                                                                 <button type="button" title="Quitar" class="btn btn-circle btn-outline-danger btn-sm" @click="quitarDetalle(detalle.producto_id)">
                                                                     <i class="fas fa-minus"></i>
@@ -285,12 +282,65 @@
                                 </div>
                                 
                             </div>
+                            <div v-if="Modal.numero == 3">
+                                <div class="row shadow bg-white rounded p-2">
+                                    <div class="col-md-12 ml-auto container">
+                                        <div class="row">
+                                            <h5 class="font-weight-bold">Lista de items</h5>
+                                        </div>
+                                        <div class="row form-group ec-table-modal overflow-auto">
+                                            <table class="table tableless table-striped table-sm text-gray-900">
+                                                <thead>
+                                                    <tr class="table-success">
+                                                        <th class="text-center">#</th>
+                                                        <th class="text-center">Nombre</th>
+                                                        <th style="width: 5rem;">Cant.</th>
+                                                        <th>Costo Unit.</th>
+                                                        <th class="text-right pr-4">Subtotal</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr v-for="(detalle, indice) in ListaDetalleProduccion" :key="indice">
+                                                        <td class="text-center">{{indice+1}}</td>
+                                                        <td class="text-left pl-5" v-text="detalle.nombre_producto"></td>
+                                                        <td v-text="detalle.cantidad"></td>
+                                                        <td v-text="detalle.costo_produccion"></td>
+                                                        <td class="text-right pr-4">
+                                                            {{detalle.subtotal = (detalle.costo_produccion * detalle.cantidad).toFixed(2)}}
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-8">
+                                            </div>
+                                            <div class="col-md-4">
+                                                <p class="text-right pr-2">Inversión total: s/ {{getTotal}}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-3"></div>
+                                    <div class="col-md-4 form-inline">
+                                        Fecha de inicio&nbsp;<span class="text-danger">*</span>
+                                        <input type="date" class="form-control form-control-sm" v-model="Produccion.fecha_inicio">
+                                    </div>
+                                    <div class="col-md-5 form-inline">
+                                        Fecha prog. finalización&nbsp;<span class="text-danger">*</span>
+                                        <input type="date" class="form-control form-control-sm" v-model="Produccion.fecha_programada">
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-
                     <div class="modal-footer" v-if="permisoModalFooter">
                         <div class="row form-group col-md-12 d-flex justify-content-around">
-                            <button type="button" @click="accionar(Modal.accion)" class="btn btn-success" v-text="Modal.accion"></button>
+                            <div v-if="Modal.accion">
+                                <button type="button" @click="accionar(Modal.accion)" class="btn btn-success" v-text="Modal.accion"></button>
+                            </div>
                             <button type="button" @click="cerrarModal()" class="btn btn-secondary" v-text="Modal.cancelar"></button>
                         </div>
                     </div>
@@ -364,7 +414,7 @@
                 ],
                 ListaDetalleProduccion:[
                 ],
-                // ListaDetalleProduccionFiltrada: [],
+                ListaDetalleProduccionFiltrada: [],
                 //DATOS PARA ENVIAR UNA PRODUCCION
                 SelectAlmacen: [],
             }
@@ -425,23 +475,9 @@
             getTotal: function(){
                 this.Produccion.total = 0.00;
                 this.ListaDetalleProduccion.forEach( detalle => {
-                    // console.log(Number.parseFloat(detalle.costo_produccion * detalle.cantidad).toFixed(2));
-                    // this.Produccion.total = this.Produccion.total + detalle.costo_produccion * detalle.cantidad;
                     this.Produccion.total = this.Produccion.total + detalle.costo_produccion * detalle.cantidad;
                 });
                 return (this.Produccion.total).toFixed(2);
-            },
-            listaDetalleProduccionFiltrada: function(){
-                let lista = [];
-                // this.ListaDetalleProduccionFiltrada = [];
-                for (let i = 0; i < this.ListaDetalleProduccion.length; i++) {
-                    if ( this.ListaDetalleProduccion[i].estado == 1) {
-                        lista.push(this.ListaDetalleProduccion[i]);
-                    }
-                }
-
-                // return this.ListaDetalleProduccionFiltrada;
-                return lista;
             }
         },
         methods: {
@@ -509,6 +545,7 @@
                         }else{
                             this.ListaDetalleProduccion[i].cantidad ++;
                         }
+                        this.filtrarDetalleProduccion();
                         break;
                     }
                 }
@@ -524,6 +561,7 @@
                         estado: 1 // 1: Muestra, 0: Se elimino
                     }
                     this.ListaDetalleProduccion.push(detalleProduccion);
+                    this.filtrarDetalleProduccion();
                 }
             },
             quitarDetalle(producto_id){
@@ -533,23 +571,21 @@
                         
                         if(this.ListaDetalleProduccion[i].id == 0){
                             this.ListaDetalleProduccion.splice(i,1);
-                            console.log('Eliminé un nuevo');
                         }else{
-                            console.log('Cambie el estado a 0');
                             this.ListaDetalleProduccion[i].estado = 0;
                         }
+                        this.filtrarDetalleProduccion();
                         break;
                     }
                 }
-                // if(this.listaDetalleProduccionFiltrada[indice].id != 0){
-                //     this.listaDetalleProduccionFiltrada[indice].estado = 0;
-                // } else {
-                //     for (let i = 0; i < this.ListaDetalleProduccion.length; i++) {
-                //         if(this.listaDetalleProduccionFiltrada[indice].producto_id == this.ListaDetalleProduccion[i].producto_id){
-                //             this.ListaDetalleProduccion.splice(i, 1); break;
-                //         }
-                //     }
-                // }
+            },
+            filtrarDetalleProduccion: function(){
+                this.ListaDetalleProduccionFiltrada = [];
+                for (let i = 0; i < this.ListaDetalleProduccion.length; i++) {
+                    if ( this.ListaDetalleProduccion[i].estado == 1) {
+                        this.ListaDetalleProduccionFiltrada.push(this.ListaDetalleProduccion[i]);
+                    }
+                }
             },
             agregar(){
                 if ( this.validar(1) ) return;
@@ -583,9 +619,11 @@
             },
             editar(){
                 if ( this.validar(1) ) return;
+                if ( this.validar(2) ) return;
                 let me = this;
                 axios.put('/produccion/editar', {
                     //Datos de la produccion
+                    'id' : this.Produccion.id,
                     'total' : this.Produccion.total,
                     'fecha_inicio' : this.Produccion.fecha_inicio,
                     'fecha_programada' : this.Produccion.fecha_programada,
@@ -617,13 +655,12 @@
                 switch(numero){
                     case 1://Modal agregar y editar
                         if ( !this.ListaDetalleProduccion.length ) {
-                            this.Error.mensaje.push("No existe ningun detalle de producción");
+                            this.Error.mensaje.push('No existe ningun detalle de producción');
                         }else{//Valido si hay negativos en las cantidades de los detalles de producción
                             for (let i = 0; i < this.ListaDetalleProduccion.length; i++) {
                                 const detalle = this.ListaDetalleProduccion[i];
                                 if(detalle.cantidad<1){
-                                    this.Error.mensaje.push('Las cantidades de los detalles deben ser mayores o iguales a 1');
-                                    break;
+                                    this.Error.mensaje.push('Las cantidades de los detalles deben ser mayores o iguales a 1'); break;
                                 }
                             }
                         }
@@ -644,6 +681,16 @@
                                 this.Error.mensaje.push('La fecha programada debe ser después que la fecha de inicio de la producción');
                             }
                         }
+                        break;
+                    case 2:
+                        let found = 0;
+                        for (let i = 0; i < this.ListaDetalleProduccion.length; i++) {
+                            const detalle = this.ListaDetalleProduccion[i];
+                            if(detalle.estado == 1) {
+                                found = 1; break;
+                            }
+                        }
+                        if(!found) this.Error.mensaje.push('No existe ningun detalle de producción');
                         break;
                 }
                 if ( this.Error.mensaje.length ) this.Error.estado = 1;
@@ -695,11 +742,21 @@
             },
             abrirModalEditar(produccion = []){
 
-                this.listarDetallesProduccion(produccion['id']);
+                this.Produccion.id = produccion['id'];
+                this.Produccion.total = produccion['total'];
                 this.Produccion.fecha_inicio = produccion['fecha_inicio'];
                 this.Produccion.fecha_programada = produccion['fecha_programada'];
+                this.listarDetallesProduccion(produccion['id']);
 
                 this.abrirModal(2, 'Editar Producción', 'Editar', 'Cancelar', 'modal-xl modal-dialog-scrollable');
+            },
+            abrirModalVer(produccion = []){
+                this.Produccion.id = produccion['id'];
+                this.Produccion.total = produccion['total'];
+                this.Produccion.fecha_inicio = produccion['fecha_inicio'];
+                this.Produccion.fecha_programada = produccion['fecha_programada'];
+                this.listarDetallesProduccion(produccion['id']);
+                this.abrirModal(3, 'Ver Producción', '', 'Cerrar', 'modal-xl modal-dialog-scrollable');
             },
             abrirModal(numero, titulo, accion, cancelar, size){
                 this.Modal.estado = 1;
@@ -708,6 +765,46 @@
                 this.Modal.accion = accion;
                 this.Modal.cancelar = cancelar;
                 this.Modal.size = size;
+            },
+            anularProduccion(id){
+                Swal.fire({
+                    title: '¿Está seguro que desea ANULAR la producción?',
+                    type: 'error',
+                    showCancelButton: true,
+                    confirmButtonText: 'Si, anular',
+                    cancelButtonText: 'Cancelar',
+                    // reverseButtons: true,
+                    customClass: {
+                        confirmButton: 'btn btn-success',
+                        cancelButton: 'btn btn-secondary'
+                    },
+                    buttonsStyling: false
+                }).then((result) => {
+                    if (result.value) {
+                        var me = this;
+                
+                        axios.put('/produccion/anular', {
+                            'id' : id
+                        }).then(function (response) {
+                            me.listar();
+                            Swal.fire({
+                                position: 'top-end',
+                                toast: true,
+                                type: 'success',
+                                title: 'La producción se ANULÓ correctamente',
+                                showConfirmButton: false,
+                                timer: 4500,
+                                animation:false,
+                                customClass:{
+                                    popup: 'animated bounceIn fast'
+                                }
+                            });
+                        }).catch(function (error) {
+                            console.log(error);
+                        });
+                    } else if ( result.dismiss === Swal.DismissReason.cancel ) {
+                    }
+                });
             },
             cerrarModal(){
                 this.Modal.numero = 0;
@@ -757,9 +854,11 @@
                     }
                 }).then(function(response){
                     me.ListaDetalleProduccion = response.data;
+                    console.log('Ejecute la consulta satisfactoriamente');
                     me.ListaDetalleProduccion.forEach(detalle => {
                         detalle.estado = 1;
                     });
+                    if(me.Modal.numero == 2) me.filtrarDetalleProduccion();
                 }).catch(function(error){
                     console.log(error);
                 });

@@ -115,40 +115,41 @@ class ProduccionController extends Controller
 
     public function editar(Request $request) {
         // if ( !$request->ajax() ) return redirect('/');
+
+        $produccion = Produccion::findOrFail($request->id);
+        $produccion->total = $request->total;
+        $produccion->fecha_inicio = $request->fecha_inicio;
+        $produccion->fecha_programada = $request->fecha_programada;
+        $produccion->almacen_id = $request->almacen_id;
+        $produccion->save();
+
         $lista = $request->listaDetalleProduccion;
         try {
             DB::beginTransaction();
 
             for ($i = 0; $i < count($lista); $i++) {
                 if ( $lista[$i]['id'] == 0 ) {
-                    $productomaterial = new ProductoMaterial();
-                    $productomaterial->producto_id = $request->producto_id;
-                    $productomaterial->material_id = $lista[$i]['material_id'];
-                    $productomaterial->nombre = $lista[$i]['nombre'];
-                    $productomaterial->unidad = $lista[$i]['unidad'];
-                    $productomaterial->costo_unitario = $lista[$i]['costo_unitario'];
-                    $productomaterial->cantidad = $lista[$i]['cantidad'];
-                    $productomaterial->subtotal = $lista[$i]['subtotal'];
-                    $productomaterial->save();
+                    $detalleProduccion = new Detalle_produccion();
+                    $detalleProduccion->nombre_producto = $lista[$i]['nombre_producto'];
+                    $detalleProduccion->costo_produccion = $lista[$i]['costo_produccion'];
+                    $detalleProduccion->cantidad = $lista[$i]['cantidad'];
+                    $detalleProduccion->subtotal = $lista[$i]['subtotal'];
+                    $detalleProduccion->producto_id = $lista[$i]['producto_id'];
+                    $detalleProduccion->produccion_id = $produccion->id;
+                    $detalleProduccion->save();
                 } else if ( $lista[$i]['estado'] == 1 ) {
-                    $productomaterial = ProductoMaterial::findOrFail($lista[$i]['id']);
-                    $productomaterial->producto_id = $request->producto_id;
-                    $productomaterial->material_id = $lista[$i]['material_id'];
-                    $productomaterial->nombre = $lista[$i]['nombre'];
-                    $productomaterial->unidad = $lista[$i]['unidad'];
-                    $productomaterial->costo_unitario = $lista[$i]['costo_unitario'];
-                    $productomaterial->cantidad = $lista[$i]['cantidad'];
-                    $productomaterial->subtotal = $lista[$i]['subtotal'];
-                    $productomaterial->save();
+                    $detalleProduccion = Detalle_produccion::findOrFail($lista[$i]['id']);
+                    $detalleProduccion->nombre_producto = $lista[$i]['nombre_producto'];
+                    $detalleProduccion->costo_produccion = $lista[$i]['costo_produccion'];
+                    $detalleProduccion->cantidad = $lista[$i]['cantidad'];
+                    $detalleProduccion->subtotal = $lista[$i]['subtotal'];
+                    $detalleProduccion->producto_id = $lista[$i]['producto_id'];
+                    $detalleProduccion->produccion_id = $produccion->id;
+                    $detalleProduccion->save();
                 } else {
-                    ProductoMaterial::where('id', '=', $lista[$i]['id'])->delete();
+                    Detalle_produccion::where('id', '=', $lista[$i]['id'])->delete();
                 }
             }
-
-            $producto = Producto::findOrFail($request->producto_id);
-            $producto->costo_produccion = $request->costo_produccion;
-            $producto->save();
-
             DB::commit();
             $error = NULL;
         } catch (Exception $e) {
@@ -178,6 +179,19 @@ class ProduccionController extends Controller
 
             DB::commit();
         } catch (Exception $e) {
+            DB::rollback();
+        }
+    }
+
+    public function anular(Request $request){
+        try {
+            DB::beginTransaction();
+
+            $produccion = Produccion::findOrFail($request->id);
+            $produccion->delete();
+            DB::commit();
+        } catch (Exception $e) {
+            echo($e);
             DB::rollback();
         }
     }
