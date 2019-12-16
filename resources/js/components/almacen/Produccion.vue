@@ -239,7 +239,7 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <tr v-for="detalle in listaDetalleProduccionFiltrada" :key="detalle.producto_id">
+                                                        <tr v-for="detalle in ListaDetalleProduccionFiltrada" :key="detalle.producto_id">
                                                             <td class="text-center">
                                                                 <button type="button" title="Quitar" class="btn btn-circle btn-outline-danger btn-sm" @click="quitarDetalle(detalle.producto_id)">
                                                                     <i class="fas fa-minus"></i>
@@ -364,7 +364,7 @@
                 ],
                 ListaDetalleProduccion:[
                 ],
-                // ListaDetalleProduccionFiltrada: [],
+                ListaDetalleProduccionFiltrada: [],
                 //DATOS PARA ENVIAR UNA PRODUCCION
                 SelectAlmacen: [],
             }
@@ -430,18 +430,6 @@
                     this.Produccion.total = this.Produccion.total + detalle.costo_produccion * detalle.cantidad;
                 });
                 return (this.Produccion.total).toFixed(2);
-            },
-            listaDetalleProduccionFiltrada: function(){
-                let lista = [];
-                // this.ListaDetalleProduccionFiltrada = [];
-                for (let i = 0; i < this.ListaDetalleProduccion.length; i++) {
-                    if ( this.ListaDetalleProduccion[i].estado == 1) {
-                        lista.push(this.ListaDetalleProduccion[i]);
-                    }
-                }
-
-                // return this.ListaDetalleProduccionFiltrada;
-                return lista;
             }
         },
         methods: {
@@ -509,6 +497,7 @@
                         }else{
                             this.ListaDetalleProduccion[i].cantidad ++;
                         }
+                        this.filtrarDetalleProduccion();
                         break;
                     }
                 }
@@ -524,6 +513,7 @@
                         estado: 1 // 1: Muestra, 0: Se elimino
                     }
                     this.ListaDetalleProduccion.push(detalleProduccion);
+                    this.filtrarDetalleProduccion();
                 }
             },
             quitarDetalle(producto_id){
@@ -533,23 +523,21 @@
                         
                         if(this.ListaDetalleProduccion[i].id == 0){
                             this.ListaDetalleProduccion.splice(i,1);
-                            console.log('Eliminé un nuevo');
                         }else{
-                            console.log('Cambie el estado a 0');
                             this.ListaDetalleProduccion[i].estado = 0;
                         }
+                        this.filtrarDetalleProduccion();
                         break;
                     }
                 }
-                // if(this.listaDetalleProduccionFiltrada[indice].id != 0){
-                //     this.listaDetalleProduccionFiltrada[indice].estado = 0;
-                // } else {
-                //     for (let i = 0; i < this.ListaDetalleProduccion.length; i++) {
-                //         if(this.listaDetalleProduccionFiltrada[indice].producto_id == this.ListaDetalleProduccion[i].producto_id){
-                //             this.ListaDetalleProduccion.splice(i, 1); break;
-                //         }
-                //     }
-                // }
+            },
+            filtrarDetalleProduccion: function(){
+                this.ListaDetalleProduccionFiltrada = [];
+                for (let i = 0; i < this.ListaDetalleProduccion.length; i++) {
+                    if ( this.ListaDetalleProduccion[i].estado == 1) {
+                        this.ListaDetalleProduccionFiltrada.push(this.ListaDetalleProduccion[i]);
+                    }
+                }
             },
             agregar(){
                 if ( this.validar(1) ) return;
@@ -757,9 +745,11 @@
                     }
                 }).then(function(response){
                     me.ListaDetalleProduccion = response.data;
+                    console.log('Ejecute la consulta satisfactoriamente');
                     me.ListaDetalleProduccion.forEach(detalle => {
                         detalle.estado = 1;
                     });
+                    me.filtrarDetalleProduccion();
                 }).catch(function(error){
                     console.log(error);
                 });
