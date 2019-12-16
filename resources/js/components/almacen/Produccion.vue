@@ -505,7 +505,8 @@
                         nombre_producto: producto.nombre,
                         cantidad: 1,
                         costo_produccion: producto.costo_produccion,
-                        subtotal: 0.00
+                        subtotal: 0.00,
+                        estado: 0 // 0: Nuevo, 1: Ya existe
                     }
                     this.ListaDetalleProduccion.push(elProducto);
                 }
@@ -514,9 +515,8 @@
                 this.ListaDetalleProduccion.splice(indice,1);
             },
             agregar(){
-                if ( this.validar() ) return;
-                
-                var me = this;
+                if ( this.validar(1) ) return;
+                let me = this;
                 axios.post('/produccion/agregar', {
                     //Datos de la produccion
                     'total' : this.Produccion.total,
@@ -544,56 +544,73 @@
                     console.log(error);
                 });
             },
-            validar(){
+            editar(){
+                if ( this.validar(1) ) return;
+                let me = this;
+                axios.put('/produccion/editar', {
+                    //Datos de la produccion
+                    'total' : this.Produccion.total,
+                    'fecha_inicio' : this.Produccion.fecha_inicio,
+                    'fecha_programada' : this.Produccion.fecha_programada,
+                    'almacen_id': this.Produccion.almacen_id,
+                    //Datos del detalle de venta
+                    'listaDetalleProduccion' : this.ListaDetalleProduccion
+                }).then(function(response){
+                    me.cerrarModal();
+                    me.listar();
+                    Swal.fire({
+                        position: 'top-end',
+                        toast: true,
+                        type: 'success',
+                        title: 'La produccion se ha EDITADO correctamente',
+                        showConfirmButton: false,
+                        timer: 4500,
+                        animation:false,
+                        customClass:{
+                            popup: 'animated bounceIn fast'
+                        }
+                    });
+                }).catch(function(error){
+                    console.log(error);
+                });
+            },
+            validar(numero){
                 this.Error.estado = 0;
                 this.Error.mensaje = [];
+                switch(numero){
+                    case 1://Modal agregar y editar
+                        if ( !this.ListaDetalleProduccion.length ) {
+                            this.Error.mensaje.push("No existe ningun detalle de producción");
+                        }else{//Valido si hay negativos en las cantidades de los detalles de producción
+                            for (let i = 0; i < this.ListaDetalleProduccion.length; i++) {
+                                const detalle = this.ListaDetalleProduccion[i];
+                                if(detalle.cantidad<1){
+                                    this.Error.mensaje.push('Las cantidades de los detalles deben ser mayores o iguales a 1');
+                                    break;
+                                }
+                            }
+                        }
+                        if ( !this.Produccion.fecha_inicio || !this.Produccion.fecha_programada){
+                            this.Error.mensaje.push('Debe ingresar una fecha de inicio y una fecha programada de la producción');
+                        }else {
+                            let arrayfechaInicio = this.Produccion.fecha_inicio.split('-');
+                            let arrayFechaProgramada = this.Produccion.fecha_programada.split('-');
+                            let fecha_inicio = new Date(parseInt(arrayfechaInicio[0]),parseInt(arrayfechaInicio[1]-1),parseInt(arrayfechaInicio[2]));
+                            let fecha_programada = new Date(parseInt(arrayFechaProgramada[0]),parseInt(arrayFechaProgramada[1]-1),parseInt(arrayFechaProgramada[2]));
 
-                //Recorrere la lista de Material
-                if(this.Modal.numero == 1){
-                    //Modal agregar
-                    if ( !this.ListaDetalleProduccion.length ) {
-                        this.Error.mensaje.push("No existe ningun detalle de producción");
-                    }else{//Valido si hay negativos en las cantidades de los detalles de producción
-                        this.ValidarNegativosCantidades();
-                    }
-                    if ( !this.Produccion.fecha_inicio || !this.Produccion.fecha_programada){
-                        this.Error.mensaje.push('Debe ingresar una fecha de inicio y una fecha programada de la producción');
-                    }else {
-                        this.validarFechasLogicas();
-                    }
-                }else{
-                    //Modal editar
+                            let hoyBase =  new Date();
+                            let hoyFirme = new Date(hoyBase.getFullYear(), hoyBase.getMonth(), hoyBase.getDate());
+
+                            if(fecha_inicio <  hoyFirme){//Aqui me quede
+                                this.Error.mensaje.push('La fecha de inicio es incorrecta');
+                            }else if(fecha_inicio >= fecha_programada){
+                                this.Error.mensaje.push('La fecha programada debe ser después que la fecha de inicio de la producción');
+                            }
+                        }
+                        break;
                 }
                 if ( this.Error.mensaje.length ) this.Error.estado = 1;
                 return this.Error.estado;
-            },
-            ValidarNegativosCantidades(){
-                for (let i = 0; i < this.ListaDetalleProduccion.length; i++) {
-                    const detalle = this.ListaDetalleProduccion[i];
-                    if(detalle.cantidad<1){
-                        this.Error.mensaje.push('Las cantidades de los detalles deben ser mayores o iguales a 1');
-                        break;
-                    }
-                }
-            },
-            validarFechasLogicas(){
-                let arrayfechaInicio = this.Produccion.fecha_inicio.split('-');
-                let arrayFechaProgramada = this.Produccion.fecha_programada.split('-');
-                let fecha_inicio = new Date(parseInt(arrayfechaInicio[0]),parseInt(arrayfechaInicio[1]-1),parseInt(arrayfechaInicio[2]));
-                let fecha_programada = new Date(parseInt(arrayFechaProgramada[0]),parseInt(arrayFechaProgramada[1]-1),parseInt(arrayFechaProgramada[2]));
-
-                let hoyBase =  new Date();
-                let hoyFirme = new Date(hoyBase.getFullYear(), hoyBase.getMonth(), hoyBase.getDate());
-
-                if(fecha_inicio <  hoyFirme){//Aqui me quede
-                    this.Error.mensaje.push('La fecha de inicio es incorrecta');
-                }else if(fecha_inicio >= fecha_programada){
-                    this.Error.mensaje.push('La fecha programada debe ser después que la fecha de inicio de la producción');
-                }
-                //Pruebas
-                // this.Produccion.fecha_inicio = arrayfechaInicio[2] + '-' + parseInt(arrayfechaInicio[1]-1) + '-' + arrayfechaInicio[0];
-                // this.Produccion.fecha_programada = arrayFechaProgramada[2] + '-' + parseInt(arrayFechaProgramada[1]-1) + '-' + arrayFechaProgramada[0];
-
             },
             finalizar(produccion = []){
                 this.Produccion.id = produccion['id'];
@@ -642,6 +659,9 @@
             abrirModalEditar(produccion = []){
 
                 this.listarDetallesProduccion(produccion['id']);
+                this.Produccion.fecha_inicio = produccion['fecha_inicio'];
+                this.Produccion.fecha_programada = produccion['fecha_programada'];
+
                 this.abrirModal(2, 'Editar Producción', 'Editar', 'Cancelar', 'modal-xl modal-dialog-scrollable');
             },
             abrirModal(numero, titulo, accion, cancelar, size){
