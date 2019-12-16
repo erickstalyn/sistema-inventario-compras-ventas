@@ -239,9 +239,9 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <tr v-for="(detalle, indice) in ListaDetalleProduccion" :key="detalle.id">
+                                                        <tr v-for="detalle in listaDetalleProduccionFiltrada" :key="detalle.producto_id">
                                                             <td class="text-center">
-                                                                <button type="button" title="Editar" class="btn btn-circle btn-outline-danger btn-sm" @click="quitarDetalle(indice)">
+                                                                <button type="button" title="Quitar" class="btn btn-circle btn-outline-danger btn-sm" @click="quitarDetalle(detalle.producto_id)">
                                                                     <i class="fas fa-minus"></i>
                                                                 </button>
                                                             </td>
@@ -361,13 +361,10 @@
                     texto: ''
                 },
                 ListaProducto:[
-                    // {nombre: 'Camperita Silmar Roja Grande', stock: 56},
-                    // {nombre: 'Mochila Porta Verde mediana', stock: 100}
                 ],
                 ListaDetalleProduccion:[
-                    // {nombre: 'Camperita Silmar Roja Grande', stock: 56},
-                    // {nombre: 'Mochila Porta Verde mediana', stock: 100}
                 ],
+                // ListaDetalleProduccionFiltrada: [],
                 //DATOS PARA ENVIAR UNA PRODUCCION
                 SelectAlmacen: [],
             }
@@ -433,6 +430,18 @@
                     this.Produccion.total = this.Produccion.total + detalle.costo_produccion * detalle.cantidad;
                 });
                 return (this.Produccion.total).toFixed(2);
+            },
+            listaDetalleProduccionFiltrada: function(){
+                let lista = [];
+                // this.ListaDetalleProduccionFiltrada = [];
+                for (let i = 0; i < this.ListaDetalleProduccion.length; i++) {
+                    if ( this.ListaDetalleProduccion[i].estado == 1) {
+                        lista.push(this.ListaDetalleProduccion[i]);
+                    }
+                }
+
+                // return this.ListaDetalleProduccionFiltrada;
+                return lista;
             }
         },
         methods: {
@@ -491,28 +500,56 @@
                 //Verifico si el producto ya esta en la lista de detalle
                 let incluido = false;
                 for (let i = 0; i < this.ListaDetalleProduccion.length; i++) {
-                    if(this.ListaDetalleProduccion[i].id == producto.id){
+                    if(this.ListaDetalleProduccion[i].producto_id == producto.id){
                         incluido = true;
-                        //adiciono uno más a la cantidad de este producto en la tabla de detalles
-                        this.ListaDetalleProduccion[i].cantidad ++;
+                        
+                        if(this.ListaDetalleProduccion[i].estado == 0){
+                            this.ListaDetalleProduccion[i].cantidad = 1;
+                            this.ListaDetalleProduccion[i].estado = 1;
+                        }else{
+                            this.ListaDetalleProduccion[i].cantidad ++;
+                        }
                         break;
                     }
                 }
 
                 if(!incluido){
-                    let elProducto = {
-                        id: producto.id,
+                    let detalleProduccion = {
+                        id: 0,
+                        producto_id: producto.id,
                         nombre_producto: producto.nombre,
                         cantidad: 1,
                         costo_produccion: producto.costo_produccion,
                         subtotal: 0.00,
-                        estado: 0 // 0: Nuevo, 1: Ya existe
+                        estado: 1 // 1: Muestra, 0: Se elimino
                     }
-                    this.ListaDetalleProduccion.push(elProducto);
+                    this.ListaDetalleProduccion.push(detalleProduccion);
                 }
             },
-            quitarDetalle(indice){
-                this.ListaDetalleProduccion.splice(indice,1);
+            quitarDetalle(producto_id){
+                for (let i = 0; i < this.ListaDetalleProduccion.length; i++) {
+                    // let detalle = this.ListaDetalleProduccion[i];
+                    if(this.ListaDetalleProduccion[i].producto_id == producto_id){
+                        
+                        if(this.ListaDetalleProduccion[i].id == 0){
+                            this.ListaDetalleProduccion.splice(i,1);
+                            console.log('Eliminé un nuevo');
+                        }else{
+                            console.log('Cambie el estado a 0');
+                            this.ListaDetalleProduccion[i].estado = 0;
+                        }
+                        break;
+                    }
+                }
+                // if(this.listaDetalleProduccionFiltrada[indice].id != 0){
+                //     this.listaDetalleProduccionFiltrada[indice].estado = 0;
+                // } else {
+                //     for (let i = 0; i < this.ListaDetalleProduccion.length; i++) {
+                //         if(this.listaDetalleProduccionFiltrada[indice].producto_id == this.ListaDetalleProduccion[i].producto_id){
+                //             this.ListaDetalleProduccion.splice(i, 1); break;
+                //         }
+                //     }
+                // }
             },
             agregar(){
                 if ( this.validar(1) ) return;
@@ -574,7 +611,7 @@
                     console.log(error);
                 });
             },
-            validar(numero){u
+            validar(numero){
                 this.Error.estado = 0;
                 this.Error.mensaje = [];
                 switch(numero){
@@ -720,6 +757,9 @@
                     }
                 }).then(function(response){
                     me.ListaDetalleProduccion = response.data;
+                    me.ListaDetalleProduccion.forEach(detalle => {
+                        detalle.estado = 1;
+                    });
                 }).catch(function(error){
                     console.log(error);
                 });

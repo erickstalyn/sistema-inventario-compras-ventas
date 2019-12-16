@@ -101,7 +101,7 @@ class ProduccionController extends Controller
                 $detalle->cantidad = $det['cantidad'];
                 // $detalle->subtotal = floatval($det['cantidad']) * floatval($det['costo_produccion']);
                 $detalle->subtotal = $det['subtotal'];
-                $detalle->producto_id = $det['id'];
+                $detalle->producto_id = $det['producto_id'];
                 $detalle->produccion_id = $produccion->id;
                 $detalle->save();
             }
