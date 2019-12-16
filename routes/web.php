@@ -108,9 +108,9 @@ Route::group(['middleware' => ['auth']], function () {
     });
     Route::group(['middleware' => ['Puesto']], function (){
         
-        //RUTAS PARA PRODUCTOS DE CENTROS
-        // Route::get('/centro/listProductos', 'CentroController@listProductos'); //metodos generales
-
+        //RUTAS PARA VENTAS
+        Route::get('/venta', 'VentaController@listar');
+        
     });
     Route::group(['middleware' => ['Almacen']], function (){
         

@@ -38,17 +38,10 @@
 
     <!-- Elemento de navegación - MENÚ VENTAS -->
     <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#ventas" aria-expanded="true" aria-controls="ventas">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#ventas" aria-expanded="true" aria-controls="ventas" @click="menu=1">
             <i class="fas fa-cart-arrow-down"></i>
             <span >Ventas</span>
         </a>
-        <div id="ventas" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item font-weight-bold" href="#">Al contado</a>
-                <a class="collapse-item font-weight-bold" href="#">Al crédito</a>
-                <a class="collapse-item font-weight-bold" href="#">Especiales</a>
-            </div>
-        </div>
     </li>
     <!-- Elemento de navegación - MENÚ ENVIOS -->
     <li class="nav-item">
