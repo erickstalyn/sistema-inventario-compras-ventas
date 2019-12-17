@@ -206,7 +206,8 @@ class EnvioController extends Controller
         try {
             DB::beginTransaction();
             $envio = Envio::findOrFail($request->id);
-            $envio->updated_at = Carbon::now('America/Lima')->toDateString();
+            $envio->created_at = Carbon::now('America/Lima')->toDateString();
+            $envio->updated_at = NULL;
             $envio->centro_to_id = $request->centro_to_id;
             $envio->estado = 0;
             $envio->save();

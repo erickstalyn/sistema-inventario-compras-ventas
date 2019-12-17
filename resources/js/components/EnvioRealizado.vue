@@ -284,7 +284,7 @@
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="input-group"> 
-                                                    <label class="font-weight-bold">Enviar a:</label>&nbsp;
+                                                    <label class="font-weight-bold">Centro de destino:</label>&nbsp;
                                                     {{EnvioRealizado.centro_destino}}
                                                 </div>
                                             </div>
@@ -644,15 +644,14 @@
             },
             abrirModalReenviar(envio = []){
                 this.EnvioRealizado.id = envio['id'];
-                // console.log(this.EnvioRealizado.centro_to_id);
 
-                this.abrirModal(3, 'Reenviar', 'Reenviar', '');
+                this.abrirModal(3, 'Reenviar', 'Reenviar', 'Cancelar', '');
                 if(!this.SelectCentro.length) this.selectCentro();
             },
             abrirModalVer(envio = []){
                 this.EnvioRealizado.id = envio['id'];
-                this.EnvioRealizado.fecha_envio = envio['fecha_envio'];
-                this.EnvioRealizado.fecha_cambio = envio['fecha_cambio'];
+                // this.EnvioRealizado.fecha_envio = envio['fecha_envio'];
+                // this.EnvioRealizado.fecha_cambio = envio['fecha_cambio'];
                 this.EnvioRealizado.centro_destino = envio['centro_destino'];
                 this.EnvioRealizado.estado = envio['estado'];
 

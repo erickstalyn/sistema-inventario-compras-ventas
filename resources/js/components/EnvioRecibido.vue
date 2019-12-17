@@ -96,7 +96,7 @@
                                     </div>
                                 </td>
                                 <td class="text-center">
-                                    <button type="button" title="Ver" class="btn btn-sm btn-primary">
+                                    <button type="button" title="Ver" class="btn btn-sm btn-primary" @click="abrirModalVer(envio)">
                                         <i class="far fa-eye"></i>
                                     </button>
                                     <template v-if="envio.estado == 0">
@@ -127,9 +127,73 @@
             <div v-else>
                 <h5>No se han encontrado resultados</h5>
             </div>
-
         </div>
 
+        <div class="modal text-gray-900" :class="{'mostrar': Modal.estado}">
+            <div class="modal-dialog modal-dialog-centered animated bounceIn fast" :class="Modal.size">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <h3 v-text="Modal.titulo" class="modal-title" ></h3>
+                        <button type="button" @click="cerrarModal()" class="close">X</button>
+                    </div>
+                    
+                    <div class="modal-body">
+                        <div class="container-fluid">
+                            <div v-if="Modal.numero==2">
+                                <div class="row shadow bg-white rounded p-2">
+                                    <div class="col-md-12 ml-auto container">
+                                        <div class="row">
+                                            <span class="font-weight-bold">LISTA DE ITEMS</span>
+                                        </div>
+                                        <div class="row form-group ec-table-modal overflow-auto">
+                                            <table class="table tableless table-striped table-sm text-gray-900">
+                                                <thead>
+                                                    <tr class="table-success">
+                                                        <th class="text-center" >#</th>
+                                                        <th class="text-center">Nombre</th>
+                                                        <th style="width: 5rem;" class="text-center">Cantidad</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr v-for="(detalle, indice) in ListaDetalleEnvio" :key="indice">
+                                                        <td class="text-center">{{indice+1}}</td>
+                                                        <td v-text="detalle.nombre_producto"></td>
+                                                        <td class="text-right pr-3" v-text="detalle.cantidad"></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="input-group"> 
+                                                    <label class="font-weight-bold">Centro de origen:</label>&nbsp;
+                                                    {{EnvioRecibido.centro_origen ? EnvioRecibido.centro_origen : 'Administración'}}
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p class="text-right"><span class="font-weight-bold">Total de productos: </span>{{getTotal}}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer" v-if="permisoModalFooter">
+                        <div class="row form-group col-md-12 d-flex justify-content-around">
+                            <div v-if="Modal.accion">
+                                <button type="button" @click="accionar(Modal.accion)" class="btn btn-success" v-text="Modal.accion"></button>
+                            </div>
+                            <button type="button" @click="cerrarModal()" class="btn btn-secondary" v-text="Modal.cancelar"></button>
+                        </div>
+                    </div>
+                
+                </div>
+            </div>
+        </div>
     </main>
 </template>
 <script>
@@ -163,7 +227,9 @@
                     numero: 0,
                     estado: 0,
                     titulo: '',
-                    accion: ''
+                    accion: '',
+                    cancelar: '',
+                    size: ''
                 },
 
                 //datos de paginacion
@@ -192,8 +258,9 @@
                 },
                 ListaProducto:[
                 ],
-                ListaDetalleProduccion:[
-                ],
+                // ListaDetalleProduccion:[
+                // ],
+                ListaDetalleEnvio: [],
                 //DATOS PARA ENVIAR UNA PRODUCCION
                 SelectAlmacen: [],
             }
@@ -240,24 +307,12 @@
 
                 return false;
             },
-            selectUnidadFiltrado: function(){
-                let selectUnidadFiltrado = [];
-                this.SelectUnidad.forEach(unidad => {
-                    if(unidad.subtipo == this.Material.subtipo){
-                        selectUnidadFiltrado.push(unidad);
-                        // console.log('Ingrese al if');
-                    }
-                });
-                return selectUnidadFiltrado;
-            },
             getTotal: function(){
-                this.Produccion.total = 0.00;
-                this.ListaDetalleProduccion.forEach( detalle => {
-                    // console.log(Number.parseFloat(detalle.costo_produccion * detalle.cantidad).toFixed(2));
-                    // this.Produccion.total = this.Produccion.total + detalle.costo_produccion * detalle.cantidad;
-                    this.Produccion.total = this.Produccion.total + detalle.costo_produccion * detalle.cantidad;
+                let total = 0;
+                this.ListaDetalleEnvio.forEach( detalle => {
+                    total = total + Number.parseInt(detalle.cantidad);
                 });
-                return (this.Produccion.total).toFixed(2);
+                return total;
             }
         },
         methods: {
@@ -293,162 +348,6 @@
                 let newFecha = arrayFecha[2] + '-' + arrayFecha[1] + '-' + arrayFecha[0];
                 return newFecha;
             },
-            listarFiltro(){
-                if(this.BusquedaFiltro.texto != ''){
-                    let me = this;
-                    let url = '/producto/getProductoFiltrado?texto=' + this.BusquedaFiltro.texto;
-                    axios.get(url).then(function(response){
-                        if(response.data.productos.length == 1 && me.BusquedaFiltro.texto == response.data.productos[0].codigo){
-                            me.agregarDetalle(response.data.productos[0]);
-                            me.BusquedaFiltro.texto = '';
-                        }else{
-                            me.ListaProducto = response.data.productos;
-                        }
-                        let inputFiltro = document.getElementById('filtroProducto');
-                        inputFiltro.focus();
-                    })
-                    .catch(function(error){
-                        console.log(error);
-                    });
-                }
-            },
-            agregarDetalle(producto){
-                //Verifico si el producto ya esta en la lista de detalle
-                let incluido = false;
-                for (let i = 0; i < this.ListaDetalleProduccion.length; i++) {
-                    if(this.ListaDetalleProduccion[i].id == producto.id){
-                        incluido = true;
-                        //adiciono uno más a la cantidad de este producto en la tabla de detalles
-                        this.ListaDetalleProduccion[i].cantidad ++;
-                        break;
-                    }
-                }
-
-                if(!incluido){
-                    let elProducto = {
-                        id: producto.id,
-                        nombre: producto.nombre,
-                        cantidad: 1,
-                        costo_produccion: producto.costo_produccion,
-                        subtotal: 0.00
-                    }
-                    this.ListaDetalleProduccion.push(elProducto);
-                }
-            },
-            quitarDetalle(indice){
-                this.ListaDetalleProduccion.splice(indice,1);
-            },
-            agregar(){
-                if ( this.validar() ) return;
-                
-                var me = this;
-                axios.post('/produccion/agregar', {
-                    //Datos de la produccion
-                    'total' : this.Produccion.total,
-                    'fecha_inicio' : this.Produccion.fecha_inicio,
-                    'fecha_programada' : this.Produccion.fecha_programada,
-                    'almacen_id': this.Produccion.almacen_id,
-                    //Datos del detalle de venta
-                    'listaDetalleProduccion' : this.ListaDetalleProduccion
-                }).then(function(response){
-                    me.cerrarModal();
-                    me.listar();
-                    Swal.fire({
-                        position: 'top-end',
-                        toast: true,
-                        type: 'success',
-                        title: 'La produccion se ha REGISTRADO correctamente',
-                        showConfirmButton: false,
-                        timer: 4500,
-                        animation:false,
-                        customClass:{
-                            popup: 'animated bounceIn fast'
-                        }
-                    });
-                }).catch(function(error){
-                    console.log(error);
-                });
-            },
-            validar(){
-                this.Error.estado = 0;
-                this.Error.mensaje = [];
-
-                //Recorrere la lista de Material
-                if(this.Modal.numero == 1){
-                    //Modal agregar
-                    if ( !this.ListaDetalleProduccion.length ) {
-                        this.Error.mensaje.push("No existe ningun detalle de producción");
-                    }else{//Valido si hay negativos en las cantidades de los detalles de producción
-                        this.ValidarNegativosCantidades();
-                    }
-                    if ( !this.Produccion.fecha_inicio || !this.Produccion.fecha_programada){
-                        this.Error.mensaje.push('Debe ingresar una fecha de inicio y una fecha programada de la producción');
-                    }else {
-                        this.validarFechasLogicas();
-                    }
-                }else{
-                    //Modal editar
-                }
-                if ( this.Error.mensaje.length ) this.Error.estado = 1;
-                return this.Error.estado;
-            },
-            ValidarNegativosCantidades(){
-                for (let i = 0; i < this.ListaDetalleProduccion.length; i++) {
-                    const detalle = this.ListaDetalleProduccion[i];
-                    if(detalle.cantidad<1){
-                        this.Error.mensaje.push('Las cantidades de los detalles deben ser mayores o iguales a 1');
-                        break;
-                    }
-                }
-            },
-            validarFechasLogicas(){
-                let arrayfechaInicio = this.Produccion.fecha_inicio.split('-');
-                let arrayFechaProgramada = this.Produccion.fecha_programada.split('-');
-                let fecha_inicio = new Date(parseInt(arrayfechaInicio[0]),parseInt(arrayfechaInicio[1]-1),parseInt(arrayfechaInicio[2]));
-                let fecha_programada = new Date(parseInt(arrayFechaProgramada[0]),parseInt(arrayFechaProgramada[1]-1),parseInt(arrayFechaProgramada[2]));
-
-                let hoyBase =  new Date();
-                let hoyFirme = new Date(hoyBase.getFullYear(), hoyBase.getMonth(), hoyBase.getDate());
-
-                if(fecha_inicio <  hoyFirme){//Aqui me quede
-                    this.Error.mensaje.push('La fecha de inicio es incorrecta');
-                }else if(fecha_inicio >= fecha_programada){
-                    this.Error.mensaje.push('La fecha programada debe ser después que la fecha de inicio de la producción');
-                }
-                //Pruebas
-                // this.Produccion.fecha_inicio = arrayfechaInicio[2] + '-' + parseInt(arrayfechaInicio[1]-1) + '-' + arrayfechaInicio[0];
-                // this.Produccion.fecha_programada = arrayFechaProgramada[2] + '-' + parseInt(arrayFechaProgramada[1]-1) + '-' + arrayFechaProgramada[0];
-
-            },
-            // editar(){
-            //     if ( this.validar() ) return;
-
-            //     var me = this;
-            //     axios.put('/material/editar', {
-            //         'id' : this.Material.id,
-            //         'nombre' : this.Material.nombre,
-            //         'subtipo' : this.Material.subtipo,
-            //         'unidad' : this.Material.unidad,
-            //         'costo' : this.Material.costo,
-            //     }).then(function(response){
-            //         me.cerrarModal();
-            //         me.listar();
-            //         Swal.fire({
-            //             position: 'top-end',
-            //             toast: true,
-            //             type: 'success',
-            //             title: 'El Material se ha EDITADO correctamente',
-            //             showConfirmButton: false,
-            //             timer: 4500,
-            //             animation:false,
-            //             customClass:{
-            //                 popup: 'animated bounceIn fast'
-            //             }
-            //         });
-            //     }).catch(function(error){
-            //         console.log(error);
-            //     });
-            // },
             accion(envio = []){
                 this.EnvioRecibido.id = envio['id'];
                 const swalWithBootstrapButtons = Swal.mixin({
@@ -504,39 +403,24 @@
                 }
                 })
             },
-            abrirModalAgregar(){
-                this.abrirModal(1, 'Registrar Produccion', 'Agregar');
-                // let inputFiltro = document.getElementById('filtroProducto');
-                // inputFiltro.focus();
-            },
-            // abrirModalEnviar(){
-            //     this.abrirModal(3, 'Enviar Produccion', 'Enviar');
-            //     if(this.SelectAlmacen == 0) this.selectAlmacen();
-            // },
-            // abrirModalEditar(data = []){
-            //     this.abrirModal(2, 'Editar Material', 'Editar');
-                
-            //     this.Material.id = data['id'];
-            //     this.Material.nombre = data['nombre'];
-            //     this.Material.subtipo = data['subtipo'];
-            //     this.Material.unidad = data['unidad'];
-            //     this.Material.costo  = data['costo'];
+            abrirModalVer(envio = []){
+                this.EnvioRecibido.id = envio['id'];
+                // this.EnvioRecibido.fecha_envio = envio['fecha_envio'];
+                // this.EnvioRecibido.fecha_cambio = envio['fecha_cambio'];
+                this.EnvioRecibido.centro_origen = envio['centro_origen'];
+                this.EnvioRecibido.estado = envio['estado'];
+                this.EnvioRecibido.abasto_id = envio['abasto_id'];
 
-            //     //Lleno los campos de mi Material Original
-            //     this.MaterialOrigen.id = data['id'];
-            //     this.MaterialOrigen.nombre = data['nombre'];
-            //     this.MaterialOrigen.subtipo = data['subtipo'];
-            //     this.MaterialOrigen.unidad = data['unidad'];
-            //     this.MaterialOrigen.costo  = data['costo'];
-                
-            //     //Verifico si el arreglo SelectUnidad esta vacia
-            //     if(!this.SelectUnidad.length) this.selectUnidad();
-            // },
-            abrirModal(numero, titulo, accion){
+                this.EnvioRecibido.abasto_id ? this.list(2) : this.list(1);
+                this.abrirModal(2, 'Ver Envío', '', 'Cerrar', '');
+            },
+            abrirModal(numero, titulo, accion, cancelar, size){
                 this.Modal.estado = 1;
                 this.Modal.numero = numero;
                 this.Modal.titulo = titulo;
                 this.Modal.accion = accion;
+                this.Modal.cancelar = cancelar;
+                this.Modal.size = size;
             },
             cerrarModal(){
                 this.Modal.numero = 0;
@@ -545,14 +429,42 @@
 
                 this.Error.estado = 0;
                 this.Error.mensaje = [];
-
-                // this.Produccion.id = 0;
-                // this.Produccion.total = 0.00;
-                // this.Produccion.fecha_inicio = '';
-                // this.Produccion.fecha_programada = '';
-
                 this.BusquedaFiltro.texto = '';
+            },
+            list(numero){
+                let me = this;
+                let url;
+                switch (numero) {
+                    case 1:
+                        // let me = this;
+                        url = '/envioRealizado/getDetalles';
 
+                        axios.get(url,{
+                            params: {
+                                'id': me.EnvioRecibido.id
+                            }
+                        }).then(function(response){
+                            me.ListaDetalleEnvio = response.data;
+                        }).catch(function(error){
+                            console.log(error);
+                        });
+                        break;
+                    case 2:
+                        console.log('soy el 2');
+                        // let me = this;
+                        url = '/abasto/getDetalles';
+
+                        axios.get(url,{
+                            params: {
+                                'id': me.EnvioRecibido.abasto_id
+                            }
+                        }).then(function(response){
+                            me.ListaDetalleEnvio = response.data;
+                        }).catch(function(error){
+                            console.log(error);
+                        });
+                        break;
+                }
             },
             accionar(accion){
                 switch( accion ){
@@ -564,18 +476,6 @@
                         this.editar();
                         break;
                     }
-                    case 'Finalizar': {
-                        this.finalizar();
-                        break;
-                    }
-                    // case 'Activar': {
-                    //     this.activar();
-                    //     break;
-                    // }
-                    // case 'Desactivar': {
-                    //     this.desactivar();
-                    //     break;
-                    // }
                 }
             },
             cambiarPagina(page){
