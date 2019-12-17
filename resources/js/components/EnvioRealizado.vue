@@ -545,7 +545,7 @@
                 this.ListaDetalleEnvio.splice(indice,1);
             },
             agregar(){
-                if ( this.validar() ) return;
+                if ( this.validar(1) ) return;
                 
                 var me = this;
                 axios.post('/envioRealizado/agregar', {
@@ -573,21 +573,24 @@
                     console.log(error);
                 });
             },
-            validar(){
+            validar(numero){
                 this.Error.estado = 0;
                 this.Error.mensaje = [];
 
                 //Recorrere la lista de Material
-                if(this.Modal.numero == 1){
-                    //Modal agregar
-                    if ( !this.ListaDetalleEnvio.length ) {
-                        this.Error.mensaje.push("No existe ningun detalle de envío");
-                    }else{//Valido las cantidades de los detalles de envio
-                        this.validarCantidadesDetalles();
-                    }
-                    if(!this.EnvioRealizado.centro_to_id) this.Error.mensaje.push('Debe seleccionar el centro receptor');
-                }else{
-                    //Modal Reenviar
+                switch(numero){
+                    case 1:
+                        if ( !this.ListaDetalleEnvio.length ) {
+                            this.Error.mensaje.push("No existe ningun detalle de envío");
+                        }else{//Valido las cantidades de los detalles de envio
+                            this.validarCantidadesDetalles();
+                        }
+                        if(!this.EnvioRealizado.centro_to_id) this.Error.mensaje.push('Debe seleccionar el centro receptor');
+                        break;
+                    case 2:
+                        if(!this.EnvioRealizado.centro_to_id) this.Error.mensaje.push('Debe seleccionar un nuevo centro')
+                        break;
+
                 }
                 if ( this.Error.mensaje.length ) this.Error.estado = 1;
                 return this.Error.estado;
@@ -609,7 +612,7 @@
                 }
             },
             reenviar(){
-                // if ( this.validar() ) return;
+                if ( this.validar(2) ) return;
                 var me = this;
                 //Selecciono el nombre del centro
                 let nombreCentro;
