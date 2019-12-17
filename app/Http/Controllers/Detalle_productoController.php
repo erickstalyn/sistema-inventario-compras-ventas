@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Detalle_producto;
+use App\Centro;
 
 class Detalle_productoController extends Controller
 {
@@ -25,5 +26,26 @@ class Detalle_productoController extends Controller
         return [
             'productos' => $productos
         ];
+    }
+
+    public function listProductos(Request $request){
+        if ( !$request->ajax() ) return redirect('/');
+
+        $text = $request->text;
+        $centro_id = $request->centro_id;
+        // $text = '';
+        // $centro_id = 1;
+
+        $list = Centro::findOrFail($centro_id)->getProductos()
+                                            ->where(function ($query) use ($text) {
+                                                if ( $text != '' ) {
+                                                    $query->where('nombre', 'like', $text.'%')
+                                                        ->orWhere('codigo', 'like', '%'.$text.'%');
+                                                }
+                                            })
+                                            ->where('substock', '>', 0)
+                                            ->orderBy('pivot_id', 'desc')->get();
+
+        return $list;
     }
 }

@@ -118,8 +118,7 @@
                     
                     <div class="modal-body">
                         <!-- Modal Numero 1 de AGREGAR-->
-                        <div v-if="Modal.numero==1 || Modal.numero==2">
-                            <!-- Filtro de productos -->
+                        <div v-if="Modal.numero==1" class="container">
                             <div v-if="Error.estado" class="row d-flex justify-content-center">
                                 <div class="alert alert-danger">
                                     <button type="button" @click="Error.estado=0" class="close text-primary" data-dismiss="alert">×</button>
@@ -133,14 +132,14 @@
                                 <label class="col-md-2 font-weight-bold">PROVEEDOR</label>
                                 <label class="col-md-1 font-weight-bold">RUC/DNI&nbsp;<span class="text-danger">*</span></label>
                                 <div class="col-md-2 input-group">
-                                    <input type="text" class="form-control form-control-sm" v-model="Service.document" @keyup.enter="consultar()">
+                                    <input type="text" class="form-control form-control-sm" v-model="Service.document" @keyup.enter="consultar()" maxlength="11">
                                     <button type="button" class="btn btn-sm btn-primary" @click="consultar()">
                                         <i class="fas fa-sync-alt"></i>
                                     </button>
                                 </div>
                                 <div class="col-md-3">
                                     <h5>
-                                        <span role="status" :class="Carga.clase"></span>&nbsp;
+                                        <span role="status" :class="Service.loadclass"></span>&nbsp;
                                         <span v-text="Service.msm" :class="Service.msmclass"></span>
                                     </h5>
                                 </div>
@@ -151,42 +150,37 @@
                                         <label class="col-md-4">DNI</label>
                                         <input type="text" class="col-md-8 form-control form-control-sm" readonly v-model="Cliente.documento">
                                     </div>
-                                    <div class="col-md-4 input-group">
+                                    <div class="col-md-5 input-group">
                                         <label class="col-md-3">Nombres</label>
                                         <input type="text" class="col-md-9 form-control form-control-sm" readonly v-model="Cliente.nombres">
                                     </div>
-                                    <div class="col-md-6 input-group">
-                                        <label class="col-md-2">Apellidos</label>
-                                        <input type="text" class="col-md-10 form-control form-control-sm" readonly v-model="Cliente.apellidos">
+                                    <div class="col-md-5 input-group">
+                                        <label class="col-md-3">Apellidos</label>
+                                        <input type="text" class="col-md-9 form-control form-control-sm" readonly v-model="Cliente.apellidos">
                                     </div>
                                 </div>
                                 <div v-else-if="Cliente.tipo==2" class="row form-group">
-                                    <div class="col-md-2 input-group">
-                                        <label class="col-md-4">RUC</label>
-                                        <input type="text" class="col-md-8 form-control form-control-sm" readonly v-model="Cliente.documento">
+                                    <div class="col-md-3 input-group">
+                                        <label class="col-md-3">RUC</label>
+                                        <input type="text" class="col-md-9 form-control form-control-sm" readonly v-model="Cliente.documento">
                                     </div>
-                                    <div class="col-md-10 input-group">
+                                    <div class="col-md-9 input-group">
                                         <label class="col-md-2">Razón social</label>&nbsp;
                                         <input type="text" class="col-md-10 form-control form-control-sm" v-model="Cliente.razon_social" :readonly="Service.readonly">
                                     </div>
                                 </div>
                             </div>
                             
-                            <div class="row shadow bg-aqua rounded p-2">
-                                <!-- <div class="col-md-4">
-                                    <div class="row form-group">
-                                        <p class="font-weight-bold">PRODUCTOS</p>
+                            <div class="row shadow bg-white rounded p-2">
+                                <div class="col-md-4">
+                                    <label class="row col-md-12 form-group font-weight-bold">PRODUCTOS</label>
+                                    <div class="row input-group form-group"> 
+                                        <input type="search" class="form-control form-control-sm" v-model="Service.text" @keyup.enter="list()" id="filtroProducto" placeholder="Producto,marca,modelo,tamaño,color">
+                                        <button type="button" class="btn btn-sm btn-primary" @click="list()">
+                                            <i class="fa fa-search"></i>&nbsp; Buscar
+                                        </button>
                                     </div>
-                                    <div class="row">
-                                        <div class="input-group"> 
-                                            <input type="search" class="form-control form-control-sm" v-model="BusquedaFiltro.texto" @keyup.enter="listarFiltro()" id="filtroProducto" placeholder="Producto,marca,modelo,tamaño,color">
-                                            <button type="button" class="btn btn-sm btn-primary" @click="listarFiltro()">
-                                                <i class="fa fa-search"></i>&nbsp; Buscar
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <br>
-                                    <div class="row form-group overflow-auto" style="height: 17.5rem;">
+                                    <div class="row overflow-auto" style="height: 16rem;">
                                         <div v-if="ListaProducto.length">
                                             <table class="table table-borderless table-striped table-sm text-gray-900">
                                                 <thead>
@@ -199,7 +193,7 @@
                                                 <tbody>
                                                     <tr v-for="producto in ListaProducto" :key="producto.id" >
                                                         <td class="text-center">
-                                                            <button type="button" title="Editar" class="btn btn-circle btn-sm btn-outline-success" @click="agregarDetalle(producto)">
+                                                            <button type="button" title="AGREGAR" class="btn btn-circle btn-sm btn-outline-success" @click="add(0, producto)">
                                                                 <i class="fas fa-plus"></i>
                                                             </button>
                                                         </td>
@@ -210,42 +204,38 @@
                                             </table>
                                         </div>
                                         <div v-else>
-                                            <p>No se han encontrado resultados</p>
+                                            <label class="col-md-12 text-danger">No se han encontrado resultados</label>
                                         </div>
                                     </div>
-                                </div> -->
+                                </div>
                                 <div class="col-md-8 ml-auto container">
-                                    <!-- <div class="row">
-                                        <div class="col-md-3 p-0">
-                                            <p class="font-weight-bold">LISTA DE ITEMS</p>
-                                        </div>
+                                    <div class="row">
+                                        <label class="col-md-3 font-weight-bold">LISTA DE ITEMS</label>
                                         <div class="col-md-6"></div>
-                                        <div class="col-md-3">
-                                            <div class="input-group">
-                                                <label for="tipo" class="font-weight-bold">Tipo</label>&nbsp;<span class="text-danger">*</span>&nbsp;
-                                                <select v-model="Venta.tipo" class="custom-select custom-select-sm" id="tipo">
-                                                    <option value="0">Contado</option>
-                                                    <option value="1">Credito</option>
-                                                </select>
-                                            </div>
+                                        <div class="col-md-3 input-group">
+                                            <label class="col-md-4 font-weight-bold">Tipo</label>&nbsp;<span class="text-danger">*</span>
+                                            <select class="col-md-8 custom-select custom-select-sm" v-model="Venta.tipo">
+                                                <option value="0">Contado</option>
+                                                <option value="1">Credito</option>
+                                            </select>
                                         </div>
-                                    </div> -->
-                                    <!-- <div class="row form-group ec-table-modal overflow-auto">
+                                    </div>
+                                    <div class="row form-group ec-table-modal overflow-auto">
                                         <div v-if="ListaDetalle.length">
                                             <table class="table tableless table-striped table-sm text-gray-900">
                                                 <thead>
                                                     <tr class="table-success">
                                                         <th class="text-center" style="width: 3rem;">Quitar</th>
-                                                        <th>Nombre</th>
-                                                        <th style="width: 5rem;">Cant.</th>
-                                                        <th style="width: 5rem;">P. Unit.</th>
+                                                        <th class="text-center">Nombre</th>
+                                                        <th class="text-center">Cantidad</th>
+                                                        <th class="text-center">Precio</th>
                                                         <th class="text-center">Subtotal</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr v-for="(detalle, indice) in ListaDetalle" :key="detalle.id">
+                                                    <tr v-for="(detalle, indice) in ListaDetalle" :key="indice">
                                                         <td class="text-center">
-                                                            <button type="button" title="Editar" class="btn btn-circle btn-outline-danger btn-sm" @click="quitarDetalle(indice)">
+                                                            <button type="button" class="btn btn-circle btn-outline-danger btn-sm" title="QUITAR" @click="quitarDetalle(indice)">
                                                                 <i class="fas fa-minus"></i>
                                                             </button>
                                                         </td>
@@ -267,7 +257,7 @@
                                             <br>
                                             <p>Sin detalles de venta</p>
                                         </div>
-                                    </div> -->
+                                    </div>
                                     <!-- <div class="row">
                                         <div class="col-md-4">
                                             <div class="input-group" style="width: 12.4rem;" v-if="Venta.tipo == '1'"> 
@@ -378,13 +368,13 @@
                     codigo: '',
                     total: 0.00,
                     total_faltante: 0.00,
-                    tipo: 1, // 0: Contado, 1: Credito
+                    tipo: 0, // 0: Contado, 1: Credito
                     created_at : '',
                 },
+                ListaProducto:[],
+                Producto: {},
                 ListaDetalle: [],
-                Detalle: {
-
-                },
+                
                 
                 Cliente:{
                     id: 0,
@@ -433,26 +423,18 @@
                     mensaje: []
                 },
 
-                Carga: {
-                    clase: ''
-                },
-                //DATOS PARA AGREGAR UNA PRODUCCION
-                BusquedaFiltro:{
-                    texto: ''
-                },
-                ListaProducto:[
-                ],
-                ListaDetalleAbasto:[
-                ],
-                //DATOS PARA ENVIAR UNA PRODUCCION
+                //datos de servicios necesarios
                 Service: {
                     type: 0, //1->PERSONA, 2-> EMPRESA
                     document: '',
                     msm: '',
                     msmclass: '',
                     loadclass: '',
-                    readonly: false
+                    readonly: false,
+                    text: ''
                 },
+
+                //datos de pagos
                 ListaPago: [],
                 Pago:{
                     monto: '',
@@ -462,7 +444,9 @@
                 //datos de Rutas
                 Ruta: {
                     venta: '/venta',
-                    persona: '/persona'
+                    persona: '/persona',
+                    producto: '/producto',
+                    detalle_producto: '/detalle_producto'
                 }
             }
         },
@@ -589,6 +573,7 @@
                 this.Service.msmclass = '';
                 this.Service.loadclass = '';
                 this.Service.readonly = false;
+                this.Service.text = '';
             },
             abrirModalPagar(abasto = []){
                 this.Abasto.id = abasto['id'];
@@ -844,51 +829,57 @@
                 }).fail(function(){
                 });
             },
+            list(){
+                if ( this.Service.text == '' ) return;
+
+                let me = this;
+                let url = this.Ruta.detalle_producto+'/listProductos?'
+                                +'text='+this.Service.text
+                                +'&centro_id='+$('meta[name="idCentro"]').attr('content');
+
+                axios.get(url).then(function(response){
+                    if ( response.data.productos.length == 1 && me.Service.text == response.data.productos[0].codigo){
+                        me.add(0, response.data.productos[0]);
+                        me.Service.text = '';
+                    } else {
+                        me.ListaProducto = response.data.productos;
+                    }
+                    let inputFiltro = document.getElementById('filtroProducto');
+                    inputFiltro.focus();
+                }).catch(function(error){
+                    console.log(error);
+                });
+            },
+            add(numero, data){
+                switch (numero) {
+                    case 0:
+                        let found = false;
+                        for (let i = 0; i < this.ListaDetalle.length; i++) {
+                            if ( this.ListaDetalle[i].id == data.id ){
+                                this.ListaDetalle[i].cantidad++; 
+                                found = true; break;
+                            }
+                        }
+
+                        if ( !found ){
+                            let producto = {
+                                id: data.id,
+                                nombre: data.nombre,
+                                cantidad: 1,
+                                costo_abasto: 0.00,
+                                subtotal: 0.00
+                            }
+                            this.ListaDetalle.push(producto);
+                        }
+                        break;
+                    case 1:
+                        break;
+                }
+            },
             formatearFecha(fecha){
                 let arrayFecha = fecha.split('-');
                 let newFecha = arrayFecha[2] + '-' + arrayFecha[1] + '-' + arrayFecha[0];
                 return newFecha;
-            },
-            listarFiltro(){
-                if(this.BusquedaFiltro.texto != ''){
-                    let me = this;
-                    let url = '/producto/getProductoFiltrado?texto=' + this.BusquedaFiltro.texto;
-                    axios.get(url).then(function(response){
-                        if(response.data.productos.length == 1 && me.BusquedaFiltro.texto == response.data.productos[0].codigo){
-                            me.agregarDetalle(response.data.productos[0]);
-                            me.BusquedaFiltro.texto = '';
-                        }else{
-                            me.ListaProducto = response.data.productos;
-                        }
-                        let inputFiltro = document.getElementById('filtroProducto');
-                        inputFiltro.focus();
-                    })
-                    .catch(function(error){
-                        console.log(error);
-                    });
-                }
-            },
-            agregarDetalle(producto){
-                //Verifico si el producto ya esta en la lista de detalle
-                let incluido = false;
-                for (let i = 0; i < this.ListaDetalleAbasto.length; i++) {
-                    if(this.ListaDetalleAbasto[i].id == producto.id){
-                        incluido = true;
-                        this.ListaDetalleAbasto[i].cantidad ++;
-                        break;
-                    }
-                }
-
-                if(!incluido){
-                    let elProducto = {
-                        id: producto.id,
-                        nombre: producto.nombre,
-                        cantidad: 1,
-                        costo_abasto: 0.00,
-                        subtotal: 0.00
-                    }
-                    this.ListaDetalleAbasto.push(elProducto);
-                }
             },
             quitarDetalle(indice){
                 this.ListaDetalleAbasto.splice(indice,1);
