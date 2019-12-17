@@ -19,7 +19,7 @@ class CreateDetalleEnvioTable extends Migration
             $table->smallInteger('cantidad'); //-32768 al 32767
 
             $table->unsignedMediumInteger('envio_id');
-            $table->foreign('envio_id')->references('id')->on('envio');
+            $table->foreign('envio_id')->references('id')->on('envio')->onDelete('cascade');
             $table->unsignedMediumInteger('producto_id');
             $table->foreign('producto_id')->references('id')->on('producto');
         });

@@ -108,7 +108,7 @@
                                         </button>
                                     </template>
                                     <template v-if="envio.estado != 1">
-                                        <button type="button"  title="Anular" class="btn btn-danger btn-sm">
+                                        <button type="button"  title="Anular" class="btn btn-danger btn-sm" @click="anularAbasto(envio.id)">
                                                 <i class="fas fa-trash-alt"></i>
                                         </button>
                                     </template>
@@ -151,7 +151,8 @@
                     <div class="modal-body">
                         <div class="container-fluid">
                         <!-- Modal Numero 1 de AGREGAR-->
-                            <div v-if="Modal.numero==1 || Modal.numero == 2">
+                        
+                            <div v-if="Modal.numero==1">
                                 <!-- Filtro de productos -->
                                 <div v-if="Error.estado" class="row d-flex justify-content-center">
                                     <div class="alert alert-danger">
@@ -204,9 +205,63 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="ml-auto container" :class="Modal.numero == 1 ? 'col-md-6' : 'col-md-12'">
+                                    <div class="col-md-6 ml-auto container">
                                         <div class="row">
                                             <h5 class="font-weight-bold">Lista de items</h5>
+                                        </div>
+                                        <div class="row form-group ec-table-modal overflow-auto">
+                                            <div v-if="ListaDetalleEnvio.length">
+                                                <table class="table tableless table-striped table-sm text-gray-900">
+                                                    <thead>
+                                                        <tr class="table-success">
+                                                            <th class="text-center">Quitar</th>
+                                                            <th class="text-center">Nombre</th>
+                                                            <th style="width: 6rem;" class="text-left">Cantidad</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr v-for="(detalle, indice) in ListaDetalleEnvio" :key="detalle.id">
+                                                            <td class="text-center">
+                                                                <button type="button" title="Quitar" class="btn btn-circle btn-outline-danger btn-sm" @click="quitarDetalle(indice)">
+                                                                    <i class="fas fa-minus"></i>
+                                                                </button>
+                                                            </td>
+                                                            <td v-text="detalle.nombre"></td>
+                                                            <td class="text-right pr-4">
+                                                                <input type="number" v-model="detalle.cantidad" class="form-control form-control-sm" min="1">
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div v-else>
+                                                <br>
+                                                <p>Sin detalles de envío</p>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="input-group"> 
+                                                    <label for="">Enviar a</label>&nbsp;<span class="text-danger">*</span>&nbsp;
+                                                    <select v-model="EnvioRealizado.centro_to_id" class="custom-select custom-select-sm text-gray-900">
+                                                        <option value="0">Seleccione</option>
+                                                        <option v-for="item in SelectCentro" :key="item.id" :value="item.id" v-text="item.nombre" ></option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p class="text-right pr-2">Total de productos: {{getTotal}}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            <div v-if="Modal.numero==2">
+                                <div class="row shadow bg-white rounded p-2">
+                                    <div class="col-md-12 ml-auto container">
+                                        <div class="row">
+                                            <span class="font-weight-bold">LISTA DE ITEMS</span>
                                         </div>
                                         <div class="row form-group ec-table-modal overflow-auto">
                                             <table class="table tableless table-striped table-sm text-gray-900">
@@ -584,7 +639,7 @@
                 });
             },
             abrirModalAgregar(){
-                this.abrirModal(1, 'Registrar Envío', 'Agregar', 'modal-xl');
+                this.abrirModal(1, 'Registrar Envío', 'Agregar', 'Cancelar', 'modal-xl modal-dialog-scrollable');
                 if(!this.SelectCentro.length) this.selectCentro();
             },
             abrirModalReenviar(envio = []){
@@ -664,6 +719,46 @@
                         });
                         break;
                 }
+            },
+            anularAbasto(id){
+                Swal.fire({
+                    title: '¿Está seguro que desea ANULAR el Envío?',
+                    type: 'error',
+                    showCancelButton: true,
+                    confirmButtonText: 'Si, anular',
+                    cancelButtonText: 'Cancelar',
+                    // reverseButtons: true,
+                    customClass: {
+                        confirmButton: 'btn btn-danger',
+                        cancelButton: 'btn btn-secondary'
+                    },
+                    buttonsStyling: false
+                }).then((result) => {
+                    if (result.value) {
+                        var me = this;
+                
+                        axios.put('/envioRealizado/anular', {
+                            'id' : id
+                        }).then(function (response) {
+                            me.listar();
+                            Swal.fire({
+                                position: 'top-end',
+                                toast: true,
+                                type: 'success',
+                                title: 'El envío se ANULÓ correctamente',
+                                showConfirmButton: false,
+                                timer: 4500,
+                                animation:false,
+                                customClass:{
+                                    popup: 'animated bounceIn fast'
+                                }
+                            });
+                        }).catch(function (error) {
+                            console.log(error);
+                        });
+                    } else if ( result.dismiss === Swal.DismissReason.cancel ) {
+                    }
+                });
             },
             getFechaHoy(){
                 let n =  new Date();

@@ -1217,7 +1217,7 @@
                     cancelButtonText: 'Cancelar',
                     // reverseButtons: true,
                     customClass: {
-                        confirmButton: 'btn btn-success',
+                        confirmButton: 'btn btn-danger',
                         cancelButton: 'btn btn-secondary'
                     },
                     buttonsStyling: false
