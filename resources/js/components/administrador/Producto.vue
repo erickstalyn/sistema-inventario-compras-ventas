@@ -582,6 +582,7 @@
                     'nombre' : this.Producto.nombre,
                     'size': this.Producto.size,
                     'color' : this.Producto.color,
+                    'codigo' : this.Producto.codigo,
                     'precio_menor' : this.Producto.precio_menor,
                     'precio_mayor' : this.Producto.precio_mayor
                 }).then(function(response){
@@ -908,7 +909,7 @@
                     case 5:
                         for (let i = 0; i < this.ListaProducto.length; i++) {
                             if ( this.Producto.id == this.ListaProducto[i].id ) {
-                                if ( this.Producto.size == this.ListaProducto[i].size && this.Producto.color == this.ListaProducto[i].color && this.Producto.precio_menor == this.ListaProducto[i].precio_menor && this.Producto.precio_mayor == this.ListaProducto[i].precio_mayor ) {
+                                if ( this.Producto.size == this.ListaProducto[i].size && this.Producto.color == this.ListaProducto[i].color && this.Producto.precio_menor == this.ListaProducto[i].precio_menor && this.Producto.precio_mayor == this.ListaProducto[i].precio_mayor && this.Producto.codigo == this.ListaProducto[i].codigo ) {
                                     this.Error.mensaje.push("Ningun cambio realizado");    //sin cambios
                                 }
                                 break;

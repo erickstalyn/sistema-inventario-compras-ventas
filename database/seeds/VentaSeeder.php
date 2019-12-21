@@ -20,7 +20,7 @@ class VentaSeeder extends Seeder
             'codigo' => '1234567891234',
             'total' => 100,
             'total_faltante' => NULL,
-            'tipo' => 0,
+            'tipo' => 11,
             'created_at' => $now
         ));
         DB::table('venta')->insert(array(
@@ -29,7 +29,7 @@ class VentaSeeder extends Seeder
             'codigo' => '3641523498521',
             'total' => 200,
             'total_faltante' => NULL,
-            'tipo' => 0,
+            'tipo' => 11,
             'created_at' => $now
         ));
         DB::table('venta')->insert(array(
@@ -38,7 +38,7 @@ class VentaSeeder extends Seeder
             'codigo' => '6714983264824',
             'total' => 300,
             'total_faltante' => 100,
-            'tipo' => 1,
+            'tipo' => 21,
             'created_at' => $now
         ));
         DB::table('venta')->insert(array(
@@ -47,7 +47,7 @@ class VentaSeeder extends Seeder
             'codigo' => '1362798564285',
             'total' => 400,
             'total_faltante' => 200,
-            'tipo' => 1,
+            'tipo' => 21,
             'created_at' => $now
         ));
     }

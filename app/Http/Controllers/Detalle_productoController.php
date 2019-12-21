@@ -43,7 +43,6 @@ class Detalle_productoController extends Controller
                                                         ->orWhere('codigo', 'like', '%'.$text.'%');
                                                 }
                                             })
-                                            ->where('substock', '>', 0)
                                             ->orderBy('pivot_id', 'desc')->get();
 
         return $list;

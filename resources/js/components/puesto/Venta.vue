@@ -108,7 +108,7 @@
 
         <!-- Modales de Agregar/Editar/Pagar -->
         <div class="modal text-gray-900" :class="{'mostrar': Modal.estado}">
-            <div class="modal-dialog modal-dialog-centered animated bounceIn fast" :class="Modal.size">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable animated bounceIn fast" :class="Modal.size">
                 <div class="modal-content">
 
                     <div class="modal-header">
@@ -180,25 +180,25 @@
                                             <i class="fa fa-search"></i>&nbsp; Buscar
                                         </button>
                                     </div>
-                                    <div class="row overflow-auto" style="height: 16rem;">
+                                    <div class="row overflow-auto" style="height: 15rem;">
                                         <div v-if="ListaProducto.length">
-                                            <table class="table table-borderless table-striped table-sm text-gray-900">
+                                            <table class="table table-bordered table-striped table-sm text-gray-900">
                                                 <thead>
                                                     <tr class="table-danger">
                                                         <th class="text-center" style="width: 10%;">Agregar</th>
-                                                        <th>Nombre</th>
-                                                        <th>Stock</th>
+                                                        <th class="text-center">Nombre</th>
+                                                        <th class="text-center">Stock</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     <tr v-for="producto in ListaProducto" :key="producto.id" >
                                                         <td class="text-center">
-                                                            <button type="button" title="AGREGAR" class="btn btn-circle btn-sm btn-outline-success" @click="add(0, producto)">
+                                                            <button type="button" v-if="producto.detalle.substock>0" title="AGREGAR" class="btn btn-circle btn-sm btn-outline-success" @click="add(0, producto)">
                                                                 <i class="fas fa-plus"></i>
                                                             </button>
                                                         </td>
                                                         <td v-text="producto.nombre"></td>
-                                                        <td v-text="producto.stock"></td>
+                                                        <td v-text="producto.detalle.substock" class="text-right"></td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -209,25 +209,33 @@
                                     </div>
                                 </div>
                                 <div class="col-md-8 ml-auto container">
-                                    <div class="row">
+                                    <div class="row form-group">
                                         <label class="col-md-3 font-weight-bold">LISTA DE ITEMS</label>
-                                        <div class="col-md-6"></div>
-                                        <div class="col-md-3 input-group">
-                                            <label class="col-md-4 font-weight-bold">Tipo</label>&nbsp;<span class="text-danger">*</span>
-                                            <select class="col-md-8 custom-select custom-select-sm" v-model="Venta.tipo">
-                                                <option value="0">Contado</option>
-                                                <option value="1">Credito</option>
+                                        <div class="col-md-1"></div>
+                                        <div class="col-md-4 input-group">
+                                            <label class="col-md-5 font-weight-bold">Pago&nbsp;<span class="text-danger">*</span></label>
+                                            <select class="col-md-7 custom-select custom-select-sm text-gray-900" v-model="Venta.tipo_pago">
+                                                <option value="1">Contado</option>
+                                                <option value="2">Credito prepago</option>
+                                                <option value="3">Credito postpago</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4 input-group">
+                                            <label class="col-md-5 font-weight-bold">Precio&nbsp;<span class="text-danger">*</span></label>
+                                            <select class="col-md-7 custom-select custom-select-sm text-gray-900" v-model="Venta.tipo_precio">
+                                                <option value="1">Al por menor</option>
+                                                <option value="2">Al por mayor</option>
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="row form-group ec-table-modal overflow-auto">
+                                    <div class="row form-group overflow-auto col-md-12" style="height: 17rem;">
                                         <div v-if="ListaDetalle.length">
-                                            <table class="table tableless table-striped table-sm text-gray-900">
+                                            <table class="table table-bordered table-striped table-sm text-gray-900">
                                                 <thead>
                                                     <tr class="table-success">
                                                         <th class="text-center" style="width: 3rem;">Quitar</th>
                                                         <th class="text-center">Nombre</th>
-                                                        <th class="text-center">Cantidad</th>
+                                                        <th class="text-center" style="width: 5rem;">Cantidad</th>
                                                         <th class="text-center">Precio</th>
                                                         <th class="text-center">Subtotal</th>
                                                     </tr>
@@ -241,21 +249,18 @@
                                                         </td>
                                                         <td v-text="detalle.nombre"></td>
                                                         <td >
-                                                            <input type="number" v-model="detalle.cantidad" class="form-control form-control-sm" min="1">
+                                                            <input type="number" v-model="detalle.cantidad" class="form-control form-control-sm text-right pr-6" min="1">
                                                         </td>
-                                                        <td>
-                                                            <input type="number" v-model="detalle.costo_abasto" class="form-control form-control-sm" min="0">
-                                                        </td>
-                                                        <td class="text-right pr-3">
-                                                            {{detalle.subtotal = (detalle.costo_abasto * detalle.cantidad).toFixed(2)}}
+                                                        <td v-text="Venta.tipo_precio=='1'?detalle.precio_menor:detalle.precio_mayor"></td>
+                                                        <td class="text-right pr-3" v-text="detalle.subtotal">
+                                                            <!-- {{detalle.subtotal = (detalle.costo_abasto * detalle.cantidad).toFixed(2)}} -->
                                                         </td>
                                                     </tr>
                                                 </tbody>
                                             </table>
                                         </div>
                                         <div v-else>
-                                            <br>
-                                            <p>Sin detalles de venta</p>
+                                            <label class="col-md-12 text-danger">Sin detalles de venta</label>
                                         </div>
                                     </div>
                                     <!-- <div class="row">
@@ -368,7 +373,8 @@
                     codigo: '',
                     total: 0.00,
                     total_faltante: 0.00,
-                    tipo: 0, // 0: Contado, 1: Credito
+                    tipo_pago: '0', // 1: contado, 2: credito prepago, 3: credito postpago
+                    tipo_precio: '0', // 1: al por menor, 2: al por mayor
                     created_at : '',
                 },
                 ListaProducto:[],
@@ -560,6 +566,13 @@
                 this.Error.estado = 0;
                 this.Error.mensaje = [];
 
+                this.Venta.total = 0;
+                this.Venta.total_faltante = 0;
+                this.Venta.tipo_pago = '1';
+                this.Venta.tipo_precio = '1';
+                
+                this.ListaProducto = [];
+            
                 this.Cliente.id = 0;
                 this.Cliente.documento = '';
                 this.Cliente.nombres = '';
@@ -641,11 +654,11 @@
                 this.DatosServicio.alert = '';
                 this.DatosServicio.mensaje = '';
 
-                this.Abasto.id = 0;
-                this.Abasto.total = 0.00;
-                this.Abasto.pagoInicial = '';
-                this.Abasto.centro_to_id = 0;
-                this.Abasto.tipo = 1;
+                this.Venta.id = 0;
+                this.Venta.total = 0.00;
+                this.Venta.pagoInicial = '';
+                this.Venta.centro_to_id = 0;
+                this.Venta.tipo = 1;
 
                 this.DatosServicio.tipo = 0;
                 this.DatosProveedor.id = 0;
@@ -657,7 +670,7 @@
                 this.ListaPago = [];
                 this.Pago.monto = '';
 
-                this.ListaDetalleAbasto = [];
+                this.ListaDetalleVenta = [];
                 this.BusquedaFiltro.texto = '';
             },
             accionar(){
@@ -838,11 +851,11 @@
                                 +'&centro_id='+$('meta[name="idCentro"]').attr('content');
 
                 axios.get(url).then(function(response){
-                    if ( response.data.productos.length == 1 && me.Service.text == response.data.productos[0].codigo){
-                        me.add(0, response.data.productos[0]);
+                    if ( response.data.length == 1 && me.Service.text == response.data[0].codigo){
+                        me.add(0, response.data[0]);
                         me.Service.text = '';
                     } else {
-                        me.ListaProducto = response.data.productos;
+                        me.ListaProducto = response.data;
                     }
                     let inputFiltro = document.getElementById('filtroProducto');
                     inputFiltro.focus();
@@ -855,21 +868,22 @@
                     case 0:
                         let found = false;
                         for (let i = 0; i < this.ListaDetalle.length; i++) {
-                            if ( this.ListaDetalle[i].id == data.id ){
+                            if ( this.ListaDetalle[i].producto_id == data.detalle.producto_id ){
                                 this.ListaDetalle[i].cantidad++; 
                                 found = true; break;
                             }
                         }
 
                         if ( !found ){
-                            let producto = {
+                            this.ListaDetalle.push({
                                 id: data.id,
+                                producto_id: data.detalle.producto_id,
                                 nombre: data.nombre,
                                 cantidad: 1,
-                                costo_abasto: 0.00,
-                                subtotal: 0.00
-                            }
-                            this.ListaDetalle.push(producto);
+                                precio_menor: data.detalle.precio_menor,
+                                precio_mayor: data.detalle.precio_mayor,
+                                subtotal: Number.parseFloat(this.Venta.tipo_precio=='1'?data.detalle.precio_menor:(this.Venta.tipo_precio=='2'?data.detalle.precio_mayor:0)).toFixed(2)
+                            });
                         }
                         break;
                     case 1:
