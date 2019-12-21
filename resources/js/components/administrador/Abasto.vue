@@ -18,48 +18,56 @@
 
             <!-- Inputs de busqueda -->
             <div class="row form-group">
-                <div style="width: 8rem;" class="mr-1">
-                    <div class="input-group"> 
-                        <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.estado">
-                            <option value="3">Todos</option>
-                            <option value="0">Enviados</option>
-                            <option value="1">Aceptados</option>
-                            <option value="2">Rechazados</option>
-                        </select>
+                <div class="col-md-4">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="input-group"> 
+                                <select class="custom-select text-gray-900" v-model="Busqueda.estado">
+                                    <option value="3">Todos</option>
+                                    <option value="0">Enviados</option>
+                                    <option value="1">Aceptados</option>
+                                    <option value="2">Rechazados</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="search" class="form-control" v-model="Busqueda.texto" @keyup.enter="listar()" placeholder="Buscar por proveedor">
+                        </div>
                     </div>
                 </div>
-                <div style="width: 24rem;">
-                    <input type="search" class="form-control" v-model="Busqueda.texto" @keyup.enter="listar()" placeholder="Buscar por proveedor">
-                </div>
-                <div class="col-md-1">
-                    <label for="">Fecha de envío</label>
-                </div>
-                <div class="col-md-1">
-                    Dia
-                    <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.dia">
-                        <option value="">Todos</option>
-                        <option v-for="item in getDia()" :key="item" :value="item" v-text="item"></option>
-                    </select>
-                </div>
-                <div style="width: 8rem;">
-                    Mes
-                    <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.mes">
-                        <option value="">Todos</option>
-                        <option v-for="item in getMes()" :key="item.valor" :value="item.valor" v-text="item.nombre"></option>
-                    </select>
-                </div>
-                <div class="col-md-1">
-                    Año
-                    <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.year">
-                        <option value="">Todos</option>
-                        <option v-for="item in getYear(2016)" :key="item" :value="item" v-text="item"></option>
-                    </select>
-                </div>
-                <div class="col-md-1">
-                    N° filas:
-                    <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.filas">
-                        <option v-for="item in Filas" :key="item" :value="item" v-text="item"></option>
-                    </select>
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <label for="">Fecha de envío</label>
+                        </div>
+                        <div class="col-md-2">
+                            Dia
+                            <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.dia">
+                                <option value="">Todos</option>
+                                <option v-for="item in getDia()" :key="item" :value="item" v-text="item"></option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            Mes
+                            <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.mes">
+                                <option value="">Todos</option>
+                                <option v-for="item in getMes()" :key="item.valor" :value="item.valor" v-text="item.nombre"></option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            Año
+                            <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.year">
+                                <option value="">Todos</option>
+                                <option v-for="item in getYear(2016)" :key="item" :value="item" v-text="item"></option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            N° filas:
+                            <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.filas">
+                                <option v-for="item in Filas" :key="item" :value="item" v-text="item"></option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
                 <div class="col-md-2">
                     <button type="button" class="btn btn-primary" @click="listar()">
@@ -75,8 +83,8 @@
                     <table class="table table-borderless table-sm text-gray-900">
                         <thead>
                             <tr class="table-info">
-                                <th>Proveedor</th>
-                                <th>Almacén de destino</th>
+                                <th class="pl-5">Proveedor</th>
+                                <th >Almacén de destino</th>
                                 <th>Fecha de envío</th>
                                 <th>Costo total</th>
                                 <th>Tipo</th>
@@ -86,7 +94,7 @@
                         </thead>
                         <tbody>
                             <tr v-for="abasto in ListaAbasto" :key="abasto.id" >
-                                <td v-text="abasto.proveedor_persona ? abasto.proveedor_persona : abasto.proveedor_empresa"></td>
+                                <td class="pl-2" v-text="abasto.proveedor_persona ? abasto.proveedor_persona : abasto.proveedor_empresa"></td>
                                 <td v-text="abasto.nombre_centro"></td>
                                 <td v-text="formatearFecha(abasto.fecha_envio)"></td>
                                 <td v-text="abasto.total"></td>
@@ -470,18 +478,18 @@
                                             </div>
                                         </div>
                                         <div class="row">
-                                            <div class="col-md-12 text-right pr-4">
-                                                <span class="text-success">Monto pagado: s/{{getSumaPagos}}</span>
+                                            <div class="col-md-12 text-right pr-5">
+                                                <span class="font-weight-bold">Monto pagado: </span><span class="text-success">s/{{getSumaPagos}}</span>
                                             </div>
                                         </div>
                                         <div class="row">
-                                            <div class="col-md-12 text-right pr-4">
-                                                <span class="text-danger">Monto faltante: s/{{(Abasto.total_ver - getSumaPagos).toFixed(2)}}</span>
+                                            <div class="col-md-12 text-right pr-5">
+                                                <span class="font-weight-bold">Monto faltante: </span><span class="text-danger">s/{{(Abasto.total_ver - getSumaPagos).toFixed(2)}}</span>
                                             </div>
                                         </div>
                                         <div class="row">
-                                            <div class="col-md-12 text-right pr-4">
-                                                <span>Costo total: s/{{Abasto.total_ver}}</span>
+                                            <div class="col-md-12 text-right pr-5">
+                                                <span class="font-weight-bold">Costo total: </span><span>s/{{Abasto.total_ver}}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -554,7 +562,7 @@
                                         <div class="input-group"> 
                                             Monto&nbsp;
                                             <input type="number" class="form-control form-control-sm" v-model="Pago.monto" @keyup.enter="agregarListaPago()">&nbsp;
-                                            <button type="button" class="btn btn-sm btn-primary" @click="agregarListaPago()">
+                                            <button type="button" class="btn btn-sm btn-primary" @click="agregarListaPago()" :disabled="getSumaPagos == Abasto.total_ver">
                                                 Registrar
                                             </button>
                                         </div>
@@ -588,17 +596,17 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-md-12 text-right pr-5">
-                                        <span class="text-success">Monto pagado: s/{{getSumaPagos}}</span>
+                                        <span class="font-weight-bold">Monto pagado: </span><span class="text-success">s/{{getSumaPagos}}</span>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-12 text-right pr-5">
-                                        <span class="text-danger">Monto faltante: s/{{(Abasto.total_ver - getSumaPagos).toFixed(2)}}</span>
+                                        <span class="font-weight-bold">Monto faltante: </span><span class="text-danger">s/{{(Abasto.total_ver - getSumaPagos).toFixed(2)}}</span>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-12 text-right pr-5">
-                                        <span>Costo total: s/{{Abasto.total_ver}}</span>
+                                        <span class="font-weight-bold">Costo total: </span><span>s/{{Abasto.total_ver}}</span>
                                     </div>
                                 </div>
                             </div>
@@ -1209,7 +1217,7 @@
                     cancelButtonText: 'Cancelar',
                     // reverseButtons: true,
                     customClass: {
-                        confirmButton: 'btn btn-success',
+                        confirmButton: 'btn btn-danger',
                         cancelButton: 'btn btn-secondary'
                     },
                     buttonsStyling: false

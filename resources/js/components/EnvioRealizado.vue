@@ -99,7 +99,7 @@
                                     </div>
                                 </td>
                                 <td class="text-center">
-                                    <button type="button" title="Ver" class="btn btn-sm btn-primary">
+                                    <button type="button" title="Ver" class="btn btn-sm btn-primary" @click="abrirModalVer(envio)">
                                         <i class="far fa-eye"></i>
                                     </button>
                                     <template v-if="envio.estado == 2">
@@ -108,7 +108,7 @@
                                         </button>
                                     </template>
                                     <template v-if="envio.estado != 1">
-                                        <button type="button"  title="Anular" class="btn btn-danger btn-sm">
+                                        <button type="button"  title="Anular" class="btn btn-danger btn-sm" @click="anularAbasto(envio.id)">
                                                 <i class="fas fa-trash-alt"></i>
                                         </button>
                                     </template>
@@ -151,6 +151,7 @@
                     <div class="modal-body">
                         <div class="container-fluid">
                         <!-- Modal Numero 1 de AGREGAR-->
+                        
                             <div v-if="Modal.numero==1">
                                 <!-- Filtro de productos -->
                                 <div v-if="Error.estado" class="row d-flex justify-content-center">
@@ -163,7 +164,7 @@
                                     </div>
                                 </div>
                                 <div class="row shadow bg-white rounded p-2">
-                                    <div class="col-md-6">
+                                    <div class="col-md-6" v-if="Modal.numero == 1">
                                         <div class="row">
                                             <h5 class="font-weight-bold">Productos</h5>
                                         </div>
@@ -213,21 +214,21 @@
                                                 <table class="table tableless table-striped table-sm text-gray-900">
                                                     <thead>
                                                         <tr class="table-success">
-                                                            <th class="text-center" style="width: 3rem;">Quitar</th>
-                                                            <th >Nombre</th>
-                                                            <th style="width: 5rem;" class="text-center">Cantidad</th>
+                                                            <th class="text-center">Quitar</th>
+                                                            <th class="text-center">Nombre</th>
+                                                            <th style="width: 6rem;" class="text-left">Cantidad</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                         <tr v-for="(detalle, indice) in ListaDetalleEnvio" :key="detalle.id">
                                                             <td class="text-center">
-                                                                <button type="button" title="Editar" class="btn btn-circle btn-outline-danger btn-sm" @click="quitarDetalle(indice)">
+                                                                <button type="button" title="Quitar" class="btn btn-circle btn-outline-danger btn-sm" @click="quitarDetalle(indice)">
                                                                     <i class="fas fa-minus"></i>
                                                                 </button>
                                                             </td>
                                                             <td v-text="detalle.nombre"></td>
-                                                            <td >
-                                                                <input type="number" v-model="detalle.cantidad" class="form-control form-control-sm text-right" min="1">
+                                                            <td class="text-right pr-4">
+                                                                <input type="number" v-model="detalle.cantidad" class="form-control form-control-sm" min="1">
                                                             </td>
                                                         </tr>
                                                     </tbody>
@@ -235,7 +236,7 @@
                                             </div>
                                             <div v-else>
                                                 <br>
-                                                <h5>Sin detalles del envío</h5>
+                                                <p>Sin detalles de envío</p>
                                             </div>
                                         </div>
                                         <div class="row">
@@ -248,9 +249,47 @@
                                                     </select>
                                                 </div>
                                             </div>
-                                            <!-- <div class="col-md-2"></div> -->
                                             <div class="col-md-6">
-                                                <p class="text-right pr-3">Total de productos: {{getTotal}}</p>
+                                                <p class="text-right pr-2">Total de productos: {{getTotal}}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            <div v-if="Modal.numero==2">
+                                <div class="row shadow bg-white rounded p-2">
+                                    <div class="col-md-12 ml-auto container">
+                                        <div class="row">
+                                            <span class="font-weight-bold">LISTA DE ITEMS</span>
+                                        </div>
+                                        <div class="row form-group ec-table-modal overflow-auto">
+                                            <table class="table tableless table-striped table-sm text-gray-900">
+                                                <thead>
+                                                    <tr class="table-success">
+                                                        <th class="text-center" >#</th>
+                                                        <th class="text-center">Nombre</th>
+                                                        <th style="width: 5rem;" class="text-center">Cantidad</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr v-for="(detalle, indice) in ListaDetalleEnvio" :key="indice">
+                                                        <td class="text-center">{{indice+1}}</td>
+                                                        <td v-text="detalle.nombre_producto"></td>
+                                                        <td class="text-right pr-3" v-text="detalle.cantidad"></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="input-group"> 
+                                                    <label class="font-weight-bold">Centro de destino:</label>&nbsp;
+                                                    {{EnvioRealizado.centro_destino}}
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p class="text-right"><span class="font-weight-bold">Total de productos: </span>{{getTotal}}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -282,8 +321,10 @@
 
                     <div class="modal-footer" v-if="permisoModalFooter">
                         <div class="row form-group col-md-12 d-flex justify-content-around">
-                            <button type="button" @click="accionar(Modal.accion)" class="btn btn-success" v-text="Modal.accion"></button>
-                            <button type="button" @click="cerrarModal()" class="btn btn-secondary">Cancelar</button>
+                            <div v-if="Modal.accion">
+                                <button type="button" @click="accionar(Modal.accion)" class="btn btn-success" v-text="Modal.accion"></button>
+                            </div>
+                            <button type="button" @click="cerrarModal()" class="btn btn-secondary" v-text="Modal.cancelar"></button>
                         </div>
                     </div>
                 
@@ -323,6 +364,7 @@
                     estado: 0,
                     titulo: '',
                     accion: '',
+                    cancelar: '',
                     size: ''
                 },
 
@@ -503,7 +545,7 @@
                 this.ListaDetalleEnvio.splice(indice,1);
             },
             agregar(){
-                if ( this.validar() ) return;
+                if ( this.validar(1) ) return;
                 
                 var me = this;
                 axios.post('/envioRealizado/agregar', {
@@ -531,21 +573,24 @@
                     console.log(error);
                 });
             },
-            validar(){
+            validar(numero){
                 this.Error.estado = 0;
                 this.Error.mensaje = [];
 
                 //Recorrere la lista de Material
-                if(this.Modal.numero == 1){
-                    //Modal agregar
-                    if ( !this.ListaDetalleEnvio.length ) {
-                        this.Error.mensaje.push("No existe ningun detalle de envío");
-                    }else{//Valido las cantidades de los detalles de envio
-                        this.validarCantidadesDetalles();
-                    }
-                    if(!this.EnvioRealizado.centro_to_id) this.Error.mensaje.push('Debe seleccionar el centro receptor');
-                }else{
-                    //Modal Reenviar
+                switch(numero){
+                    case 1:
+                        if ( !this.ListaDetalleEnvio.length ) {
+                            this.Error.mensaje.push("No existe ningun detalle de envío");
+                        }else{//Valido las cantidades de los detalles de envio
+                            this.validarCantidadesDetalles();
+                        }
+                        if(!this.EnvioRealizado.centro_to_id) this.Error.mensaje.push('Debe seleccionar el centro receptor');
+                        break;
+                    case 2:
+                        if(!this.EnvioRealizado.centro_to_id) this.Error.mensaje.push('Debe seleccionar un nuevo centro')
+                        break;
+
                 }
                 if ( this.Error.mensaje.length ) this.Error.estado = 1;
                 return this.Error.estado;
@@ -567,7 +612,7 @@
                 }
             },
             reenviar(){
-                // if ( this.validar() ) return;
+                if ( this.validar(2) ) return;
                 var me = this;
                 //Selecciono el nombre del centro
                 let nombreCentro;
@@ -597,21 +642,31 @@
                 });
             },
             abrirModalAgregar(){
-                this.abrirModal(1, 'Registrar Envío', 'Agregar', 'modal-xl');
+                this.abrirModal(1, 'Registrar Envío', 'Agregar', 'Cancelar', 'modal-xl modal-dialog-scrollable');
                 if(!this.SelectCentro.length) this.selectCentro();
             },
             abrirModalReenviar(envio = []){
                 this.EnvioRealizado.id = envio['id'];
-                // console.log(this.EnvioRealizado.centro_to_id);
 
-                this.abrirModal(3, 'Reenviar', 'Reenviar', '');
+                this.abrirModal(3, 'Reenviar', 'Reenviar', 'Cancelar', '');
                 if(!this.SelectCentro.length) this.selectCentro();
             },
-            abrirModal(numero, titulo, accion, size){
+            abrirModalVer(envio = []){
+                this.EnvioRealizado.id = envio['id'];
+                // this.EnvioRealizado.fecha_envio = envio['fecha_envio'];
+                // this.EnvioRealizado.fecha_cambio = envio['fecha_cambio'];
+                this.EnvioRealizado.centro_destino = envio['centro_destino'];
+                this.EnvioRealizado.estado = envio['estado'];
+
+                this.list(1);
+                this.abrirModal(2, 'Ver Envio', '', 'Cerrar', '')
+            },
+            abrirModal(numero, titulo, accion, cancelar, size){
                 this.Modal.estado = 1;
                 this.Modal.numero = numero;
                 this.Modal.titulo = titulo;
                 this.Modal.accion = accion;
+                this.Modal.cancelar = cancelar;
                 this.Modal.size = size;
             },
             cerrarModal(){
@@ -648,6 +703,64 @@
                 if ( page >= 1 && page <= this.Paginacion.lastPage) {
                     this.listar(page);
                 }
+            },
+            list(numero){
+                switch (numero) {
+                    case 1:
+                        let me = this;
+                        let url = '/envioRealizado/getDetalles';
+
+                        axios.get(url,{
+                            params: {
+                                'id': me.EnvioRealizado.id
+                            }
+                        }).then(function(response){
+                            me.ListaDetalleEnvio = response.data;
+                        }).catch(function(error){
+                            console.log(error);
+                        });
+                        break;
+                }
+            },
+            anularAbasto(id){
+                Swal.fire({
+                    title: '¿Está seguro que desea ANULAR el Envío?',
+                    type: 'error',
+                    showCancelButton: true,
+                    confirmButtonText: 'Si, anular',
+                    cancelButtonText: 'Cancelar',
+                    // reverseButtons: true,
+                    customClass: {
+                        confirmButton: 'btn btn-danger',
+                        cancelButton: 'btn btn-secondary'
+                    },
+                    buttonsStyling: false
+                }).then((result) => {
+                    if (result.value) {
+                        var me = this;
+                
+                        axios.put('/envioRealizado/anular', {
+                            'id' : id
+                        }).then(function (response) {
+                            me.listar();
+                            Swal.fire({
+                                position: 'top-end',
+                                toast: true,
+                                type: 'success',
+                                title: 'El envío se ANULÓ correctamente',
+                                showConfirmButton: false,
+                                timer: 4500,
+                                animation:false,
+                                customClass:{
+                                    popup: 'animated bounceIn fast'
+                                }
+                            });
+                        }).catch(function (error) {
+                            console.log(error);
+                        });
+                    } else if ( result.dismiss === Swal.DismissReason.cancel ) {
+                    }
+                });
             },
             getFechaHoy(){
                 let n =  new Date();

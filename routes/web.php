@@ -45,6 +45,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::put('/envioRealizado/reenviar', 'EnvioController@reenviar');//metodo secundario
     Route::put('/envioRecibido/setEstado', 'EnvioController@setEstado'); //metodos secundarios
 
+    Route::get('/abasto/getDetalles', 'AbastoController@getDetalles');
+    Route::get('/envioRealizado/getDetalles', 'EnvioController@getDetalles');
+
     Route::group(['middleware' => ['Administrador']], function (){
         
         //Rutas para USUARIO
@@ -95,7 +98,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/abasto', 'AbastoController@listar'); //metodos generales
         Route::post('/abasto/agregar', 'AbastoController@agregar');
         Route::get('/abasto/getPagos', 'AbastoController@getPagos');
-        Route::get('/abasto/getDetalles', 'AbastoController@getDetalles');
+        // Route::get('/abasto/getDetalles', 'AbastoController@getDetalles');
         Route::put('/abasto/anular', 'AbastoController@anular');
         Route::get('/data/selectUnidad', 'DataController@selectUnidad'); //metodos secundarios
 
@@ -129,6 +132,12 @@ Route::group(['middleware' => ['auth']], function () {
 
         Route::get('/detalle_producto/getDetalle_productoFiltrado', 'Detalle_productoController@getDetalle_productoFiltrado');
         Route::get('/centro/selectCentro', 'CentroController@selectCentro');
+
+        //Rutas de ENVIOS REALIZADOS
+        // Route::get('/envioRealizado/getDetalles', 'EnvioController@getDetalles');
+        Route::put('/envioRealizado/anular', 'EnvioController@anular');
+
+        // Route::get('/abasto/getDetalles', 'AbastoController@getDetalles');
     });
 
 });
