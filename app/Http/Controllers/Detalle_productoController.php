@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Detalle_producto;
 use App\Centro;
 
@@ -25,6 +26,30 @@ class Detalle_productoController extends Controller
                             ->orderBy('producto.nombre', 'asc')->get();
         return [
             'productos' => $productos
+        ];
+    }
+
+    public function editar(Request $request){
+        if ( !$request->ajax() ) return redirect('/');
+
+        try {
+            DB::beginTransaction();
+
+            $detalle_producto = Detalle_producto::findOrFail($request->id);
+            $detalle_producto->precio_menor = $request->precio_menor;
+            $detalle_producto->precio_mayor = $request->precio_mayor;
+            $detalle_producto->save();
+
+            DB::commit();
+            $error = NULL;
+        } catch(Exception $e) {
+            DB::rollback();
+            $error = $e;
+        }
+
+        return [
+            'estado' => $error==NULL?1:0,
+            'error' => $error
         ];
     }
 

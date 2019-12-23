@@ -201,8 +201,7 @@
                                     </div>
                                     <div class="col-md-3">
                                         <h5>
-                                            <span role="status" :class="Carga.clase">
-                                            </span>&nbsp;
+                                            <span role="status" :class="Carga.clase"></span>&nbsp;
                                             <span v-text="DatosServicio.mensaje" :class="DatosServicio.alert"></span>
                                         </h5>
                                     </div>
@@ -924,7 +923,7 @@
                 let ruc = me.DatosServicio.documento;
                 $.ajax({
                     type: 'GET',
-                    url: "http://localhost:8080/SunatPHP/demo.php",
+                    url: "http://localhost:80/SunatPHP/demo.php",
                     data: "ruc="+ruc,
                     beforeSend(){
                         me.Carga.clase = 'spinner-border spinner-border-sm text-primary';
@@ -954,7 +953,7 @@
                 let dni = me.DatosServicio.documento;
                 $.ajax({
                     type: 'GET',
-                    url: "http://localhost:8080/Reniec/demo.php",
+                    url: "http://localhost:80/Reniec/demo.php",
                     data: "dni="+dni,
                     beforeSend(){
                         me.Carga.clase = 'spinner-border spinner-border-sm text-primary';
@@ -999,7 +998,7 @@
 
                 this.listarPagos(abasto['id']);
                 this.listarDetallesAbasto(abasto['id']);
-                this.abrirModal(2, 'Ver Abasto', '', 'Cerrar', 'modal-xl modal-dialog-scrollable')
+                this.abrirModal(2, 'Ver Abasto', '', 'Cerrar', 'modal-xl modal-dialog-scrollable');
             },
             abrirModal(numero, titulo, accion, cancelar, size){
                 this.Modal.estado = 1;
@@ -1334,7 +1333,7 @@
             //Metodos de envios
             selectAlmacen(){
                 var me = this;
-                var url = '/centro/selectAlmacen';
+                var url = '/centro/selectCentro?tipo=A';
 
                 axios.get(url).then(function(response){
                     me.SelectAlmacen = response.data;

@@ -1,25 +1,4 @@
 <?php
-
-
-
-// Route::get('/main', function () {
-//     return view('contenidoPrincipal.contenidoPrincipal');
-// })->name('main');
-
-// Route::get('/', 'Auth\LoginController@showLoginForm');
-
-// Route::post('/login', 'Auth\LoginController@login')->name('login');
-
-
-// Route::get('/home', 'HomeController@index')->name('home');
-
-//Route::get('', 'AdminController@index');
-
-//Pruebas
-//Route::get('/mostrar', 'PruebasController@mostrar')->name('mostrar');
-
-
-
 Route::group(['middleware' => ['guest']], function (){
     // Route::get('/login', 'Seguridad\LoginController@index')->name('login');
     Route::get('/', 'Seguridad\LoginController@index')->name('login');
@@ -38,6 +17,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/producto/getProductoFiltrado', 'ProductoController@getProductoFiltrado');
     Route::get('/persona/getPersona', 'PersonaController@getPersona');
     Route::get('/centro/listProductos', 'CentroController@listProductos'); //metodos generales
+    Route::get('/centro/selectCentroEnvio', 'CentroController@selectCentroEnvio');
     //RUTAS DE ENVIOS
     Route::get('/envioRecibido', 'EnvioController@listarEnvioRecibido'); //metodos generales
     Route::get('/envioRealizado', 'EnvioController@listarEnvioRealizado');
@@ -47,6 +27,8 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::get('/abasto/getDetalles', 'AbastoController@getDetalles');
     Route::get('/envioRealizado/getDetalles', 'EnvioController@getDetalles');
+
+    Route::get('/detalle_producto/getDetalle_productoFiltrado', 'Detalle_productoController@getDetalle_productoFiltrado');
 
     //RUTAS PARA VENTAS
     Route::get('/venta', 'VentaController@listar');
@@ -75,7 +57,6 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/produccion', 'ProduccionController@listar'); //métodos generales
         Route::post('/produccion/agregar', 'ProduccionController@agregar');
         
-        // Route::get('/produccion/selectAlmacen', 'ProduccionController@selectAlmacen'); //metodos secundarios
         Route::put('/produccion/finalizar', 'ProduccionController@finalizar'); //metodos secundarios
 
         //RUTAS PARA SUPERPRODUCTO
@@ -102,14 +83,15 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/abasto', 'AbastoController@listar'); //metodos generales
         Route::post('/abasto/agregar', 'AbastoController@agregar');
         Route::get('/abasto/getPagos', 'AbastoController@getPagos');
-        // Route::get('/abasto/getDetalles', 'AbastoController@getDetalles');
         Route::put('/abasto/anular', 'AbastoController@anular');
         Route::get('/data/selectUnidad', 'DataController@selectUnidad'); //metodos secundarios
 
-        Route::get('/centro/selectAlmacen', 'CentroController@selectAlmacen');
+        Route::get('/centro/selectCentro', 'CentroController@selectCentro');
 
         //RUTAS DE PAGOS
         Route::post('/pago/agregar', 'PagoController@agregar');
+        //RUTAS DETALLES DE PRODUCTOS
+        Route::put('/detalle_producto/editar', 'Detalle_productoController@editar');
         
 
     });
@@ -128,11 +110,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::put('/produccion/anular', 'ProduccionController@anular');
         Route::get('/produccion/getProductoFiltrado', 'ProduccionController@getProductoFiltrado'); //metodos secundarios
         Route::get('/produccion/getDetalles', 'ProduccionController@getDetalles');
-        Route::get('/produccion/selectAlmacen', 'ProduccionController@selectAlmacen'); //metodos secundarios
         Route::put('/produccion/finalizar', 'ProduccionController@finalizar'); //metodos secundarios
-
-        Route::get('/detalle_producto/getDetalle_productoFiltrado', 'Detalle_productoController@getDetalle_productoFiltrado');
-        Route::get('/centro/selectCentro', 'CentroController@selectCentro');
 
         //Rutas de ENVIOS REALIZADOS
         // Route::get('/envioRealizado/getDetalles', 'EnvioController@getDetalles');

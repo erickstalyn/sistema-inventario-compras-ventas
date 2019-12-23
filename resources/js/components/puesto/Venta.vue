@@ -802,7 +802,7 @@
 
                 $.ajax({
                     type: 'GET',
-                    url: "http://localhost:8080/Reniec/demo.php",
+                    url: "http://localhost:80/Reniec/demo.php",
                     data: "dni="+dni,
                     beforeSend(){
                         me.Service.msm = 'Consultado...';
@@ -837,7 +837,7 @@
 
                 $.ajax({
                     type: 'GET',
-                    url: "http://localhost:8080/SunatPHP/demo.php",
+                    url: "http://localhost:80/SunatPHP/demo.php",
                     data: "ruc="+ruc,
                     beforeSend(){
                         me.Service.msm = 'Consultado...';

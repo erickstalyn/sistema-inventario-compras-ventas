@@ -177,7 +177,6 @@
                                         </div>
                                     </div>
                                 </div>
-                                
                             </div>
                         </div>
                     </div>
@@ -405,8 +404,6 @@
             },
             abrirModalVer(envio = []){
                 this.EnvioRecibido.id = envio['id'];
-                // this.EnvioRecibido.fecha_envio = envio['fecha_envio'];
-                // this.EnvioRecibido.fecha_cambio = envio['fecha_cambio'];
                 this.EnvioRecibido.centro_origen = envio['centro_origen'];
                 this.EnvioRecibido.estado = envio['estado'];
                 this.EnvioRecibido.abasto_id = envio['abasto_id'];
