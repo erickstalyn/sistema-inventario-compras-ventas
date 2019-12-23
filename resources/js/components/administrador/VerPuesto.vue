@@ -229,6 +229,230 @@
                     <h5>No se han encontrado resultados</h5>
                 </div>
             </div>
+            <div v-else-if="Puesto.mostrar == 3">
+                <div class="row form-group">
+                    <div style="width: 8rem;" class="mr-1">
+                        <div class="input-group"> 
+                            <select class="custom-select text-gray-900" v-model="Busqueda.estadoEnviado">
+                                <option value="3">Todos</option>
+                                <option value="0">En espera</option>
+                                <option value="1">Aceptados</option>
+                                <option value="2">Rechazados</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div style="width: 24rem;">
+                        <input type="search" class="form-control" v-model="Busqueda.texto" @keyup.enter="listar()" placeholder="Buscar por CENTRO DE DESTINO">
+                    </div>
+                    <div class="col-md-1">
+                        <label for="">Fecha de envío</label>
+                    </div>
+                    <div class="col-md-1">
+                        Dia
+                        <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.dia">
+                            <option value="">Todos</option>
+                            <option v-for="item in getDia()" :key="item" :value="item" v-text="item"></option>
+                        </select>
+                    </div>
+                    <div style="width: 8rem;">
+                        Mes
+                        <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.mes">
+                            <option value="">Todos</option>
+                            <option v-for="item in getMes()" :key="item.valor" :value="item.valor" v-text="item.nombre"></option>
+                        </select>
+                    </div>
+                    <div class="col-md-1">
+                        Año
+                        <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.year">
+                            <option value="">Todos</option>
+                            <option v-for="item in getYear(2019)" :key="item" :value="item" v-text="item"></option>
+                        </select>
+                    </div>
+                    <div class="col-md-1">
+                        N° filas:
+                        <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.filas">
+                            <option v-for="item in Filas" :key="item" :value="item" v-text="item"></option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-primary" @click="listar()">
+                            <i class="fa fa-search"></i>&nbsp; Buscar
+                        </button>
+                    </div>
+                </div>
+                <h5 v-if="Carga.mostrar">
+                    <span role="status" :class="Carga.clase"></span>&nbsp;
+                    <span v-text="Carga.mensaje" :class="Carga.alert"></span>
+                </h5>
+                <div v-if="ListaEnvio.length">
+                    <!-- Tabla -->
+                    <div class="ec-table overflow-auto">
+                        <table class="table table-borderless table-sm text-gray-900">
+                            <thead>
+                                <tr class="table-info">
+                                    <th>Centro de destino</th>
+                                    <th class="text-center">Fecha de envio</th>
+                                    <th class="text-center">Fecha Aceptado/Rechazado</th>
+                                    <th>Estado</th>
+                                    <th class="text-center">Opciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="envio in ListaEnvio" :key="envio.id" >
+                                    <td v-text="envio.centro_destino"></td>
+                                    <td v-text="formatearFecha(envio.fecha_envio)" class="text-center"></td>
+                                    <td v-text="envio.fecha_cambio ? formatearFecha(envio.fecha_cambio) : '-------------'" class="text-center"></td>
+                                    <td>
+                                        <div v-if="envio.estado == 0">
+                                            <span class="badge badge-primary">En espera</span>
+                                        </div>
+                                        <div v-else-if="envio.estado == 1">
+                                            <span class="badge badge-success">Aceptado</span>
+                                        </div>
+                                        <div v-else="">
+                                            <span class="badge badge-danger">Rechazado</span>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <button type="button" title="VER" class="btn btn-sm btn-primary" @click="abrirModalVerEnvioRealizado(envio)">
+                                            <i class="far fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- Barra de navegacion -->
+                    <nav class="d-flex justify-content-center">
+                        <ul class="pagination">
+                            <li class="page-item">
+                                <a href="#" @click="cambiarPagina(Paginacion.currentPage-1)" class="page-link">Anterior</a>
+                            </li>
+                            <li class="page-item" v-for="page in Paginas" :key="page" :class="[page==Paginacion.currentPage?'active':'']">
+                                <a href="#" @click="cambiarPagina(page)" v-text="page" class="page-link"></a>
+                            </li>
+                            <li class="page-item">
+                                <a href="#" @click="cambiarPagina(Paginacion.currentPage+1)" class="page-link">Siguiente</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+                <div v-else-if="!Carga.mostrar">
+                    <h5>No se han encontrado resultados</h5>
+                </div>
+            </div>
+            <div v-else-if="Puesto.mostrar == 4">
+                <div class="row form-group">
+                    <div style="width: 8rem;" class="mr-1">
+                        <div class="input-group"> 
+                            <select class="custom-select text-gray-900" v-model="Busqueda.estadoRecibido">
+                                <option value="3">Todos</option>
+                                <option value="0">En espera</option>
+                                <option value="1">Aceptados</option>
+                                <option value="2">Rechazados</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div style="width: 24rem;">
+                        <input type="search" class="form-control" v-model="Busqueda.texto" @keyup.enter="listar()" placeholder="Buscar por centro de origen">
+                    </div>
+                    <div class="col-md-1">
+                        <label for="">Fecha de envío</label>
+                    </div>
+                    <div class="col-md-1">
+                        Dia
+                        <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.dia">
+                            <option value="">Todos</option>
+                            <option v-for="item in getDia()" :key="item" :value="item" v-text="item"></option>
+                        </select>
+                    </div>
+                    <div style="width: 8rem;">
+                        Mes
+                        <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.mes">
+                            <option value="">Todos</option>
+                            <option v-for="item in getMes()" :key="item.valor" :value="item.valor" v-text="item.nombre"></option>
+                        </select>
+                    </div>
+                    <div class="col-md-1">
+                        Año
+                        <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.year">
+                            <option value="">Todos</option>
+                            <option v-for="item in getYear(2016)" :key="item" :value="item" v-text="item"></option>
+                        </select>
+                    </div>
+                    <div class="col-md-1">
+                        N° filas:
+                        <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.filas">
+                            <option v-for="item in Filas" :key="item" :value="item" v-text="item"></option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-primary" @click="listar()">
+                            <i class="fa fa-search"></i>&nbsp; Buscar
+                        </button>
+                    </div>
+                </div>
+                <h5 v-if="Carga.mostrar">
+                    <span role="status" :class="Carga.clase"></span>&nbsp;
+                    <span v-text="Carga.mensaje" :class="Carga.alert"></span>
+                </h5>
+                <div v-if="ListaEnvio.length" >
+                    <!-- Tabla -->
+                    <div class="ec-table overflow-auto">
+                        <table class="table table-borderless table-sm text-gray-900">
+                            <thead>
+                                <tr class="table-info">
+                                    <th>Origen</th>
+                                    <th class="text-center">Fecha en que se envió</th>
+                                    <th class="text-center">Fecha Aceptado/Rechazado</th>
+                                    <th>Estado</th>
+                                    <th class="text-center">Opciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="envio in ListaEnvio" :key="envio.id" >
+                                    <td v-text="!envio.abasto_id? envio.centro_origen : 'Administración'"></td>
+                                    <td v-text="formatearFecha(envio.fecha_envio)" class="text-center"></td>
+                                    <td v-text="envio.fecha_cambio ? formatearFecha(envio.fecha_cambio) : '-------------'" class="text-center"></td>
+                                    <td>
+                                        <div v-if="envio.estado == 0">
+                                            <span class="badge badge-primary">En espera</span>
+                                        </div>
+                                        <div v-else-if="envio.estado == 1">
+                                            <span class="badge badge-success">Aceptado</span>
+                                        </div>
+                                        <div v-else="">
+                                            <span class="badge badge-danger">Rechazado</span>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <button type="button" title="Ver" class="btn btn-sm btn-primary" @click="abrirModalVerEnvioRecibido(envio)">
+                                            <i class="far fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- Barra de navegacion -->
+                    <nav class="d-flex justify-content-center">
+                        <ul class="pagination">
+                            <li class="page-item">
+                                <a href="#" @click="cambiarPagina(Paginacion.currentPage-1)" class="page-link">Anterior</a>
+                            </li>
+                            <li class="page-item" v-for="page in Paginas" :key="page" :class="[page==Paginacion.currentPage?'active':'']">
+                                <a href="#" @click="cambiarPagina(page)" v-text="page" class="page-link"></a>
+                            </li>
+                            <li class="page-item">
+                                <a href="#" @click="cambiarPagina(Paginacion.currentPage+1)" class="page-link">Siguiente</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+                <div v-else-if="!Carga.mostrar">
+                    <h5>No se han encontrado resultados</h5>
+                </div>
+            </div>
 
             <!-- Modales -->
             <div class="modal text-gray-900" :class="{'mostrar': Modal.estado}">
@@ -239,8 +463,8 @@
                             <button type="button" @click="cerrarModal()" class="close">X</button>
                         </div>
                         <div class="modal-body">
-                            <!-- Modal Numero 1 de AGREGAR-->
-                            <div v-if="Modal.numero == 1">
+                            <!-- Modal Editar producto-->
+                            <div v-if="Modal.numero == 1"> 
                                 <div v-if="Error.estado" class="row d-flex justify-content-center">
                                     <div class="alert alert-danger">
                                         <button type="button" @click="Error.estado=0" class="close text-primary" data-dismiss="alert">×</button>
@@ -266,6 +490,84 @@
                                     <label class="col-md-5 font-weight-bold" for="precio_mayor">Precio al por mayor&nbsp;<span class="text-danger">*</span></label>
                                     <div class="col-md-4">
                                         <input type="number" v-model="Producto.precio_mayor" class="form-control" min="0" id="precio_mayor">
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Modal ver envio Realizado -->
+                            <div v-else-if="Modal.numero==2">
+                                <div class="row shadow bg-white rounded p-2">
+                                    <div class="col-md-12 ml-auto container">
+                                        <div class="row">
+                                            <span class="font-weight-bold">LISTA DE ITEMS</span>
+                                        </div>
+                                        <div class="row form-group ec-table-modal overflow-auto">
+                                            <table class="table tableless table-striped table-sm text-gray-900">
+                                                <thead>
+                                                    <tr class="table-success">
+                                                        <th class="text-center" >#</th>
+                                                        <th class="text-center">Nombre</th>
+                                                        <th style="width: 5rem;" class="text-center">Cantidad</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr v-for="(detalle, indice) in ListaDetalleEnvio" :key="indice">
+                                                        <td class="text-center">{{indice+1}}</td>
+                                                        <td v-text="detalle.nombre_producto"></td>
+                                                        <td class="text-right pr-3" v-text="detalle.cantidad"></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="input-group"> 
+                                                    <label class="font-weight-bold">Centro de destino:</label>&nbsp;
+                                                    {{EnvioRealizado.centro_destino}}
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p class="text-right"><span class="font-weight-bold">Total de productos: </span>{{getTotal}}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Modal ver envio Recibido -->
+                            <div v-else-if="Modal.numero==3">
+                                <div class="row shadow bg-white rounded p-2">
+                                    <div class="col-md-12 ml-auto container">
+                                        <div class="row">
+                                            <span class="font-weight-bold">LISTA DE ITEMS</span>
+                                        </div>
+                                        <div class="row form-group ec-table-modal overflow-auto">
+                                            <table class="table tableless table-striped table-sm text-gray-900">
+                                                <thead>
+                                                    <tr class="table-success">
+                                                        <th class="text-center" >#</th>
+                                                        <th class="text-center">Nombre</th>
+                                                        <th style="width: 5rem;" class="text-center">Cantidad</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr v-for="(detalle, indice) in ListaDetalleEnvio" :key="indice">
+                                                        <td class="text-center">{{indice+1}}</td>
+                                                        <td v-text="detalle.nombre_producto"></td>
+                                                        <td class="text-right pr-3" v-text="detalle.cantidad"></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="input-group"> 
+                                                    <label class="font-weight-bold">Centro de origen:</label>&nbsp;
+                                                    {{EnvioRecibido.centro_origen ? EnvioRecibido.centro_origen : 'Administración'}}
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p class="text-right"><span class="font-weight-bold">Total de productos: </span>{{getTotal}}</p>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -300,6 +602,19 @@
                 },
                 SelectPuesto: [],
                 ListaProducto: [],
+                EnvioRealizado: {
+                    id: 0,
+                    estado: 0,
+                    centro_destino: '',
+                },
+                EnvioRecibido: {
+                    id: 0,
+                    centro_origen: '',
+                    estado: 0,
+                    abasto_id: 0
+                },
+                ListaDetalleEnvio: [],
+                ListaEnvio: [],
                 Producto: {
                     nombre: '',
                     codigo: '',
@@ -308,7 +623,6 @@
                     stock: 0,
                 },
                 Venta:{
-
                 },
                 ListaVenta:[],
                 //datos de busqueda y filtracion
@@ -318,7 +632,9 @@
                     type: 0,
                     dia: this.getDiaActual(),
                     mes: this.getMesActual(),
-                    year: this.getYearActual()
+                    year: this.getYearActual(),
+                    estadoEnviado: 3,
+                    estadoRecibido: 3
                 },
                 Error: {
                     estado: 0,
@@ -354,7 +670,9 @@
                 Ruta: {
                     detalle_producto: '/detalle_producto',
                     centro: '/centro',
-                    venta: '/venta'
+                    venta: '/venta',
+                    envioRealizado: '/envioRealizado',
+                    envioRecibido: '/envioRecibido'
                 }
             }
         },
@@ -393,6 +711,13 @@
                 }
 
                 return filas;
+            },
+            getTotal: function(){
+                let total = 0;
+                this.ListaDetalleEnvio.forEach( detalle => {
+                    total = total + Number.parseInt(detalle.cantidad);
+                });
+                return total;
             }
         },
         methods: {
@@ -402,6 +727,7 @@
                 let me = this;
                 me.ListaVenta = [];
                 me.ListaProducto = [];
+                me.ListaEnvio = [];
                 me.Carga.mostrar = 1;
                 me.Carga.clase = 'spinner-border spinner-border-sm text-primary';
                 me.Carga.mensaje = 'Cargando...';
@@ -453,9 +779,90 @@
                             console.log(error)
                         });
                         break;
+                    case 3:
+                        url = this.Ruta.envioRealizado + '?'
+                                +'page='+this.Paginacion.currentPage
+                                +'&estado='+this.Busqueda.estadoEnviado
+                                +'&idCentro='+this.Puesto.id
+                                +'&texto='+this.Busqueda.texto
+                                +'&filas='+this.Busqueda.filas
+                                +'&dia='+this.Busqueda.dia
+                                +'&mes='+this.Busqueda.mes
+                                +'&year='+this.Busqueda.year;
+                        
+                        axios.get(url).then(function (response) {
+                            me.ListaEnvio = response.data.envios.data;
+                            me.Paginacion = response.data.paginacion;
+
+                            me.Puesto.titulo = 'Envios Realizados'
+                            me.Puesto.mostrar = 3;
+
+                            me.Carga.mostrar = 0;
+                            me.Carga.clase = '';
+                            me.Carga.mensaje = '';
+                            me.Carga.alert = '';
+                        }).catch(function (error) {
+                            console.log(error)
+                        });
+                        break;
+                    case 4:
+                        url = this.Ruta.envioRecibido + '?'
+                            +'page='+this.Paginacion.currentPage
+                            +'&estado='+this.Busqueda.estadoRecibido
+                            +'&idCentro='+this.Puesto.id
+                            +'&texto='+this.Busqueda.texto
+                            +'&filas='+this.Busqueda.filas
+                            +'&dia='+this.Busqueda.dia
+                            +'&mes='+this.Busqueda.mes
+                            +'&year='+this.Busqueda.year;
+                    
+                    axios.get(url).then(function (response) {
+                        me.ListaEnvio = response.data.envios.data;
+                        me.Paginacion = response.data.paginacion;
+
+                        me.Puesto.titulo = 'Envios Recibidos'
+                        me.Puesto.mostrar = 4;
+
+                        me.Carga.mostrar = 0;
+                        me.Carga.clase = '';
+                        me.Carga.mensaje = '';
+                        me.Carga.alert = '';
+                    }).catch(function (error) {
+                        console.log(error)
+                    });
                 }
                 for (let i = 0; i < this.SelectPuesto.length; i++) { //Busco el nombre
                     if(this.SelectPuesto[i].id == this.Puesto.id) this.Puesto.nombre = this.SelectPuesto[i].nombre;
+                }
+            },
+            listarDetalles(numero){
+                let url;
+                let me = this;
+                switch (numero) {
+                    case 1:
+                        url = me.Ruta.envioRealizado + '/getDetalles';
+                        axios.get(url,{
+                            params: {
+                                'id': me.EnvioRealizado.id
+                            }
+                        }).then(function(response){
+                            me.ListaDetalleEnvio = response.data;
+                        }).catch(function(error){
+                            console.log(error);
+                        });
+                        break;
+                    case 2:
+                        url = '/abasto/getDetalles';
+                        axios.get(url,{
+                            params: {
+                                'id': me.EnvioRecibido.abasto_id
+                            }
+                        }).then(function(response){
+                            me.ListaDetalleEnvio = response.data;
+                        }).catch(function(error){
+                            console.log(error);
+                        });
+                        break;
                 }
             },
             select(numero){
@@ -480,6 +887,23 @@
                 this.Producto.precio_mayor = producto['detalle']['precio_mayor'];
 
                 this.abrirModal(1, 'Editar Producto', 'Editar', 'Cancelar', '');
+            },
+            abrirModalVerEnvioRealizado(envio = []){
+                this.EnvioRealizado.id = envio['id'];
+                this.EnvioRealizado.centro_destino = envio['centro_destino'];
+                this.EnvioRealizado.estado = envio['estado'];
+
+                this.listarDetalles(1);
+                this.abrirModal(2, 'Ver Envio', '', 'Cerrar', '')
+            },
+            abrirModalVerEnvioRecibido(envio = []){
+                this.EnvioRecibido.id = envio['id'];
+                this.EnvioRecibido.centro_destino = envio['centro_destino'];
+                this.EnvioRecibido.estado = envio['estado'];
+                this.EnvioRecibido.abasto_id = envio['abasto_id'];
+
+                this.EnvioRecibido.abasto_id ? this.listarDetalles(2) : this.listarDetalles(1);
+                this.abrirModal(3, 'Ver Envio', '', 'Cerrar', '')
             },
             abrirModal(numero, titulo, accion, cancelar, size){
                 this.Modal.estado = 1;
@@ -611,7 +1035,7 @@
             },
             getYear(min){
                 let n =  new Date();
-                let max = n.getFullYear() +1;
+                let max = n.getFullYear();
                 let lista = [];
                 while(min <= max){
                     lista.push(min);
@@ -634,6 +1058,11 @@
                 let year = n.getFullYear();
                 return year;
             },
+            formatearFecha(fecha){
+                let arrayFecha = fecha.split('-');
+                let newFecha = arrayFecha[2] + '-' + arrayFecha[1] + '-' + arrayFecha[0];
+                return newFecha;
+            }
         },
         mounted() {
             this.select(1);

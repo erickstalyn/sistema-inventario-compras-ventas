@@ -16,8 +16,6 @@ class EnvioController extends Controller
         $estado = $request->estado;
         $texto = $request->texto;
         $filas = $request->filas;
-        $ordenarPor = $request->ordenarPor;
-        $orden = $request->orden;
         $hoy = Carbon::now('America/Lima')->toDateString();
         $idCentro = $request->idCentro;
         //Fechas
@@ -67,7 +65,7 @@ class EnvioController extends Controller
                         })
                         ->where('envio.centro_to_id', '=', $idCentro)
                         // ->orderBy('envio.id', 'asc')->get();
-                        ->orderBy($ordenarPor, $orden)->paginate($filas);
+                        ->orderBy('envio.id', 'desc')->paginate($filas);
 
         return [
             'paginacion' => [
@@ -83,12 +81,12 @@ class EnvioController extends Controller
     }
 
     public function listarEnvioRealizado(Request $request){
-        // if ( !$request->ajax() ) return redirect('/') ;
+        if ( !$request->ajax() ) return redirect('/') ;
         $estado = $request->estado;
         $texto = $request->texto;
         $filas = $request->filas;
-        $ordenarPor = $request->ordenarPor;
-        $orden = $request->orden;
+        // $ordenarPor = $request->ordenarPor;
+        // $orden = $request->orden;
         $hoy = Carbon::now('America/Lima')->toDateString();
         $idCentro = $request->idCentro;
         //Fechas
@@ -134,7 +132,7 @@ class EnvioController extends Controller
                         })
                         ->where('envio.centro_from_id', '=', $idCentro)
                         // ->orderBy('envio.id', 'asc')->get();
-                        ->orderBy($ordenarPor, $orden)->paginate($filas);
+                        ->orderBy('envio.id', 'desc')->paginate($filas);
 
         return [
             'paginacion' => [
