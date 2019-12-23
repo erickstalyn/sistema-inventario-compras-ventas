@@ -57,7 +57,7 @@
                                 </td>
                                 <td v-text="venta.razon_social!=null?venta.razon_social:(venta.nombres!=null?(venta.nombres+' '+venta.apellidos):'---')"></td>
                                 <td class="text-right" v-text="venta.total"></td>
-                                <td class="text-center" v-text="venta.created_at"></td>
+                                <td class="text-center" v-text="fix(0, venta.created_at)"></td>
                                 <td class="text-center">
                                     <template>
                                         <button type="button" title="VER" class="btn btn-primary btn-sm" @click="abrirModalVer(venta)">
@@ -145,7 +145,7 @@
                                 </div>
                             </div>
                             <div>
-                                <div v-if="Cliente.tipo==1" class="row form-group">
+                                <div v-if="Cliente.tipo=='P'" class="row form-group">
                                     <div class="col-md-2 input-group">
                                         <label class="col-md-4">DNI</label>
                                         <input type="text" class="col-md-8 form-control form-control-sm" readonly v-model="Cliente.documento">
@@ -159,7 +159,7 @@
                                         <input type="text" class="col-md-9 form-control form-control-sm" readonly v-model="Cliente.apellidos">
                                     </div>
                                 </div>
-                                <div v-else-if="Cliente.tipo==2" class="row form-group">
+                                <div v-else-if="Cliente.tipo=='E'" class="row form-group">
                                     <div class="col-md-3 input-group">
                                         <label class="col-md-3">RUC</label>
                                         <input type="text" class="col-md-9 form-control form-control-sm" readonly v-model="Cliente.documento">
@@ -171,10 +171,10 @@
                                 </div>
                             </div>
                             
-                            <div class="row shadow bg-white rounded p-2">
+                            <div class="row shadow bg-white rounded pt-2">
                                 <div class="col-md-4">
                                     <label class="row col-md-12 form-group font-weight-bold">PRODUCTOS</label>
-                                    <div class="row input-group form-group">
+                                    <div class="row col-md-12 input-group form-group">
                                         <input type="search" class="form-control form-control-sm" v-model="Service.text" @keyup.enter="list()" id="filtroProducto" placeholder="Producto,marca,modelo,tamaño,color">
                                         <button type="button" class="btn btn-sm btn-primary" @click="list()">
                                             <i class="fa fa-search"></i>&nbsp; Buscar
@@ -243,13 +243,13 @@
                                                 <tbody>
                                                     <tr v-for="(detalle, indice) in ListaDetalle" :key="indice">
                                                         <td class="text-center">
-                                                            <button type="button" class="btn btn-circle btn-outline-danger btn-sm" title="QUITAR" @click="quitarDetalle(indice)">
+                                                            <button type="button" class="btn btn-circle btn-outline-danger btn-sm" title="QUITAR" @click="remove(0, indice)">
                                                                 <i class="fas fa-minus"></i>
                                                             </button>
                                                         </td>
                                                         <td v-text="detalle.nombre"></td>
                                                         <td>
-                                                            <input type="number" v-model="detalle.cantidad" class="form-control form-control-sm text-right" min="1" @click="update(0)" @keyup="update(0)">
+                                                            <input type="number" v-model="detalle.cantidad" class="form-control form-control-sm text-right" min="1" :max="detalle.substock" @click="update(0)" @keyup="update(0)">
                                                         </td>
                                                         <td class="text-right" v-text="Venta.tipo_precio=='1'?detalle.precio_menor:detalle.precio_mayor"></td>
                                                         <td class="text-right" v-text="detalle.subtotal">
@@ -383,7 +383,7 @@
                 ListaDetalle: [],
                 
                 Cliente:{
-                    id: 0,
+                    id: -1,
                     documento: '',
                     nombres: '',
                     apellidos: '',
@@ -591,12 +591,12 @@
                 this.ListaProducto = [];
                 this.Pago.monto = '';
             
-                this.Cliente.id = 0;
+                this.Cliente.id = -1;
                 this.Cliente.documento = '';
                 this.Cliente.nombres = '';
                 this.Cliente.apellidos = '';
                 this.Cliente.razon_social = '';
-                this.Cliente.tipo = 0;
+                this.Cliente.tipo = '';
                 
                 this.Service.type = 0;
                 this.Service.document = '';
@@ -683,15 +683,16 @@
                 this.Venta.id = 0;
                 this.Venta.total = 0.00;
                 this.Venta.faltante = 0;
-                this.Venta.centro_to_id = 0;
-                this.Venta.tipo = '00';
+                this.Venta.centro_id = 0;
+                this.Venta.tipo_pago = '0';
+                this.Venta.tipo_precio = '0';
 
                 this.Cliente.id = 0;
                 this.Cliente.documento = '';
                 this.Cliente.nombres = '';
                 this.Cliente.apellidos = '';
                 this.Cliente.razon_social = '';
-                this.Cliente.tipo = 0;
+                this.Cliente.tipo = '';
 
                 this.ListaPago = [];
                 this.Pago.monto = '';
@@ -699,7 +700,6 @@
                 this.ListaProducto = [];
 
                 this.ListaDetalle = [];
-                
             },
             accionar(){
                 switch( this.Modal.numero ){
@@ -775,12 +775,12 @@
                             me.Service.type = 2;
                             me.Service.readonly = true;
                             
-                            me.Cliente.tipo = 2;
+                            me.Cliente.tipo = 'P';
                             me.Cliente.razon_social = persona.razon_social;
                         } else {//Es una PERSONA
                             me.Service.type = 1;
 
-                            me.Cliente.tipo = 1;
+                            me.Cliente.tipo = 'E';
                             me.Cliente.nombres = persona.nombres;
                             me.Cliente.apellidos = persona.apellidos;
                         }
@@ -820,7 +820,7 @@
                             me.Service.document = '';
                             me.Service.msm = '';
                             me.Service.msmclass = '';
-                            me.Cliente.tipo = 1;
+                            me.Cliente.tipo = 'P';
                             me.Cliente.documento = persona.dni;
                             me.Cliente.nombres = persona.nombres;
                             me.Cliente.apellidos = persona.apellidos;
@@ -853,7 +853,7 @@
                             me.Service.msm = '';
                             me.Service.msmclass = '';
                             me.Service.readonly = false;
-                            me.Cliente.tipo = 2;
+                            me.Cliente.tipo = 'E';
                             me.Cliente.documento = data.RUC;
                             me.Cliente.razon_social = data.RazonSocial;
                         } else {
@@ -891,7 +891,7 @@
                     case 0:
                         let found = false;
                         for (let i = 0; i < this.ListaDetalle.length; i++) {
-                            if ( this.ListaDetalle[i].producto_id == data.detalle.producto_id ){
+                            if ( this.ListaDetalle[i].detalle_producto_id == data.detalle.id ){
                                 this.ListaDetalle[i].cantidad++;
                                 found = true; break;
                             }
@@ -908,6 +908,8 @@
                                 precio_mayor: data.detalle.precio_mayor,
                                 subtotal: Number.parseFloat(this.Venta.tipo_precio=='1'?data.detalle.precio_menor:data.detalle.precio_mayor).toFixed(2)
                             });
+                        } else {
+                            this.update(0);
                         }
                         break;
                     case 1:
@@ -925,7 +927,29 @@
                         break;
                 }
             },
-            formatearFecha(fecha){
+            remove(numero, data){
+                switch (numero) {
+                    case 0:
+                        this.ListaDetalle.splice(data, 1);
+                        break;
+                }
+            },
+            fix(numero, data){
+                var fixed;
+
+                switch (numero) {
+                    case 0:
+                        let fecha = data.split(' ')[0].split('-');
+                        let hora = data.split(' ')[1].split(':');
+                        let fecha_fixed = fecha[2]+'-'+fecha[1]+'-'+fecha[0];
+                        let hora_fixed = (hora[0]>12?(hora[0]-12).toString().padStart(2, '0'):hora[0])+':'+hora[1]+':'+hora[2];
+                        fixed = fecha_fixed+' '+hora_fixed;
+                        break;
+                }
+
+                return fixed;
+            },
+            formatearFecha(fecha){ //sin uso
                 let arrayFecha = fecha.split('-');
                 let newFecha = arrayFecha[2] + '-' + arrayFecha[1] + '-' + arrayFecha[0];
                 return newFecha;

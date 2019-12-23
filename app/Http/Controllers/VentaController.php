@@ -98,7 +98,18 @@ class VentaController extends Controller {
             $venta->total = $request->total;    //total
             if ( $request->tipo_pago == 2 || $request->tipo_pago == 3 ) $venta->total_faltante = $request->total_faltante;  //total_faltante
             $venta->cliente_id = $cliente['id']>=0?$persona->id:NULL; //cliente
-            $venta->created_at = $now;  //fecha
+            $venta->created_at = $now;
+            $venta->save();
+            
+            {
+                $data = explode(' ', $venta->created_at);
+                $data = array_merge(explode('-', $data[0]), explode(':', $data[1]));
+                $codigo = '';
+                for ($i=0; $i < count($data); $i++) $codigo .= $data[$i];
+                $codigo .= rand(0, 9);
+            }
+            $venta->updated_at = NULL;
+            $venta->codigo = $codigo;
             $venta->save();
 
             //pago
