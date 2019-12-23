@@ -7,15 +7,21 @@ use App\Centro;
 
 class CentroController extends Controller {
     
-    public function selectAlmacen(Request $request){
+    public function selectCentro(Request $request){
         if ( !$request->ajax() ) return redirect('/');
+        $tipo = $request->tipo;
         $almacenes = Centro::select('id', 'nombre')
-                            ->where('tipo','=','A')
+                            ->where(function ($query) use ($tipo) {
+                                if ( $tipo != '' ) {
+                                    $query->where('tipo','=', $tipo);
+                                }
+                            })
+                            // ->where('tipo','=','A')
                             ->orderBy('nombre', 'asc')->get();
         return $almacenes;
     }
 
-    public function selectCentro(Request $request){
+    public function selectCentroEnvio(Request $request){
         if(!$request->ajax()) return redirect('/');
         $idCentro = $request->idCentro;
 

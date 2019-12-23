@@ -19,17 +19,18 @@ window.Vue = require('vue');
 // const files = require.context('./', true, /\.vue$/i);
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default));
 
-Vue.component('adm-usuario', require('./components/administrador/Usuario.vue').default);
-Vue.component('adm-superproducto', require('./components/administrador/SuperProducto.vue').default);
-Vue.component('adm-producto', require('./components/administrador/Producto.vue').default);
-Vue.component('adm-material', require('./components/administrador/Material.vue').default);
-Vue.component('adm-abasto', require('./components/administrador/Abasto.vue').default);
+Vue.component('adm_usuario', require('./components/administrador/Usuario.vue').default);
+Vue.component('adm_superproducto', require('./components/administrador/SuperProducto.vue').default);
+Vue.component('adm_producto', require('./components/administrador/Producto.vue').default);
+Vue.component('adm_material', require('./components/administrador/Material.vue').default);
+Vue.component('adm_abasto', require('./components/administrador/Abasto.vue').default);
+Vue.component('adm_verpuesto', require('./components/administrador/VerPuesto.vue').default);
 
-Vue.component('pue-producto', require('./components/puesto/Producto.vue').default);
-Vue.component('pue-venta', require('./components/puesto/Venta.vue').default);
+Vue.component('pue_producto', require('./components/puesto/Producto.vue').default);
+Vue.component('pue_venta', require('./components/puesto/Venta.vue').default);
 
-Vue.component('alm-produccion', require('./components/almacen/Produccion.vue').default);
-Vue.component('alm-producto', require('./components/almacen/Producto.vue').default);
+Vue.component('alm_produccion', require('./components/almacen/Produccion.vue').default);
+Vue.component('alm_producto', require('./components/almacen/Producto.vue').default);
 
 Vue.component('enviorecibido', require('./components/EnvioRecibido.vue').default);
 Vue.component('enviorealizado', require('./components/EnvioRealizado.vue').default);
@@ -45,6 +46,6 @@ Vue.component('enviorealizado', require('./components/EnvioRealizado.vue').defau
 const app = new Vue({
     el: '#app',
     data:{
-        menu: 3,
+        menu: 5,
     }
 });

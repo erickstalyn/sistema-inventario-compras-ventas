@@ -61,23 +61,15 @@
     </a>
     <div id="centros" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
         <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Mis Puestos</h6>
-            <a class="collapse-item font-weight-bold" href="#">Puesto A</a>
-            <a class="collapse-item font-weight-bold" href="#">Puesto B</a>
-            <a class="collapse-item font-weight-bold" href="#">Puesto C</a>
-
-            <h6 class="collapse-header font-weight-bold">Mis Almacenes</h6>
-            <a class="collapse-item font-weight-bold" href="#">Almacen 1</a>
-            <a class="collapse-item font-weight-bold" href="#">Almacen 2</a>
-            <a class="collapse-item font-weight-bold" href="#">Almacen 3</a>
-            <a class="collapse-item font-weight-bold" href="#">Almacen 4</a>
+            <a class="collapse-item font-weight-bold" href="#" @click="menu=5">Mis Puestos</a>
+            <a class="collapse-item font-weight-bold" href="#" @click="menu=6">Mis Almacenes</a>
         </div>
     </div>
     </li>
 
     <!-- Elemento de navegación: MENÚ USUARIOS -->
     <li class="nav-item">
-    <a class="nav-link collapsed" href="#" @click="menu=5">
+    <a class="nav-link collapsed" href="#" @click="menu=10">
         <i class="fas fa-users"></i>
         <span>Usuarios</span>
     </a>
