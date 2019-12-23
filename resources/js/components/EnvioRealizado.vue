@@ -680,6 +680,7 @@
                 this.EnvioRealizado.total = 0;
                 this.EnvioRealizado.centro_to_id = 0;
                 this.ListaDetalleEnvio = [];
+                this.ListaProducto = [];
                 this.BusquedaFiltro.texto = '';
 
             },
