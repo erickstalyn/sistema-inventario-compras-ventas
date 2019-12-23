@@ -103,7 +103,7 @@
                 </div>
             </div>
 
-            
+
             <!-- Modales -->
             <div class="modal text-gray-900" :class="{'mostrar': Modal.estado}">
                 <div class="modal-dialog modal-dialog-centered animated bounceIn fast" :class="Modal.size">
@@ -215,6 +215,7 @@
                 Ruta: {
                     detalle_producto: '/detalle_producto',
                     centro: '/centro',
+                    venta: '/venta'
                 }
             }
         },
@@ -278,6 +279,22 @@
                             console.log(error)
                         });
                         break;
+                    case 2: //Listar Ventas
+                        url = this.Ruta.centro+
+                                +'page='+this.Paginacion.currentPage
+                                +'&texto='+this.Busqueda.texto
+                                +'&rows='+this.Busqueda.filas
+                                +'&centro_id='+this.Puesto.id;
+                        
+                        axios.get(url).then(function (response) {
+                            me.ListaProducto = response.data.list.data;
+                            me.Paginacion = response.data.paginate;
+                            me.Puesto.titulo = 'Inventario'
+                            me.Puesto.mostrar = 1;
+                        }).catch(function (error) {
+                            console.log(error)
+                        });
+                        break;
                 }
                 for (let i = 0; i < this.SelectPuesto.length; i++) { //Busco el nombre
                     if(this.SelectPuesto[i].id == this.Puesto.id) this.Puesto.nombre = this.SelectPuesto[i].nombre;
@@ -299,10 +316,10 @@
                 }
             },
             abrirModaEditar(producto = []){
-                this.Producto.id = producto['id']
+                this.Producto.id = producto['detalle']['id'];
                 this.Producto.nombre = producto['nombre'];
-                this.Producto.precio_menor = producto['precio_menor'];
-                this.Producto.precio_mayor = producto['precio_mayor'];
+                this.Producto.precio_menor = producto['detalle']['precio_menor'];
+                this.Producto.precio_mayor = producto['detalle']['precio_mayor'];
 
                 this.abrirModal(1, 'Editar Producto', 'Editar', 'Cancelar', '');
             },
@@ -341,7 +358,7 @@
                     var estado = response.data.estado;
                     if ( estado == 1 ) {
                         me.cerrarModal();
-                        me.listar();
+                        me.listar(1);
                         Swal.fire({
                             position: 'top-end',
                             toast: true,
@@ -373,8 +390,8 @@
                         break;
                     case 2:
                         for (let i = 0; i < this.ListaProducto.length; i++) {
-                            if ( this.Producto.id == this.ListaProducto[i].id ) {
-                                if ( this.Producto.precio_menor == this.ListaProducto[i].precio_menor && this.Producto.precio_mayor == this.ListaProducto[i].precio_mayor) {
+                            if ( this.Producto.id == this.ListaProducto[i].detalle.id ) {
+                                if ( this.Producto.precio_menor == this.ListaProducto[i].detalle.precio_menor && this.Producto.precio_mayor == this.ListaProducto[i].detalle.precio_mayor) {
                                     this.Error.mensaje.push("Ningun cambio realizado");
                                 }
                                 break;
