@@ -3,7 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Venta;
+use App\Detalle_venta;
+use App\Persona;
+use App\Pago;
+use Carbon\Carbon;
+use Exception;
 
 class VentaController extends Controller {
     
@@ -13,6 +19,7 @@ class VentaController extends Controller {
         $type = $request->type;
         $text = $request->text;
         $rows = $request->rows;
+        $centro_id = $request->centro_id;
         // $type = 2;
         // $text = '';
         // $rows = 5;
@@ -29,10 +36,16 @@ class VentaController extends Controller {
                         }
                     })
                     ->where(function ($query) use ($type) {
-                        if ( $type != 2 ) {
-                            $query->where('tipo', '=', $type);
-                        }
+                        if ( $type != 0 ) {
+                            if ( $type == 1) {
+                                $query->where(DB::raw('substring(venta.tipo, 1, 1)'), '=', 1);
+                            } else if ( $type == 2 ) {
+                                $query->where(DB::raw('substring(venta.tipo, 1, 1)'), '=', 2)
+                                    ->orWhere(DB::raw('substring(venta.tipo, 1, 1)'), '=', 3);
+                            }
+                        } 
                     })
+                    ->where('centro_id', '=', $centro_id)
                     ->orderBy('id', 'desc')->paginate($rows);
         
         return [
@@ -45,6 +58,80 @@ class VentaController extends Controller {
                 'lastItem' => $ventas->lastItem()
             ],
             'ventas' => $ventas
+        ];
+    }
+
+    public function agregar(Request $request) {
+        if ( !$request->ajax() ) return redirect('/');
+        
+        $now = Carbon::now('America/Lima')->toDateTimeString();
+        
+        try {
+            DB::beginTransaction();
+            
+            //cliente
+            $cliente = $request->cliente;
+            if ( $cliente['id'] > 0 ) {
+                $persona = Persona::findOrFail($cliente['id']);
+                $persona->cliente = 1;
+                $persona->save();
+            } else if ( $cliente['id'] == 0 ){
+                $persona = new Persona();
+                $persona->cliente = 1;
+                if ( strlen($cliente['documento']) == 8 ){
+                    $persona->dni = $cliente['documento'];
+                    $persona->nombres = mb_convert_case($cliente['nombres'], MB_CASE_TITLE, "UTF-8");
+                    $persona->apellidos = mb_convert_case($cliente['apellidos'], MB_CASE_TITLE, "UTF-8");
+                    $persona->tipo = 'P';
+                }else{
+                    $persona->ruc = $cliente['documento'];
+                    $persona->razon_social = $cliente['razon_social'];
+                    $persona->tipo = 'E';
+                }
+                $persona->save();
+            }
+
+            //venta
+            $venta = new Venta();
+            $venta->centro_id = $request->centro_id;  //fecha
+            $venta->tipo = $request->tipo_pago.$request->tipo_precio;   //tipo de venta
+            $venta->total = $request->total;    //total
+            if ( $request->tipo_pago == 2 || $request->tipo_pago == 3 ) $venta->total_faltante = $request->total_faltante;  //total_faltante
+            $venta->cliente_id = $cliente['id']>=0?$persona->id:NULL; //cliente
+            $venta->created_at = $now;  //fecha
+            $venta->save();
+
+            //pago
+            if ( ($request->tipo_pago == 2 || $request->tipo_pago == 3) && $request->pago_monto > 0 ){
+                $pago = new Pago();
+                $pago->monto = $request->pago_monto;
+                $pago->venta_id = $venta->id;
+                $pago->created_at = $now;
+                $pago->save();
+            }
+
+            //lista de detalles
+            foreach($request->listaDetalle as $ep => $det){
+                $detalle = new Detalle_venta();
+                $detalle->detalle_producto_id = $det['detalle_producto_id']; //AQUI ESTA EL PROBLEMA
+                $detalle->venta_id = $venta->id;
+                $detalle->nombre_producto = $det['nombre'];
+                $detalle->cantidad = $det['cantidad'];
+                $detalle->precio = $request->tipo_precio==1?$det['precio_menor']:$det['precio_mayor'];
+                $detalle->subtotal = $det['subtotal'];
+                $detalle->save();
+            }
+
+            DB::commit();
+            $error = NULL;
+        } catch (Exception $e) {
+            $error = $e;
+            DB::rollback();
+        }
+
+        return [
+            'estado' => $error==NULL?0:1,
+            'error' => $error
         ];
     }
 }

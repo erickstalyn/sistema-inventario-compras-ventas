@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Venta extends Model
 {
     protected $table = 'venta';
-    protected $fillable = ['usuario_id', 'total'];
-
+    protected $fillable = ['cliente_id', 'centro_id', 'codigo', 'total', 'total_faltante', 'tipo'];
+    
     public function getUsuario(){
         return $this->belongsTo('App\Usuario');
     }

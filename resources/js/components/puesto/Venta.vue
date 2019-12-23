@@ -17,9 +17,9 @@
             <div class="row form-group">
                 <div class="col-md-6 input-group"> 
                     <select class="custom-select text-gray-900 w4rem" v-model="Busqueda.type">
-                        <option value="2">Todos</option>
-                        <option value="0">Contado</option>
-                        <option value="1">Credito</option>
+                        <option value="0">Todos</option>
+                        <option value="1">Contado</option>
+                        <option value="2">Credito</option>
                     </select>
                     <input type="search" class="form-control" v-model="Busqueda.text">
                     <button type="button" class="btn btn-primary" @click="listar()">
@@ -52,8 +52,8 @@
                             <tr v-for="venta in ListaVenta" :key="venta.id" >
                                 <td class="text-center" v-text="venta.codigo"></td>
                                 <td>
-                                    <label v-if="venta.tipo==0">Contado</label>
-                                    <label v-if="venta.tipo==1">Credito</label>
+                                    <label v-if="venta.tipo.substring(0, 1)==1">Contado</label>
+                                    <label v-if="venta.tipo.substring(0, 1)==2 || venta.tipo.substring(0, 1)==3">Credito</label>
                                 </td>
                                 <td v-text="venta.razon_social!=null?venta.razon_social:(venta.nombres!=null?(venta.nombres+' '+venta.apellidos):'---')"></td>
                                 <td class="text-right" v-text="venta.total"></td>
@@ -69,7 +69,7 @@
                                             <i class="fas fa-edit"></i>
                                         </button>
                                     </template>
-                                    <template v-if="venta.tipo==1">
+                                    <template v-if="venta.tipo.substring(0, 1)==2 || venta.tipo.substring(0, 1)==3">
                                         <button type="button"  title="PAGAR" class="btn btn-info btn-sm" @click="abrirModalPagar(venta)">
                                             <i class="fas fa-hand-holding-usd"></i>
                                         </button>
@@ -129,7 +129,7 @@
                                 </div>
                             </div>
                             <div class="row form-group">
-                                <label class="col-md-2 font-weight-bold">PROVEEDOR</label>
+                                <label class="col-md-2 font-weight-bold">CLIENTE</label>
                                 <label class="col-md-1 font-weight-bold">RUC/DNI&nbsp;<span class="text-danger">*</span></label>
                                 <div class="col-md-2 input-group">
                                     <input type="text" class="form-control form-control-sm" v-model="Service.document" @keyup.enter="consultar()" maxlength="11">
@@ -174,14 +174,14 @@
                             <div class="row shadow bg-white rounded p-2">
                                 <div class="col-md-4">
                                     <label class="row col-md-12 form-group font-weight-bold">PRODUCTOS</label>
-                                    <div class="row input-group form-group"> 
+                                    <div class="row input-group form-group">
                                         <input type="search" class="form-control form-control-sm" v-model="Service.text" @keyup.enter="list()" id="filtroProducto" placeholder="Producto,marca,modelo,tamaño,color">
                                         <button type="button" class="btn btn-sm btn-primary" @click="list()">
                                             <i class="fa fa-search"></i>&nbsp; Buscar
                                         </button>
                                     </div>
                                     <div class="row overflow-auto" style="height: 15rem;">
-                                        <div v-if="ListaProducto.length">
+                                        <div v-if="ListaProducto.length" class="col-md-12">
                                             <table class="table table-bordered table-striped table-sm text-gray-900">
                                                 <thead>
                                                     <tr class="table-danger">
@@ -213,8 +213,8 @@
                                         <label class="col-md-3 font-weight-bold">LISTA DE ITEMS</label>
                                         <div class="col-md-1"></div>
                                         <div class="col-md-4 input-group">
-                                            <label class="col-md-5 font-weight-bold">Pago&nbsp;<span class="text-danger">*</span></label>
-                                            <select class="col-md-7 custom-select custom-select-sm text-gray-900" v-model="Venta.tipo_pago">
+                                            <label class="col-md-4 font-weight-bold">Pago&nbsp;<span class="text-danger">*</span></label>
+                                            <select class="col-md-8 custom-select custom-select-sm text-gray-900" v-model="Venta.tipo_pago">
                                                 <option value="1">Contado</option>
                                                 <option value="2">Credito prepago</option>
                                                 <option value="3">Credito postpago</option>
@@ -222,18 +222,18 @@
                                         </div>
                                         <div class="col-md-4 input-group">
                                             <label class="col-md-5 font-weight-bold">Precio&nbsp;<span class="text-danger">*</span></label>
-                                            <select class="col-md-7 custom-select custom-select-sm text-gray-900" v-model="Venta.tipo_precio">
+                                            <select class="col-md-7 custom-select custom-select-sm text-gray-900" v-model="Venta.tipo_precio" @click="update(0)">
                                                 <option value="1">Al por menor</option>
                                                 <option value="2">Al por mayor</option>
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="row form-group overflow-auto col-md-12" style="height: 17rem;">
-                                        <div v-if="ListaDetalle.length">
+                                    <div class="row form-group overflow-auto" style="height: 15rem;">
+                                        <div v-if="ListaDetalle.length" class="col-md-12">
                                             <table class="table table-bordered table-striped table-sm text-gray-900">
                                                 <thead>
                                                     <tr class="table-success">
-                                                        <th class="text-center" style="width: 3rem;">Quitar</th>
+                                                        <th class="text-center">Quitar</th>
                                                         <th class="text-center">Nombre</th>
                                                         <th class="text-center" style="width: 5rem;">Cantidad</th>
                                                         <th class="text-center">Precio</th>
@@ -248,34 +248,34 @@
                                                             </button>
                                                         </td>
                                                         <td v-text="detalle.nombre"></td>
-                                                        <td >
-                                                            <input type="number" v-model="detalle.cantidad" class="form-control form-control-sm text-right pr-6" min="1">
+                                                        <td>
+                                                            <input type="number" v-model="detalle.cantidad" class="form-control form-control-sm text-right" min="1" @click="update(0)" @keyup="update(0)">
                                                         </td>
-                                                        <td v-text="Venta.tipo_precio=='1'?detalle.precio_menor:detalle.precio_mayor"></td>
-                                                        <td class="text-right pr-3" v-text="detalle.subtotal">
+                                                        <td class="text-right" v-text="Venta.tipo_precio=='1'?detalle.precio_menor:detalle.precio_mayor"></td>
+                                                        <td class="text-right" v-text="detalle.subtotal">
                                                             <!-- {{detalle.subtotal = (detalle.costo_abasto * detalle.cantidad).toFixed(2)}} -->
                                                         </td>
                                                     </tr>
                                                 </tbody>
                                             </table>
                                         </div>
-                                        <div v-else>
-                                            <label class="col-md-12 text-danger">Sin detalles de venta</label>
+                                        <div v-else class="col-md-12">
+                                            <label class="text-danger">Sin detalles de venta</label>
                                         </div>
                                     </div>
-                                    <!-- <div class="row">
-                                        <div class="col-md-4">
-                                            <div class="input-group" style="width: 12.4rem;" v-if="Venta.tipo == '1'"> 
-                                                <label for="">Pago inicial</label>&nbsp;<span class="text-danger">*</span>&nbsp;
-                                                <input type="number" class="form-control form-control-sm" v-model="Pago.pagoInicial" min="0">
-                                            </div>
+                                    <div class="row">
+                                        <div class="col-md-5 input-group" v-if="Venta.tipo_pago=='2'||Venta.tipo_pago=='3'"> 
+                                            <label class="col-md-6 font-weight-bold" for="pago_inicial">Pago inicial&nbsp;<span class="text-danger">*</span></label>
+                                            <input type="number" class="col-md-6 form-control form-control-sm text-right" v-model="Pago.monto" min="0" :max="updateTotal" id="pago_inicial">
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-5" v-else></div>
+                                        <div class="col-md-2">
                                         </div>
-                                        <div class="col-md-5">
-                                            <p class="text-right pr-1">Desembolso total: s/ {{getDesembolso}}</p>
+                                        <div class="col-md-5 input-group">
+                                            <label class="col-md-6 text-right font-weight-bold">Monto total:</label>
+                                            <label class="col-md-6 text-right text-info" v-text="'S/. '+updateTotal"></label>
                                         </div>
-                                    </div> -->
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -371,6 +371,7 @@
                 Venta: {
                     id: 0,
                     codigo: '',
+                    centro_id: '',
                     total: 0.00,
                     total_faltante: 0.00,
                     tipo_pago: '0', // 1: contado, 2: credito prepago, 3: credito postpago
@@ -380,7 +381,6 @@
                 ListaProducto:[],
                 Producto: {},
                 ListaDetalle: [],
-                
                 
                 Cliente:{
                     id: 0,
@@ -394,8 +394,8 @@
                 //datos de busqueda y filtracion general
                 Busqueda: {
                     text: '',
-                    type: 2,
-                    rows: 5
+                    type: 0,
+                    rows: 7
                 },
 
                 //datos de modales
@@ -443,7 +443,7 @@
                 //datos de pagos
                 ListaPago: [],
                 Pago:{
-                    monto: '',
+                    monto: 0.00,
                     sumaPagos: 0.00,
                 },
 
@@ -505,6 +505,17 @@
                     sumaPagos = sumaPagos + Number.parseFloat(detalle.monto);
                 });
                 return sumaPagos;
+            },
+            updateTotal: function(){
+                var sum = 0;
+
+                for (let i = 0; i < this.ListaDetalle.length; i++) {
+                    sum += Number.parseFloat(this.ListaDetalle[i].subtotal);
+                }
+
+                this.Venta.total = sum;
+
+                return Number.parseFloat(sum).toFixed(2);
             }
         },
         methods: {
@@ -516,7 +527,8 @@
                         +'page='+this.Paginacion.currentPage
                         +'&type='+this.Busqueda.type
                         +'&text='+this.Busqueda.text
-                        +'&rows='+this.Busqueda.rows;
+                        +'&rows='+this.Busqueda.rows
+                        +'&centro_id='+$('meta[name="idCentro"]').attr('content');
                 
                 axios.get(url).then(function (response) {
                     me.ListaVenta = response.data.ventas.data;
@@ -526,35 +538,40 @@
                 });
             },
             agregar(){
-                if ( this.validar() ) return;
+                if ( this.validar(0) ) return;
                 
                 var me = this;
-                axios.post('/abasto/agregar', {
-                    //Datos del abasto
-                    'id' : this.Abasto.id,
-                    'total': this.Abasto.total,
-                    'tipo': this.Abasto.tipo, 
-                    'centro_to_id': this.Abasto.centro_to_id,
-                    'pagoInicial': this.Abasto.pagoInicial,
-                    'proveedor': this.DatosProveedor,
-                    //Datos del detalle de abasto
-                    'listaDetalleAbasto': this.ListaDetalleAbasto
-                    
+                var url = this.Ruta.venta+'/agregar';
+
+                axios.post(url, {
+                    'centro_id': $('meta[name="idCentro"]').attr('content'),
+                    'total': this.Venta.total,
+                    'total_faltante': this.Venta.total_faltante,
+                    'pago_monto': this.Pago.monto,
+                    'tipo_pago': this.Venta.tipo_pago,
+                    'tipo_precio': this.Venta.tipo_precio,
+                    'cliente': this.Cliente,
+                    'listaDetalle': this.ListaDetalle
                 }).then(function(response){
                     me.cerrarModal();
                     me.listar();
-                    Swal.fire({
-                        position: 'top-end',
-                        toast: true,
-                        type: 'success',
-                        title: 'El abasto se ha REGISTRADO correctamente',
-                        showConfirmButton: false,
-                        timer: 4500,
-                        animation:false,
-                        customClass:{
-                            popup: 'animated bounceIn fast'
-                        }
-                    });
+                    var estado = response.data.estado;
+                    if ( estado == 0 ) {
+                        Swal.fire({
+                            position: 'top-end',
+                            toast: true,
+                            type: 'success',
+                            title: 'La venta se ha REGISTRADO correctamente',
+                            showConfirmButton: false,
+                            timer: 4500,
+                            animation:false,
+                            customClass:{
+                                popup: 'animated bounceIn fast'
+                            }
+                        });
+                    } else {
+                        console.log(response.data.error);
+                    }
                 }).catch(function(error){
                     console.log(error);
                 });
@@ -572,6 +589,7 @@
                 this.Venta.tipo_precio = '1';
                 
                 this.ListaProducto = [];
+                this.Pago.monto = '';
             
                 this.Cliente.id = 0;
                 this.Cliente.documento = '';
@@ -645,33 +663,43 @@
             cerrarModal(){
                 this.Modal.numero = 0;
                 this.Modal.estado = 0;
-                this.Modal.mensaje = [];
+                this.Modal.titulo = '';
+                this.Modal.size = '';
+                this.Modal.btnA = '';
+                this.Modal.btnC = '';
 
+                this.Error.numero = 0;
                 this.Error.estado = 0;
                 this.Error.mensaje = [];
 
-                this.DatosServicio.documento = '';
-                this.DatosServicio.alert = '';
-                this.DatosServicio.mensaje = '';
+                this.Service.type = 0;
+                this.Service.document = '';
+                this.Service.msm = '';
+                this.Service.msmclass = '';
+                this.Service.loadclass = '';
+                this.Service.readonly = false;
+                this.Service.text = '';
 
                 this.Venta.id = 0;
                 this.Venta.total = 0.00;
-                this.Venta.pagoInicial = '';
+                this.Venta.faltante = 0;
                 this.Venta.centro_to_id = 0;
-                this.Venta.tipo = 1;
+                this.Venta.tipo = '00';
 
-                this.DatosServicio.tipo = 0;
-                this.DatosProveedor.id = 0;
-                this.DatosProveedor.documento = '';
-                this.DatosProveedor.nombres = '';
-                this.DatosProveedor.apellidos = '';
-                this.DatosProveedor.razon_social = '';
+                this.Cliente.id = 0;
+                this.Cliente.documento = '';
+                this.Cliente.nombres = '';
+                this.Cliente.apellidos = '';
+                this.Cliente.razon_social = '';
+                this.Cliente.tipo = 0;
 
                 this.ListaPago = [];
                 this.Pago.monto = '';
 
-                this.ListaDetalleVenta = [];
-                this.BusquedaFiltro.texto = '';
+                this.ListaProducto = [];
+
+                this.ListaDetalle = [];
+                
             },
             accionar(){
                 switch( this.Modal.numero ){
@@ -679,34 +707,29 @@
                     case 'Guardar': this.agregarPago(); break;
                 }
             },
-            validar(){
+            validar(numero){
                 this.Error.estado = 0;
                 this.Error.mensaje = [];
 
-                //Recorrere la lista de Material
-                if(this.Modal.numero == 1){ //Modal agregar
-                    if (this.DatosProveedor.documento == '') this.Error.mensaje.push('Debe ingresar datos del proveedor');
-                    if (!this.ListaDetalleAbasto.length ) {
-                        this.Error.mensaje.push("No existe ningun detalle de abasto");
-                    }else if(this.Abasto.centro_to_id == 0){
-                        this.Error.mensaje.push('Debe seleccionar el almacén receptor');
-                    }else{
-                        this.validarNegativos();
-                    }
-
-                    if(this.Abasto.tipo == 1){
-                        if(this.Abasto.pagoInicial<0 || this.Abasto.pagoInicial == ''){
-                            this.Error.mensaje.push('El pago inicial debe ser mayor o igual a 0')
-                        }else if(this.Abasto.pagoInicial > this.Abasto.total){
-                            this.Error.mensaje.push('El pago inicial no debe ser mayor al desembolso total')
-                        }else if(this.Abasto.pagoInicial == this.Abasto.total){
-                            this.Error.mensaje.push('El pago inicial es igual al desembolso total, se recomienda cambiarlo a una venta al contado')
+                switch ( numero ) {
+                    case 0:
+                        if ( this.Cliente.documento == '' && (this.Venta.tipo_pago == 2 || this.Venta.tipo_pago == 3) ) this.Error.mensaje.push('Debe ingresar datos del cliente');
+                        if ( !this.ListaDetalle.length ) this.Error.mensaje.push("No existe ningun detalle de abasto");
+                        if( this.Venta.tipo_pago == 2 || this.Venta.tipo_pago == 3 ){
+                            if ( this.Pago.monto < 0 || this.Pago.monto == '' ){
+                                this.Error.mensaje.push('El pago inicial debe ser mayor o igual a 0')
+                            } else if (this.Pago.monto > this.Venta.total){
+                                this.Error.mensaje.push('El pago inicial no debe ser mayor al monto total')
+                            } else if (this.Pago.monto == this.Venta.total){
+                                this.Error.mensaje.push('El pago inicial es igual al monto total, se recomienda cambiarlo a una venta al contado')
+                            }
                         }
-                    }
-
-                }else{ //Modal editar
-                    if (this.Pago.monto == '' || this.Pago.monto <= 0 || this.Pago.monto > this.Abasto.total_faltante) this.Error.mensaje.push('Debe ingresar un monto válido');
+                        break;
+                    case 1:
+                        if (this.Pago.monto == '' || this.Pago.monto <= 0 || this.Pago.monto > this.Abasto.total_faltante) this.Error.mensaje.push('Debe ingresar un monto válido');
+                        break;
                 }
+                
                 if ( this.Error.mensaje.length ) this.Error.estado = 1;
                 return this.Error.estado;
             },
@@ -851,14 +874,14 @@
                                 +'&centro_id='+$('meta[name="idCentro"]').attr('content');
 
                 axios.get(url).then(function(response){
-                    if ( response.data.length == 1 && me.Service.text == response.data[0].codigo){
-                        me.add(0, response.data[0]);
+                    if ( response.data.length == 1 && me.Service.text == response.data[0].codigo ){
+                        if ( response.data[0].detalle.substock > 0 ) me.add(0, response.data[0]);
+                        else me.ListaProducto = response.data;
                         me.Service.text = '';
                     } else {
                         me.ListaProducto = response.data;
                     }
-                    let inputFiltro = document.getElementById('filtroProducto');
-                    inputFiltro.focus();
+                    document.getElementById('filtroProducto').focus();
                 }).catch(function(error){
                     console.log(error);
                 });
@@ -869,24 +892,36 @@
                         let found = false;
                         for (let i = 0; i < this.ListaDetalle.length; i++) {
                             if ( this.ListaDetalle[i].producto_id == data.detalle.producto_id ){
-                                this.ListaDetalle[i].cantidad++; 
+                                this.ListaDetalle[i].cantidad++;
                                 found = true; break;
                             }
                         }
 
                         if ( !found ){
                             this.ListaDetalle.push({
-                                id: data.id,
-                                producto_id: data.detalle.producto_id,
+                                id: 0,
+                                detalle_producto_id: data.detalle.id,
                                 nombre: data.nombre,
                                 cantidad: 1,
+                                estado: 1,
                                 precio_menor: data.detalle.precio_menor,
                                 precio_mayor: data.detalle.precio_mayor,
-                                subtotal: Number.parseFloat(this.Venta.tipo_precio=='1'?data.detalle.precio_menor:(this.Venta.tipo_precio=='2'?data.detalle.precio_mayor:0)).toFixed(2)
+                                subtotal: Number.parseFloat(this.Venta.tipo_precio=='1'?data.detalle.precio_menor:data.detalle.precio_mayor).toFixed(2)
                             });
                         }
                         break;
                     case 1:
+                        break;
+                }
+            },
+            update(numero){
+                switch (numero) {
+                    case 0:
+                        for (let i = 0; i < this.ListaDetalle.length; i++) {
+                            if ( this.ListaDetalle[i].estado == 1 ) {
+                                this.ListaDetalle[i].subtotal = ((this.Venta.tipo_precio=='1'?this.ListaDetalle[i].precio_menor:this.ListaDetalle[i].precio_mayor)*this.ListaDetalle[i].cantidad).toFixed(2);
+                            }
+                        }
                         break;
                 }
             },

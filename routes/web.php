@@ -113,6 +113,7 @@ Route::group(['middleware' => ['auth']], function () {
         
         //RUTAS PARA VENTAS
         Route::get('/venta', 'VentaController@listar');
+        Route::post('/venta/agregar', 'VentaController@agregar');
         
         //RUTAS PARA LOS DETALLE_PRODUCTO
         Route::get('/detalle_producto/listProductos', 'Detalle_productoController@listProductos');
