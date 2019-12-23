@@ -527,8 +527,11 @@
                         +'&type='+this.Busqueda.type
                         +'&text='+this.Busqueda.text
                         +'&rows='+this.Busqueda.rows
-                        +'&centro_id='+$('meta[name="idCentro"]').attr('content');
-                
+                        +'&centro_id='+$('meta[name="idCentro"]').attr('content')
+                        +'&dia='+this.fix(1)
+                        +'&mes='+this.fix(2)
+                        +'&year='+this.fix(3);
+
                 axios.get(url).then(function (response) {
                     me.ListaVenta = response.data.ventas.data;
                     me.Paginacion = response.data.pagination;
@@ -933,7 +936,7 @@
                         break;
                 }
             },
-            fix(numero, data){
+            fix(numero, data = ''){
                 var fixed;
 
                 switch (numero) {
@@ -943,6 +946,15 @@
                         let fecha_fixed = fecha[2]+'-'+fecha[1]+'-'+fecha[0];
                         let hora_fixed = (hora[0]>12?(hora[0]-12).toString().padStart(2, '0'):hora[0])+':'+hora[1]+':'+hora[2];
                         fixed = fecha_fixed+' '+hora_fixed;
+                        break;
+                    case 1:
+                        fixed = (new Date()).getDate();
+                        break;
+                    case 2:
+                        fixed = (new Date()).getMonth()+1;
+                        break;
+                    case 3:
+                        fixed = (new Date()).getFullYear();
                         break;
                 }
 

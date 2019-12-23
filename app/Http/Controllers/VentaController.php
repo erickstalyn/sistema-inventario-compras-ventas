@@ -20,17 +20,9 @@ class VentaController extends Controller {
         $text = $request->text;
         $rows = $request->rows;
         $centro_id = $request->centro_id;
-<<<<<<< HEAD
-        $date = $request->date;
-        // $type = 2;
-        // $text = '';
-        // $rows = 5;
-=======
-
         $dia = $request->dia;
         $mes = $request->mes;
         $year = $request->year;
->>>>>>> 13892599b44e0d66936902aae33ab3f0eea530e2
 
         $ventas = Venta::select('venta.id', 'venta.codigo', 'venta.tipo', 'venta.total', 'venta.total_faltante', 'venta.created_at', 
                                 'persona.dni', 'persona.ruc', 'persona.nombres', 'persona.apellidos', 'persona.razon_social')
@@ -77,9 +69,6 @@ class VentaController extends Controller {
                         }
                     })
                     ->where('centro_id', '=', $centro_id)
-                    ->whereYear('venta.created_at', $now)
-                    ->whereMonth('venta.created_at', $now)
-                    ->whereDay('venta.created_at', $now)
                     ->orderBy('id', 'desc')->paginate($rows);
         
         return [
