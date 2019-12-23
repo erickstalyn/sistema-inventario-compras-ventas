@@ -20,9 +20,10 @@ class VentaController extends Controller {
         $text = $request->text;
         $rows = $request->rows;
         $centro_id = $request->centro_id;
-        // $type = 2;
-        // $text = '';
-        // $rows = 5;
+
+        $dia = $request->dia;
+        $mes = $request->mes;
+        $year = $request->year;
 
         $ventas = Venta::select('venta.id', 'venta.codigo', 'venta.tipo', 'venta.total', 'venta.total_faltante', 'venta.created_at', 
                                 'persona.dni', 'persona.ruc', 'persona.nombres', 'persona.apellidos', 'persona.razon_social')
@@ -44,6 +45,29 @@ class VentaController extends Controller {
                                     ->orWhere(DB::raw('substring(venta.tipo, 1, 1)'), '=', 3);
                             }
                         } 
+                    })
+                    ->where(function ($query) use ($dia, $mes, $year) {
+                        if($dia != '' && $mes != '' && $year != ''){//todos los campos llenos
+                            $query->whereDay('venta.created_at', $dia)
+                                ->whereMonth('venta.created_at', $mes)
+                                ->whereYear('venta.created_at', $year);
+                        }else if($dia != '' && $mes != ''){// dia y mes llenos
+                            $query->whereDay('venta.created_at', $dia)
+                                ->whereMonth('venta.created_at', $mes);
+                        }else if($dia != '' && $year != ''){//dia y año lleno
+                            $query->whereDay('venta.created_at', $dia)
+                                ->whereYear('venta.created_at', $year);
+                        }else if($mes != '' && $year != ''){//mes y año lleno
+                            $query->whereMonth('venta.created_at', $mes)
+                                ->whereYear('venta.created_at', $year);
+                        }else if($dia != ''){//dia lleno
+                            $query->whereDay('venta.created_at', $dia);
+                        }else if($mes != ''){//mes lleno
+                            $query->whereMonth('venta.created_at', $mes);
+                        }else if($year != ''){//año lleno
+                            $query->whereYear('venta.created_at', $year);
+                        }else{
+                        }
                     })
                     ->where('centro_id', '=', $centro_id)
                     ->orderBy('id', 'desc')->paginate($rows);

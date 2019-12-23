@@ -36,22 +36,63 @@
             </div>
             <div v-if="Puesto.mostrar == 1">
                 <div class="row form-group">
-                    <div class="col-md-6 input-group"> 
-                        <select class="custom-select text-gray-900 w4rem" v-model="Busqueda.type">
-                            <option value="0">Todos</option>
-                            <option value="1">Contado</option>
-                            <option value="2">Credito</option>
-                        </select>
-                        <input type="search" class="form-control" v-model="Busqueda.texto" placeholder="Buscar por cliente(DNI o NOMBRE) y CODIGO">
-                        <button type="button" class="btn btn-primary" @click="listar()">
-                            <i class="fa fa-search"></i>&nbsp;Buscar
-                        </button>
+                    <div class="col-md-5">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <select class="custom-select text-gray-900" v-model="Busqueda.type">
+                                    <option value="0">Todos</option>
+                                    <option value="1">Contado</option>
+                                    <option value="2">Credito</option>
+                                </select>
+                            </div>
+                            <div class="col-md-8">
+                                <input type="search" class="form-control" v-model="Busqueda.texto" placeholder="Buscar por CLIENTE o CODIGO de venta" @keyup.enter="listar()">
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-md-3"></div>
-                    <label class="col-md-2 text-right">N° filas:</label>
-                    <select class="col-md-1 text-right custom-select custom-select-sm text-gray-900" v-model="Busqueda.filas">
-                        <option v-for="item in Filas" :key="item" :value="item" v-text="item"></option>
-                    </select>
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <label for="">Fecha </label>
+                            </div>
+                            <div class="col-md-3">
+                                Dia
+                                <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.dia">
+                                    <option value="">Todos</option>
+                                    <option v-for="item in getDia()" :key="item" :value="item" v-text="item"></option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                Mes
+                                <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.mes">
+                                    <option value="">Todos</option>
+                                    <option v-for="item in getMes()" :key="item.valor" :value="item.valor" v-text="item.nombre"></option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                Año
+                                <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.year">
+                                    <option value="">Todos</option>
+                                    <option v-for="item in getYear(2019)" :key="item" :value="item" v-text="item"></option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="row">
+                            <div class="col-md-5">
+                                <button type="button" class="btn btn-primary" @click="listar()">
+                                    <i class="fa fa-search"></i>&nbsp;Buscar
+                                </button>
+                            </div>
+                            <div class="col-md-7 input-group">
+                                <label class="">N° filas:</label>
+                                <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.filas">
+                                    <option v-for="item in Filas" :key="item" :value="item" v-text="item"></option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <h5 v-if="Carga.mostrar">
                     <span role="status" :class="Carga.clase"></span>&nbsp;
@@ -284,7 +325,10 @@
                 Busqueda: {
                     texto: '',
                     filas: 5,
-                    type: 0
+                    type: 0,
+                    dia: this.getDiaActual(),
+                    mes: this.getMesActual(),
+                    year: this.getYearActual()
                 },
                 Error: {
                     estado: 0,
@@ -379,6 +423,9 @@
                                 +'&type='+this.Busqueda.type
                                 +'&text='+this.Busqueda.texto
                                 +'&rows='+this.Busqueda.filas
+                                +'&dia='+this.Busqueda.dia
+                                +'&mes='+this.Busqueda.mes
+                                +'&year='+this.Busqueda.year
                                 +'&centro_id='+this.Puesto.id;
                         
                         axios.get(url).then(function (response) {
@@ -544,7 +591,59 @@
                 }
 
                 return fixed;
-            }
+            },
+            addCero(i) {
+                if (i < 10) {
+                    i = '0' + i;
+                }
+                return i;
+            },
+            getDia(){
+                let min = 1;
+                let max = 31;
+                let lista = [];
+                while(min <= max){
+                    lista.push(this.addCero(min));
+                    min++;
+                }
+                return lista;
+            },
+            getMes(){
+                let nombres = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Setiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+                let min = 1;
+                let max = 12;
+                let lista = [];
+                while(min <= max){
+                    lista.push({nombre: nombres[min-1], valor: this.addCero(min)});
+                    min++;
+                }
+                return lista;
+            },
+            getYear(min){
+                let n =  new Date();
+                let max = n.getFullYear() +1;
+                let lista = [];
+                while(min <= max){
+                    lista.push(min);
+                    min++;
+                }
+                return lista;
+            },
+            getDiaActual(){
+                let n =  new Date();
+                let dia = this.addCero(n.getDate());
+                return dia;
+            },
+            getMesActual(){
+                let n =  new Date();
+                let mes = this.addCero(n.getMonth() + 1);
+                return mes;
+            },
+            getYearActual(){
+                let n =  new Date();
+                let year = n.getFullYear();
+                return year;
+            },
         },
         mounted() {
             this.select(1);
