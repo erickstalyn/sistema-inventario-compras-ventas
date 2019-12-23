@@ -128,19 +128,9 @@
                                                 <i class="far fa-eye"></i>
                                             </button>
                                         </template>
-                                        <template>
-                                            <button type="button" title="EDITAR" class="btn btn-warning btn-sm" @click="abrirModalEditar(venta)">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                        </template>
                                         <template v-if="venta.tipo.substring(0, 1)==2 || venta.tipo.substring(0, 1)==3">
                                             <button type="button"  title="PAGAR" class="btn btn-info btn-sm" @click="abrirModalPagar(venta)">
                                                 <i class="fas fa-hand-holding-usd"></i>
-                                            </button>
-                                        </template>
-                                        <template>
-                                            <button type="button" title="ANULAR" class="btn btn-danger btn-sm" @click="abrirModalAnular(venta.id)">
-                                                <i class="fas fa-trash-alt"></i>
                                             </button>
                                         </template>
                                     </td>
