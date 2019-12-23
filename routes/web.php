@@ -38,6 +38,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/producto/getProductoFiltrado', 'ProductoController@getProductoFiltrado');
     Route::get('/persona/getPersona', 'PersonaController@getPersona');
     Route::get('/centro/listProductos', 'CentroController@listProductos'); //metodos generales
+    Route::get('/centro/selectCentroEnvio', 'CentroController@selectCentroEnvio');
     //RUTAS DE ENVIOS
     Route::get('/envioRecibido', 'EnvioController@listarEnvioRecibido'); //metodos generales
     Route::get('/envioRealizado', 'EnvioController@listarEnvioRealizado');
@@ -131,7 +132,6 @@ Route::group(['middleware' => ['auth']], function () {
         Route::put('/produccion/finalizar', 'ProduccionController@finalizar'); //metodos secundarios
 
         Route::get('/detalle_producto/getDetalle_productoFiltrado', 'Detalle_productoController@getDetalle_productoFiltrado');
-        Route::get('/centro/selectCentroEnvio', 'CentroController@selectCentroEnvio');
 
         //Rutas de ENVIOS REALIZADOS
         // Route::get('/envioRealizado/getDetalles', 'EnvioController@getDetalles');

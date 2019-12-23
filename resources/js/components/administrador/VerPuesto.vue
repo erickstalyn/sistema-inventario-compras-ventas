@@ -18,8 +18,8 @@
                 <div class="col-md-3">
                     <div class="input-group">
                         <select class="custom-select text-gray-900" v-model="Puesto.quieroVer">
-                            <option value="1">Inventario</option>
-                            <option value="2">Ventas</option>
+                            <option value="1">Ventas</option>
+                            <option value="2">Inventario</option>
                             <option value="3">Envios Realizados</option>
                             <option value="4">Envios Recibidos</option>
                         </select>&nbsp;
@@ -35,6 +35,98 @@
                 <span class="h5 mb-0 text-gray-900" v-text="Puesto.titulo"></span>&nbsp;&nbsp;
             </div>
             <div v-if="Puesto.mostrar == 1">
+                <div class="row form-group">
+                    <div class="col-md-6 input-group"> 
+                        <select class="custom-select text-gray-900 w4rem" v-model="Busqueda.type">
+                            <option value="0">Todos</option>
+                            <option value="1">Contado</option>
+                            <option value="2">Credito</option>
+                        </select>
+                        <input type="search" class="form-control" v-model="Busqueda.texto" placeholder="Buscar por cliente(DNI o NOMBRE) y CODIGO">
+                        <button type="button" class="btn btn-primary" @click="listar()">
+                            <i class="fa fa-search"></i>&nbsp;Buscar
+                        </button>
+                    </div>
+                    <div class="col-md-3"></div>
+                    <label class="col-md-2 text-right">N° filas:</label>
+                    <select class="col-md-1 text-right custom-select custom-select-sm text-gray-900" v-model="Busqueda.filas">
+                        <option v-for="item in Filas" :key="item" :value="item" v-text="item"></option>
+                    </select>
+                </div>
+                <h5 v-if="Carga.mostrar">
+                    <span role="status" :class="Carga.clase"></span>&nbsp;
+                    <span v-text="Carga.mensaje" :class="Carga.alert"></span>
+                </h5>
+                <div v-if="ListaVenta.length">
+                    <!-- Tabla -->
+                    <div class="ec-table overflow-auto">
+                        <table class="table table-striped table-condensed table-bordered table-sm text-gray-900">
+                            <thead>
+                                <tr class="table-danger">
+                                    <th class="text-center">Codigo</th>
+                                    <th class="text-center">Tipo</th>
+                                    <th class="text-center">Cliente</th>
+                                    <th class="text-center">Total</th>
+                                    <th class="text-center">Realizado</th>
+                                    <th class="text-center">Opciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="venta in ListaVenta" :key="venta.id" >
+                                    <td class="text-center" v-text="venta.codigo"></td>
+                                    <td>
+                                        <label v-if="venta.tipo.substring(0, 1)==1">Contado</label>
+                                        <label v-if="venta.tipo.substring(0, 1)==2 || venta.tipo.substring(0, 1)==3">Credito</label>
+                                    </td>
+                                    <td v-text="venta.razon_social!=null?venta.razon_social:(venta.nombres!=null?(venta.nombres+' '+venta.apellidos):'---')"></td>
+                                    <td class="text-right" v-text="venta.total"></td>
+                                    <td class="text-center" v-text="fix(0, venta.created_at)"></td>
+                                    <td class="text-center">
+                                        <template>
+                                            <button type="button" title="VER" class="btn btn-primary btn-sm" @click="abrirModalVer(venta)">
+                                                <i class="far fa-eye"></i>
+                                            </button>
+                                        </template>
+                                        <template>
+                                            <button type="button" title="EDITAR" class="btn btn-warning btn-sm" @click="abrirModalEditar(venta)">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                        </template>
+                                        <template v-if="venta.tipo.substring(0, 1)==2 || venta.tipo.substring(0, 1)==3">
+                                            <button type="button"  title="PAGAR" class="btn btn-info btn-sm" @click="abrirModalPagar(venta)">
+                                                <i class="fas fa-hand-holding-usd"></i>
+                                            </button>
+                                        </template>
+                                        <template>
+                                            <button type="button" title="ANULAR" class="btn btn-danger btn-sm" @click="abrirModalAnular(venta.id)">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </template>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- Barra de navegacion -->
+                    <nav class="d-flex justify-content-center">
+                        <ul class="pagination">
+                            <li class="page-item">
+                                <a href="#" @click="cambiarPagina(Paginacion.currentPage-1)" class="page-link">Anterior</a>
+                            </li>
+                            <li class="page-item" v-for="page in Paginas" :key="page" :class="[page==Paginacion.currentPage?'active':'']">
+                                <a href="#" @click="cambiarPagina(page)" v-text="page" class="page-link"></a>
+                            </li>
+                            <li class="page-item">
+                                <a href="#" @click="cambiarPagina(Paginacion.currentPage+1)" class="page-link">Siguiente</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+                <div v-else-if="!Carga.mostrar">
+                    <h5>No se han encontrado resultados</h5>
+                </div>
+            </div>
+            <div v-else-if="Puesto.mostrar == 2">
                 <div class="row form-group">
                     <div class="col-md-5">
                         <div class="input-group">
@@ -52,6 +144,10 @@
                         <option v-for="fila in Filas" :key="fila" :value="fila" v-text="fila"></option>
                     </select>
                 </div>
+                <h5 v-if="Carga.mostrar">
+                    <span role="status" :class="Carga.clase"></span>&nbsp;
+                    <span v-text="Carga.mensaje" :class="Carga.alert"></span>
+                </h5>
                 <!-- Listado -->
                 <div v-if="ListaProducto.length" class="table-responsive">
                     <!-- Tabla -->
@@ -98,11 +194,10 @@
                         </ul>
                     </nav>
                 </div>
-                <div v-else>
+                <div v-else-if="!Carga.mostrar">
                     <h5>No se han encontrado resultados</h5>
                 </div>
             </div>
-
 
             <!-- Modales -->
             <div class="modal text-gray-900" :class="{'mostrar': Modal.estado}">
@@ -181,15 +276,25 @@
                     precio_mayor: 0,
                     stock: 0,
                 },
+                Venta:{
 
+                },
+                ListaVenta:[],
                 //datos de busqueda y filtracion
                 Busqueda: {
                     texto: '',
-                    filas: 5
+                    filas: 5,
+                    type: 0
                 },
                 Error: {
                     estado: 0,
-                    mensaje: []
+                    mensaje: [],
+                },
+                Carga:{
+                    mostrar: 0,
+                    clase: '',
+                    mensaje: '',
+                    alert: ''
                 },
                 //datos de paginacion
                 Paginacion: {
@@ -261,9 +366,36 @@
                 this.Paginacion.currentPage = page;
                 let url;
                 let me = this;
-                me.Puesto.mostrar = 0;
+                me.ListaVenta = [];
+                me.ListaProducto = [];
+                me.Carga.mostrar = 1;
+                me.Carga.clase = 'spinner-border spinner-border-sm text-primary';
+                me.Carga.mensaje = 'Cargando...';
+                me.Carga.alert = 'badge badge-info';
                 switch (Number.parseInt(this.Puesto.quieroVer)) {
-                    case 1: //Listar inventario
+                    case 1: //Listar Ventas
+                        url = this.Ruta.venta+'?'
+                                +'page='+this.Paginacion.currentPage
+                                +'&type='+this.Busqueda.type
+                                +'&text='+this.Busqueda.texto
+                                +'&rows='+this.Busqueda.filas
+                                +'&centro_id='+this.Puesto.id;
+                        
+                        axios.get(url).then(function (response) {
+                            me.ListaVenta = response.data.ventas.data;
+                            me.Paginacion = response.data.pagination;
+                            me.Puesto.titulo = 'Ventas'
+                            me.Puesto.mostrar = 1;
+
+                            me.Carga.mostrar = 0;
+                            me.Carga.clase = '';
+                            me.Carga.mensaje = '';
+                            me.Carga.alert = '';
+                        }).catch(function (error) {
+                            console.log(error);
+                        });
+                        break;
+                    case 2: //Listar inventario
                         url = this.Ruta.centro+'/listProductos?'
                                 +'page='+this.Paginacion.currentPage
                                 +'&texto='+this.Busqueda.texto
@@ -274,23 +406,12 @@
                             me.ListaProducto = response.data.list.data;
                             me.Paginacion = response.data.paginate;
                             me.Puesto.titulo = 'Inventario'
-                            me.Puesto.mostrar = 1;
-                        }).catch(function (error) {
-                            console.log(error)
-                        });
-                        break;
-                    case 2: //Listar Ventas
-                        url = this.Ruta.centro+
-                                +'page='+this.Paginacion.currentPage
-                                +'&texto='+this.Busqueda.texto
-                                +'&rows='+this.Busqueda.filas
-                                +'&centro_id='+this.Puesto.id;
-                        
-                        axios.get(url).then(function (response) {
-                            me.ListaProducto = response.data.list.data;
-                            me.Paginacion = response.data.paginate;
-                            me.Puesto.titulo = 'Inventario'
-                            me.Puesto.mostrar = 1;
+                            me.Puesto.mostrar = 2;
+
+                            me.Carga.mostrar = 0;
+                            me.Carga.clase = '';
+                            me.Carga.mensaje = '';
+                            me.Carga.alert = '';
                         }).catch(function (error) {
                             console.log(error)
                         });
@@ -408,6 +529,21 @@
                 if ( page >= 1 && page <= this.Paginacion.lastPage) {
                     this.listar(page);
                 }
+            },
+            fix(numero, data){
+                var fixed;
+
+                switch (numero) {
+                    case 0:
+                        let fecha = data.split(' ')[0].split('-');
+                        let hora = data.split(' ')[1].split(':');
+                        let fecha_fixed = fecha[2]+'-'+fecha[1]+'-'+fecha[0];
+                        let hora_fixed = (hora[0]>12?(hora[0]-12).toString().padStart(2, '0'):hora[0])+':'+hora[1]+':'+hora[2];
+                        fixed = fecha_fixed+' '+hora_fixed;
+                        break;
+                }
+
+                return fixed;
             }
         },
         mounted() {

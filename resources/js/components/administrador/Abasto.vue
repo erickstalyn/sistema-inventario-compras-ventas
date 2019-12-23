@@ -201,8 +201,7 @@
                                     </div>
                                     <div class="col-md-3">
                                         <h5>
-                                            <span role="status" :class="Carga.clase">
-                                            </span>&nbsp;
+                                            <span role="status" :class="Carga.clase"></span>&nbsp;
                                             <span v-text="DatosServicio.mensaje" :class="DatosServicio.alert"></span>
                                         </h5>
                                     </div>
