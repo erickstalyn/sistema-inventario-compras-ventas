@@ -507,7 +507,7 @@
             },
             selectCentro(){
                 var me = this;
-                var url = '/centro/selectCentro';
+                var url = '/centro/selectCentroEnvio';
 
                 axios.get(url,{
                     params: {

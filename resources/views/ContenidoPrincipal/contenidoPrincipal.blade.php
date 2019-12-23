@@ -5,27 +5,30 @@
     @if(Auth::check())
         @if(Auth::user()->rol=='M')
             <template v-if="menu==0">
-                <adm-material></adm-material>
+                <adm_material></adm_material>
             </template>
             <template v-if="menu==1">
-                <adm-superproducto></adm-superproducto>
+                <adm_superproducto></adm_superproducto>
             </template>
             <template v-if="menu==2">
-                <adm-producto></adm-producto>
+                <adm_producto></adm_producto>
             </template>
             <template v-if="menu==3">
-                <adm-abasto></adm-abasto>
+                <adm_abasto></adm_abasto>
             </template>
             <template v-if="menu==5">
-                <adm-usuario></adm-usuario>
+                <adm_verpuesto></adm_verpuesto>
+            </template>
+            <template v-if="menu==10">
+                <adm_usuario></adm_usuario>
             </template>
 
         @elseif(Auth::user()->rol=='P')
             <template v-if="menu==0">
-                <pue-producto></pue-producto>
+                <pue_producto></pue_producto>
             </template>
             <template v-if="menu==1">
-                <pue-venta></pue-venta>
+                <pue_venta></pue_venta>
             </template>
             <template v-if="menu==2">
                 <enviorealizado></enviorealizado>
@@ -36,10 +39,10 @@
 
         @elseif(Auth::user()->rol=='A')
             <template v-if="menu==0">
-                <alm-producto></alm-producto>
+                <alm_producto></alm_producto>
             </template>
             <template v-if="menu==1">
-                <alm-produccion></alm-produccion>
+                <alm_produccion></alm_produccion>
             </template>
             <template v-if="menu==2">
                 <enviorealizado></enviorealizado>
@@ -48,7 +51,7 @@
                 <enviorecibido></enviorecibido>
             </template>
             <template v-if="menu==4">
-                <pue-venta></pue-venta>
+                <pue_venta></pue_venta>
             </template>
         @else
 

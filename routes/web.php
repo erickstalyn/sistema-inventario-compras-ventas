@@ -75,7 +75,6 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/produccion', 'ProduccionController@listar'); //métodos generales
         Route::post('/produccion/agregar', 'ProduccionController@agregar');
         
-        // Route::get('/produccion/selectAlmacen', 'ProduccionController@selectAlmacen'); //metodos secundarios
         Route::put('/produccion/finalizar', 'ProduccionController@finalizar'); //metodos secundarios
 
         //RUTAS PARA SUPERPRODUCTO
@@ -102,14 +101,15 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/abasto', 'AbastoController@listar'); //metodos generales
         Route::post('/abasto/agregar', 'AbastoController@agregar');
         Route::get('/abasto/getPagos', 'AbastoController@getPagos');
-        // Route::get('/abasto/getDetalles', 'AbastoController@getDetalles');
         Route::put('/abasto/anular', 'AbastoController@anular');
         Route::get('/data/selectUnidad', 'DataController@selectUnidad'); //metodos secundarios
 
-        Route::get('/centro/selectAlmacen', 'CentroController@selectAlmacen');
+        Route::get('/centro/selectCentro', 'CentroController@selectCentro');
 
         //RUTAS DE PAGOS
         Route::post('/pago/agregar', 'PagoController@agregar');
+        //RUTAS DETALLES DE PRODUCTOS
+        Route::put('/detalle_producto/editar', 'Detalle_productoController@editar');
         
 
     });
@@ -128,11 +128,10 @@ Route::group(['middleware' => ['auth']], function () {
         Route::put('/produccion/anular', 'ProduccionController@anular');
         Route::get('/produccion/getProductoFiltrado', 'ProduccionController@getProductoFiltrado'); //metodos secundarios
         Route::get('/produccion/getDetalles', 'ProduccionController@getDetalles');
-        Route::get('/produccion/selectAlmacen', 'ProduccionController@selectAlmacen'); //metodos secundarios
         Route::put('/produccion/finalizar', 'ProduccionController@finalizar'); //metodos secundarios
 
         Route::get('/detalle_producto/getDetalle_productoFiltrado', 'Detalle_productoController@getDetalle_productoFiltrado');
-        Route::get('/centro/selectCentro', 'CentroController@selectCentro');
+        Route::get('/centro/selectCentroEnvio', 'CentroController@selectCentroEnvio');
 
         //Rutas de ENVIOS REALIZADOS
         // Route::get('/envioRealizado/getDetalles', 'EnvioController@getDetalles');
