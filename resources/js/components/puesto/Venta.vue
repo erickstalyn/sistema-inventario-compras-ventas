@@ -15,18 +15,18 @@
 
             <!-- Inputs de busqueda -->
             <div class="row form-group">
-                <div class="col-md-6 input-group"> 
-                    <select class="custom-select text-gray-900 w4rem" v-model="Busqueda.type">
+                <div class="col-md-7 input-group"> 
+                    <select class="col-md-2 custom-select text-gray-900 w4rem" v-model="Busqueda.type">
                         <option value="0">Todos</option>
                         <option value="1">Contado</option>
                         <option value="2">Credito</option>
                     </select>
-                    <input type="search" class="form-control" v-model="Busqueda.text">
-                    <button type="button" class="btn btn-primary" @click="listar()">
+                    <input type="search" class="col-md-8 form-control" v-model="Busqueda.text" placeholder="Busca por codigo, dni, ruc, razon social, nombres, apellidos">
+                    <button type="button" class="col-md-2 btn btn-primary" @click="listar()">
                         <i class="fa fa-search"></i>&nbsp;Buscar
                     </button>
                 </div>
-                <div class="col-md-3"></div>
+                <div class="col-md-2"></div>
                 <label class="col-md-2 text-right">N° filas:</label>
                 <select class="col-md-1 text-right custom-select custom-select-sm text-gray-900" v-model="Busqueda.rows">
                     <option v-for="item in Filas" :key="item" :value="item" v-text="item"></option>
@@ -130,7 +130,7 @@
                             </div>
                             <div class="row form-group">
                                 <label class="col-md-2 font-weight-bold">CLIENTE</label>
-                                <label class="col-md-1 font-weight-bold">RUC/DNI&nbsp;<span class="text-danger">*</span></label>
+                                <label class="col-md-1 font-weight-bold">RUC/DNI&nbsp;<span class="text-danger" v-if="Venta.tipo_pago=='2'||Venta.tipo_pago=='3'">*</span></label>
                                 <div class="col-md-2 input-group">
                                     <input type="text" class="form-control form-control-sm" v-model="Service.document" @keyup.enter="consultar()" maxlength="11">
                                     <button type="button" class="btn btn-sm btn-primary" @click="consultar()">
@@ -166,7 +166,7 @@
                                     </div>
                                     <div class="col-md-9 input-group">
                                         <label class="col-md-2">Razón social</label>&nbsp;
-                                        <input type="text" class="col-md-10 form-control form-control-sm" v-model="Cliente.razon_social" :readonly="Service.readonly">
+                                        <input type="text" class="col-md-10 form-control form-control-sm" readonly v-model="Cliente.razon_social">
                                     </div>
                                 </div>
                             </div>
@@ -180,7 +180,7 @@
                                             <i class="fa fa-search"></i>&nbsp; Buscar
                                         </button>
                                     </div>
-                                    <div class="row overflow-auto" style="height: 15rem;">
+                                    <div class="row overflow-auto" style="height: 18rem;">
                                         <div v-if="ListaProducto.length" class="col-md-12">
                                             <table class="table table-bordered table-striped table-sm text-gray-900">
                                                 <thead>
@@ -228,7 +228,7 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="row form-group overflow-auto" style="height: 15rem;">
+                                    <div class="row form-group overflow-auto" style="height: 18rem;">
                                         <div v-if="ListaDetalle.length" class="col-md-12">
                                             <table class="table table-bordered table-striped table-sm text-gray-900">
                                                 <thead>
@@ -436,7 +436,6 @@
                     msm: '',
                     msmclass: '',
                     loadclass: '',
-                    readonly: false,
                     text: ''
                 },
 
@@ -528,8 +527,11 @@
                         +'&type='+this.Busqueda.type
                         +'&text='+this.Busqueda.text
                         +'&rows='+this.Busqueda.rows
-                        +'&centro_id='+$('meta[name="idCentro"]').attr('content');
-                
+                        +'&centro_id='+$('meta[name="idCentro"]').attr('content')
+                        +'&dia='+this.fix(1)
+                        +'&mes='+this.fix(2)
+                        +'&year='+this.fix(3);
+
                 axios.get(url).then(function (response) {
                     me.ListaVenta = response.data.ventas.data;
                     me.Paginacion = response.data.pagination;
@@ -603,7 +605,6 @@
                 this.Service.msm = '';
                 this.Service.msmclass = '';
                 this.Service.loadclass = '';
-                this.Service.readonly = false;
                 this.Service.text = '';
             },
             abrirModalPagar(abasto = []){
@@ -677,7 +678,6 @@
                 this.Service.msm = '';
                 this.Service.msmclass = '';
                 this.Service.loadclass = '';
-                this.Service.readonly = false;
                 this.Service.text = '';
 
                 this.Venta.id = 0;
@@ -771,16 +771,15 @@
 
                         const persona = response.data.persona[0];
                         
-                        if (persona.razon_social){//Es una EMPRESA
+                        if (persona.razon_social != null){//Es una EMPRESA
                             me.Service.type = 2;
-                            me.Service.readonly = true;
                             
-                            me.Cliente.tipo = 'P';
+                            me.Cliente.tipo = 'E';
                             me.Cliente.razon_social = persona.razon_social;
                         } else {//Es una PERSONA
                             me.Service.type = 1;
 
-                            me.Cliente.tipo = 'E';
+                            me.Cliente.tipo = 'P';
                             me.Cliente.nombres = persona.nombres;
                             me.Cliente.apellidos = persona.apellidos;
                         }
@@ -820,6 +819,8 @@
                             me.Service.document = '';
                             me.Service.msm = '';
                             me.Service.msmclass = '';
+
+                            me.Cliente.id = 0;
                             me.Cliente.tipo = 'P';
                             me.Cliente.documento = persona.dni;
                             me.Cliente.nombres = persona.nombres;
@@ -852,7 +853,8 @@
                             me.Service.document = '';
                             me.Service.msm = '';
                             me.Service.msmclass = '';
-                            me.Service.readonly = false;
+
+                            me.Cliente.id = 0;
                             me.Cliente.tipo = 'E';
                             me.Cliente.documento = data.RUC;
                             me.Cliente.razon_social = data.RazonSocial;
@@ -934,7 +936,7 @@
                         break;
                 }
             },
-            fix(numero, data){
+            fix(numero, data = ''){
                 var fixed;
 
                 switch (numero) {
@@ -944,6 +946,15 @@
                         let fecha_fixed = fecha[2]+'-'+fecha[1]+'-'+fecha[0];
                         let hora_fixed = (hora[0]>12?(hora[0]-12).toString().padStart(2, '0'):hora[0])+':'+hora[1]+':'+hora[2];
                         fixed = fecha_fixed+' '+hora_fixed;
+                        break;
+                    case 1:
+                        fixed = (new Date()).getDate();
+                        break;
+                    case 2:
+                        fixed = (new Date()).getMonth()+1;
+                        break;
+                    case 3:
+                        fixed = (new Date()).getFullYear();
                         break;
                 }
 

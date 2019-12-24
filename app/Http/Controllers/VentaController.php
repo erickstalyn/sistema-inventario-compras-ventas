@@ -20,7 +20,6 @@ class VentaController extends Controller {
         $text = $request->text;
         $rows = $request->rows;
         $centro_id = $request->centro_id;
-
         $dia = $request->dia;
         $mes = $request->mes;
         $year = $request->year;
