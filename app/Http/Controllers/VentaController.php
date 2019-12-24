@@ -25,7 +25,7 @@ class VentaController extends Controller {
         $year = $request->year;
 
         $ventas = Venta::select('venta.id', 'venta.codigo', 'venta.tipo', 'venta.total', 'venta.total_faltante', 'venta.created_at', 
-                                'persona.dni', 'persona.ruc', 'persona.nombres', 'persona.apellidos', 'persona.razon_social')
+                                'persona.dni', 'persona.ruc', 'persona.nombres', 'persona.apellidos', 'persona.razon_social', 'persona.tipo as cliente_tipo')
                     ->leftJoin('persona', 'persona.id', '=', 'venta.cliente_id')
                     ->where(function ($query) use ($text) {
                         if ( $text != '' ) {
@@ -114,25 +114,23 @@ class VentaController extends Controller {
                 $persona->save();
             }
 
-            //venta
-            $venta = new Venta();
-            $venta->centro_id = $request->centro_id;  //fecha
-            $venta->tipo = $request->tipo_pago.$request->tipo_precio;   //tipo de venta
-            $venta->total = $request->total;    //total
-            if ( $request->tipo_pago == 2 || $request->tipo_pago == 3 ) $venta->total_faltante = $request->total_faltante;  //total_faltante
-            $venta->cliente_id = $cliente['id']>=0?$persona->id:NULL; //cliente
-            $venta->created_at = $now;
-            $venta->save();
-            
             {
-                $data = explode(' ', $venta->created_at);
-                $data = array_merge(explode('-', $data[0]), explode(':', $data[1]));
+                $data = array_merge(explode('-', explode(' ', $now)[0]), explode(':', explode(' ', $now)[1]));
                 $codigo = '';
                 for ($i=0; $i < count($data); $i++) $codigo .= $data[$i];
                 $codigo .= rand(0, 9);
             }
-            $venta->updated_at = NULL;
+
+            //venta
+            $venta = new Venta();
+            $venta->centro_id = $request->centro_id;
+            $venta->tipo = $request->tipo_pago.$request->tipo_precio;
+            $venta->total = $request->total;
+            if ( $request->tipo_pago == 2 || $request->tipo_pago == 3 ) $venta->total_faltante = $request->total;
+            $venta->cliente_id = $cliente['id']>=0?$persona->id:NULL;
             $venta->codigo = $codigo;
+            $venta->created_at = $now;
+            $venta->updated_at = NULL;
             $venta->save();
 
             //pago

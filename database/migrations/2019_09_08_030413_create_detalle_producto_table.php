@@ -16,8 +16,8 @@ class CreateDetalleProductoTable extends Migration
         Schema::create('detalle_producto', function (Blueprint $table) {
             $table->increments('id'); //usa 4 bytes. Maximo valor: 2 147 483 647
             $table->smallInteger('substock')->default(0); // usa 2 bytes - máximo 32767 datos
-            $table->smallInteger('reservados')->nullable();// usa 2 bytes - máximo 32767 datos
-            $table->smallInteger('fallidos')->nullable();// usa 2 bytes - máximo 32767 datos
+            $table->smallInteger('reservados')->default(0);// usa 2 bytes - máximo 32767 datos
+            $table->smallInteger('fallidos')->default(0);// usa 2 bytes - máximo 32767 datos
             $table->decimal('precio_menor', 10,2);
             $table->decimal('precio_mayor', 10,2);
 

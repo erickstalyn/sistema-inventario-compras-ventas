@@ -21,7 +21,7 @@
                         <option value="1">Contado</option>
                         <option value="2">Credito</option>
                     </select>
-                    <input type="search" class="col-md-8 form-control" v-model="Busqueda.text" placeholder="Busca por codigo, dni, ruc, razon social, nombres, apellidos">
+                    <input type="search" class="col-md-8 form-control" v-model="Busqueda.text" placeholder="Busca por codigo, dni, ruc, razon social, nombres, apellidos" @keyup.enter="listar()">
                     <button type="button" class="col-md-2 btn btn-primary" @click="listar()">
                         <i class="fa fa-search"></i>&nbsp;Buscar
                     </button>
@@ -175,8 +175,8 @@
                                 <div class="col-md-4">
                                     <label class="row col-md-12 form-group font-weight-bold">PRODUCTOS</label>
                                     <div class="row col-md-12 input-group form-group">
-                                        <input type="search" class="form-control form-control-sm" v-model="Service.text" @keyup.enter="list()" id="filtroProducto" placeholder="Producto,marca,modelo,tamaño,color">
-                                        <button type="button" class="btn btn-sm btn-primary" @click="list()">
+                                        <input type="search" class="form-control form-control-sm" v-model="Service.text" @keyup.enter="list(0)" id="filtroProducto" placeholder="Producto,marca,modelo,tamaño,color">
+                                        <button type="button" class="btn btn-sm btn-primary" @click="list(0)">
                                             <i class="fa fa-search"></i>&nbsp; Buscar
                                         </button>
                                     </div>
@@ -253,7 +253,6 @@
                                                         </td>
                                                         <td class="text-right" v-text="Venta.tipo_precio=='1'?detalle.precio_menor:detalle.precio_mayor"></td>
                                                         <td class="text-right" v-text="detalle.subtotal">
-                                                            <!-- {{detalle.subtotal = (detalle.costo_abasto * detalle.cantidad).toFixed(2)}} -->
                                                         </td>
                                                     </tr>
                                                 </tbody>
@@ -275,6 +274,89 @@
                                             <label class="col-md-6 text-right font-weight-bold">Monto total:</label>
                                             <label class="col-md-6 text-right text-info" v-text="'S/. '+updateTotal"></label>
                                         </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Modal Numero 2 de VER-->
+                        <div v-if="Modal.numero==2" class="container">
+                            <div class="row shadow bg-white rounded form-group pt-2">
+                                <div class="col-md-12">
+                                    <label class="font-weight-bold">CLIENTE</label>
+                                </div>
+                                <div v-if="Cliente.tipo=='P'" class="row form-group">
+                                    <div class="col-md-4 input-group">
+                                        <label class="col-md-4">DNI</label>
+                                        <input type="text" class="col-md-8 form-control form-control-sm" readonly v-model="Cliente.dni">
+                                    </div>
+                                    <div class="col-md-8 input-group">
+                                        <label class="col-md-3">Nombres</label>
+                                        <input type="text" class="col-md-8 form-control form-control-sm" readonly v-model="Cliente.nombres">
+                                    </div>
+                                    <div class="col-md-4"></div>
+                                    <div class="col-md-8 input-group">
+                                        <label class="col-md-3">Apellidos</label>
+                                        <input type="text" class="col-md-8 form-control form-control-sm" readonly v-model="Cliente.apellidos">
+                                    </div>
+                                </div>
+                                <div v-else-if="Cliente.tipo=='E'" class="row form-group">
+                                    <div class="col-md-3 input-group">
+                                        <label class="col-md-3">RUC</label>
+                                        <input type="text" class="col-md-9 form-control form-control-sm" readonly v-model="Cliente.ruc">
+                                    </div>
+                                    <div class="col-md-9 input-group">
+                                        <label class="col-md-2">Razón social</label>&nbsp;
+                                        <input type="text" class="col-md-10 form-control form-control-sm" readonly v-model="Cliente.razon_social">
+                                    </div>
+                                </div>
+                                <div v-else class="col-md-12 form-group">
+                                    <label class="text-info">No se ha registrado cliente</label>
+                                </div>
+                            </div>
+                            <div class="row shadow bg-white rounded pt-2">
+                                <div class="col-md-12 input-group">
+                                    <label class="col-md-3 font-weight-bold">LISTA DE ITEMS</label>
+                                    <div class="col-md-1"></div>
+                                    <div class="col-md-4 input-group">
+                                        <label class="col-md-4 font-weight-bold">Pago</label>
+                                        <label class="col-md-8 text-info" v-text="fix(4, Venta.tipo_pago)"></label>
+                                    </div>
+                                    <div class="col-md-4 input-group">
+                                        <label class="col-md-4 font-weight-bold">Precio</label>
+                                        <label class="col-md-8 text-info" v-text="fix(5, Venta.tipo_precio)"></label>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 form-group overflow-auto" style="height: 18rem;">
+                                    <table class="table table-bordered table-striped table-sm text-gray-900">
+                                        <thead>
+                                            <tr class="table-success">
+                                                <th class="text-center">Nombre</th>
+                                                <th class="text-center">Cantidad</th>
+                                                <th class="text-center">Precio</th>
+                                                <th class="text-center">Subtotal</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="(detalle, indice) in ListaDetalle" :key="indice">
+                                                <td v-text="detalle.nombre_producto"></td>
+                                                <td class="text-right" v-text="detalle.cantidad"></td>
+                                                <td class="text-right" v-text="detalle.precio"></td>
+                                                <td class="text-right" v-text="detalle.subtotal">
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="col-md-12 input-group">
+                                    <div class="col-md-5 input-group" v-if="Venta.total_faltate">
+                                        <label class="col-md-7 text-right font-weight-bold">Monto faltante:</label>
+                                        <label class="col-md-5 text-right text-info" v-text="'S/. '+Venta.total_faltante"></label>
+                                    </div>
+                                    <div class="col-md-5" v-else></div>
+                                    <div class="col-md-2"></div>
+                                    <div class="col-md-5 input-group">
+                                        <label class="col-md-6 text-right font-weight-bold">Monto total:</label>
+                                        <label class="col-md-6 text-right text-info" v-text="'S/. '+Venta.total"></label>
                                     </div>
                                 </div>
                             </div>
@@ -431,7 +513,6 @@
 
                 //datos de servicios necesarios
                 Service: {
-                    type: 0, //1->PERSONA, 2-> EMPRESA
                     document: '',
                     msm: '',
                     msmclass: '',
@@ -451,7 +532,8 @@
                     venta: '/venta',
                     persona: '/persona',
                     producto: '/producto',
-                    detalle_producto: '/detalle_producto'
+                    detalle_producto: '/detalle_producto',
+                    detalle_venta: '/detalle_venta'
                 }
             }
         },
@@ -600,12 +682,29 @@
                 this.Cliente.razon_social = '';
                 this.Cliente.tipo = '';
                 
-                this.Service.type = 0;
                 this.Service.document = '';
                 this.Service.msm = '';
                 this.Service.msmclass = '';
                 this.Service.loadclass = '';
                 this.Service.text = '';
+            },
+            abrirModalVer(data){
+                this.abrirModal(2, 'Ver Venta', 'modal-lg', '', 'Cerrar');
+
+                this.Venta.id = data.id;
+                this.Venta.total = data.total;
+                this.Venta.total_faltante = data.total_faltante;
+                this.Venta.tipo_pago = data.tipo.charAt(0);
+                this.Venta.tipo_precio = data.tipo.charAt(1);
+                
+                this.Cliente.dni = data.dni;
+                this.Cliente.nombres = data.nombres;
+                this.Cliente.apellidos = data.apellidos;
+                this.Cliente.ruc = data.ruc;
+                this.Cliente.razon_social = data.razon_social;
+                this.Cliente.tipo = data.cliente_tipo;
+                
+                this.ListaProducto = this.list(1);
             },
             abrirModalPagar(abasto = []){
                 this.Abasto.id = abasto['id'];
@@ -673,7 +772,6 @@
                 this.Error.estado = 0;
                 this.Error.mensaje = [];
 
-                this.Service.type = 0;
                 this.Service.document = '';
                 this.Service.msm = '';
                 this.Service.msmclass = '';
@@ -689,8 +787,10 @@
 
                 this.Cliente.id = 0;
                 this.Cliente.documento = '';
+                this.Cliente.dni = '';
                 this.Cliente.nombres = '';
                 this.Cliente.apellidos = '';
+                this.Cliente.ruc = '';
                 this.Cliente.razon_social = '';
                 this.Cliente.tipo = '';
 
@@ -772,13 +872,9 @@
                         const persona = response.data.persona[0];
                         
                         if (persona.razon_social != null){//Es una EMPRESA
-                            me.Service.type = 2;
-                            
                             me.Cliente.tipo = 'E';
                             me.Cliente.razon_social = persona.razon_social;
                         } else {//Es una PERSONA
-                            me.Service.type = 1;
-
                             me.Cliente.tipo = 'P';
                             me.Cliente.nombres = persona.nombres;
                             me.Cliente.apellidos = persona.apellidos;
@@ -815,7 +911,6 @@
                     success: function (data, textStatus, jqXHR) {
                         let persona = JSON.parse(data);
                         if (persona.estado == true){
-                            me.Service.type = 1;
                             me.Service.document = '';
                             me.Service.msm = '';
                             me.Service.msmclass = '';
@@ -849,7 +944,6 @@
                     },
                     success: function (data, textStatus, jqXHR) {
                         if (data.RazonSocial){
-                            me.Service.type = 2;
                             me.Service.document = '';
                             me.Service.msm = '';
                             me.Service.msmclass = '';
@@ -867,26 +961,41 @@
                 }).fail(function(){
                 });
             },
-            list(){
-                if ( this.Service.text == '' ) return;
+            list(numero){
+                var me = this;
 
-                let me = this;
-                let url = this.Ruta.detalle_producto+'/listProductos?'
-                                +'text='+this.Service.text
-                                +'&centro_id='+$('meta[name="idCentro"]').attr('content');
+                switch (numero) {
+                    case 0: 
+                        if ( this.Service.text == '' ) break;
 
-                axios.get(url).then(function(response){
-                    if ( response.data.length == 1 && me.Service.text == response.data[0].codigo ){
-                        if ( response.data[0].detalle.substock > 0 ) me.add(0, response.data[0]);
-                        else me.ListaProducto = response.data;
-                        me.Service.text = '';
-                    } else {
-                        me.ListaProducto = response.data;
-                    }
-                    document.getElementById('filtroProducto').focus();
-                }).catch(function(error){
-                    console.log(error);
-                });
+                        var url = this.Ruta.detalle_producto+'/listProductos?'
+                                        +'text='+this.Service.text
+                                        +'&centro_id='+$('meta[name="idCentro"]').attr('content');
+
+                        axios.get(url).then(function(response){
+                            if ( response.data.length == 1 && me.Service.text == response.data[0].codigo ){
+                                if ( response.data[0].detalle.substock > 0 ) me.add(0, response.data[0]);
+                                else me.ListaProducto = response.data;
+                                me.Service.text = '';
+                            } else {
+                                me.ListaProducto = response.data;
+                            }
+                            document.getElementById('filtroProducto').focus();
+                        }).catch(function(error){
+                            console.log(error);
+                        });
+                        break;
+                    case 1:
+                        var url = this.Ruta.detalle_venta+'/list?'
+                                        +'venta_id='+this.Venta.id;
+
+                        axios.get(url).then(function(response){
+                            me.ListaDetalle = response.data;
+                        }).catch(function(error){
+                            console.log(error);
+                        });
+                        break;
+                }
             },
             add(numero, data){
                 switch (numero) {
@@ -955,6 +1064,14 @@
                         break;
                     case 3:
                         fixed = (new Date()).getFullYear();
+                        break;
+                    case 4:
+                        if ( data == '1' ) fixed = 'Contado'; 
+                        if ( data == '2' || data == '3' ) fixed = 'Credito'; 
+                        break;
+                    case 5:
+                        if ( data == '1' ) fixed = 'Al por menor'; 
+                        if ( data == '2' ) fixed = 'Al por mayor'; 
                         break;
                 }
 

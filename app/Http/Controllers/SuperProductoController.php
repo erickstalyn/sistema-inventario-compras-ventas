@@ -47,7 +47,7 @@ class SuperProductoController extends Controller{
             $now = Carbon::now('America/Lima')->toDateString();
 
             $superproducto = new SuperProducto();
-            $superproducto->nombre = $request->nombre;
+            $superproducto->nombre = ucfirst($request->nombre);
             $superproducto->descripcion = $request->descripcion==''?NULL:$request->descripcion;
             $superproducto->created_at = $now;
             $superproducto->save();
