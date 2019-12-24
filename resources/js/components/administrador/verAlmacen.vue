@@ -108,9 +108,6 @@
                 </div>
             </div>
             <div v-else-if="Almacen.mostrar == 2">
-                
-            </div>
-            <div v-else-if="Almacen.mostrar == 3">
                 <div class="row form-group">
                     <div style="width: 8rem;" class="mr-1">
                         <div class="input-group"> 
@@ -161,7 +158,7 @@
                         </button>
                     </div>
                 </div>
-                <h5 v-if="Carga.mostrar">
+                <h5 v-if="Carga.mostrar && Carga.numero ==1">
                     <span role="status" :class="Carga.clase"></span>&nbsp;
                     <span v-text="Carga.mensaje" :class="Carga.alert"></span>
                 </h5>
@@ -222,7 +219,7 @@
                     <h5>No se han encontrado resultados</h5>
                 </div>
             </div>
-            <div v-else-if="Almacen.mostrar == 4">
+            <div v-else-if="Almacen.mostrar == 3">
                 <div class="row form-group">
                     <div style="width: 8rem;" class="mr-1">
                         <div class="input-group"> 
@@ -273,7 +270,7 @@
                         </button>
                     </div>
                 </div>
-                <h5 v-if="Carga.mostrar">
+                <h5 v-if="Carga.mostrar && Carga.numero ==1">
                     <span role="status" :class="Carga.clase"></span>&nbsp;
                     <span v-text="Carga.mensaje" :class="Carga.alert"></span>
                 </h5>
@@ -394,7 +391,7 @@
                         </div>
                     </div>
                 </div>
-                <h5 v-if="Carga.mostrar">
+                <h5 v-if="Carga.mostrar && Carga.numero ==1">
                     <span role="status" :class="Carga.clase"></span>&nbsp;
                     <span v-text="Carga.mensaje" :class="Carga.alert"></span>
                 </h5>
@@ -492,7 +489,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- Modal ver envio Realizado -->
+                            <!-- Modal ver envio Realizado y Recibido -->
                             <div v-else-if="Modal.numero==2">
                                 <div class="row shadow bg-white rounded p-2">
                                     <div class="col-md-12 ml-auto container">
@@ -500,7 +497,11 @@
                                             <span class="font-weight-bold">LISTA DE ITEMS</span>
                                         </div>
                                         <div class="row form-group ec-table-modal overflow-auto">
-                                            <table class="table tableless table-striped table-sm text-gray-900">
+                                            <h5 v-if="Carga.mostrar && Carga.numero ==2">
+                                                <span role="status" :class="Carga.clase"></span>&nbsp;
+                                                <span v-text="Carga.mensaje" :class="Carga.alert"></span>
+                                            </h5>
+                                            <table class="table tableless table-striped table-sm text-gray-900" v-else>
                                                 <thead>
                                                     <tr class="table-success">
                                                         <th class="text-center" >#</th>
@@ -629,7 +630,7 @@
                     texto: '',
                     filas: 5,
                     type: 0,
-                    dia: this.getDiaActual(),
+                    dia: '',
                     mes: this.getMesActual(),
                     year: this.getYearActual(),
                     estadoEnviado: 3,
@@ -640,6 +641,7 @@
                     mensaje: [],
                 },
                 Carga:{
+                    numero: 0,
                     mostrar: 0,
                     clase: '',
                     mensaje: '',
@@ -727,6 +729,7 @@
                 me.ListaVenta = [];
                 me.ListaProducto = [];
                 me.ListaEnvio = [];
+                me.Carga.numero = 1;
                 me.Carga.mostrar = 1;
                 me.Carga.clase = 'spinner-border spinner-border-sm text-primary';
                 me.Carga.mensaje = 'Cargando...';
@@ -754,12 +757,11 @@
                         });
                         break;
                     case 2: //Listar Envio realizados
-                        
-                    case 3:
+                        this.Busqueda.dia = '';
                         url = this.Ruta.envioRealizado + '?'
                                 +'page='+this.Paginacion.currentPage
                                 +'&estado='+this.Busqueda.estadoEnviado
-                                +'&idCentro='+this.Puesto.id
+                                +'&idCentro='+this.Almacen.id
                                 +'&texto='+this.Busqueda.texto
                                 +'&filas='+this.Busqueda.filas
                                 +'&dia='+this.Busqueda.dia
@@ -770,8 +772,8 @@
                             me.ListaEnvio = response.data.envios.data;
                             me.Paginacion = response.data.paginacion;
 
-                            me.Puesto.titulo = 'Envios Realizados'
-                            me.Puesto.mostrar = 3;
+                            me.Almacen.titulo = 'Envios Realizados'
+                            me.Almacen.mostrar = 2;
 
                             me.Carga.mostrar = 0;
                             me.Carga.clase = '';
@@ -781,11 +783,12 @@
                             console.log(error)
                         });
                         break;
-                    case 4:
+                    case 3: //Listar Envios Recibidos
+                        this.Busqueda.dia = '';
                         url = this.Ruta.envioRecibido + '?'
                             +'page='+this.Paginacion.currentPage
                             +'&estado='+this.Busqueda.estadoRecibido
-                            +'&idCentro='+this.Puesto.id
+                            +'&idCentro='+this.Almacen.id
                             +'&texto='+this.Busqueda.texto
                             +'&filas='+this.Busqueda.filas
                             +'&dia='+this.Busqueda.dia
@@ -796,8 +799,8 @@
                             me.ListaEnvio = response.data.envios.data;
                             me.Paginacion = response.data.paginacion;
 
-                            me.Puesto.titulo = 'Envios Recibidos'
-                            me.Puesto.mostrar = 4;
+                            me.Almacen.titulo = 'Envios Recibidos'
+                            me.Almacen.mostrar = 3;
 
                             me.Carga.mostrar = 0;
                             me.Carga.clase = '';
@@ -807,7 +810,11 @@
                             console.log(error)
                         });
                         break;
+                    case 4:
+                        
+                        break;
                     case 5:
+                        this.Busqueda.dia = this.getDiaActual();
                         url = this.Ruta.venta+'?'
                                 +'page='+this.Paginacion.currentPage
                                 +'&type='+this.Busqueda.type
@@ -816,13 +823,13 @@
                                 +'&dia='+this.Busqueda.dia
                                 +'&mes='+this.Busqueda.mes
                                 +'&year='+this.Busqueda.year
-                                +'&centro_id='+this.Puesto.id;
+                                +'&centro_id='+this.Almacen.id;
                         
                         axios.get(url).then(function (response) {
                             me.ListaVenta = response.data.ventas.data;
                             me.Paginacion = response.data.pagination;
-                            me.Puesto.titulo = 'Ventas'
-                            me.Puesto.mostrar = 5;
+                            me.Almacen.titulo = 'Ventas'
+                            me.Almacen.mostrar = 5;
 
                             me.Carga.mostrar = 0;
                             me.Carga.clase = '';
@@ -840,6 +847,11 @@
             listarDetalles(numero){
                 let url;
                 let me = this;
+                me.Carga.numero = 2;
+                me.Carga.mostrar = 1;
+                me.Carga.clase = 'spinner-border spinner-border-sm text-primary';
+                me.Carga.mensaje = 'Cargando...';
+                me.Carga.alert = 'badge badge-info';
                 switch (numero) {
                     case 1:
                         url = me.Ruta.envioRealizado + '/getDetalles';
@@ -849,6 +861,10 @@
                             }
                         }).then(function(response){
                             me.ListaDetalleEnvio = response.data;
+                            me.Carga.mostrar = 0;
+                            me.Carga.clase = '';
+                            me.Carga.mensaje = '';
+                            me.Carga.alert = '';
                         }).catch(function(error){
                             console.log(error);
                         });
