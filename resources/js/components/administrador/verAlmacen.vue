@@ -416,7 +416,7 @@
                                         </div>
                                     </td>
                                     <td class="text-center">
-                                        <button type="button"  title="Ver" class="btn btn-primary btn-sm" @click="abrirModalVer(produccion)">
+                                        <button type="button"  title="Ver" class="btn btn-primary btn-sm" @click="abrirModalVerProduccion(produccion)">
                                             <i class="far fa-eye"></i>
                                         </button>
                                     </td>
@@ -601,7 +601,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- Modal ver envio Realizado y Recibido -->
+                            <!-- Modal ver envio Realizado-->
                             <div v-else-if="Modal.numero==2">
                                 <div class="row shadow bg-white rounded p-2">
                                     <div class="col-md-12 ml-auto container">
@@ -652,7 +652,11 @@
                                             <span class="font-weight-bold">LISTA DE ITEMS</span>
                                         </div>
                                         <div class="row form-group ec-table-modal overflow-auto">
-                                            <table class="table tableless table-striped table-sm text-gray-900">
+                                            <h5 v-if="Carga.mostrar && Carga.numero ==2">
+                                                <span role="status" :class="Carga.clase"></span>&nbsp;
+                                                <span v-text="Carga.mensaje" :class="Carga.alert"></span>
+                                            </h5>
+                                            <table class="table tableless table-striped table-sm text-gray-900" v-else>
                                                 <thead>
                                                     <tr class="table-success">
                                                         <th class="text-center" >#</th>
@@ -680,6 +684,63 @@
                                                 <p class="text-right"><span class="font-weight-bold">Total de productos: </span>{{getTotal}}</p>
                                             </div>
                                         </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Modal de ver detalle de produccion -->
+                            <div v-else-if="Modal.numero == 4">
+                                <div class="row shadow bg-white rounded p-2">
+                                    <div class="col-md-12 ml-auto container">
+                                        <div class="row">
+                                            <h5 class="font-weight-bold">Lista de items</h5>
+                                        </div>
+                                        <div class="row form-group ec-table-modal overflow-auto">
+                                            <h5 v-if="Carga.mostrar && Carga.numero ==2">
+                                                <span role="status" :class="Carga.clase"></span>&nbsp;
+                                                <span v-text="Carga.mensaje" :class="Carga.alert"></span>
+                                            </h5>
+                                            <table class="table tableless table-striped table-sm text-gray-900" v-else>
+                                                <thead>
+                                                    <tr class="table-success">
+                                                        <th class="text-center">#</th>
+                                                        <th class="text-center">Nombre</th>
+                                                        <th style="width: 5rem;">Cant.</th>
+                                                        <th>Costo Unit.</th>
+                                                        <th class="text-right pr-4">Subtotal</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr v-for="(detalle, indice) in ListaDetalleProduccion" :key="indice">
+                                                        <td class="text-center">{{indice+1}}</td>
+                                                        <td class="text-left pl-5" v-text="detalle.nombre_producto"></td>
+                                                        <td v-text="detalle.cantidad"></td>
+                                                        <td v-text="detalle.costo_produccion"></td>
+                                                        <td class="text-right pr-4">
+                                                            {{detalle.subtotal = (detalle.costo_produccion * detalle.cantidad).toFixed(2)}}
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-8">
+                                            </div>
+                                            <div class="col-md-4">
+                                                <p class="text-right pr-2">Inversión total: s/ {{getTotal}}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-3"></div>
+                                    <div class="col-md-4 form-inline">
+                                        Fecha de inicio&nbsp;<span class="text-danger">*</span>
+                                        <input type="date" class="form-control form-control-sm" v-model="Produccion.fecha_inicio">
+                                    </div>
+                                    <div class="col-md-5 form-inline">
+                                        Fecha prog. finalización&nbsp;<span class="text-danger">*</span>
+                                        <input type="date" class="form-control form-control-sm" v-model="Produccion.fecha_programada">
                                     </div>
                                 </div>
                             </div>
@@ -726,7 +787,15 @@
                     estado: 0,
                     abasto_id: 0
                 },
+                Produccion:{
+                    id: 0,
+                    fecha_inicio : '',
+                    fecha_programada : '',
+                    fecha_fin: '',
+                    total : 0.00,
+                },
                 ListaDetalleEnvio: [],
+                ListaDetalleProduccion: [],
                 ListaEnvio: [],
                 Producto: {
                     nombre: '',
@@ -775,7 +844,7 @@
                 },
                 Modal: {
                     estado: 0,
-                    numero: 0,
+                    numero: 0, // 1: Editar producto, 2: Ver Envio Realizado, 3: Ver envio Recibido, 4: Ver produccion
                     titulo: '',
                     accion: '',
                     cancelar: '',
@@ -787,7 +856,9 @@
                     centro: '/centro',
                     venta: '/venta',
                     envioRealizado: '/envioRealizado',
-                    envioRecibido: '/envioRecibido'
+                    envioRecibido: '/envioRecibido',
+                    abasto: '/abasto',
+                    produccion: '/produccion'
                 }
             }
         },
@@ -843,6 +914,7 @@
                 me.ListaVenta = [];
                 me.ListaProducto = [];
                 me.ListaEnvio = [];
+                me.ListaProduccion = [];
                 me.Carga.numero = 1;
                 me.Carga.mostrar = 1;
                 me.Carga.clase = 'spinner-border spinner-border-sm text-primary';
@@ -926,7 +998,8 @@
                         break;
                     case 4: //Listar Produccion
                         this.Busqueda.dia = '';
-                        url = '/produccion?page='+this.Paginacion.currentPage
+                        url = this.Ruta.produccion +'?'
+                                +'page='+this.Paginacion.currentPage
                                 +'&estado='+this.Busqueda.estadoProduccion
                                 +'&texto='+this.Busqueda.texto
                                 +'&filas='+this.Busqueda.filas
@@ -1006,13 +1079,49 @@
                         });
                         break;
                     case 2:
-                        url = '/abasto/getDetalles';
+                        url = this.Ruta.abasto + '/getDetalles';
                         axios.get(url,{
                             params: {
                                 'id': me.EnvioRecibido.abasto_id
                             }
                         }).then(function(response){
                             me.ListaDetalleEnvio = response.data;
+                            me.Carga.mostrar = 0;
+                            me.Carga.clase = '';
+                            me.Carga.mensaje = '';
+                            me.Carga.alert = '';
+                        }).catch(function(error){
+                            console.log(error);
+                        });
+                        break;
+                    case 3:
+                        url = me.Ruta.envioRealizado + '/getDetalles';
+                        axios.get(url,{
+                            params: {
+                                'id': me.EnvioRecibido.id
+                            }
+                        }).then(function(response){
+                            me.ListaDetalleEnvio = response.data;
+                            me.Carga.mostrar = 0;
+                            me.Carga.clase = '';
+                            me.Carga.mensaje = '';
+                            me.Carga.alert = '';
+                        }).catch(function(error){
+                            console.log(error);
+                        });
+                        break;
+                    case 4:
+                        url = this.Ruta.produccion +'/getDetalles';
+                        axios.get(url,{
+                            params: {
+                                'id': me.Produccion.id
+                            }
+                        }).then(function(response){
+                            me.ListaDetalleProduccion = response.data;
+                            me.Carga.mostrar = 0;
+                            me.Carga.clase = '';
+                            me.Carga.mensaje = '';
+                            me.Carga.alert = '';
                         }).catch(function(error){
                             console.log(error);
                         });
@@ -1056,8 +1165,17 @@
                 this.EnvioRecibido.estado = envio['estado'];
                 this.EnvioRecibido.abasto_id = envio['abasto_id'];
 
-                this.EnvioRecibido.abasto_id ? this.listarDetalles(2) : this.listarDetalles(1);
+                this.EnvioRecibido.abasto_id ? this.listarDetalles(2) : this.listarDetalles(3);
                 this.abrirModal(3, 'Ver Envio', '', 'Cerrar', '')
+            },
+            abrirModalVerProduccion(produccion = []){
+                this.Produccion.id = produccion['id'];
+                this.Produccion.total = produccion['total'];
+                this.Produccion.fecha_inicio = produccion['fecha_inicio'];
+                this.Produccion.fecha_programada = produccion['fecha_programada'];
+
+                this.listarDetalles(4);
+                this.abrirModal(4, 'Ver Producción', '', 'Cerrar', 'modal-xl modal-dialog-scrollable');
             },
             abrirModal(numero, titulo, accion, cancelar, size){
                 this.Modal.estado = 1;
