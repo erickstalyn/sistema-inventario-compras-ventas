@@ -34,6 +34,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/venta', 'VentaController@listar');
     Route::post('/venta/agregar', 'VentaController@agregar');
 
+    Route::get('/produccion', 'ProduccionController@listar'); //métodos generales
+
     Route::group(['middleware' => ['Administrador']], function (){
         
         //Rutas para USUARIO
@@ -104,7 +106,6 @@ Route::group(['middleware' => ['auth']], function () {
     Route::group(['middleware' => ['Almacen']], function (){
         
         // RUTAS PARA PRODUCCIONES
-        Route::get('/produccion', 'ProduccionController@listar'); //métodos generales
         Route::post('/produccion/agregar', 'ProduccionController@agregar');
         Route::put('/produccion/editar', 'ProduccionController@editar');
         Route::put('/produccion/anular', 'ProduccionController@anular');

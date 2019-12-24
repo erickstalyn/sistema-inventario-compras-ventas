@@ -331,6 +331,118 @@
                     <h5>No se han encontrado resultados</h5>
                 </div>
             </div>
+            <div v-else-if="Almacen.mostrar == 4">
+                <div class="row form-group">
+                    <div class="col-md-2">
+                        <div class="input-group"> 
+                            <select class="custom-select text-gray-900" v-model="Busqueda.estadoProduccion">
+                                <option value="3">Todos</option>
+                                <option value="2">Sin iniciar</option>
+                                <option value="1">En Proceso</option>
+                                <option value="0">Finalizado</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <label for="">Fecha de inicio</label>
+                    </div>
+                    <div class="col-md-1">
+                        Dia
+                        <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.dia">
+                            <option value="">Todos</option>
+                            <option v-for="item in getDia()" :key="item" :value="item" v-text="item"></option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        Mes
+                        <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.mes">
+                            <option value="">Todos</option>
+                            <option v-for="item in getMes()" :key="item.valor" :value="item.valor" v-text="item.nombre"></option>
+                        </select>
+                    </div>
+                    <div class="col-md-1">
+                        Año
+                        <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.year">
+                            <option value="">Todos</option>
+                            <option v-for="item in getYear(2019)" :key="item" :value="item" v-text="item"></option>
+                        </select>
+                    </div>
+                    <div class="col-md-1"></div>
+                    <div class="col-md-1">
+                        N° filas:
+                        <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.filas">
+                            <option v-for="item in Filas" :key="item" :value="item" v-text="item"></option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-primary" @click="listar()">
+                            <i class="fa fa-search"></i>&nbsp; Buscar
+                        </button>
+                    </div>
+                </div>
+                <h5 v-if="Carga.mostrar && Carga.numero ==1">
+                    <span role="status" :class="Carga.clase"></span>&nbsp;
+                    <span v-text="Carga.mensaje" :class="Carga.alert"></span>
+                </h5>
+                <div v-if="ListaProduccion.length">
+                    <!-- Tabla -->
+                    <div class="ec-table overflow-auto">
+                        <table class="table table-borderless table-sm text-gray-900">
+                            <thead>
+                                <tr class="table-info">
+                                    <th>Fecha de inicio</th>
+                                    <th>Fecha programada</th>
+                                    <th>Fecha finalizada</th>
+                                    <th>Inversión en materiales</th>
+                                    <th>Estado</th>
+                                    <th class="text-center">Opciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="produccion in ListaProduccion" :key="produccion.id" >
+                                    <td v-text="formatearFecha(produccion.fecha_inicio)"></td>
+                                    <td v-text="formatearFecha(produccion.fecha_programada)"></td>
+                                    <td v-text="produccion.fecha_fin ? formatearFecha(produccion.fecha_fin) : '----------------'"></td>
+                                    <td v-text="produccion.total"></td>
+                                    <td>
+                                        <div v-if="produccion.fecha_inicio > getFechaHoy()">
+                                            <span class="badge badge-primary">Sin iniciar</span>
+                                        </div>
+                                        <div v-else-if="produccion.fecha_fin">
+                                            <span class="badge badge-danger">Finalizado</span>
+                                        </div>
+                                        <div v-else="">
+                                            <span class="badge badge-success">En proceso</span>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <button type="button"  title="Ver" class="btn btn-primary btn-sm" @click="abrirModalVer(produccion)">
+                                            <i class="far fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- Barra de navegacion -->
+                    <nav class="d-flex justify-content-center">
+                        <ul class="pagination">
+                            <li class="page-item">
+                                <a href="#" @click="cambiarPagina(Paginacion.currentPage-1)" class="page-link">Anterior</a>
+                            </li>
+                            <li class="page-item" v-for="page in Paginas" :key="page" :class="[page==Paginacion.currentPage?'active':'']">
+                                <a href="#" @click="cambiarPagina(page)" v-text="page" class="page-link"></a>
+                            </li>
+                            <li class="page-item">
+                                <a href="#" @click="cambiarPagina(Paginacion.currentPage+1)" class="page-link">Siguiente</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+                <div v-else-if="!Carga.mostrar">
+                    <h5>No se han encontrado resultados</h5>
+                </div>
+            </div>
             <div v-else-if="Almacen.mostrar == 5">
                 <div class="row form-group">
                     <div class="col-md-5">
@@ -602,6 +714,7 @@
                 },
                 SelectAlmacen: [],
                 ListaProducto: [],
+                ListaProduccion: [],
                 EnvioRealizado: {
                     id: 0,
                     estado: 0,
@@ -634,7 +747,8 @@
                     mes: this.getMesActual(),
                     year: this.getYearActual(),
                     estadoEnviado: 3,
-                    estadoRecibido: 3
+                    estadoRecibido: 3,
+                    estadoProduccion: 3
                 },
                 Error: {
                     estado: 0,
@@ -810,8 +924,30 @@
                             console.log(error)
                         });
                         break;
-                    case 4:
-                        
+                    case 4: //Listar Produccion
+                        this.Busqueda.dia = '';
+                        url = '/produccion?page='+this.Paginacion.currentPage
+                                +'&estado='+this.Busqueda.estadoProduccion
+                                +'&texto='+this.Busqueda.texto
+                                +'&filas='+this.Busqueda.filas
+                                +'&dia='+this.Busqueda.dia
+                                +'&mes='+this.Busqueda.mes
+                                +'&year='+this.Busqueda.year
+                                +'&idAlmacen='+this.Almacen.id;
+                        axios.get(url).then(function (response) {
+                            me.ListaProduccion = response.data.producciones.data;
+                            me.Paginacion = response.data.paginacion;
+
+                            me.Almacen.titulo = 'Producciones'
+                            me.Almacen.mostrar = 4;
+
+                            me.Carga.mostrar = 0;
+                            me.Carga.clase = '';
+                            me.Carga.mensaje = '';
+                            me.Carga.alert = '';
+                        }).catch(function (error) {
+                            console.log(error)
+                        });
                         break;
                     case 5:
                         this.Busqueda.dia = this.getDiaActual();
@@ -1075,6 +1211,17 @@
                 let n =  new Date();
                 let year = n.getFullYear();
                 return year;
+            },
+            getFechaHoy(){
+                let n =  new Date();
+                //Año
+                let y = n.getFullYear();
+                //Mes
+                let m = this.addCero(n.getMonth() + 1);
+                //Día
+                let d = this.addCero(n.getDate());
+                let hoy = y + "-" + m + "-" + d;
+                return hoy;
             },
             formatearFecha(fecha){
                 let arrayFecha = fecha.split('-');
