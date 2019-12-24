@@ -6,22 +6,23 @@
             <div class="row form-group">
                 <div class="col-md-6 text-center">
                     <!-- <i class="fas fa-hammer"></i>&nbsp; -->
-                    <span class="h3 mb-0 text-gray-900 font-italic" v-text="Puesto.nombre"></span>&nbsp;&nbsp;
+                    <span class="h3 mb-0 text-gray-900 font-italic" v-text="Almacen.nombre"></span>&nbsp;&nbsp;
                 </div>
                 <div class="col-md-3">
                     <div class="input-group">
-                        <select class="custom-select text-gray-900" v-model="Puesto.id">
-                            <option v-for="puesto in SelectPuesto" :key="puesto.id" :value="puesto.id" v-text="puesto.nombre"></option>
+                        <select class="custom-select text-gray-900" v-model="Almacen.id">
+                            <option v-for="almacen in SelectAlmacen" :key="almacen.id" :value="almacen.id" v-text="almacen.nombre"></option>
                         </select>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="input-group">
-                        <select class="custom-select text-gray-900" v-model="Puesto.quieroVer">
-                            <option value="1">Ventas</option>
-                            <option value="2">Inventario</option>
-                            <option value="3">Envios Realizados</option>
-                            <option value="4">Envios Recibidos</option>
+                        <select class="custom-select text-gray-900" v-model="Almacen.quieroVer">
+                            <option value="1">Inventario</option>
+                            <option value="2">Envios Realizados</option>
+                            <option value="3">Envios Recibidos</option>
+                            <option value="4">Producciones</option>
+                            <option value="5">Ventas</option>
                         </select>&nbsp;
                         <button type="button" class="btn btn-success" @click="listar()">
                             <i class="fas fa-sync-alt"></i>&nbsp; Actualizar
@@ -32,127 +33,9 @@
 
             <div class="row">
                 <i class="fas fa-warehouse"></i>&nbsp;&nbsp;
-                <span class="h5 mb-0 text-gray-900" v-text="Puesto.titulo"></span>&nbsp;&nbsp;
+                <span class="h5 mb-0 text-gray-900" v-text="Almacen.titulo"></span>&nbsp;&nbsp;
             </div>
-            <div v-if="Puesto.mostrar == 1">
-                <div class="row form-group">
-                    <div class="col-md-5">
-                        <div class="row">
-                            <div class="col-md-4">
-                                <select class="custom-select text-gray-900" v-model="Busqueda.type">
-                                    <option value="0">Todos</option>
-                                    <option value="1">Contado</option>
-                                    <option value="2">Credito</option>
-                                </select>
-                            </div>
-                            <div class="col-md-8">
-                                <input type="search" class="form-control" v-model="Busqueda.texto" placeholder="Buscar por CLIENTE o CODIGO de venta" @keyup.enter="listar()">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="row">
-                            <div class="col-md-2">
-                                <label for="">Fecha </label>
-                            </div>
-                            <div class="col-md-3">
-                                Dia
-                                <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.dia">
-                                    <option value="">Todos</option>
-                                    <option v-for="item in getDia()" :key="item" :value="item" v-text="item"></option>
-                                </select>
-                            </div>
-                            <div class="col-md-4">
-                                Mes
-                                <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.mes">
-                                    <option value="">Todos</option>
-                                    <option v-for="item in getMes()" :key="item.valor" :value="item.valor" v-text="item.nombre"></option>
-                                </select>
-                            </div>
-                            <div class="col-md-3">
-                                Año
-                                <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.year">
-                                    <option value="">Todos</option>
-                                    <option v-for="item in getYear(2019)" :key="item" :value="item" v-text="item"></option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="row">
-                            <div class="col-md-5">
-                                <button type="button" class="btn btn-primary" @click="listar()">
-                                    <i class="fa fa-search"></i>&nbsp;Buscar
-                                </button>
-                            </div>
-                            <div class="col-md-7 input-group">
-                                <label class="">N° filas:</label>
-                                <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.filas">
-                                    <option v-for="item in Filas" :key="item" :value="item" v-text="item"></option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <h5 v-if="Carga.mostrar">
-                    <span role="status" :class="Carga.clase"></span>&nbsp;
-                    <span v-text="Carga.mensaje" :class="Carga.alert"></span>
-                </h5>
-                <div v-if="ListaVenta.length">
-                    <!-- Tabla -->
-                    <div class="ec-table overflow-auto">
-                        <table class="table table-striped table-condensed table-bordered table-sm text-gray-900">
-                            <thead>
-                                <tr class="table-danger">
-                                    <th class="text-center">Codigo</th>
-                                    <th class="text-center">Tipo</th>
-                                    <th class="text-center">Cliente</th>
-                                    <th class="text-center">Total</th>
-                                    <th class="text-center">Realizado</th>
-                                    <th class="text-center">Opciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="venta in ListaVenta" :key="venta.id" >
-                                    <td class="text-center" v-text="venta.codigo"></td>
-                                    <td>
-                                        <label v-if="venta.tipo.substring(0, 1)==1">Contado</label>
-                                        <label v-if="venta.tipo.substring(0, 1)==2 || venta.tipo.substring(0, 1)==3">Credito</label>
-                                    </td>
-                                    <td v-text="venta.razon_social!=null?venta.razon_social:(venta.nombres!=null?(venta.nombres+' '+venta.apellidos):'---')"></td>
-                                    <td class="text-right" v-text="venta.total"></td>
-                                    <td class="text-center" v-text="fix(0, venta.created_at)"></td>
-                                    <td class="text-center">
-                                        <template>
-                                            <button type="button" title="VER" class="btn btn-primary btn-sm" @click="abrirModalVer(venta)">
-                                                <i class="far fa-eye"></i>
-                                            </button>
-                                        </template>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <!-- Barra de navegacion -->
-                    <nav class="d-flex justify-content-center">
-                        <ul class="pagination">
-                            <li class="page-item">
-                                <a href="#" @click="cambiarPagina(Paginacion.currentPage-1)" class="page-link">Anterior</a>
-                            </li>
-                            <li class="page-item" v-for="page in Paginas" :key="page" :class="[page==Paginacion.currentPage?'active':'']">
-                                <a href="#" @click="cambiarPagina(page)" v-text="page" class="page-link"></a>
-                            </li>
-                            <li class="page-item">
-                                <a href="#" @click="cambiarPagina(Paginacion.currentPage+1)" class="page-link">Siguiente</a>
-                            </li>
-                        </ul>
-                    </nav>
-                </div>
-                <div v-else-if="!Carga.mostrar">
-                    <h5>No se han encontrado resultados</h5>
-                </div>
-            </div>
-            <div v-else-if="Puesto.mostrar == 2">
+            <div v-if="Almacen.mostrar == 1">
                 <div class="row form-group">
                     <div class="col-md-5">
                         <div class="input-group">
@@ -224,7 +107,10 @@
                     <h5>No se han encontrado resultados</h5>
                 </div>
             </div>
-            <div v-else-if="Puesto.mostrar == 3">
+            <div v-else-if="Almacen.mostrar == 2">
+                
+            </div>
+            <div v-else-if="Almacen.mostrar == 3">
                 <div class="row form-group">
                     <div style="width: 8rem;" class="mr-1">
                         <div class="input-group"> 
@@ -336,7 +222,7 @@
                     <h5>No se han encontrado resultados</h5>
                 </div>
             </div>
-            <div v-else-if="Puesto.mostrar == 4">
+            <div v-else-if="Almacen.mostrar == 4">
                 <div class="row form-group">
                     <div style="width: 8rem;" class="mr-1">
                         <div class="input-group"> 
@@ -424,6 +310,124 @@
                                         <button type="button" title="Ver" class="btn btn-sm btn-primary" @click="abrirModalVerEnvioRecibido(envio)">
                                             <i class="far fa-eye"></i>
                                         </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- Barra de navegacion -->
+                    <nav class="d-flex justify-content-center">
+                        <ul class="pagination">
+                            <li class="page-item">
+                                <a href="#" @click="cambiarPagina(Paginacion.currentPage-1)" class="page-link">Anterior</a>
+                            </li>
+                            <li class="page-item" v-for="page in Paginas" :key="page" :class="[page==Paginacion.currentPage?'active':'']">
+                                <a href="#" @click="cambiarPagina(page)" v-text="page" class="page-link"></a>
+                            </li>
+                            <li class="page-item">
+                                <a href="#" @click="cambiarPagina(Paginacion.currentPage+1)" class="page-link">Siguiente</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+                <div v-else-if="!Carga.mostrar">
+                    <h5>No se han encontrado resultados</h5>
+                </div>
+            </div>
+            <div v-else-if="Almacen.mostrar == 5">
+                <div class="row form-group">
+                    <div class="col-md-5">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <select class="custom-select text-gray-900" v-model="Busqueda.type">
+                                    <option value="0">Todos</option>
+                                    <option value="1">Contado</option>
+                                    <option value="2">Credito</option>
+                                </select>
+                            </div>
+                            <div class="col-md-8">
+                                <input type="search" class="form-control" v-model="Busqueda.texto" placeholder="Buscar por CLIENTE o CODIGO de venta" @keyup.enter="listar()">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <label for="">Fecha </label>
+                            </div>
+                            <div class="col-md-3">
+                                Dia
+                                <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.dia">
+                                    <option value="">Todos</option>
+                                    <option v-for="item in getDia()" :key="item" :value="item" v-text="item"></option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                Mes
+                                <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.mes">
+                                    <option value="">Todos</option>
+                                    <option v-for="item in getMes()" :key="item.valor" :value="item.valor" v-text="item.nombre"></option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                Año
+                                <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.year">
+                                    <option value="">Todos</option>
+                                    <option v-for="item in getYear(2019)" :key="item" :value="item" v-text="item"></option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="row">
+                            <div class="col-md-5">
+                                <button type="button" class="btn btn-primary" @click="listar()">
+                                    <i class="fa fa-search"></i>&nbsp;Buscar
+                                </button>
+                            </div>
+                            <div class="col-md-7 input-group">
+                                <label class="">N° filas:</label>
+                                <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.filas">
+                                    <option v-for="item in Filas" :key="item" :value="item" v-text="item"></option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <h5 v-if="Carga.mostrar">
+                    <span role="status" :class="Carga.clase"></span>&nbsp;
+                    <span v-text="Carga.mensaje" :class="Carga.alert"></span>
+                </h5>
+                <div v-if="ListaVenta.length">
+                    <!-- Tabla -->
+                    <div class="ec-table overflow-auto">
+                        <table class="table table-striped table-condensed table-bordered table-sm text-gray-900">
+                            <thead>
+                                <tr class="table-danger">
+                                    <th class="text-center">Codigo</th>
+                                    <th class="text-center">Tipo</th>
+                                    <th class="text-center">Cliente</th>
+                                    <th class="text-center">Total</th>
+                                    <th class="text-center">Realizado</th>
+                                    <th class="text-center">Opciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="venta in ListaVenta" :key="venta.id" >
+                                    <td class="text-center" v-text="venta.codigo"></td>
+                                    <td>
+                                        <label v-if="venta.tipo.substring(0, 1)==1">Contado</label>
+                                        <label v-if="venta.tipo.substring(0, 1)==2 || venta.tipo.substring(0, 1)==3">Credito</label>
+                                    </td>
+                                    <td v-text="venta.razon_social!=null?venta.razon_social:(venta.nombres!=null?(venta.nombres+' '+venta.apellidos):'---')"></td>
+                                    <td class="text-right" v-text="venta.total"></td>
+                                    <td class="text-center" v-text="fix(0, venta.created_at)"></td>
+                                    <td class="text-center">
+                                        <template>
+                                            <button type="button" title="VER" class="btn btn-primary btn-sm" @click="abrirModalVer(venta)">
+                                                <i class="far fa-eye"></i>
+                                            </button>
+                                        </template>
                                     </td>
                                 </tr>
                             </tbody>
@@ -588,14 +592,14 @@
         data(){
             return {
                 //datos generales
-                Puesto: {
-                    id: 1,
+                Almacen: {
+                    id: 4,
                     nombre: '',
-                    quieroVer: 1, // 1: Ventas, 2: Inventario 3: Envios Realizados, 4: Envios Recibidos
+                    quieroVer: 1, // 1:Inventario, 2: Envios Realizados, 3: Envios Recibidos, 4: Producciones, 5: Ventas
                     titulo: '',
-                    mostrar: 0 // 1:Inventario, 2: Ventas, 3: Envios Realizados, 4: Envios Recibidos
+                    mostrar: 0 // 1:Inventario, 2: Envios Realizados, 3: Envios Recibidos, 4: Producciones, 5: Ventas
                 },
-                SelectPuesto: [],
+                SelectAlmacen: [],
                 ListaProducto: [],
                 EnvioRealizado: {
                     id: 0,
@@ -727,44 +731,19 @@
                 me.Carga.clase = 'spinner-border spinner-border-sm text-primary';
                 me.Carga.mensaje = 'Cargando...';
                 me.Carga.alert = 'badge badge-info';
-                switch (Number.parseInt(this.Puesto.quieroVer)) {
-                    case 1: //Listar Ventas
-                        url = this.Ruta.venta+'?'
-                                +'page='+this.Paginacion.currentPage
-                                +'&type='+this.Busqueda.type
-                                +'&text='+this.Busqueda.texto
-                                +'&rows='+this.Busqueda.filas
-                                +'&dia='+this.Busqueda.dia
-                                +'&mes='+this.Busqueda.mes
-                                +'&year='+this.Busqueda.year
-                                +'&centro_id='+this.Puesto.id;
-                        
-                        axios.get(url).then(function (response) {
-                            me.ListaVenta = response.data.ventas.data;
-                            me.Paginacion = response.data.pagination;
-                            me.Puesto.titulo = 'Ventas'
-                            me.Puesto.mostrar = 1;
-
-                            me.Carga.mostrar = 0;
-                            me.Carga.clase = '';
-                            me.Carga.mensaje = '';
-                            me.Carga.alert = '';
-                        }).catch(function (error) {
-                            console.log(error);
-                        });
-                        break;
-                    case 2: //Listar inventario
+                switch (Number.parseInt(this.Almacen.quieroVer)) {
+                    case 1: //Listar inventario
                         url = this.Ruta.centro+'/listProductos?'
                                 +'page='+this.Paginacion.currentPage
                                 +'&texto='+this.Busqueda.texto
                                 +'&rows='+this.Busqueda.filas
-                                +'&centro_id='+this.Puesto.id;
+                                +'&centro_id='+this.Almacen.id;
                         
                         axios.get(url).then(function (response) {
                             me.ListaProducto = response.data.list.data;
                             me.Paginacion = response.data.paginate;
-                            me.Puesto.titulo = 'Inventario'
-                            me.Puesto.mostrar = 2;
+                            me.Almacen.titulo = 'Inventario'
+                            me.Almacen.mostrar = 1;
 
                             me.Carga.mostrar = 0;
                             me.Carga.clase = '';
@@ -774,6 +753,8 @@
                             console.log(error)
                         });
                         break;
+                    case 2: //Listar Envio realizados
+                        
                     case 3:
                         url = this.Ruta.envioRealizado + '?'
                                 +'page='+this.Paginacion.currentPage
@@ -826,9 +807,34 @@
                             console.log(error)
                         });
                         break;
+                    case 5:
+                        url = this.Ruta.venta+'?'
+                                +'page='+this.Paginacion.currentPage
+                                +'&type='+this.Busqueda.type
+                                +'&text='+this.Busqueda.texto
+                                +'&rows='+this.Busqueda.filas
+                                +'&dia='+this.Busqueda.dia
+                                +'&mes='+this.Busqueda.mes
+                                +'&year='+this.Busqueda.year
+                                +'&centro_id='+this.Puesto.id;
+                        
+                        axios.get(url).then(function (response) {
+                            me.ListaVenta = response.data.ventas.data;
+                            me.Paginacion = response.data.pagination;
+                            me.Puesto.titulo = 'Ventas'
+                            me.Puesto.mostrar = 5;
+
+                            me.Carga.mostrar = 0;
+                            me.Carga.clase = '';
+                            me.Carga.mensaje = '';
+                            me.Carga.alert = '';
+                        }).catch(function (error) {
+                            console.log(error);
+                        });
+                        break;
                 }
-                for (let i = 0; i < this.SelectPuesto.length; i++) { //Busco el nombre
-                    if(this.SelectPuesto[i].id == this.Puesto.id) this.Puesto.nombre = this.SelectPuesto[i].nombre;
+                for (let i = 0; i < this.SelectAlmacen.length; i++) { //Busco el nombre
+                    if(this.SelectAlmacen[i].id == this.Almacen.id) this.Almacen.nombre = this.SelectAlmacen[i].nombre;
                 }
             },
             listarDetalles(numero){
@@ -866,9 +872,9 @@
                 let url;
                 switch (numero) {
                     case 1: //los puestos
-                        url = this.Ruta.centro + '/selectCentro?tipo=P';
+                        url = this.Ruta.centro + '/selectCentro?tipo=A';
                         axios.get(url).then(function(response){
-                            me.SelectPuesto = response.data;
+                            me.SelectAlmacen = response.data;
                             me.listar();
                         }).catch(function(error){
                             console.log(error);

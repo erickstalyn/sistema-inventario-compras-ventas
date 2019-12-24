@@ -19,6 +19,9 @@
             <template v-if="menu==5">
                 <adm_verpuesto></adm_verpuesto>
             </template>
+            <template v-if="menu==6">
+                <adm_veralmacen></adm_veralmacen>
+            </template>
             <template v-if="menu==10">
                 <adm_usuario></adm_usuario>
             </template>
