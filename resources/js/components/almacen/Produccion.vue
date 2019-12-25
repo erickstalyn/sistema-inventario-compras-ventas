@@ -417,6 +417,11 @@
                 ListaDetalleProduccionFiltrada: [],
                 //DATOS PARA ENVIAR UNA PRODUCCION
                 SelectAlmacen: [],
+
+                //datos de rutas
+                Ruta: {
+                    produccion: '/produccion'
+                }
             }
         },
         computed: {
@@ -517,7 +522,10 @@
             listarFiltro(){
                 if(this.BusquedaFiltro.texto != ''){
                     let me = this;
-                    let url = '/producto/getProductoFiltrado?texto=' + this.BusquedaFiltro.texto;
+                    let url = this.Ruta.produccion+'/getProductoFiltrado?'
+                                    +'texto='+this.BusquedaFiltro.texto
+                                    +'&centro_id='+$('meta[name="idCentro"]').attr('content');
+
                     axios.get(url).then(function(response){
                         if(response.data.productos.length == 1 && me.BusquedaFiltro.texto == response.data.productos[0].codigo){
                             me.agregarDetalle(response.data.productos[0]);

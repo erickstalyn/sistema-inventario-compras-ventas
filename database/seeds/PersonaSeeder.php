@@ -16,15 +16,15 @@ class PersonaSeeder extends Seeder {
         DB::table('persona')->insert(array(
             'nombres'=>'Jose Guzman',
             'apellidos'=> 'Silva Tello',
-            // 'created_at' => $now,
             'tipo' => 'P'
         ));
+
         //Proveedores
         DB::table('persona')->insert(array(
             'nombres' => 'Jose Anderson',
             'apellidos' => 'Cespedes Diaz',
+            'dni' => '71736657',
             'proveedor' => 1,
-            // 'created_at' => $now,
             'tipo' => 'P'
         ));
         DB::table('persona')->insert(array(
@@ -32,7 +32,6 @@ class PersonaSeeder extends Seeder {
             'apellidos' => 'Rojas Cordova',
             'dni' => '12345678',
             'proveedor' => 1,
-            // 'created_at' => $now,
             'tipo' => 'P'
         ));
         DB::table('persona')->insert(array(
@@ -40,7 +39,6 @@ class PersonaSeeder extends Seeder {
             'apellidos' => 'Pacherrez Puyén',
             'dni' => '74757559',
             'proveedor' => 1,
-            // 'created_at' => $now,
             'tipo' => 'P'
         ));
         
@@ -48,14 +46,12 @@ class PersonaSeeder extends Seeder {
             'razon_social' => 'Gloria SAA',
             'ruc' => '27136842916',
             'proveedor' => 1,
-            // 'created_at' => $now,
             'tipo' => 'E'
         ));
         DB::table('persona')->insert(array(
             'razon_social' => 'EasyCode SAC',
             'ruc' => '85721696932',
             'proveedor' => 1,
-            // 'created_at' => $now,
             'tipo' => 'E'
         ));
 

@@ -197,4 +197,26 @@ class ProduccionController extends Controller
             DB::rollback();
         }
     }
+
+    public function getProductoFiltrado(Request $request){
+        if ( !$request->ajax() ) return redirect('/');
+
+        $texto = $request->texto;
+        $centro_id = $request->centro_id;
+
+        $productos = Producto::select('producto.id', 'producto.costo_produccion', 'producto.codigo', 'producto.nombre', 
+                                    'detalle_producto.substock as stock')
+                            ->join('detalle_producto', 'detalle_producto.producto_id', '=', 'producto.id')
+                            ->where(function ($query) use ($texto) {
+                                if ( $texto != '' ) {
+                                    $query->where('nombre', 'like', $texto . '%')
+                                        ->orWhere('codigo', '=', $texto);
+                                }
+                            })
+                            ->where('detalle_producto.centro_id', '=', $centro_id)
+                            ->orderBy('nombre', 'asc')->get();
+        return [
+            'productos' => $productos
+        ];
+    }
 }

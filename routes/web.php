@@ -37,6 +37,7 @@ Route::group(['middleware' => ['auth']], function () {
     //RUTAS PARA DETALLES DE VENTAS
     Route::get('/detalle_venta/list', 'DetalleVentaController@list');
 
+    //RUTAS PARA PRODUCCIONES
     Route::get('/produccion', 'ProduccionController@listar'); //métodos generales
     Route::get('/produccion/getDetalles', 'ProduccionController@getDetalles');
 
@@ -58,12 +59,6 @@ Route::group(['middleware' => ['auth']], function () {
         Route::put('/material/activar', 'MaterialController@activar');
         Route::put('/material/desactivar', 'MaterialController@desactivar');
         Route::get('/material/selectMaterial', 'MaterialController@selectMaterial'); 
-
-        //RUTAS PARA PRODUCCIONES
-        Route::get('/produccion', 'ProduccionController@listar'); //métodos generales
-        Route::post('/produccion/agregar', 'ProduccionController@agregar');
-        
-        Route::put('/produccion/finalizar', 'ProduccionController@finalizar'); //metodos secundarios
 
         //RUTAS PARA SUPERPRODUCTO
         Route::get('/superproducto', 'SuperProductoController@listar'); //metodos generales

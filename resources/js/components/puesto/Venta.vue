@@ -428,7 +428,7 @@
                     </div>
 
                     <div class="modal-footer">
-                        <div class="row form-group col-md-12 d-flex justify-content-around">
+                        <div class="row col-md-12 d-flex justify-content-around">
                             <button type="button" v-if="Modal.btnA" @click="accionar()" class="btn btn-success" v-text="Modal.btnA"></button>
                             <button type="button" v-if="Modal.btnC" @click="cerrarModal()" class="btn btn-secondary" v-text="Modal.btnC"></button>
                         </div>
