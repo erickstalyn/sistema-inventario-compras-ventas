@@ -22,6 +22,7 @@ class ProduccionController extends Controller
         $ordenarPor = $request->ordenarPor;
         $orden = $request->orden;
         $hoy = Carbon::now('America/Lima')->toDateString();
+        $idAlmacen = $request->idAlmacen;
         //Fechas
         $dia = $request->dia;
         $mes = $request->mes;
@@ -62,7 +63,8 @@ class ProduccionController extends Controller
                                 }else{
                                 }
                             })
-                            ->orderBy($ordenarPor, $orden)->paginate($filas);
+                            ->where('produccion.almacen_id', '=', $idAlmacen)
+                            ->orderBy('produccion.id', 'desc')->paginate($filas);
 
         return [
             'paginacion' => [

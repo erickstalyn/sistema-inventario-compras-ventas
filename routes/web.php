@@ -37,6 +37,9 @@ Route::group(['middleware' => ['auth']], function () {
     //RUTAS PARA DETALLES DE VENTAS
     Route::get('/detalle_venta/list', 'DetalleVentaController@list');
 
+    Route::get('/produccion', 'ProduccionController@listar'); //métodos generales
+    Route::get('/produccion/getDetalles', 'ProduccionController@getDetalles');
+
     Route::group(['middleware' => ['Administrador']], function (){
         
         //Rutas para USUARIO
@@ -107,12 +110,11 @@ Route::group(['middleware' => ['auth']], function () {
     Route::group(['middleware' => ['Almacen']], function (){
         
         // RUTAS PARA PRODUCCIONES
-        Route::get('/produccion', 'ProduccionController@listar'); //métodos generales
         Route::post('/produccion/agregar', 'ProduccionController@agregar');
         Route::put('/produccion/editar', 'ProduccionController@editar');
         Route::put('/produccion/anular', 'ProduccionController@anular');
         Route::get('/produccion/getProductoFiltrado', 'ProduccionController@getProductoFiltrado'); //metodos secundarios
-        Route::get('/produccion/getDetalles', 'ProduccionController@getDetalles');
+        
         Route::put('/produccion/finalizar', 'ProduccionController@finalizar'); //metodos secundarios
 
         //Rutas de ENVIOS REALIZADOS

@@ -498,7 +498,8 @@
                         +'&mes='+this.Busqueda.mes
                         +'&year='+this.Busqueda.year
                         +'&ordenarPor='+this.Navegacion.ordenarPor
-                        +'&orden='+this.Navegacion.orden;
+                        +'&orden='+this.Navegacion.orden
+                        +'&idAlmacen='+this.Produccion.almacen_id;
                 
                 var me = this;
                 axios.get(url).then(function (response) {
