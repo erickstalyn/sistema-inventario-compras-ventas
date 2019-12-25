@@ -280,7 +280,7 @@
                         </div>
                         <!-- Modal Numero 2 de VER-->
                         <div v-if="Modal.numero==2" class="container">
-                            <div class="row shadow bg-white rounded form-group pt-2">
+                            <div class="row shadow bg-white rounded form-group pt-2"  style="border: 1px solid">
                                 <div class="col-md-12">
                                     <label class="font-weight-bold">CLIENTE</label>
                                 </div>
@@ -293,34 +293,31 @@
                                         <label class="col-md-3">Nombres</label>
                                         <input type="text" class="col-md-8 form-control form-control-sm" readonly v-model="Cliente.nombres">
                                     </div>
-                                    <div class="col-md-4"></div>
+                                    <div class="col-md-4 input-group"></div>
                                     <div class="col-md-8 input-group">
                                         <label class="col-md-3">Apellidos</label>
                                         <input type="text" class="col-md-8 form-control form-control-sm" readonly v-model="Cliente.apellidos">
                                     </div>
                                 </div>
-                                <div v-else-if="Cliente.tipo=='E'" class="row form-group">
-                                    <div class="col-md-3 input-group">
-                                        <label class="col-md-3">RUC</label>
-                                        <input type="text" class="col-md-9 form-control form-control-sm" readonly v-model="Cliente.ruc">
+                                <div v-else-if="Cliente.tipo=='E'" class="form-group input-group">
+                                    <div class="col-md-4 input-group">
+                                        <label class="col-md-4">RUC</label>
+                                        <input type="text" class="col-md-8 form-control form-control-sm pr-0" readonly v-model="Cliente.ruc">
                                     </div>
-                                    <div class="col-md-9 input-group">
-                                        <label class="col-md-2">Razón social</label>&nbsp;
-                                        <input type="text" class="col-md-10 form-control form-control-sm" readonly v-model="Cliente.razon_social">
+                                    <div class="col-md-8 input-group">
+                                        <label class="col-md-3">Razón social</label>&nbsp;
+                                        <input type="text" class="col-md-9 form-control form-control-sm pr-0" readonly v-model="Cliente.razon_social">
                                     </div>
                                 </div>
                                 <div v-else class="col-md-12 form-group">
                                     <label class="text-info">No se ha registrado cliente</label>
                                 </div>
                             </div>
-                            <div class="row shadow bg-white rounded pt-2">
+                            <div class="row shadow bg-white rounded pt-2"  style="border: 1px solid">
                                 <div class="col-md-12 input-group">
                                     <label class="col-md-3 font-weight-bold">LISTA DE ITEMS</label>
                                     <div class="col-md-1"></div>
-                                    <div class="col-md-4 input-group">
-                                        <label class="col-md-4 font-weight-bold">Pago</label>
-                                        <label class="col-md-8 text-info" v-text="fix(4, Venta.tipo_pago)"></label>
-                                    </div>
+                                    <label class="col-md-4 font-weight-bold">Pago:&nbsp;<label class="text-info" v-text="fix(4, Venta.tipo_pago)"></label></label>
                                     <div class="col-md-4 input-group">
                                         <label class="col-md-4 font-weight-bold">Precio</label>
                                         <label class="col-md-8 text-info" v-text="fix(5, Venta.tipo_precio)"></label>
@@ -347,8 +344,8 @@
                                         </tbody>
                                     </table>
                                 </div>
-                                <div class="col-md-12 input-group">
-                                    <div class="col-md-5 input-group" v-if="Venta.total_faltate">
+                                <div class="row col-md-12 input-group">
+                                    <div class="col-md-5 input-group" v-if="Venta.total_faltante&&Venta.total_faltante!=0">
                                         <label class="col-md-7 text-right font-weight-bold">Monto faltante:</label>
                                         <label class="col-md-5 text-right text-info" v-text="'S/. '+Venta.total_faltante"></label>
                                     </div>
@@ -901,7 +898,7 @@
 
                 $.ajax({
                     type: 'GET',
-                    url: "http://localhost:80/Reniec/demo.php",
+                    url: "http://localhost:8080/Reniec/demo.php",
                     data: "dni="+dni,
                     beforeSend(){
                         me.Service.msm = 'Consultado...';
@@ -935,7 +932,7 @@
 
                 $.ajax({
                     type: 'GET',
-                    url: "http://localhost:80/SunatPHP/demo.php",
+                    url: "http://localhost:8080/SunatPHP/demo.php",
                     data: "ruc="+ruc,
                     beforeSend(){
                         me.Service.msm = 'Consultado...';
@@ -1067,7 +1064,8 @@
                         break;
                     case 4:
                         if ( data == '1' ) fixed = 'Contado'; 
-                        if ( data == '2' || data == '3' ) fixed = 'Credito'; 
+                        if ( data == '2' ) fixed = 'Credito Prepago'; 
+                        if ( data == '3' ) fixed = 'Credito Postpago'; 
                         break;
                     case 5:
                         if ( data == '1' ) fixed = 'Al por menor'; 
