@@ -812,7 +812,7 @@
                     texto: '',
                     filas: 5,
                     type: 0,
-                    dia: '',
+                    dia: this.getDiaActual(),
                     mes: this.getMesActual(),
                     year: this.getYearActual(),
                     estadoEnviado: 3,
@@ -922,6 +922,7 @@
                 me.Carga.alert = 'badge badge-info';
                 switch (Number.parseInt(this.Almacen.quieroVer)) {
                     case 1: //Listar inventario
+                        me.Busqueda.dia = '';
                         url = this.Ruta.centro+'/listProductos?'
                                 +'page='+this.Paginacion.currentPage
                                 +'&texto='+this.Busqueda.texto
@@ -943,7 +944,6 @@
                         });
                         break;
                     case 2: //Listar Envio realizados
-                        this.Busqueda.dia = '';
                         url = this.Ruta.envioRealizado + '?'
                                 +'page='+this.Paginacion.currentPage
                                 +'&estado='+this.Busqueda.estadoEnviado
@@ -970,7 +970,6 @@
                         });
                         break;
                     case 3: //Listar Envios Recibidos
-                        this.Busqueda.dia = '';
                         url = this.Ruta.envioRecibido + '?'
                             +'page='+this.Paginacion.currentPage
                             +'&estado='+this.Busqueda.estadoRecibido
@@ -997,7 +996,6 @@
                         });
                         break;
                     case 4: //Listar Produccion
-                        this.Busqueda.dia = '';
                         url = this.Ruta.produccion +'?'
                                 +'page='+this.Paginacion.currentPage
                                 +'&estado='+this.Busqueda.estadoProduccion
@@ -1023,7 +1021,6 @@
                         });
                         break;
                     case 5:
-                        this.Busqueda.dia = this.getDiaActual();
                         url = this.Ruta.venta+'?'
                                 +'page='+this.Paginacion.currentPage
                                 +'&type='+this.Busqueda.type
