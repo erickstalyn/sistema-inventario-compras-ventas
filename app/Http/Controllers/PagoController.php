@@ -13,10 +13,11 @@ class PagoController extends Controller
     public function agregar(Request $request){
         if ( !$request->ajax() ) return redirect('/');
 
-        // $estado = 1;
+        $listaPagos = $request->listaPagos;
+
         try {
             DB::beginTransaction();
-            $listaPagos = $request->listaPagos;
+            
             foreach($listaPagos as $ep => $pag){
                 $pago = new Pago();
                 $pago->monto = $pag['monto'];

@@ -39,6 +39,7 @@ Route::group(['middleware' => ['auth']], function () {
 
     //RUTAS PARA PAGOS
     Route::get('/pago/listVenta', 'PagoController@listVenta');
+    Route::post('/pago/agregar', 'PagoController@agregar');
 
     //RUTAS PARA PRODUCCIONES
     Route::get('/produccion', 'ProduccionController@listar'); //métodos generales
@@ -92,8 +93,6 @@ Route::group(['middleware' => ['auth']], function () {
 
         Route::get('/centro/selectCentro', 'CentroController@selectCentro');
 
-        //RUTAS DE PAGOS
-        Route::post('/pago/agregar', 'PagoController@agregar');
         //RUTAS DETALLES DE PRODUCTOS
         Route::put('/detalle_producto/editar', 'Detalle_productoController@editar');
         

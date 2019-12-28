@@ -69,7 +69,7 @@
                                             <i class="fas fa-edit"></i>
                                         </button>
                                     </template>
-                                    <template v-if="venta.tipo.substring(0, 1)==2 || venta.tipo.substring(0, 1)==3">
+                                    <template v-if="(venta.tipo.substring(0, 1)==2 || venta.tipo.substring(0, 1)==3)&&venta.total_faltante!=0">
                                         <button type="button"  title="PAGAR" class="btn btn-info btn-sm" @click="abrirModalPagar(venta)">
                                             <i class="fas fa-hand-holding-usd"></i>
                                         </button>
@@ -331,7 +331,7 @@
                                             <tbody>
                                                 <tr v-for="(pago, index) in ListaPago" :key="index" :class="pago.color">
                                                     <td class="text-right pr-1">{{index+1}}</td>
-                                                    <td class="text-center" v-text="pago.created_at"></td>
+                                                    <td class="text-center" v-text="fix(0, pago.created_at)"></td>
                                                     <td class="text-right pr-4" v-text="pago.monto"></td>
                                                 </tr>
                                             </tbody>
@@ -340,11 +340,11 @@
                                     <div class="col-md-12 overflow-auto" style="height: 15rem" v-else>
                                         <label class="text-info">Ningun pago registrado</label>
                                     </div>
-                                    <div class="col-md-12 input-group d-flex justify-content-end aling-items-end">
+                                    <div class="col-md-12 input-group d-flex justify-content-end">
                                         <!-- Monto pagado -->
                                         <label class="col-md-6 font-weight-bold">Monto pagado:</label>
                                         <label class="col-md-1 text-right text-success">S/.</label>
-                                        <label class="col-md-4 text-right text-success" v-text="Venta.total-Venta.total_faltante"></label>
+                                        <label class="col-md-4 text-right text-success" v-text="(Venta.total-Venta.total_faltante).toFixed(2)"></label>
                                         <!-- Monto faltante -->
                                         <label class="col-md-6 font-weight-bold">Monto faltante:</label>
                                         <label class="col-md-1 text-right text-danger">S/.</label>
@@ -395,8 +395,8 @@
                             </div>
                                 
                         </div>
-                        <!-- Modal Numero 3 de PAGAR-->
-                        <div v-if="Modal.numero == 3">
+                        <!-- Modal Numero 4 de PAGAR-->
+                        <div v-if="Modal.numero == 4">
                             <div v-if="Error.estado" class="row d-flex justify-content-center">
                                 <div class="alert alert-danger" style="height: 4.5rem;">
                                     <button type="button" @click="Error.estado=0" class="close text-primary" data-dismiss="alert">×</button>
@@ -406,61 +406,55 @@
                                     </ul>
                                 </div>
                             </div>
-                            <div class="row form-group ">
-                                <div class="col-md-3">
-                                    <span class="font-weight-bold">Registrar</span>
-                                </div>
+                            <div class="row form-group">
+                                <label class="col-md-3 font-weight-bold">Registrar</label>
                                 <div class="col-md-1"></div>
-                                <div class="col-md-7">
-                                    <div class="input-group"> 
-                                        Monto&nbsp;
-                                        <input type="number" class="form-control form-control-sm" v-model="Pago.monto" @keyup.enter="agregarListaPago()">&nbsp;
-                                        <button type="button" class="btn btn-sm btn-primary" @click="agregarListaPago()">
-                                            Registrar
-                                        </button>
-                                    </div>
+                                <div class="col-md-7 input-group">
+                                    <label>Monto&nbsp;&nbsp;</label>
+                                    <input type="number" class="col-md-7 form-control form-control-sm text-right" v-model="Pago.monto" @keyup.enter="add(1)" min="0" :max="Venta.total_faltante" :disabled="Venta.total_faltante==0" id="PagoMonto">
+                                    <button type="button" class="btn btn-sm btn-primary" @click="add(1)" :disabled="Venta.total_faltante==0">Registrar</button>
                                 </div>
                                 <div class="col-md-1"></div>
                             </div>
                             <div class="row form-group overflow-auto" style="height: 17.5rem;">
-                                <div class="col-md-12">
-                                    <div v-if="ListaPago.length">
-                                        <table class="table table-borderless table-striped table-sm text-gray-900">
-                                            <thead>
-                                                <tr class="table-info">
-                                                    <th class="text-center">#</th>
-                                                    <th class="text-center">Fecha de pago</th>
-                                                    <th class="text-right pr-5">Monto</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr v-for="(pago, index) in ListaPago" :key="index" :class="pago.color">
-                                                    <td class="text-center">{{index+1}}</td>
-                                                    <td class="text-center" v-text="pago.created_at"></td>
-                                                    <td class="text-right pr-5" v-text="pago.monto"></td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <div v-else>
-                                        <p>Ningun pago registrado</p>
-                                    </div>
+                                <div class="col-md-12" v-if="ListaPago.length">
+                                    <table class="table table-bordered table-striped table-sm text-gray-900">
+                                        <thead>
+                                            <tr class="table-info">
+                                                <th class="text-center">#</th>
+                                                <th class="text-center">Fecha de pago</th>
+                                                <th class="text-center">Monto</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="(pago, index) in ListaPago" :key="index" :class="pago.color">
+                                                <td class="text-right">{{index+1}}</td>
+                                                <td class="text-center" v-text="fix(0, pago.created_at)"></td>
+                                                <td class="text-center pr-2" v-text="pago.monto"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="col-md-12" v-else>
+                                    <p>Ningun pago registrado</p>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-12 text-right pr-5">
-                                    <span class="text-success">Monto pagado: s/{{getSumaPagos}}</span>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12 text-right pr-5">
-                                    <span class="text-danger">Monto faltante: s/{{this.Abasto.total_faltante = Abasto.total - getSumaPagos}}</span>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12 text-right pr-5">
-                                    <span>Costo total: s/{{Abasto.total}}</span>
-                                </div>
+                            <div class="row input-group d-flex justify-content-end">
+                                <!-- Monto pagado -->
+                                <label class="col-md-4"></label>
+                                <label class="col-md-4 font-weight-bold">Monto pagado:</label>
+                                <label class="col-md-1 text-right text-success">S/.</label>
+                                <label class="col-md-3 text-right text-success" v-text="(Venta.total-Venta.total_faltante).toFixed(2)"></label>
+                                <!-- Monto faltante -->
+                                <label class="col-md-4"></label>
+                                <label class="col-md-4 font-weight-bold">Monto faltante:</label>
+                                <label class="col-md-1 text-right text-danger">S/.</label>
+                                <label class="col-md-3 text-right text-danger" v-text="Venta.total_faltante"></label>
+                                <!-- Monto total -->
+                                <label class="col-md-4"></label>
+                                <label class="col-md-4 font-weight-bold">Monto total: </label>
+                                <label class="col-md-1 text-right">S/.</label>
+                                <label class="col-md-3 text-right" v-text="Venta.total"></label>
                             </div>
                         </div>
                     </div>
@@ -607,24 +601,28 @@
 
                 return filas;
             },
-            getSumaPagos: function(){
-                let sum = 0.00;
+            // updateVentaTotalFaltante: function(){
+            //     if (!this.Modal.numero==4) return;
 
-                this.ListaPago.forEach( detalle => {
-                    sum = sum + Number.parseFloat(detalle.monto);
-                });
-
-                return Number.parseFloat(sum).toFixed(2);
-            },
-            updateVentaTotal: function(){
-                this.Venta.total = 0;
-
-                this.ListaDetalle.forEach(detalle => {
-                    this.Venta.total += Number.parseFloat(this.ListaDetalle[i].subtotal);
-                });
+            //     this.Venta.total_faltante = this.Venta.total;
                 
-                return Number.parseFloat(sum).toFixed(2);
-            }
+            //     this.ListaPago.forEach( pago => {
+            //         this.Venta.total_faltante -= Number.parseFloat(pago.monto);
+            //     });
+
+            //     return Number.parseFloat(this.Venta.total_faltante).toFixed(2);
+            // },
+            // updateVentaTotal: function(){
+            //     if (!this.Modal.numero==1&&!this.Modal.numero==3) return;
+
+            //     this.Venta.total = 0;
+
+            //     this.ListaDetalle.forEach(detalle => {
+            //         this.Venta.total += Number.parseFloat(detalle.subtotal);
+            //     });
+                
+            //     return Number.parseFloat(this.Venta.total).toFixed(2);
+            // }
         },
         methods: {
             listar(page = 1){
@@ -687,6 +685,37 @@
                     console.log(error);
                 });
             },
+            pagar(){
+                let pagos = [];
+                this.ListaPago.forEach(pago => {
+                    if(pago.estado) pagos.push(pago);
+                });
+
+                let me = this;
+                let url = this.Ruta.pago+'/agregar';
+
+                axios.post(url, {
+                    'idVenta': this.Venta.id,
+                    'listaPagos': pagos
+                }).then(function(response){
+                    me.cerrarModal();
+                    me.listar();
+                    Swal.fire({
+                        position: 'top-end',
+                        toast: true,
+                        type: 'success',
+                        title: 'El pago se ha REGISTRADO correctamente',
+                        showConfirmButton: false,
+                        timer: 4500,
+                        animation:false,
+                        customClass:{
+                            popup: 'animated bounceIn fast'
+                        }
+                    });
+                }).catch(function(error){
+                    console.log(error);
+                });
+            },
             abrirModalAgregar(){
                 this.abrirModal(1, 'Registrar Venta', 'modal-xl', 'Registrar', 'Cancelar');
 
@@ -734,11 +763,17 @@
                 this.list(1);
                 this.list(2);
             },
-            abrirModalPagar(abasto = []){
-                this.Abasto.id = abasto['id'];
-                this.Abasto.total = abasto['total'];
-                this.abrirModal(3, 'Realizar Pago', 'Guardar', '');
-                this.listarPagos(abasto['id'], abasto['total']);
+            abrirModalPagar(venta = []){
+                this.abrirModal(4, 'Realizar Pago', '', 'Guardar', 'Cancelar');
+
+                this.Venta.id = venta['id'];
+                this.Venta.total = venta['total'];
+                this.Venta.total_faltante = venta['total_faltante'];
+                this.Venta.tipo_pago = venta['tipo'].charAt(0);
+                
+                this.Pago.monto = '';
+
+                this.list(2);
             },
             anularAbasto(id){
                 Swal.fire({
@@ -832,7 +867,7 @@
             accionar(){
                 switch( this.Modal.numero ){
                     case 1: this.agregar(); break;
-                    case 'Guardar': this.agregarPago(); break;
+                    case 4: this.pagar(); break;
                 }
             },
             validar(numero){
@@ -854,7 +889,7 @@
                         }
                         break;
                     case 1:
-                        if (this.Pago.monto == '' || this.Pago.monto <= 0 || this.Pago.monto > this.Abasto.total_faltante) this.Error.mensaje.push('Debe ingresar un monto válido');
+                        if (this.Pago.monto == '' || this.Pago.monto <= 0 || this.Pago.monto > Number.parseFloat(this.Venta.total_faltante)) this.Error.mensaje.push('Debe ingresar un monto válido');
                         break;
                 }
                 
@@ -991,12 +1026,13 @@
             },
             list(numero){
                 var me = this;
+                var url;
 
                 switch (numero) {
                     case 0: 
                         if ( this.Service.text == '' ) break;
 
-                        var url = this.Ruta.detalle_producto+'/listProductos?'
+                        url = this.Ruta.detalle_producto+'/listProductos?'
                                         +'text='+this.Service.text
                                         +'&centro_id='+$('meta[name="idCentro"]').attr('content');
 
@@ -1014,7 +1050,7 @@
                         });
                         break;
                     case 1:
-                        var url = this.Ruta.detalle_venta+'/list?'
+                        url = this.Ruta.detalle_venta+'/list?'
                                         +'venta_id='+this.Venta.id;
 
                         axios.get(url).then(function(response){
@@ -1024,7 +1060,7 @@
                         });
                         break;
                     case 2:
-                        var url = this.Ruta.pago+'/listVenta?'
+                        url = this.Ruta.pago+'/listVenta?'
                                         +'venta_id='+this.Venta.id;
 
                         axios.get(url).then(function(response){
@@ -1035,7 +1071,7 @@
                         break;
                 }
             },
-            add(numero, data){
+            add(numero, data = ''){
                 switch (numero) {
                     case 0:
                         let found = false;
@@ -1062,6 +1098,16 @@
                         }
                         break;
                     case 1:
+                        if ( this.validar(1) ) return;
+
+                        this.ListaPago.push({
+                            monto: Number.parseFloat(this.Pago.monto).toFixed(2),
+                            created_at: this.get(),
+                            color: 'table-success',
+                            estado: 1 // 1: nuevo
+                        });
+                        this.Pago.monto = '';
+                        this.update(2);
                         break;
                 }
             },
@@ -1073,6 +1119,19 @@
                                 this.ListaDetalle[i].subtotal = ((this.Venta.tipo_precio=='1'?this.ListaDetalle[i].precio_menor:this.ListaDetalle[i].precio_mayor)*this.ListaDetalle[i].cantidad).toFixed(2);
                             }
                         }
+                        break;
+                    case 1:
+                        this.Venta.total = 0;
+                        this.ListaDetalle.forEach(detalle => {
+                            this.Venta.total += Number.parseFloat(detalle.subtotal);
+                        });
+                        break;
+                    case 2:
+                        this.Venta.total_faltante = this.Venta.total;
+                        this.ListaPago.forEach( pago => {
+                            this.Venta.total_faltante = Number.parseFloat(this.Venta.total_faltante)-Number.parseFloat(pago.monto);
+                        });
+                        this.Venta.total_faltante = Number.parseFloat(this.Venta.total_faltante).toFixed(2);
                         break;
                 }
             },
@@ -1116,99 +1175,24 @@
 
                 return fixed;
             },
-            formatearFecha(fecha){ //sin uso
-                let arrayFecha = fecha.split('-');
-                let newFecha = arrayFecha[2] + '-' + arrayFecha[1] + '-' + arrayFecha[0];
-                return newFecha;
-            },
-            quitarDetalle(indice){
-                this.ListaDetalleAbasto.splice(indice,1);
-            },
-            validarNegativos(){
-                for (let i = 0; i < this.ListaDetalleAbasto.length; i++) {
-                    const detalle = this.ListaDetalleAbasto[i];
-                    if(detalle.cantidad <1){
-                        this.Error.mensaje.push('Las cantidades de los detalles deben ser mayores o iguales a 1');
-                        break;
-                    }else if(detalle.costo_abasto <= 0){
-                        this.Error.mensaje.push('Los precios de los detalles debe ser mayores a 0');
-                        break;
-                    }
-                }
-            },
-            listarPagos(id,total){
-                let me = this;
-                let url = '/abasto/getPagos';
-
-                axios.get(url,{
-                    params: {
-                        'id': id
-                    }
-                }).then(function(response){
-                    // me.Abasto.total_faltante = total;
-                    me.ListaPago = response.data;
-                }).catch(function(error){
-                    console.log(error);
-                });
-            },
-            agregarListaPago(){//Agrega pagos a la lista de pagos
-                if ( this.validar() ) return;
-                let pago = {
-                    monto: Number.parseFloat(this.Pago.monto).toFixed(2),
-                    created_at: this.getFechaHoraHoy(),
-                    color: 'table-success',
-                    estado: 1 // 1: nuevo
-                }
-                this.ListaPago.push(pago);
-                this.Pago.monto = '';
-            },
-            agregarPago(){
-                let me = this;
-                let pagosNuevos = me.filtrarPagosNuevos();
-                axios.post('/pago/agregar', {
-                    'idAbasto': this.Abasto.id,
-                    'listaPagos': pagosNuevos
-                }).then(function(response){
-                    me.cerrarModal();
-                    me.listar();
-                    Swal.fire({
-                        position: 'top-end',
-                        toast: true,
-                        type: 'success',
-                        title: 'El pago se ha REGISTRADO correctamente',
-                        showConfirmButton: false,
-                        timer: 4500,
-                        animation:false,
-                        customClass:{
-                            popup: 'animated bounceIn fast'
-                        }
-                    });
-                }).catch(function(error){
-                    console.log(error);
-                });
+            get(){
+                let n =  new Date();
+                let y = n.getFullYear();
+                let m = (n.getMonth()+1).toString().padStart(2, 0);
+                let d = n.getDate().toString().padStart(2, 0);
+                let h = n.getHours();
+                let minu = n.getMinutes().toString().padStart(2, 0);
+                let seg = n.getSeconds().toString().padStart(2, 0);
+                let hoy =  y + '-' + m + '-' + d + ' ' + h + ':' + minu + ':' + seg;
+                return hoy;
             },
             filtrarPagosNuevos(){
-                let pagosNuevos = [];
-                this.ListaPago.forEach(pago => {
-                    if(pago.estado) pagosNuevos.push(pago);
-                });
-                return pagosNuevos;
+                
             },
             cambiarPagina(page){
                 if ( page >= 1 && page <= this.Paginacion.lastPage) {
                     this.listar(page);
                 }
-            },
-            getFechaHoraHoy(){
-                let n =  new Date();
-                let y = n.getFullYear();
-                let m = this.addCero(n.getMonth() + 1);
-                let d = this.addCero(n.getDate());
-                let h = n.getHours();
-                let minu = n.getMinutes();
-                let seg = n.getSeconds();
-                let hoy =  y + '-' + m + '-' + d + ' ' + h + ':' + this.addCero(minu) + ':' + this.addCero(seg);
-                return hoy;
             },
             addCero(i) {
                 if (i < 10) {
