@@ -37,6 +37,9 @@ Route::group(['middleware' => ['auth']], function () {
     //RUTAS PARA DETALLES DE VENTAS
     Route::get('/detalle_venta/list', 'DetalleVentaController@list');
 
+    //RUTAS PARA PAGOS
+    Route::get('/pago/listVenta', 'PagoController@listVenta');
+
     //RUTAS PARA PRODUCCIONES
     Route::get('/produccion', 'ProduccionController@listar'); //métodos generales
     Route::get('/produccion/getDetalles', 'ProduccionController@getDetalles');

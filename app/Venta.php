@@ -12,4 +12,8 @@ class Venta extends Model
     public function getDetalleVenta(){
         return $this->hasMany('App\Detalle_venta');
     }
+
+    public function getPago(){
+        return $this->hasMany('App\Pago');
+    }
 }

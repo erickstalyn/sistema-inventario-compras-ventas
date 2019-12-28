@@ -265,99 +265,137 @@
                                     <div class="row">
                                         <div class="col-md-5 input-group" v-if="Venta.tipo_pago=='2'||Venta.tipo_pago=='3'"> 
                                             <label class="col-md-6 font-weight-bold" for="pago_inicial">Pago inicial&nbsp;<span class="text-danger">*</span></label>
-                                            <input type="number" class="col-md-6 form-control form-control-sm text-right" v-model="Pago.monto" min="0" :max="updateTotal" id="pago_inicial">
+                                            <input type="number" class="col-md-6 form-control form-control-sm text-right" v-model="Pago.monto" min="0" :max="updateVentaTotal" id="pago_inicial">
                                         </div>
                                         <div class="col-md-5" v-else></div>
                                         <div class="col-md-2">
                                         </div>
                                         <div class="col-md-5 input-group">
                                             <label class="col-md-6 text-right font-weight-bold">Monto total:</label>
-                                            <label class="col-md-6 text-right text-info" v-text="'S/. '+updateTotal"></label>
+                                            <label class="col-md-6 text-right text-info" v-text="'S/. '+updateVentaTotal"></label>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <!-- Modal Numero 2 de VER-->
-                        <div v-if="Modal.numero==2" class="container">
-                            <div class="row shadow bg-white rounded form-group pt-2"  style="border: 1px solid">
-                                <div class="col-md-12">
-                                    <label class="font-weight-bold">CLIENTE</label>
-                                </div>
-                                <div v-if="Cliente.tipo=='P'" class="row form-group">
-                                    <div class="col-md-4 input-group">
-                                        <label class="col-md-4">DNI</label>
-                                        <input type="text" class="col-md-8 form-control form-control-sm" readonly v-model="Cliente.dni">
+                        <div v-if="Modal.numero==2" class="input-group">
+                            <div class="container-small col-md-12">
+                                <div class="shadow bg-white rounded pt-2 form-group"  style="border: 1px solid">
+                                    <div class="col-md-12">
+                                        <label class="font-weight-bold">CLIENTE</label>
                                     </div>
-                                    <div class="col-md-8 input-group">
-                                        <label class="col-md-3">Nombres</label>
-                                        <input type="text" class="col-md-8 form-control form-control-sm" readonly v-model="Cliente.nombres">
+                                    <div v-if="Cliente.tipo=='P'" class="input-group form-group">
+                                        <div class="col-md-3 input-group">
+                                            <label class="col-md-3">DNI</label>
+                                            <input type="text" class="col-md-7 form-control form-control-sm" readonly v-model="Cliente.dni">
+                                        </div>
+                                        <div class="col-md-4 input-group">
+                                            <label class="col-md-4">Nombres</label>
+                                            <input type="text" class="col-md-8 form-control form-control-sm" readonly v-model="Cliente.nombres">
+                                        </div>
+                                        <div class="col-md-4 input-group">
+                                            <label class="col-md-4">Apellidos</label>
+                                            <input type="text" class="col-md-8 form-control form-control-sm" readonly v-model="Cliente.apellidos">
+                                        </div>
                                     </div>
-                                    <div class="col-md-4 input-group"></div>
-                                    <div class="col-md-8 input-group">
-                                        <label class="col-md-3">Apellidos</label>
-                                        <input type="text" class="col-md-8 form-control form-control-sm" readonly v-model="Cliente.apellidos">
+                                    <div v-else-if="Cliente.tipo=='E'" class="input-group form-group">
+                                        <div class="col-md-3 input-group">
+                                            <label class="col-md-3">RUC</label>
+                                            <input type="text" class="col-md-7 form-control form-control-sm" readonly v-model="Cliente.ruc">
+                                        </div>
+                                        <div class="col-md-8 input-group">
+                                            <label class="col-md-2">Razón social</label>&nbsp;
+                                            <input type="text" class="col-md-10 form-control form-control-sm" readonly v-model="Cliente.razon_social">
+                                        </div>
                                     </div>
-                                </div>
-                                <div v-else-if="Cliente.tipo=='E'" class="form-group input-group">
-                                    <div class="col-md-4 input-group">
-                                        <label class="col-md-4">RUC</label>
-                                        <input type="text" class="col-md-8 form-control form-control-sm pr-0" readonly v-model="Cliente.ruc">
-                                    </div>
-                                    <div class="col-md-8 input-group">
-                                        <label class="col-md-3">Razón social</label>&nbsp;
-                                        <input type="text" class="col-md-9 form-control form-control-sm pr-0" readonly v-model="Cliente.razon_social">
-                                    </div>
-                                </div>
-                                <div v-else class="col-md-12 form-group">
-                                    <label class="text-info">No se ha registrado cliente</label>
-                                </div>
-                            </div>
-                            <div class="row shadow bg-white rounded pt-2"  style="border: 1px solid">
-                                <div class="col-md-12 input-group">
-                                    <label class="col-md-3 font-weight-bold">LISTA DE ITEMS</label>
-                                    <div class="col-md-1"></div>
-                                    <label class="col-md-4 font-weight-bold">Pago:&nbsp;<label class="text-info" v-text="fix(4, Venta.tipo_pago)"></label></label>
-                                    <div class="col-md-4 input-group">
-                                        <label class="col-md-4 font-weight-bold">Precio</label>
-                                        <label class="col-md-8 text-info" v-text="fix(5, Venta.tipo_precio)"></label>
-                                    </div>
-                                </div>
-                                <div class="col-md-12 form-group overflow-auto" style="height: 18rem;">
-                                    <table class="table table-bordered table-striped table-sm text-gray-900">
-                                        <thead>
-                                            <tr class="table-success">
-                                                <th class="text-center">Nombre</th>
-                                                <th class="text-center">Cantidad</th>
-                                                <th class="text-center">Precio</th>
-                                                <th class="text-center">Subtotal</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr v-for="(detalle, indice) in ListaDetalle" :key="indice">
-                                                <td v-text="detalle.nombre_producto"></td>
-                                                <td class="text-right" v-text="detalle.cantidad"></td>
-                                                <td class="text-right" v-text="detalle.precio"></td>
-                                                <td class="text-right" v-text="detalle.subtotal">
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div class="row col-md-12 input-group">
-                                    <div class="col-md-5 input-group" v-if="Venta.total_faltante&&Venta.total_faltante!=0">
-                                        <label class="col-md-7 text-right font-weight-bold">Monto faltante:</label>
-                                        <label class="col-md-5 text-right text-info" v-text="'S/. '+Venta.total_faltante"></label>
-                                    </div>
-                                    <div class="col-md-5" v-else></div>
-                                    <div class="col-md-2"></div>
-                                    <div class="col-md-5 input-group">
-                                        <label class="col-md-6 text-right font-weight-bold">Monto total:</label>
-                                        <label class="col-md-6 text-right text-info" v-text="'S/. '+Venta.total"></label>
+                                    <div v-else class="col-md-12">
+                                        <label class="text-info">No se ha registrado cliente</label>
                                     </div>
                                 </div>
                             </div>
+                            <div class="container-small col-md-4" v-if="Venta.tipo_pago.charAt(0)==2||Venta.tipo_pago.charAt(0)==3">
+                                <div class="shadow bg-white rounded pt-2" style="height: 24rem; border: 1px solid">
+                                    <div class="col-md-12 input-group">
+                                        <label class="font-weight-bold">LISTA DE PAGOS</label>
+                                    </div>
+                                    <div class="col-md-12 overflow-auto" style="height: 15rem" v-if="ListaPago.length">
+                                        <table class="table table-bordered table-striped table-sm text-gray-900">
+                                            <thead>
+                                                <tr class="table-info">
+                                                    <th class="text-center">#</th>
+                                                    <th class="text-center">Fecha</th>
+                                                    <th class="text-center">Monto</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="(pago, index) in ListaPago" :key="index" :class="pago.color">
+                                                    <td class="text-right pr-1">{{index+1}}</td>
+                                                    <td class="text-center" v-text="pago.created_at"></td>
+                                                    <td class="text-right pr-4" v-text="pago.monto"></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="col-md-12 overflow-auto" style="height: 15rem" v-else>
+                                        <label class="text-info">Ningun pago registrado</label>
+                                    </div>
+                                    <div class="col-md-12 input-group d-flex justify-content-end aling-items-end">
+                                        <!-- Monto pagado -->
+                                        <label class="col-md-6 font-weight-bold">Monto pagado:</label>
+                                        <label class="col-md-1 text-right text-success">S/.</label>
+                                        <label class="col-md-4 text-right text-success" v-text="Venta.total-Venta.total_faltante"></label>
+                                        <!-- Monto faltante -->
+                                        <label class="col-md-6 font-weight-bold">Monto faltante:</label>
+                                        <label class="col-md-1 text-right text-danger">S/.</label>
+                                        <label class="col-md-4 text-right text-danger" v-text="Venta.total_faltante"></label>
+                                        <!-- Monto total -->
+                                        <label class="col-md-6 font-weight-bold">Monto total: </label>
+                                        <label class="col-md-1 text-right">S/.</label>
+                                        <label class="col-md-4 text-right" v-text="Venta.total"></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="container-small" :class="Venta.tipo_pago.charAt(0)==2||Venta.tipo_pago.charAt(0)==3?'col-md-8':'col-md-12'">
+                                <div class="shadow bg-white rounded pt-2"  style="height: 24rem; border: 1px solid">
+                                    <div class="col-md-12 input-group">
+                                        <label class="col-md-3 font-weight-bold">LISTA DE ITEMS</label>
+                                        <div class="col-md-1"></div>
+                                        <label class="col-md-4 font-weight-bold">Pago:&nbsp;<label class="text-info font-weight-normal" v-text="fix(4, Venta.tipo_pago)"></label></label>
+                                        <label class="col-md-4 font-weight-bold">Precio:&nbsp;<label class="text-info font-weight-normal" v-text="fix(5, Venta.tipo_precio)"></label></label>
+                                    </div>
+                                    <div class="col-md-12 form-group overflow-auto" style="height: 17rem;">
+                                        <table class="table table-bordered table-striped table-sm text-gray-900">
+                                            <thead>
+                                                <tr class="table-success">
+                                                    <th class="text-center">Nombre</th>
+                                                    <th class="text-center">Cantidad</th>
+                                                    <th class="text-center">Precio</th>
+                                                    <th class="text-center">Subtotal</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="(detalle, indice) in ListaDetalle" :key="indice">
+                                                    <td v-text="detalle.nombre_producto"></td>
+                                                    <td class="text-right" v-text="detalle.cantidad"></td>
+                                                    <td class="text-right" v-text="detalle.precio"></td>
+                                                    <td class="text-right" v-text="detalle.subtotal">
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="col-md-12 d-flex justify-content-end">
+                                        <div class="col-md-5 input-group">
+                                            <label class="col-md-6 text-right font-weight-bold">Monto total:</label>
+                                            <label class="col-md-6 text-right text-info" v-text="'S/. '+Venta.total"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                                
                         </div>
+                        <!-- Modal Numero 3 de PAGAR-->
                         <div v-if="Modal.numero == 3">
                             <div v-if="Error.estado" class="row d-flex justify-content-center">
                                 <div class="alert alert-danger" style="height: 4.5rem;">
@@ -458,7 +496,6 @@
                     created_at : '',
                 },
                 ListaProducto:[],
-                Producto: {},
                 ListaDetalle: [],
                 
                 Cliente:{
@@ -520,8 +557,7 @@
                 //datos de pagos
                 ListaPago: [],
                 Pago:{
-                    monto: 0.00,
-                    sumaPagos: 0.00,
+                    monto: 0.00
                 },
 
                 //datos de Rutas
@@ -530,7 +566,8 @@
                     persona: '/persona',
                     producto: '/producto',
                     detalle_producto: '/detalle_producto',
-                    detalle_venta: '/detalle_venta'
+                    detalle_venta: '/detalle_venta',
+                    pago: '/pago'
                 }
             }
         },
@@ -570,29 +607,22 @@
 
                 return filas;
             },
-            getDesembolso: function(){
-                this.Abasto.total = 0.00;
-                this.ListaDetalleAbasto.forEach( detalle => {
-                    this.Abasto.total = this.Abasto.total + detalle.costo_abasto * detalle.cantidad;
-                });
-                return (this.Abasto.total).toFixed(2);
-            },
             getSumaPagos: function(){
-                let sumaPagos = 0.00;
+                let sum = 0.00;
+
                 this.ListaPago.forEach( detalle => {
-                    sumaPagos = sumaPagos + Number.parseFloat(detalle.monto);
+                    sum = sum + Number.parseFloat(detalle.monto);
                 });
-                return sumaPagos;
+
+                return Number.parseFloat(sum).toFixed(2);
             },
-            updateTotal: function(){
-                var sum = 0;
+            updateVentaTotal: function(){
+                this.Venta.total = 0;
 
-                for (let i = 0; i < this.ListaDetalle.length; i++) {
-                    sum += Number.parseFloat(this.ListaDetalle[i].subtotal);
-                }
-
-                this.Venta.total = sum;
-
+                this.ListaDetalle.forEach(detalle => {
+                    this.Venta.total += Number.parseFloat(this.ListaDetalle[i].subtotal);
+                });
+                
                 return Number.parseFloat(sum).toFixed(2);
             }
         },
@@ -686,7 +716,7 @@
                 this.Service.text = '';
             },
             abrirModalVer(data){
-                this.abrirModal(2, 'Ver Venta', 'modal-lg', '', 'Cerrar');
+                this.abrirModal(2, 'Ver Venta', 'modal-xl', '', 'Cerrar');
 
                 this.Venta.id = data.id;
                 this.Venta.total = data.total;
@@ -701,7 +731,8 @@
                 this.Cliente.razon_social = data.razon_social;
                 this.Cliente.tipo = data.cliente_tipo;
                 
-                this.ListaProducto = this.list(1);
+                this.list(1);
+                this.list(2);
             },
             abrirModalPagar(abasto = []){
                 this.Abasto.id = abasto['id'];
@@ -988,6 +1019,16 @@
 
                         axios.get(url).then(function(response){
                             me.ListaDetalle = response.data;
+                        }).catch(function(error){
+                            console.log(error);
+                        });
+                        break;
+                    case 2:
+                        var url = this.Ruta.pago+'/listVenta?'
+                                        +'venta_id='+this.Venta.id;
+
+                        axios.get(url).then(function(response){
+                            me.ListaPago = response.data;
                         }).catch(function(error){
                             console.log(error);
                         });

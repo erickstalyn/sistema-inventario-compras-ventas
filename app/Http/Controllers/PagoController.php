@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Exception;
 use App\Pago;
+use App\Venta;
 
 class PagoController extends Controller
 {
@@ -31,5 +32,13 @@ class PagoController extends Controller
             // echo($e);
         }
         // return ['estado' => $estado];
+    }
+
+    public function listVenta(Request $request) {
+        if ( !$request->ajax() ) return redirect('/');
+
+        $list = Venta::findOrFail($request->venta_id)->getPago;
+        
+        return $list;
     }
 }
