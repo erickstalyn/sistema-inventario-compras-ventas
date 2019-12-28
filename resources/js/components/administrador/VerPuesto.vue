@@ -625,7 +625,7 @@
                     texto: '',
                     filas: 5,
                     type: 0,
-                    dia: '',
+                    dia: this.getDiaActual(),
                     mes: this.getMesActual(),
                     year: this.getYearActual(),
                     estadoEnviado: 3,
@@ -729,7 +729,7 @@
                 me.Carga.alert = 'badge badge-info';
                 switch (Number.parseInt(this.Puesto.quieroVer)) {
                     case 1: //Listar Ventas
-                        this.Busqueda.dia = this.getDiaActual();
+                        // this.Busqueda.dia = this.getDiaActual();
                         url = this.Ruta.venta+'?'
                                 +'page='+this.Paginacion.currentPage
                                 +'&type='+this.Busqueda.type
@@ -755,6 +755,7 @@
                         });
                         break;
                     case 2: //Listar inventario
+                        this.Busqueda.dia = '';
                         url = this.Ruta.centro+'/listProductos?'
                                 +'page='+this.Paginacion.currentPage
                                 +'&texto='+this.Busqueda.texto
@@ -776,7 +777,6 @@
                         });
                         break;
                     case 3:
-                        this.Busqueda.dia = '';
                         url = this.Ruta.envioRealizado + '?'
                                 +'page='+this.Paginacion.currentPage
                                 +'&estado='+this.Busqueda.estadoEnviado
@@ -803,7 +803,6 @@
                         });
                         break;
                     case 4:
-                        this.Busqueda.dia = '';
                         url = this.Ruta.envioRecibido + '?'
                             +'page='+this.Paginacion.currentPage
                             +'&estado='+this.Busqueda.estadoRecibido
