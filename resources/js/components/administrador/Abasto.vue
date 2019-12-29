@@ -367,7 +367,6 @@
                                     </div>
                                 </div>
                             </div>
-
                             <div v-if="Modal.numero == 2">
                                 <div class="row">
                                     <div class="col-md-2 pl-2">
@@ -465,7 +464,7 @@
                                                         <tbody>
                                                             <tr v-for="(pago, index) in ListaPago" :key="index" :class="pago.color">
                                                                 <td class="text-center">{{index+1}}</td>
-                                                                <td class="text-center" v-text="pago.created_at"></td>
+                                                                <td class="text-center" v-text="fix(0, pago.created_at)"></td>
                                                                 <td class="text-right pr-4" v-text="pago.monto"></td>
                                                             </tr>
                                                         </tbody>
@@ -582,7 +581,7 @@
                                                 <tbody>
                                                     <tr v-for="(pago, index) in ListaPago" :key="index" :class="pago.color">
                                                         <td class="text-center">{{index+1}}</td>
-                                                        <td class="text-center" v-text="pago.created_at"></td>
+                                                        <td class="text-center" v-text="fix(0, pago.created_at)"></td>
                                                         <td class="text-right pr-5" v-text="pago.monto"></td>
                                                     </tr>
                                                 </tbody>
@@ -1341,6 +1340,20 @@
                     console.log(error);
                 });
             },
+            fix(numero, data = ''){
+                var fixed;
+
+                switch (numero) {
+                    case 0:
+                        let fecha = data.split(' ')[0].split('-');
+                        let hora = data.split(' ')[1].split(':');
+                        let fecha_fixed = fecha[2]+'-'+fecha[1]+'-'+fecha[0];
+                        let hora_fixed = (hora[0]>12?(hora[0]-12).toString().padStart(2, '0'):hora[0])+':'+hora[1]+':'+hora[2]+' '+(hora[0]>12?'pm':'am') ;
+                        fixed = fecha_fixed+' '+hora_fixed;
+                        break;
+                }
+                return fixed;
+            }
         },
         mounted() {
             this.listar();
