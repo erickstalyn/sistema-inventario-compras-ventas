@@ -50,14 +50,14 @@
       <div id="content-wrapper" class="d-flex flex-column">
         <!-- Main Content -->
         <div id="content">
-          <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+          <nav class="navbar navbar-expand navbar-light bg-white topbar mb-2 static-top shadow">
             <!-- Sidebar Toggle (Topbar) -->
             <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
               <i class="fa fa-bars"></i>
             </button>
 
             <!-- INICIO DEL BUSCADOR-->
-            <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+            {{-- <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
               <div class="input-group">
                 <input type="text" class="form-control bg-light border-0 small" placeholder="Buscar por..." aria-label="Search" aria-describedby="basic-addon2">
                 <div class="input-group-append">
@@ -66,7 +66,7 @@
                   </button>
                 </div>
               </div>
-            </form>
+            </form> --}}
             <!-- Topbar Navbar -->
             <ul class="navbar-nav ml-auto">
               <!-- Nav Item - Search Dropdown (Visible Only XS) -->
@@ -75,7 +75,7 @@
                   <i class="fas fa-search fa-fw"></i>
                 </a>
                 <!-- Dropdown - Messages -->
-                <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in" aria-labelledby="searchDropdown">
+                {{-- <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in" aria-labelledby="searchDropdown">
                   <form class="form-inline mr-auto w-100 navbar-search">
                     <div class="input-group">
                       <input type="text" class="form-control bg-light border-0 small" placeholder="Buscar por..." aria-label="Search" aria-describedby="basic-addon2">
@@ -86,7 +86,7 @@
                       </div>
                     </div>
                   </form>
-                </div>
+                </div> --}}
               </li>
               <!-- FIN DEL BUSCADOR-->
           
@@ -141,7 +141,7 @@
               <!-- FIN DE ALERTAS -->
 
               <!-- INICIO DE LOS MENSAJES -->
-              <li class="nav-item dropdown no-arrow mx-1">
+              {{-- <li class="nav-item dropdown no-arrow mx-1">
                 <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   <i class="fas fa-envelope fa-fw"></i>
                   <!-- Counter - Messages -->
@@ -194,7 +194,7 @@
                   </a>
                   <a class="dropdown-item text-center small text-gray-500" href="#">Read More Messages</a>
                 </div>
-              </li>
+              </li> --}}
               <!-- FIN DE LOS MENSAJES -->
 
               <div class="topbar-divider d-none d-sm-block"></div>
@@ -205,11 +205,11 @@
                 <span class="mr-2 d-none d-lg-inline text-gray-600 small">
                   Hola, {{ Auth::user()->getNombres() }}
                 </span>
-                  <img class="img-profile rounded-circle" src="http://pixelartmaker.com/art/3960dcd96d745be.png">
+                  <img class="img-profile rounded-circle" src="">
                 </a>
                 <!-- Dropdown - User Information -->
                 <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-                  <a class="dropdown-item" href="#">
+                  {{-- <a class="dropdown-item" href="#">
                     <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                     Profile
                   </a>
@@ -220,11 +220,11 @@
                   <a class="dropdown-item" href="#">
                     <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
                     Activity Log
-                  </a>
-                  <div class="dropdown-divider"></div>
+                  </a> --}}
+                  {{-- <div class="dropdown-divider"></div> --}}
                   <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
                     <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                    Logout
+                    Cerrar Sesión
                   </a>
                 </div>
               </li>
