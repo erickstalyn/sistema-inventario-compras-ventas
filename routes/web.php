@@ -35,7 +35,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/venta/agregar', 'VentaController@agregar');
     
     //RUTAS PARA DETALLES DE VENTAS
-    Route::get('/detalle_venta/list', 'DetalleVentaController@list');
+    Route::get('/detalle_venta/listVer', 'DetalleVentaController@listVer');
+    Route::get('/detalle_venta/listEditar', 'DetalleVentaController@listEditar');
 
     //RUTAS PARA PAGOS
     Route::get('/pago/listVenta', 'PagoController@listVenta');

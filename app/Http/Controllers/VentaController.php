@@ -25,26 +25,24 @@ class VentaController extends Controller {
         $year = $request->year;
 
         $ventas = Venta::select('venta.id', 'venta.codigo', 'venta.tipo', 'venta.total', 'venta.total_faltante', 'venta.created_at', 
-                                'persona.dni', 'persona.ruc', 'persona.nombres', 'persona.apellidos', 'persona.razon_social', 'persona.tipo as cliente_tipo')
+                                'persona.id as cliente_id', 'persona.dni', 'persona.ruc', 'persona.nombres', 'persona.apellidos', 'persona.razon_social', 'persona.tipo as cliente_tipo')
                     ->leftJoin('persona', 'persona.id', '=', 'venta.cliente_id')
                     ->where(function ($query) use ($text, $dia, $mes, $year) {
                         if ( strlen($text) == 15 && is_numeric($text) ) {
                             $query->where('codigo', '=', $text);
                         } else {
-                            $query->where(function ($query) use ($text, $dia, $mes, $year) {
-                                    $query->where('nombres', 'like', '%'.$text.'%')
-                                    ->orWhere('apellidos', 'like', '%'.$text.'%')
-                                    ->orWhere('razon_social', 'like', '%'.$text.'%')
-                                    ->orWhere('codigo', '=', $text);
+                            $query->where(function ($subquery) use ($text, $dia, $mes, $year) {
+                                    if ( $text != '' ) {
+                                        $subquery->where('nombres', 'like', '%'.$text.'%')
+                                                ->orWhere('apellidos', 'like', '%'.$text.'%')
+                                                ->orWhere('razon_social', 'like', '%'.$text.'%')
+                                                ->orWhere('codigo', '=', $text);
+                                    }
                                 })
-                                ->where(function ($query) use ($dia) {
-                                    if ( $dia != '' ) $query->whereDay('venta.created_at', $dia);
-                                })
-                                ->where(function ($query) use ($mes) {
-                                    if ( $mes != '' ) $query->whereMonth('venta.created_at', $mes);
-                                })
-                                ->where(function ($query) use ($year) {
-                                    if ( $year != '' ) $query->whereYear('venta.created_at', $year);
+                                ->where(function ($subquery) use ($dia, $mes, $year) {
+                                    if ( $dia != '' ) $subquery->whereDay('venta.created_at', $dia);
+                                    if ( $mes != '' ) $subquery->whereMonth('venta.created_at', $mes);
+                                    if ( $year != '' ) $subquery->whereYear('venta.created_at', $year);
                                 });
                         }
                     })
@@ -158,7 +156,7 @@ class VentaController extends Controller {
                 $detalle = new Detalle_venta();
                 $detalle->detalle_producto_id = $det['detalle_producto_id']; //AQUI ESTA EL PROBLEMA
                 $detalle->venta_id = $venta->id;
-                $detalle->nombre_producto = $det['nombre'];
+                $detalle->nombre_producto = $det['nombre_producto'];
                 $detalle->cantidad = $det['cantidad'];
                 $detalle->precio = $request->tipo_precio==1?$det['precio_menor']:$det['precio_mayor'];
                 $detalle->subtotal = $det['subtotal'];

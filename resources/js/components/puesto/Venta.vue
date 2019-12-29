@@ -52,8 +52,8 @@
                             <tr v-for="venta in ListaVenta" :key="venta.id" >
                                 <td class="text-center" v-text="venta.codigo"></td>
                                 <td>
-                                    <label v-if="venta.tipo.substring(0, 1)==1">Contado</label>
-                                    <label v-if="venta.tipo.substring(0, 1)==2 || venta.tipo.substring(0, 1)==3">Credito</label>
+                                    <label v-if="venta.tipo.charAt(0)==1">Contado</label>
+                                    <label v-if="venta.tipo.charAt(0)==2 || venta.tipo.charAt(0)==3">Credito</label>
                                 </td>
                                 <td v-text="venta.razon_social!=null?venta.razon_social:(venta.nombres!=null?(venta.nombres+' '+venta.apellidos):'---')"></td>
                                 <td class="text-right" v-text="venta.total"></td>
@@ -69,7 +69,7 @@
                                             <i class="fas fa-edit"></i>
                                         </button>
                                     </template>
-                                    <template v-if="(venta.tipo.substring(0, 1)==2 || venta.tipo.substring(0, 1)==3)&&venta.total_faltante!=0">
+                                    <template v-if="(venta.tipo.charAt(0)==2 || venta.tipo.charAt(0)==3)&&(venta.total_faltante!=0&&venta.total_faltante!=null)">
                                         <button type="button"  title="PAGAR" class="btn btn-info btn-sm" @click="abrirModalPagar(venta)">
                                             <i class="fas fa-hand-holding-usd"></i>
                                         </button>
@@ -118,9 +118,9 @@
                     
                     <div class="modal-body">
                         <!-- Modal Numero 1 de AGREGAR-->
-                        <div v-if="Modal.numero==1" class="container">
-                            <div v-if="Error.estado" class="row d-flex justify-content-center">
-                                <div class="alert alert-danger">
+                        <div v-if="Modal.numero==1" class="container-small input-group">
+                            <div v-if="Error.estado" class="col-md-12 d-flex justify-content-center">
+                                <div class="col-md-6 alert alert-danger">
                                     <button type="button" @click="Error.estado=0" class="close text-primary" data-dismiss="alert">×</button>
                                     <strong>Corregir los siguentes errores:</strong>
                                     <ul> 
@@ -128,88 +128,99 @@
                                     </ul>
                                 </div>
                             </div>
-                            <div class="row form-group">
-                                <label class="col-md-2 font-weight-bold">CLIENTE</label>
-                                <label class="col-md-1 font-weight-bold">RUC/DNI&nbsp;<span class="text-danger" v-if="Venta.tipo_pago=='2'||Venta.tipo_pago=='3'">*</span></label>
-                                <div class="col-md-2 input-group">
-                                    <input type="text" class="form-control form-control-sm" v-model="Service.document" @keyup.enter="consultar()" maxlength="11">
-                                    <button type="button" class="btn btn-sm btn-primary" @click="consultar()">
-                                        <i class="fas fa-sync-alt"></i>
-                                    </button>
-                                </div>
-                                <div class="col-md-3">
-                                    <h5>
-                                        <span role="status" :class="Service.loadclass"></span>&nbsp;
-                                        <span v-text="Service.msm" :class="Service.msmclass"></span>
-                                    </h5>
+                            <div class="container-small col-md-12">
+                                <div class="shadow bg-white rounded pt-2 form-group" style="border: 1px solid;">
+                                    <div class="col-md-12 form-group input-group">
+                                        <label class="col-md-2 font-weight-bold">CLIENTE</label>
+                                        <label class="col-md-1 font-weight-bold">RUC/DNI&nbsp;<span class="text-danger" v-if="Venta.tipo_pago=='2'||Venta.tipo_pago=='3'">*</span></label>
+                                        <div class="col-md-2 input-group">
+                                            <input type="text" class="form-control form-control-sm" v-model="Service.document" @keyup.enter="consultar()" maxlength="11">
+                                            <button type="button" class="btn btn-sm btn-primary" @click="consultar()">
+                                                <i class="fas fa-sync-alt"></i>
+                                            </button>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <h5>
+                                                <span role="status" :class="Service.loadclass"></span>&nbsp;
+                                                <span v-text="Service.msm" :class="Service.msmclass"></span>
+                                            </h5>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 form-group input-group" v-if="Cliente.tipo=='P'">
+                                        <div class="col-md-3 input-group">
+                                            <label class="col-md-3">DNI</label>
+                                            <input type="text" class="col-md-9 form-control form-control-sm" readonly v-model="Cliente.documento">
+                                        </div>
+                                        <div class="col-md-4 input-group">
+                                            <label class="col-md-4">Nombres</label>
+                                            <input type="text" class="col-md-8 form-control form-control-sm" readonly v-model="Cliente.nombres">
+                                        </div>
+                                        <div class="col-md-4 input-group">
+                                            <label class="col-md-4">Apellidos</label>
+                                            <input type="text" class="col-md-8 form-control form-control-sm" readonly v-model="Cliente.apellidos">
+                                        </div>
+                                        <div class="col-md-1 d-flex justify-content-center" v-if="Venta.tipo_pago=='1'">
+                                            <button type="button" class="btn btn-circle btn-sm btn-outline-danger" @click="remove(1)" title="ELIMINAR"> 
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 form-group input-group" v-else-if="Cliente.tipo=='E'">
+                                        <div class="col-md-3 input-group">
+                                            <label class="col-md-3">RUC</label>
+                                            <input type="text" class="col-md-9 form-control form-control-sm" readonly v-model="Cliente.documento">
+                                        </div>
+                                        <div class="col-md-8 input-group">
+                                            <label class="col-md-3">Razón social</label>&nbsp;
+                                            <input type="text" class="col-md-9 form-control form-control-sm" readonly v-model="Cliente.razon_social">
+                                        </div>
+                                        <div class="col-md-1 d-flex justify-content-center" v-if="Venta.tipo_pago=='1'">
+                                            <button type="button" class="btn btn-circle btn-sm btn-outline-danger" @click="remove(1)" title="ELIMINAR"> 
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div>
-                                <div v-if="Cliente.tipo=='P'" class="row form-group">
-                                    <div class="col-md-2 input-group">
-                                        <label class="col-md-4">DNI</label>
-                                        <input type="text" class="col-md-8 form-control form-control-sm" readonly v-model="Cliente.documento">
-                                    </div>
-                                    <div class="col-md-5 input-group">
-                                        <label class="col-md-3">Nombres</label>
-                                        <input type="text" class="col-md-9 form-control form-control-sm" readonly v-model="Cliente.nombres">
-                                    </div>
-                                    <div class="col-md-5 input-group">
-                                        <label class="col-md-3">Apellidos</label>
-                                        <input type="text" class="col-md-9 form-control form-control-sm" readonly v-model="Cliente.apellidos">
-                                    </div>
-                                </div>
-                                <div v-else-if="Cliente.tipo=='E'" class="row form-group">
-                                    <div class="col-md-3 input-group">
-                                        <label class="col-md-3">RUC</label>
-                                        <input type="text" class="col-md-9 form-control form-control-sm" readonly v-model="Cliente.documento">
-                                    </div>
-                                    <div class="col-md-9 input-group">
-                                        <label class="col-md-2">Razón social</label>&nbsp;
-                                        <input type="text" class="col-md-10 form-control form-control-sm" readonly v-model="Cliente.razon_social">
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="row shadow bg-white rounded pt-2">
-                                <div class="col-md-4">
-                                    <label class="row col-md-12 form-group font-weight-bold">PRODUCTOS</label>
-                                    <div class="row col-md-12 input-group form-group">
+                            <div class="container-small col-md-4">
+                                <div class="shadow bg-white rounded pt-2" style="border: 1px solid; height: 23rem;">
+                                    <label class="col-md-12 form-group font-weight-bold">PRODUCTOS</label>
+                                    <div class="col-md-12 input-group form-group">
                                         <input type="search" class="form-control form-control-sm" v-model="Service.text" @keyup.enter="list(0)" id="filtroProducto" placeholder="Producto,marca,modelo,tamaño,color">
                                         <button type="button" class="btn btn-sm btn-primary" @click="list(0)">
                                             <i class="fa fa-search"></i>&nbsp; Buscar
                                         </button>
                                     </div>
-                                    <div class="row overflow-auto" style="height: 18rem;">
-                                        <div v-if="ListaProducto.length" class="col-md-12">
-                                            <table class="table table-bordered table-striped table-sm text-gray-900">
-                                                <thead>
-                                                    <tr class="table-danger">
-                                                        <th class="text-center" style="width: 10%;">Agregar</th>
-                                                        <th class="text-center">Nombre</th>
-                                                        <th class="text-center">Stock</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr v-for="producto in ListaProducto" :key="producto.id" >
-                                                        <td class="text-center">
-                                                            <button type="button" v-if="producto.detalle.substock>0" title="AGREGAR" class="btn btn-circle btn-sm btn-outline-success" @click="add(0, producto)">
-                                                                <i class="fas fa-plus"></i>
-                                                            </button>
-                                                        </td>
-                                                        <td v-text="producto.nombre"></td>
-                                                        <td v-text="producto.detalle.substock" class="text-right"></td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                        <div v-else>
-                                            <label class="col-md-12 text-danger">No se han encontrado resultados</label>
-                                        </div>
+                                    <div v-if="ListaProducto.length" class="col-md-12 overflow-auto" style="height: 16rem;">
+                                        <table class="table table-bordered table-striped table-sm text-gray-900">
+                                            <thead>
+                                                <tr class="table-danger">
+                                                    <th class="text-center" style="width: 10%;">Agregar</th>
+                                                    <th class="text-center">Nombre</th>
+                                                    <th class="text-center">Stock</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="producto in ListaProducto" :key="producto.id">
+                                                    <td class="text-center">
+                                                        <button type="button" v-if="producto.detalle.substock>0" title="AGREGAR" class="btn btn-circle btn-sm btn-outline-success" @click="add(0, producto)">
+                                                            <i class="fas fa-plus"></i>
+                                                        </button>
+                                                    </td>
+                                                    <td v-text="producto.nombre"></td>
+                                                    <td v-text="producto.detalle.substock" class="text-right"></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div v-else>
+                                        <label class="col-md-12 text-danger">No se han encontrado resultados</label>
                                     </div>
                                 </div>
-                                <div class="col-md-8 ml-auto container">
-                                    <div class="row form-group">
+                            </div>
+                            <div class="container-small col-md-8">
+                                <div class="shadow bg-white rounded pt-2" style="border: 1px solid; height: 23rem;">
+                                    <div class="col-md-12 form-group input-group">
                                         <label class="col-md-3 font-weight-bold">LISTA DE ITEMS</label>
                                         <div class="col-md-1"></div>
                                         <div class="col-md-4 input-group">
@@ -228,51 +239,49 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="row form-group overflow-auto" style="height: 18rem;">
-                                        <div v-if="ListaDetalle.length" class="col-md-12">
-                                            <table class="table table-bordered table-striped table-sm text-gray-900">
-                                                <thead>
-                                                    <tr class="table-success">
-                                                        <th class="text-center">Quitar</th>
-                                                        <th class="text-center">Nombre</th>
-                                                        <th class="text-center" style="width: 5rem;">Cantidad</th>
-                                                        <th class="text-center">Precio</th>
-                                                        <th class="text-center">Subtotal</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr v-for="(detalle, indice) in ListaDetalle" :key="indice">
-                                                        <td class="text-center">
-                                                            <button type="button" class="btn btn-circle btn-outline-danger btn-sm" title="QUITAR" @click="remove(0, indice)">
-                                                                <i class="fas fa-minus"></i>
-                                                            </button>
-                                                        </td>
-                                                        <td v-text="detalle.nombre"></td>
-                                                        <td>
-                                                            <input type="number" v-model="detalle.cantidad" class="form-control form-control-sm text-right" min="1" :max="detalle.substock" @click="update(0)" @keyup="update(0)">
-                                                        </td>
-                                                        <td class="text-right" v-text="Venta.tipo_precio=='1'?detalle.precio_menor:detalle.precio_mayor"></td>
-                                                        <td class="text-right" v-text="detalle.subtotal">
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                        <div v-else class="col-md-12">
-                                            <label class="text-danger">Sin detalles de venta</label>
-                                        </div>
+                                    <div v-if="ListaDetalle.length" class="col-md-12 overflow-auto form-group" style="height: 16rem;">
+                                        <table class="table table-bordered table-striped table-sm text-gray-900">
+                                            <thead>
+                                                <tr class="table-success">
+                                                    <th class="text-center">Quitar</th>
+                                                    <th class="text-center">Nombre</th>
+                                                    <th class="text-center" style="width: 5rem;">Cantidad</th>
+                                                    <th class="text-center">Precio</th>
+                                                    <th class="text-center">Subtotal</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="(detalle, indice) in ListaDetalle" :key="indice">
+                                                    <td class="text-center">
+                                                        <button type="button" class="btn btn-circle btn-outline-danger btn-sm" title="QUITAR" @click="remove(0, indice)">
+                                                            <i class="fas fa-minus"></i>
+                                                        </button>
+                                                    </td>
+                                                    <td v-text="detalle.nombre_producto"></td>
+                                                    <td>
+                                                        <input type="number" v-model="detalle.cantidad" class="form-control form-control-sm text-right" min="1" :max="detalle.substock" @click="update(0)" @keyup="update(0)">
+                                                    </td>
+                                                    <td class="text-right" v-text="Venta.tipo_precio=='1'?detalle.precio_menor:detalle.precio_mayor"></td>
+                                                    <td class="text-right" v-text="Number.parseFloat(detalle.subtotal).toFixed(2)">
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
                                     </div>
-                                    <div class="row">
+                                    <div v-else class="col-md-12 form-group" style="height: 16rem;">
+                                        <label class="text-danger">Sin detalles de venta</label>
+                                    </div>
+                                    <div class="col-md-12 input-group">
                                         <div class="col-md-5 input-group" v-if="Venta.tipo_pago=='2'||Venta.tipo_pago=='3'"> 
                                             <label class="col-md-6 font-weight-bold" for="pago_inicial">Pago inicial&nbsp;<span class="text-danger">*</span></label>
-                                            <input type="number" class="col-md-6 form-control form-control-sm text-right" v-model="Pago.monto" min="0" :max="updateVentaTotal" id="pago_inicial">
+                                            <input type="number" class="col-md-6 form-control form-control-sm text-right" v-model="Pago.monto" min="0" :max="Venta.total" id="pago_inicial">
                                         </div>
                                         <div class="col-md-5" v-else></div>
                                         <div class="col-md-2">
                                         </div>
                                         <div class="col-md-5 input-group">
                                             <label class="col-md-6 text-right font-weight-bold">Monto total:</label>
-                                            <label class="col-md-6 text-right text-info" v-text="'S/. '+updateVentaTotal"></label>
+                                            <label class="col-md-6 text-right text-info" v-text="'S/. '+(Venta.total).toFixed(2)"></label>
                                         </div>
                                     </div>
                                 </div>
@@ -332,7 +341,7 @@
                                                 <tr v-for="(pago, index) in ListaPago" :key="index" :class="pago.color">
                                                     <td class="text-right pr-1">{{index+1}}</td>
                                                     <td class="text-center" v-text="fix(0, pago.created_at)"></td>
-                                                    <td class="text-right pr-4" v-text="pago.monto"></td>
+                                                    <td class="text-right" v-text="pago.monto"></td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -348,11 +357,11 @@
                                         <!-- Monto faltante -->
                                         <label class="col-md-6 font-weight-bold">Monto faltante:</label>
                                         <label class="col-md-1 text-right text-danger">S/.</label>
-                                        <label class="col-md-4 text-right text-danger" v-text="Venta.total_faltante"></label>
+                                        <label class="col-md-4 text-right text-danger" v-text="Number.parseFloat(Venta.total_faltante).toFixed(2)"></label>
                                         <!-- Monto total -->
                                         <label class="col-md-6 font-weight-bold">Monto total: </label>
                                         <label class="col-md-1 text-right">S/.</label>
-                                        <label class="col-md-4 text-right" v-text="Venta.total"></label>
+                                        <label class="col-md-4 text-right" v-text="Number.parseFloat(Venta.total).toFixed(2)"></label>
                                     </div>
                                 </div>
                             </div>
@@ -385,15 +394,191 @@
                                             </tbody>
                                         </table>
                                     </div>
-                                    <div class="col-md-12 d-flex justify-content-end">
+                                    <div class="col-md-12 input-group">
+                                        <div class="col-md-6 input-group">
+                                            <label class="col-md-12 font-weight-bold pl-0">Registrado:&nbsp;<label class="text-info font-weight-normal" v-text="fix(0, Venta.created_at)"></label></label>
+                                        </div>
+                                        <div class="col-md-1"></div>
                                         <div class="col-md-5 input-group">
-                                            <label class="col-md-6 text-right font-weight-bold">Monto total:</label>
-                                            <label class="col-md-6 text-right text-info" v-text="'S/. '+Venta.total"></label>
+                                            <label class="col-md-7 font-weight-bold text-right">Monto total:</label>
+                                            <label class="col-md-5 text-right text-info pr-0 pl-0" v-text="'S/. '+Number.parseFloat(Venta.total).toFixed(2)"></label>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                                
+                        </div>
+                        <!-- Modal Numero 3 de EDITAR -->
+                        <div v-if="Modal.numero==3" class="container-small input-group">
+                            <div v-if="Error.estado" class="col-md-12 d-flex justify-content-center">
+                                <div class="col-md-6 alert alert-danger">
+                                    <button type="button" @click="Error.estado=0" class="close text-primary" data-dismiss="alert">×</button>
+                                    <strong>Corregir los siguentes errores:</strong>
+                                    <ul> 
+                                        <li v-for="error in Error.mensaje" :key="error" v-text="error"></li> 
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="container-small col-md-12">
+                                <div class="shadow bg-white rounded pt-2 form-group" style="border: 1px solid;">
+                                    <div class="col-md-12 form-group input-group">
+                                        <label class="col-md-2 font-weight-bold">CLIENTE</label>
+                                        <label class="col-md-1 font-weight-bold">RUC/DNI&nbsp;<span class="text-danger" v-if="Venta.tipo_pago=='2'||Venta.tipo_pago=='3'">*</span></label>
+                                        <div class="col-md-2 input-group">
+                                            <input type="text" class="form-control form-control-sm" v-model="Service.document" @keyup.enter="consultar()" maxlength="11">
+                                            <button type="button" class="btn btn-sm btn-primary" @click="consultar()">
+                                                <i class="fas fa-sync-alt"></i>
+                                            </button>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <h5>
+                                                <span role="status" :class="Service.loadclass"></span>&nbsp;
+                                                <span v-text="Service.msm" :class="Service.msmclass"></span>
+                                            </h5>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 form-group input-group" v-if="Cliente.tipo=='P'">
+                                        <div class="col-md-3 input-group">
+                                            <label class="col-md-3">DNI</label>
+                                            <input type="text" class="col-md-9 form-control form-control-sm" readonly v-model="Cliente.documento">
+                                        </div>
+                                        <div class="col-md-4 input-group">
+                                            <label class="col-md-4">Nombres</label>
+                                            <input type="text" class="col-md-8 form-control form-control-sm" readonly v-model="Cliente.nombres">
+                                        </div>
+                                        <div class="col-md-4 input-group">
+                                            <label class="col-md-4">Apellidos</label>
+                                            <input type="text" class="col-md-8 form-control form-control-sm" readonly v-model="Cliente.apellidos">
+                                        </div>
+                                        <div class="col-md-1 d-flex justify-content-center" v-if="Venta.tipo_pago=='1'">
+                                            <button type="button" class="btn btn-circle btn-sm btn-outline-danger" @click="remove(1)" title="ELIMINAR"> 
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 form-group input-group" v-else-if="Cliente.tipo=='E'">
+                                        <div class="col-md-3 input-group">
+                                            <label class="col-md-3">RUC</label>
+                                            <input type="text" class="col-md-9 form-control form-control-sm" readonly v-model="Cliente.documento">
+                                        </div>
+                                        <div class="col-md-8 input-group">
+                                            <label class="col-md-3">Razón social</label>&nbsp;
+                                            <input type="text" class="col-md-9 form-control form-control-sm" readonly v-model="Cliente.razon_social">
+                                        </div>
+                                        <div class="col-md-1 d-flex justify-content-center" v-if="Venta.tipo_pago=='1'">
+                                            <button type="button" class="btn btn-circle btn-sm btn-outline-danger" @click="remove(1)" title="ELIMINAR"> 
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="container-small col-md-4">
+                                <div class="shadow bg-white rounded pt-2" style="border: 1px solid; height: 23rem;">
+                                    <label class="col-md-12 form-group font-weight-bold">PRODUCTOS</label>
+                                    <div class="col-md-12 input-group form-group">
+                                        <input type="search" class="form-control form-control-sm" v-model="Service.text" @keyup.enter="list(0)" id="filtroProducto" placeholder="Producto,marca,modelo,tamaño,color">
+                                        <button type="button" class="btn btn-sm btn-primary" @click="list(0)">
+                                            <i class="fa fa-search"></i>&nbsp; Buscar
+                                        </button>
+                                    </div>
+                                    <div v-if="ListaProducto.length" class="col-md-12 overflow-auto" style="height: 16rem;">
+                                        <table class="table table-bordered table-striped table-sm text-gray-900">
+                                            <thead>
+                                                <tr class="table-danger">
+                                                    <th class="text-center" style="width: 10%;">Agregar</th>
+                                                    <th class="text-center">Nombre</th>
+                                                    <th class="text-center">Stock</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="producto in ListaProducto" :key="producto.id">
+                                                    <td class="text-center">
+                                                        <button type="button" v-if="producto.detalle.substock>0" title="AGREGAR" class="btn btn-circle btn-sm btn-outline-success" @click="add(0, producto)">
+                                                            <i class="fas fa-plus"></i>
+                                                        </button>
+                                                    </td>
+                                                    <td v-text="producto.nombre"></td>
+                                                    <td v-text="producto.detalle.substock" class="text-right"></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div v-else>
+                                        <label class="col-md-12 text-danger">No se han encontrado resultados</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="container-small col-md-8">
+                                <div class="shadow bg-white rounded pt-2" style="border: 1px solid; height: 23rem;">
+                                    <div class="col-md-12 form-group input-group">
+                                        <label class="col-md-3 font-weight-bold">LISTA DE ITEMS</label>
+                                        <div class="col-md-1"></div>
+                                        <div class="col-md-4 input-group">
+                                            <label class="col-md-4 font-weight-bold">Pago&nbsp;<span class="text-danger">*</span></label>
+                                            <select class="col-md-8 custom-select custom-select-sm text-gray-900" v-model="Venta.tipo_pago">
+                                                <option value="1">Contado</option>
+                                                <option value="2">Credito prepago</option>
+                                                <option value="3">Credito postpago</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4 input-group">
+                                            <label class="col-md-5 font-weight-bold">Precio&nbsp;<span class="text-danger">*</span></label>
+                                            <select class="col-md-7 custom-select custom-select-sm text-gray-900" v-model="Venta.tipo_precio" @click="update(0)">
+                                                <option value="1">Al por menor</option>
+                                                <option value="2">Al por mayor</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div v-if="ListaDetalle.length" class="col-md-12 overflow-auto form-group" style="height: 16rem;">
+                                        <table class="table table-bordered table-striped table-sm text-gray-900">
+                                            <thead>
+                                                <tr class="table-success">
+                                                    <th class="text-center">Quitar</th>
+                                                    <th class="text-center">Nombre</th>
+                                                    <th class="text-center" style="width: 5rem;">Fallidos</th>
+                                                    <th class="text-center" style="width: 5rem;">Cantidad</th>
+                                                    <th class="text-center">Precio</th>
+                                                    <th class="text-center">Subtotal</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="(detalle, indice) in ListaDetalle" :key="indice">
+                                                    <td class="text-center">
+                                                        <button type="button" class="btn btn-circle btn-outline-danger btn-sm" title="QUITAR" @click="remove(0, indice)" v-if="detalle.id==0">
+                                                            <i class="fas fa-minus"></i>
+                                                        </button>
+                                                    </td>
+                                                    <td v-text="detalle.nombre_producto"></td>
+                                                    <td v-if="detalle.id!=0">
+                                                        <input type="number" v-model="detalle.fallidos" class="form-control form-control-sm text-right" :min="detalle.fallidos_inicial" :max="detalle.cantidad_inicial" @click="update(3)" @keyup="update(3)">
+                                                    </td>
+                                                    <td v-else class="text-center">-</td>
+                                                    <td>
+                                                        <input type="number" v-model="detalle.cantidad" class="form-control form-control-sm text-right" :min="detalle.cantidad_inicial" :max="detalle.substock" @click="update(0)" @keyup="update(0)">
+                                                    </td>
+                                                    <td class="text-right" v-text="Venta.tipo_precio=='1'?detalle.precio_menor:detalle.precio_mayor"></td>
+                                                    <td class="text-right" v-text="Number.parseFloat(detalle.subtotal).toFixed(2)">
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div v-else class="col-md-12 form-group" style="height: 16rem;">
+                                        <label class="col-md-12 text-danger">Sin detalles de venta</label>
+                                    </div>
+                                    <div class="col-md-12 input-group">
+                                        <div class="col-md-5 input-group"> 
+                                            <label class="col-md-12 font-weight-bold">Minimo:&nbsp;&nbsp;<label class="text-danger" v-text="'S/. '+Number.parseFloat(Venta.total_minimo).toFixed(2)"></label></label>
+                                        </div>
+                                        <div class="col-md-2">
+                                        </div>
+                                        <div class="col-md-5 input-group">
+                                            <label class="col-md-6 text-right font-weight-bold">Monto total:</label>
+                                            <label class="col-md-6 text-right text-info" v-text="'S/. '+Number.parseFloat(Venta.total).toFixed(2)"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <!-- Modal Numero 4 de PAGAR-->
                         <div v-if="Modal.numero == 4">
@@ -485,6 +670,7 @@
                     centro_id: '',
                     total: 0.00,
                     total_faltante: 0.00,
+                    total_minimo: 0,
                     tipo_pago: '0', // 1: contado, 2: credito prepago, 3: credito postpago
                     tipo_precio: '0', // 1: al por menor, 2: al por mayor
                     created_at : '',
@@ -601,28 +787,6 @@
 
                 return filas;
             },
-            // updateVentaTotalFaltante: function(){
-            //     if (!this.Modal.numero==4) return;
-
-            //     this.Venta.total_faltante = this.Venta.total;
-                
-            //     this.ListaPago.forEach( pago => {
-            //         this.Venta.total_faltante -= Number.parseFloat(pago.monto);
-            //     });
-
-            //     return Number.parseFloat(this.Venta.total_faltante).toFixed(2);
-            // },
-            // updateVentaTotal: function(){
-            //     if (!this.Modal.numero==1&&!this.Modal.numero==3) return;
-
-            //     this.Venta.total = 0;
-
-            //     this.ListaDetalle.forEach(detalle => {
-            //         this.Venta.total += Number.parseFloat(detalle.subtotal);
-            //     });
-                
-            //     return Number.parseFloat(this.Venta.total).toFixed(2);
-            // }
         },
         methods: {
             listar(page = 1){
@@ -685,11 +849,57 @@
                     console.log(error);
                 });
             },
+            editar(){
+                if ( this.validar(2) ) return;
+                
+                console.log('SE EDITO LA VENTA');
+                
+                this.cerrarModal();
+
+                // var me = this;
+                // var url = this.Ruta.venta+'/editar';
+
+                // axios.post(url, {
+                //     'centro_id': $('meta[name="idCentro"]').attr('content'),
+                //     'total': this.Venta.total,
+                //     'total_faltante': this.Venta.total_faltante,
+                //     'pago_monto': this.Pago.monto,
+                //     'tipo_pago': this.Venta.tipo_pago,
+                //     'tipo_precio': this.Venta.tipo_precio,
+                //     'cliente': this.Cliente,
+                //     'listaDetalle': this.ListaDetalle
+                // }).then(function(response){
+                //     me.cerrarModal();
+                //     me.listar();
+                //     var estado = response.data.estado;
+                //     if ( estado == 0 ) {
+                //         Swal.fire({
+                //             position: 'top-end',
+                //             toast: true,
+                //             type: 'success',
+                //             title: 'La venta se ha REGISTRADO correctamente',
+                //             showConfirmButton: false,
+                //             timer: 4500,
+                //             animation:false,
+                //             customClass:{
+                //                 popup: 'animated bounceIn fast'
+                //             }
+                //         });
+                //     } else {
+                //         console.log(response.data.error);
+                //     }
+                // }).catch(function(error){
+                //     console.log(error);
+                // });
+            },
             pagar(){
                 let pagos = [];
                 this.ListaPago.forEach(pago => {
                     if(pago.estado) pagos.push(pago);
                 });
+                var venta_tipo_pago = this.Venta.tipo_pago;
+                var venta_total_faltante = Number.parseFloat(this.Venta.total_faltante);
+                var venta_id = this.Venta.id;
 
                 let me = this;
                 let url = this.Ruta.pago+'/agregar';
@@ -700,18 +910,37 @@
                 }).then(function(response){
                     me.cerrarModal();
                     me.listar();
-                    Swal.fire({
-                        position: 'top-end',
-                        toast: true,
-                        type: 'success',
-                        title: 'El pago se ha REGISTRADO correctamente',
-                        showConfirmButton: false,
-                        timer: 4500,
-                        animation:false,
-                        customClass:{
-                            popup: 'animated bounceIn fast'
-                        }
-                    });
+                    if ( venta_tipo_pago != 3 || venta_total_faltante != 0 ) {
+                        Swal.fire({
+                            position: 'top-end',
+                            toast: true,
+                            type: 'success',
+                            title: 'El pago se ha REGISTRADO correctamente',
+                            showConfirmButton: false,
+                            timer: 4500,
+                            animation:false,
+                            customClass:{
+                                popup: 'animated bounceIn fast'
+                            }
+                        });
+                    } else {
+                        Swal.fire({
+                            title: 'Pagos Finalizados',
+                            text: "Ya que se ha pagado por completo la venta, ahora tiene que entregar los siguientes productos",
+                            type: 'success',
+                        }).then((result) => {
+                            if (result.value) {
+                                var data;
+                                for (let i = 0; i < me.ListaVenta.length; i++) {
+                                    if ( me.ListaVenta[i].id == venta_id ) {
+                                        data = me.ListaVenta[i]; break;
+                                    }
+                                }
+                                me.abrirModalVer(data);
+                            } else if ( result.dismiss === Swal.DismissReason.cancel ) {
+                            }
+                        })
+                    }
                 }).catch(function(error){
                     console.log(error);
                 });
@@ -749,9 +978,10 @@
 
                 this.Venta.id = data.id;
                 this.Venta.total = data.total;
-                this.Venta.total_faltante = data.total_faltante;
+                this.Venta.total_faltante = data.total_faltante==null?0:data.total_faltante;
                 this.Venta.tipo_pago = data.tipo.charAt(0);
                 this.Venta.tipo_precio = data.tipo.charAt(1);
+                this.Venta.created_at = data.created_at;
                 
                 this.Cliente.dni = data.dni;
                 this.Cliente.nombres = data.nombres;
@@ -760,15 +990,35 @@
                 this.Cliente.razon_social = data.razon_social;
                 this.Cliente.tipo = data.cliente_tipo;
                 
-                this.list(1);
+                this.list(1, 'Ver');
                 this.list(2);
+            },
+            abrirModalEditar(data){
+                this.abrirModal(3, 'Editar Venta', 'modal-xl', 'Editar', 'Cerrar');
+
+                this.Venta.id = data.id;
+                this.Venta.total = data.total;
+                this.Venta.total_minimo = data.total;
+                this.Venta.tipo_pago = data.tipo.charAt(0);
+                this.Venta.tipo_precio = data.tipo.charAt(1);
+                
+                this.Cliente.id = data.cliente_id;
+                this.Cliente.documento = data.dni!=null?data.dni:data.ruc;
+                this.Cliente.dni = data.dni;
+                this.Cliente.nombres = data.nombres;
+                this.Cliente.apellidos = data.apellidos;
+                this.Cliente.ruc = data.ruc;
+                this.Cliente.razon_social = data.razon_social;
+                this.Cliente.tipo = data.cliente_tipo;
+                
+                this.list(1, 'Editar');
             },
             abrirModalPagar(venta = []){
                 this.abrirModal(4, 'Realizar Pago', '', 'Guardar', 'Cancelar');
 
                 this.Venta.id = venta['id'];
                 this.Venta.total = venta['total'];
-                this.Venta.total_faltante = venta['total_faltante'];
+                this.Venta.total_faltante = venta['total_faltante']==null?0:venta.total_faltante;
                 this.Venta.tipo_pago = venta['tipo'].charAt(0);
                 
                 this.Pago.monto = '';
@@ -843,12 +1093,13 @@
 
                 this.Venta.id = 0;
                 this.Venta.total = 0.00;
-                this.Venta.faltante = 0;
+                this.Venta.total_faltante = 0;
+                this.Venta.total_minimo = 0;
                 this.Venta.centro_id = 0;
                 this.Venta.tipo_pago = '0';
                 this.Venta.tipo_precio = '0';
 
-                this.Cliente.id = 0;
+                this.Cliente.id = -1;
                 this.Cliente.documento = '';
                 this.Cliente.dni = '';
                 this.Cliente.nombres = '';
@@ -865,8 +1116,9 @@
                 this.ListaDetalle = [];
             },
             accionar(){
-                switch( this.Modal.numero ){
+                switch ( this.Modal.numero ){
                     case 1: this.agregar(); break;
+                    case 3: this.editar(); break;
                     case 4: this.pagar(); break;
                 }
             },
@@ -877,7 +1129,20 @@
                 switch ( numero ) {
                     case 0:
                         if ( this.Cliente.documento == '' && (this.Venta.tipo_pago == 2 || this.Venta.tipo_pago == 3) ) this.Error.mensaje.push('Debe ingresar datos del cliente');
-                        if ( !this.ListaDetalle.length ) this.Error.mensaje.push("No existe ningun detalle de abasto");
+                        if ( !this.ListaDetalle.length ) {
+                            this.Error.mensaje.push("No existe ningun detalle de abasto");
+                        } else {
+                            let found_a = false, found_b = false;
+                            for (let i = 0; i < this.ListaDetalle.length; i++) {
+                                if ( this.ListaDetalle[i].cantidad <= 0 && !found_a ){
+                                    this.Error.mensaje.push('Las cantidades no pueden ser negativas'); found_a = true;
+                                } 
+                                if ( this.ListaDetalle[i].cantidad > this.ListaDetalle[i].substock && !found_b ){
+                                    this.Error.mensaje.push('Las cantidades no pueden superar al stock'); found_b = true;
+                                } 
+                                if ( found_a && found_b ) break;
+                            }
+                        }
                         if( this.Venta.tipo_pago == 2 || this.Venta.tipo_pago == 3 ){
                             if ( this.Pago.monto < 0 || this.Pago.monto == '' ){
                                 this.Error.mensaje.push('El pago inicial debe ser mayor o igual a 0')
@@ -890,6 +1155,23 @@
                         break;
                     case 1:
                         if (this.Pago.monto == '' || this.Pago.monto <= 0 || this.Pago.monto > Number.parseFloat(this.Venta.total_faltante)) this.Error.mensaje.push('Debe ingresar un monto válido');
+                        break;
+                    case 2:
+                        let change1 = false, change2 = false;
+                        //Verificar cliente
+                        for (let i = 0; i < this.ListaVenta.length; i++) {
+                            if ( this.ListaVenta[i].id == this.Venta.id ) {
+                                if ( this.ListaVenta[i].dni != this.Cliente.documento && this.ListaVenta[i].ruc != this.Cliente.documento ) change1 = true; 
+                                break;
+                            }
+                        }
+                        //verificar detalles
+                        for (let i = 0; i < this.ListaDetalle.length; i++) {
+                            if ( this.ListaDetalle[i].fallidos != this.ListaDetalle[i].fallidos_inicial || this.ListaDetalle[i].cantidad != this.ListaDetalle[i].cantidad_inicial ) {
+                                change2 = true; break;
+                            }
+                        }
+                        if ( !change1 && !change2 ) this.Error.mensaje.push('Ningun cambio realizado');
                         break;
                 }
                 
@@ -1024,7 +1306,7 @@
                 }).fail(function(){
                 });
             },
-            list(numero){
+            list(numero, data = ''){
                 var me = this;
                 var url;
 
@@ -1050,11 +1332,12 @@
                         });
                         break;
                     case 1:
-                        url = this.Ruta.detalle_venta+'/list?'
+                        url = this.Ruta.detalle_venta+'/list'+data+'?'
                                         +'venta_id='+this.Venta.id;
 
                         axios.get(url).then(function(response){
                             me.ListaDetalle = response.data;
+                            if ( data == 'Editar' ) me.fix(6);
                         }).catch(function(error){
                             console.log(error);
                         });
@@ -1077,7 +1360,7 @@
                         let found = false;
                         for (let i = 0; i < this.ListaDetalle.length; i++) {
                             if ( this.ListaDetalle[i].detalle_producto_id == data.detalle.id ){
-                                this.ListaDetalle[i].cantidad++;
+                                if ( this.ListaDetalle[i].cantidad < this.ListaDetalle[i].substock ) this.ListaDetalle[i].cantidad++;
                                 found = true; break;
                             }
                         }
@@ -1086,9 +1369,11 @@
                             this.ListaDetalle.push({
                                 id: 0,
                                 detalle_producto_id: data.detalle.id,
-                                nombre: data.nombre,
+                                nombre_producto: data.nombre,
                                 cantidad: 1,
-                                estado: 1,
+                                fallidos: 0,
+                                cantidad_inicial: 0,
+                                substock: data.detalle.substock,
                                 precio_menor: data.detalle.precio_menor,
                                 precio_mayor: data.detalle.precio_mayor,
                                 subtotal: Number.parseFloat(this.Venta.tipo_precio=='1'?data.detalle.precio_menor:data.detalle.precio_mayor).toFixed(2)
@@ -1096,6 +1381,7 @@
                         } else {
                             this.update(0);
                         }
+                        this.update(1);
                         break;
                     case 1:
                         if ( this.validar(1) ) return;
@@ -1114,11 +1400,10 @@
             update(numero){
                 switch (numero) {
                     case 0:
-                        for (let i = 0; i < this.ListaDetalle.length; i++) {
-                            if ( this.ListaDetalle[i].estado == 1 ) {
-                                this.ListaDetalle[i].subtotal = ((this.Venta.tipo_precio=='1'?this.ListaDetalle[i].precio_menor:this.ListaDetalle[i].precio_mayor)*this.ListaDetalle[i].cantidad).toFixed(2);
-                            }
-                        }
+                        this.ListaDetalle.forEach(detalle => {
+                            detalle.subtotal = (this.Venta.tipo_precio=='1'?detalle.precio_menor:detalle.precio_mayor)*detalle.cantidad;
+                        })
+                        this.update(1);
                         break;
                     case 1:
                         this.Venta.total = 0;
@@ -1133,12 +1418,27 @@
                         });
                         this.Venta.total_faltante = Number.parseFloat(this.Venta.total_faltante).toFixed(2);
                         break;
+                    case 3:
+                        this.ListaDetalle.forEach(detalle => {
+                            detalle.subtotal = (this.Venta.tipo_precio=='1'?detalle.precio_menor:detalle.precio_mayor) * (detalle.cantidad-detalle.fallidos);
+                        })
+                        this.update(1);
+                        break;
                 }
             },
             remove(numero, data){
                 switch (numero) {
                     case 0:
                         this.ListaDetalle.splice(data, 1);
+                        this.update(1);
+                        break;
+                    case 1:
+                        this.Cliente.id = -1;
+                        this.Cliente.documento = '';
+                        this.Cliente.nombres = '';
+                        this.Cliente.apellidos = '';
+                        this.Cliente.razon_social = '';
+                        this.Cliente.tipo = '';
                         break;
                 }
             },
@@ -1150,7 +1450,7 @@
                         let fecha = data.split(' ')[0].split('-');
                         let hora = data.split(' ')[1].split(':');
                         let fecha_fixed = fecha[2]+'-'+fecha[1]+'-'+fecha[0];
-                        let hora_fixed = (hora[0]>12?(hora[0]-12).toString().padStart(2, '0'):hora[0])+':'+hora[1]+':'+hora[2];
+                        let hora_fixed = (hora[0]>12?(hora[0]-12).toString().padStart(2, '0'):hora[0])+':'+hora[1]+':'+hora[2]+' '+(hora[0]>12?'pm':'am') ;
                         fixed = fecha_fixed+' '+hora_fixed;
                         break;
                     case 1:
@@ -1171,6 +1471,15 @@
                         if ( data == '1' ) fixed = 'Al por menor'; 
                         if ( data == '2' ) fixed = 'Al por mayor'; 
                         break;
+                    case 6:
+                        for (let i = 0; i < this.ListaDetalle.length; i++) {
+                            if ( this.ListaDetalle[i].fallidos == null ) this.ListaDetalle[i].fallidos = 0;
+                            if ( this.ListaDetalle[i].fallidos_inicial == null ) this.ListaDetalle[i].fallidos_inicial = 0;
+                        }
+                        break;
+                    default:
+                        fixed = '';
+                        break;
                 }
 
                 return fixed;
@@ -1186,72 +1495,11 @@
                 let hoy =  y + '-' + m + '-' + d + ' ' + h + ':' + minu + ':' + seg;
                 return hoy;
             },
-            filtrarPagosNuevos(){
-                
-            },
             cambiarPagina(page){
                 if ( page >= 1 && page <= this.Paginacion.lastPage) {
                     this.listar(page);
                 }
-            },
-            addCero(i) {
-                if (i < 10) {
-                    i = '0' + i;
-                }
-                return i;
-            },
-            getDia(){
-                let min = 1;
-                let max = 31;
-                let lista = [];
-                while(min <= max){
-                    lista.push(this.addCero(min));
-                    min++;
-                }
-                return lista;
-            },
-            getMes(){
-                let nombres = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Setiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-                let min = 1;
-                let max = 12;
-                let lista = [];
-                while(min <= max){
-                    lista.push({nombre: nombres[min-1], valor: this.addCero(min)});
-                    min++;
-                }
-                return lista;
-            },
-            getYear(min){
-                let n =  new Date();
-                let max = n.getFullYear();
-                let lista = [];
-                while(min <= max){
-                    lista.push(min);
-                    min++;
-                }
-                return lista;
-            },
-            getMesActual(){
-                let n =  new Date();
-                let mes = this.addCero(n.getMonth() + 1);
-                return mes;
-            },
-            getYearActual(){
-                let n =  new Date();
-                let year = n.getFullYear();
-                return year;
-            },
-            //Metodos de envios
-            selectAlmacen(){
-                var me = this;
-                var url = '/centro/selectAlmacen';
-
-                axios.get(url).then(function(response){
-                    me.SelectAlmacen = response.data;
-                }).catch(function(error){
-                    console.log(error);
-                });
-            },
+            }
         },
         mounted() {
             this.listar();
