@@ -328,7 +328,7 @@
                                     <div class="col-md-12 input-group">
                                         <label class="font-weight-bold">LISTA DE PAGOS</label>
                                     </div>
-                                    <div class="col-md-12 overflow-auto" style="height: 15rem" v-if="ListaPago.length">
+                                    <div class="col-md-12 overflow-auto" style="height: 16rem" v-if="ListaPago.length">
                                         <table class="table table-bordered table-striped table-sm text-gray-900">
                                             <thead>
                                                 <tr class="table-info">
@@ -346,22 +346,22 @@
                                             </tbody>
                                         </table>
                                     </div>
-                                    <div class="col-md-12 overflow-auto" style="height: 15rem" v-else>
+                                    <div class="col-md-12 overflow-auto" style="height: 16rem" v-else>
                                         <label class="text-info">Ningun pago registrado</label>
                                     </div>
                                     <div class="col-md-12 input-group d-flex justify-content-end">
                                         <!-- Monto pagado -->
-                                        <label class="col-md-6 font-weight-bold">Monto pagado:</label>
-                                        <label class="col-md-1 text-right text-success">S/.</label>
-                                        <label class="col-md-4 text-right text-success" v-text="(Venta.total-Venta.total_faltante).toFixed(2)"></label>
+                                        <label class="col-md-6 font-weight-bold p-0" style="margin-bottom: 0px;">Monto pagado:</label>
+                                        <label class="col-md-1 text-right text-success p-0" style="margin-bottom: 0px;">S/.</label>
+                                        <label class="col-md-4 text-right text-success" style="margin-bottom: 0px;" v-text="(Venta.total-Venta.total_faltante).toFixed(2)"></label>
                                         <!-- Monto faltante -->
-                                        <label class="col-md-6 font-weight-bold">Monto faltante:</label>
-                                        <label class="col-md-1 text-right text-danger">S/.</label>
-                                        <label class="col-md-4 text-right text-danger" v-text="Number.parseFloat(Venta.total_faltante).toFixed(2)"></label>
+                                        <label class="col-md-6 font-weight-bold p-0" style="margin-bottom: 0px;">Monto faltante:</label>
+                                        <label class="col-md-1 text-right text-danger p-0" style="margin-bottom: 0px;">S/.</label>
+                                        <label class="col-md-4 text-right text-danger" style="margin-bottom: 0px;" v-text="Number.parseFloat(Venta.total_faltante).toFixed(2)"></label>
                                         <!-- Monto total -->
-                                        <label class="col-md-6 font-weight-bold">Monto total: </label>
-                                        <label class="col-md-1 text-right">S/.</label>
-                                        <label class="col-md-4 text-right" v-text="Number.parseFloat(Venta.total).toFixed(2)"></label>
+                                        <label class="col-md-6 font-weight-bold p-0" style="margin-bottom: 0px;">Monto total: </label>
+                                        <label class="col-md-1 text-right p-0" style="margin-bottom: 0px;">S/.</label>
+                                        <label class="col-md-4 text-right" style="margin-bottom: 0px;" v-text="Number.parseFloat(Venta.total).toFixed(2)"></label>
                                     </div>
                                 </div>
                             </div>
@@ -510,26 +510,12 @@
                             </div>
                             <div class="container-small col-md-8">
                                 <div class="shadow bg-white rounded pt-2" style="border: 1px solid; height: 23rem;">
-                                    <div class="col-md-12 form-group input-group">
-                                        <label class="col-md-3 font-weight-bold">LISTA DE ITEMS</label>
-                                        <div class="col-md-1"></div>
-                                        <div class="col-md-4 input-group">
-                                            <label class="col-md-4 font-weight-bold">Pago&nbsp;<span class="text-danger">*</span></label>
-                                            <select class="col-md-8 custom-select custom-select-sm text-gray-900" v-model="Venta.tipo_pago">
-                                                <option value="1">Contado</option>
-                                                <option value="2">Credito prepago</option>
-                                                <option value="3">Credito postpago</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-4 input-group">
-                                            <label class="col-md-5 font-weight-bold">Precio&nbsp;<span class="text-danger">*</span></label>
-                                            <select class="col-md-7 custom-select custom-select-sm text-gray-900" v-model="Venta.tipo_precio" @click="update(0)">
-                                                <option value="1">Al por menor</option>
-                                                <option value="2">Al por mayor</option>
-                                            </select>
-                                        </div>
+                                    <div class="col-md-12 input-group">
+                                        <label class="col-md-4 font-weight-bold">LISTA DE ITEMS</label>
+                                        <label class="col-md-4 font-weight-bold">Pago:&nbsp;<label class="text-info font-weight-normal" v-text="fix(4, Venta.tipo_pago)"></label></label>
+                                        <label class="col-md-4 font-weight-bold">Precio:&nbsp;<label class="text-info font-weight-normal" v-text="fix(5, Venta.tipo_precio)"></label></label>
                                     </div>
-                                    <div v-if="ListaDetalle.length" class="col-md-12 overflow-auto form-group" style="height: 16rem;">
+                                    <div v-if="ListaDetalle.length" class="col-md-12 overflow-auto form-group" style="height: 14rem;">
                                         <table class="table table-bordered table-striped table-sm text-gray-900">
                                             <thead>
                                                 <tr class="table-success">
@@ -554,7 +540,7 @@
                                                     </td>
                                                     <td v-else class="text-center">-</td>
                                                     <td>
-                                                        <input type="number" v-model="detalle.cantidad" class="form-control form-control-sm text-right" :min="detalle.cantidad_inicial" :max="detalle.substock" @click="update(0)" @keyup="update(0)">
+                                                        <input type="number" v-model="detalle.cantidad" class="form-control form-control-sm text-right p-0" :min="detalle.cantidad_inicial" :max="detalle.substock" @click="update(0)" @keyup="update(0)">
                                                     </td>
                                                     <td class="text-right" v-text="Venta.tipo_precio=='1'?detalle.precio_menor:detalle.precio_mayor"></td>
                                                     <td class="text-right" v-text="Number.parseFloat(detalle.subtotal).toFixed(2)">
@@ -563,25 +549,33 @@
                                             </tbody>
                                         </table>
                                     </div>
-                                    <div v-else class="col-md-12 form-group" style="height: 16rem;">
+                                    <div v-else class="col-md-12 form-group" style="height: 14rem;">
                                         <label class="col-md-12 text-danger">Sin detalles de venta</label>
                                     </div>
                                     <div class="col-md-12 input-group">
-                                        <div class="col-md-5 input-group"> 
-                                            <label class="col-md-12 font-weight-bold">Minimo:&nbsp;&nbsp;<label class="text-danger" v-text="'S/. '+Number.parseFloat(Venta.total_minimo).toFixed(2)"></label></label>
-                                        </div>
-                                        <div class="col-md-2">
-                                        </div>
+                                        <div class="col-md-7"></div>
                                         <div class="col-md-5 input-group">
-                                            <label class="col-md-6 text-right font-weight-bold">Monto total:</label>
-                                            <label class="col-md-6 text-right text-info" v-text="'S/. '+Number.parseFloat(Venta.total).toFixed(2)"></label>
+                                            <label class="col-md-6 font-weight-bold">Minimo:</label>
+                                            <label class="col-md-1 text-danger p-0" v-text="'S/.'"></label>
+                                            <label class="col-md-5 text-right text-danger" v-text="Number.parseFloat(Venta.total_minimo).toFixed(2)"></label>
+                                        </div>
+                                        <div class="col-md-5 input-group" v-if="Venta.total-Venta.total_minimo > 0"> 
+                                            <label class="col-md-6 font-weight-bold" for="pago_inicial">Pago inicial&nbsp;<span class="text-danger">*</span></label>
+                                            <input type="number" class="col-md-6 form-control form-control-sm text-right" v-model="Pago.monto" min="0" :max="Venta.total-Venta.total_minimo" id="pago_inicial">
+                                        </div>
+                                        <div class="col-md-5" v-else></div>
+                                        <div class="col-md-2"></div>
+                                        <div class="col-md-5 input-group">
+                                            <label class="col-md-6 font-weight-bold">Monto total:</label>
+                                            <label class="col-md-1 text-info p-0" v-text="'S/.'"></label>
+                                            <label class="col-md-5 text-right text-info" v-text="Number.parseFloat(Venta.total).toFixed(2)"></label>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <!-- Modal Numero 4 de PAGAR-->
-                        <div v-if="Modal.numero == 4">
+                        <div v-if="Modal.numero == 4" class="container-small input-group d-flex justify-content-center">
                             <div v-if="Error.estado" class="row d-flex justify-content-center">
                                 <div class="alert alert-danger" style="height: 4.5rem;">
                                     <button type="button" @click="Error.estado=0" class="close text-primary" data-dismiss="alert">×</button>
@@ -591,55 +585,52 @@
                                     </ul>
                                 </div>
                             </div>
-                            <div class="row form-group">
-                                <label class="col-md-3 font-weight-bold">Registrar</label>
-                                <div class="col-md-1"></div>
+                            <div class="col-md-12 form-group input-group">
+                                <label class="col-md-3 font-weight-bold p-0">Registrar</label>
+                                <div class="col-md-2"></div>
                                 <div class="col-md-7 input-group">
                                     <label>Monto&nbsp;&nbsp;</label>
                                     <input type="number" class="col-md-7 form-control form-control-sm text-right" v-model="Pago.monto" @keyup.enter="add(1)" min="0" :max="Venta.total_faltante" :disabled="Venta.total_faltante==0" id="PagoMonto">
                                     <button type="button" class="btn btn-sm btn-primary" @click="add(1)" :disabled="Venta.total_faltante==0">Registrar</button>
                                 </div>
-                                <div class="col-md-1"></div>
                             </div>
-                            <div class="row form-group overflow-auto" style="height: 17.5rem;">
-                                <div class="col-md-12" v-if="ListaPago.length">
-                                    <table class="table table-bordered table-striped table-sm text-gray-900">
-                                        <thead>
-                                            <tr class="table-info">
-                                                <th class="text-center">#</th>
-                                                <th class="text-center">Fecha de pago</th>
-                                                <th class="text-center">Monto</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr v-for="(pago, index) in ListaPago" :key="index" :class="pago.color">
-                                                <td class="text-right">{{index+1}}</td>
-                                                <td class="text-center" v-text="fix(0, pago.created_at)"></td>
-                                                <td class="text-center pr-2" v-text="pago.monto"></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div class="col-md-12" v-else>
-                                    <p>Ningun pago registrado</p>
-                                </div>
+                            <div class="col-md-10 form-group overflow-auto pr-0 pl-0" style="height: 22rem;" v-if="ListaPago.length">
+                                <table class="table table-bordered table-striped table-sm text-gray-900">
+                                    <thead>
+                                        <tr class="table-info">
+                                            <th class="text-center">#</th>
+                                            <th class="text-center">Fecha de pago</th>
+                                            <th class="text-center">Monto</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="(pago, index) in ListaPago" :key="index" :class="pago.color">
+                                            <td class="text-right">{{index+1}}</td>
+                                            <td class="text-center" v-text="fix(0, pago.created_at)"></td>
+                                            <td class="text-right" v-text="pago.monto"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
-                            <div class="row input-group d-flex justify-content-end">
+                            <div class="col-md-12 form-group" style="height: 22rem;" v-else>
+                                <label class="text-primary">Ningun pago registrado</label>
+                            </div>
+                            <div class="col-md-12 input-group">
                                 <!-- Monto pagado -->
-                                <label class="col-md-4"></label>
-                                <label class="col-md-4 font-weight-bold">Monto pagado:</label>
-                                <label class="col-md-1 text-right text-success">S/.</label>
-                                <label class="col-md-3 text-right text-success" v-text="(Venta.total-Venta.total_faltante).toFixed(2)"></label>
+                                <label class="col-md-4" style="margin-bottom: 0px;"></label>
+                                <label class="col-md-4 font-weight-bold" style="margin-bottom: 0px;">Monto pagado:</label>
+                                <label class="col-md-1 text-right text-success" style="margin-bottom: 0px;">S/.</label>
+                                <label class="col-md-3 text-right text-success" style="margin-bottom: 0px;" v-text="(Venta.total-Venta.total_faltante).toFixed(2)"></label>
                                 <!-- Monto faltante -->
-                                <label class="col-md-4"></label>
-                                <label class="col-md-4 font-weight-bold">Monto faltante:</label>
-                                <label class="col-md-1 text-right text-danger">S/.</label>
-                                <label class="col-md-3 text-right text-danger" v-text="Venta.total_faltante"></label>
+                                <label class="col-md-4" style="margin-bottom: 0px;"></label>
+                                <label class="col-md-4 font-weight-bold" style="margin-bottom: 0px;">Monto faltante:</label>
+                                <label class="col-md-1 text-right text-danger" style="margin-bottom: 0px;">S/.</label>
+                                <label class="col-md-3 text-right text-danger" style="margin-bottom: 0px;" v-text="Venta.total_faltante"></label>
                                 <!-- Monto total -->
-                                <label class="col-md-4"></label>
-                                <label class="col-md-4 font-weight-bold">Monto total: </label>
-                                <label class="col-md-1 text-right">S/.</label>
-                                <label class="col-md-3 text-right" v-text="Venta.total"></label>
+                                <label class="col-md-4" style="margin-bottom: 0px;"></label>
+                                <label class="col-md-4 font-weight-bold" style="margin-bottom: 0px;">Monto total: </label>
+                                <label class="col-md-1 text-right" style="margin-bottom: 0px;">S/.</label>
+                                <label class="col-md-3 text-right" style="margin-bottom: 0px;" v-text="Venta.total"></label>
                             </div>
                         </div>
                     </div>
@@ -811,7 +802,7 @@
                 });
             },
             agregar(){
-                if ( this.validar(0) ) return;
+                if ( this.validar([0, 1, 2, 3]) ) return;
                 
                 var me = this;
                 var url = this.Ruta.venta+'/agregar';
@@ -850,8 +841,9 @@
                 });
             },
             editar(){
-                if ( this.validar(2) ) return;
-                
+                if ( this.validar([5]) ) return;
+                if ( this.validar([0, 1, 2, 3]) ) return;
+
                 console.log('SE EDITO LA VENTA');
                 
                 this.cerrarModal();
@@ -999,6 +991,7 @@
                 this.Venta.id = data.id;
                 this.Venta.total = data.total;
                 this.Venta.total_minimo = data.total;
+                this.Venta.tipo = data.tipo;
                 this.Venta.tipo_pago = data.tipo.charAt(0);
                 this.Venta.tipo_precio = data.tipo.charAt(1);
                 
@@ -1096,6 +1089,7 @@
                 this.Venta.total_faltante = 0;
                 this.Venta.total_minimo = 0;
                 this.Venta.centro_id = 0;
+                this.Venta.tipo = '00';
                 this.Venta.tipo_pago = '0';
                 this.Venta.tipo_precio = '0';
 
@@ -1122,59 +1116,79 @@
                     case 4: this.pagar(); break;
                 }
             },
-            validar(numero){
+            validar(data = []){
                 this.Error.estado = 0;
                 this.Error.mensaje = [];
 
-                switch ( numero ) {
-                    case 0:
-                        if ( this.Cliente.documento == '' && (this.Venta.tipo_pago == 2 || this.Venta.tipo_pago == 3) ) this.Error.mensaje.push('Debe ingresar datos del cliente');
-                        if ( !this.ListaDetalle.length ) {
-                            this.Error.mensaje.push("No existe ningun detalle de abasto");
-                        } else {
+                for (let i = 0; i < data.length; i++) {
+                    switch ( data[i] ) {
+                        case 0: // cliente
+                            if ( this.Cliente.documento == '' && (this.Venta.tipo_pago == 2 || this.Venta.tipo_pago == 3) ) this.Error.mensaje.push('Debe ingresar datos del cliente');
+                            break;
+                        case 1: // tipo de venta
+                            if( this.Venta.tipo_pago == 2 || this.Venta.tipo_pago == 3 ){
+                                if ( this.Pago.monto < 0 || this.Pago.monto == '' ){
+                                    this.Error.mensaje.push('El pago inicial debe ser mayor o igual a 0')
+                                } else if (this.Pago.monto > this.Venta.total){
+                                    this.Error.mensaje.push('El pago inicial no debe ser mayor al monto total')
+                                } else if (this.Pago.monto == this.Venta.total){
+                                    this.Error.mensaje.push('El pago inicial es igual al monto total, se recomienda cambiarlo a una venta al contado')
+                                }
+                            }
+                            break;
+                        case 2: // cantidades de detalle de venta
+                            if ( !this.ListaDetalle.length ) {
+                                this.Error.mensaje.push("No existe ningun detalle de venta");
+                            } else {
+                                let found_a = false, found_b = false;
+                                for (let i = 0; i < this.ListaDetalle.length; i++) {
+                                    if ( this.ListaDetalle[i].cantidad <= 0 && !found_a ){
+                                        this.Error.mensaje.push('Las cantidades no pueden 0 o negativos'); found_a = true;
+                                    } 
+                                    if ( this.ListaDetalle[i].cantidad > this.ListaDetalle[i].substock && !found_b ){
+                                        this.Error.mensaje.push('Las cantidades no pueden superar al stock'); found_b = true;
+                                    } 
+                                    if ( found_a && found_b ) break;
+                                }
+                            }
+                            break;
+                        case 3: // fallidos de detalle de venta
                             let found_a = false, found_b = false;
                             for (let i = 0; i < this.ListaDetalle.length; i++) {
-                                if ( this.ListaDetalle[i].cantidad <= 0 && !found_a ){
-                                    this.Error.mensaje.push('Las cantidades no pueden ser negativas'); found_a = true;
+                                if ( this.ListaDetalle[i].fallidos < this.ListaDetalle[i].fallidos_inicial && !found_a ){
+                                    this.Error.mensaje.push('Los fallidos no pueden 0 o negativos'); found_a = true;
                                 } 
-                                if ( this.ListaDetalle[i].cantidad > this.ListaDetalle[i].substock && !found_b ){
-                                    this.Error.mensaje.push('Las cantidades no pueden superar al stock'); found_b = true;
+                                if ( this.ListaDetalle[i].fallidos > this.ListaDetalle[i].cantidad_inicial && !found_b ){
+                                    this.Error.mensaje.push('Los fallidos no pueden superar la cantidad inicial'); found_b = true;
                                 } 
                                 if ( found_a && found_b ) break;
                             }
-                        }
-                        if( this.Venta.tipo_pago == 2 || this.Venta.tipo_pago == 3 ){
-                            if ( this.Pago.monto < 0 || this.Pago.monto == '' ){
-                                this.Error.mensaje.push('El pago inicial debe ser mayor o igual a 0')
-                            } else if (this.Pago.monto > this.Venta.total){
-                                this.Error.mensaje.push('El pago inicial no debe ser mayor al monto total')
-                            } else if (this.Pago.monto == this.Venta.total){
-                                this.Error.mensaje.push('El pago inicial es igual al monto total, se recomienda cambiarlo a una venta al contado')
+                            break;
+                        case 4: // monto de pago
+                            if (this.Pago.monto == '' || this.Pago.monto <= 0 || this.Pago.monto > Number.parseFloat(this.Venta.total_faltante)) this.Error.mensaje.push('Debe ingresar un monto válido');
+                            break;
+                        case 5: // cambio de valores
+                            let change1 = false, change2 = false, change3 = false;
+                            //Verificar cliente
+                            for (let i = 0; i < this.ListaVenta.length; i++) {
+                                if ( this.ListaVenta[i].id == this.Venta.id ) {
+                                    if ( this.ListaVenta[i].dni != this.Cliente.documento && this.ListaVenta[i].ruc != this.Cliente.documento ) change1 = true; 
+                                    break;
+                                }
                             }
-                        }
-                        break;
-                    case 1:
-                        if (this.Pago.monto == '' || this.Pago.monto <= 0 || this.Pago.monto > Number.parseFloat(this.Venta.total_faltante)) this.Error.mensaje.push('Debe ingresar un monto válido');
-                        break;
-                    case 2:
-                        let change1 = false, change2 = false;
-                        //Verificar cliente
-                        for (let i = 0; i < this.ListaVenta.length; i++) {
-                            if ( this.ListaVenta[i].id == this.Venta.id ) {
-                                if ( this.ListaVenta[i].dni != this.Cliente.documento && this.ListaVenta[i].ruc != this.Cliente.documento ) change1 = true; 
-                                break;
+                            //verificar tipos
+                            if ( (this.Venta.tipo_pago+this.Venta.tipo_precio) != this.Venta.tipo ) change2 = true;
+                            //verificar detalles
+                            for (let i = 0; i < this.ListaDetalle.length; i++) {
+                                if ( this.ListaDetalle[i].fallidos != this.ListaDetalle[i].fallidos_inicial || this.ListaDetalle[i].cantidad != this.ListaDetalle[i].cantidad_inicial ) {
+                                    change3 = true; break;
+                                }
                             }
-                        }
-                        //verificar detalles
-                        for (let i = 0; i < this.ListaDetalle.length; i++) {
-                            if ( this.ListaDetalle[i].fallidos != this.ListaDetalle[i].fallidos_inicial || this.ListaDetalle[i].cantidad != this.ListaDetalle[i].cantidad_inicial ) {
-                                change2 = true; break;
-                            }
-                        }
-                        if ( !change1 && !change2 ) this.Error.mensaje.push('Ningun cambio realizado');
-                        break;
+                            if ( !change1 && !change2 && !change3 ) this.Error.mensaje.push('Ningun cambio realizado');
+                            break;
+                    }
                 }
-                
+
                 if ( this.Error.mensaje.length ) this.Error.estado = 1;
                 return this.Error.estado;
             },
@@ -1384,7 +1398,7 @@
                         this.update(1);
                         break;
                     case 1:
-                        if ( this.validar(1) ) return;
+                        if ( this.validar([4]) ) return;
 
                         this.ListaPago.push({
                             monto: Number.parseFloat(this.Pago.monto).toFixed(2),
