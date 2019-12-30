@@ -147,15 +147,9 @@ class VentaController extends Controller {
             $listaCentros = DB::table('centro')->get();
             foreach ($listaCentros as $centro) {
                 $cant = DB::table('venta')->whereDate('created_at', $fechaActual)->where('centro_id', $centro->id)->count();
-                // $valor = [
-                //     'c'.$centro->id => [
-                //         'numero' => $cant,
-                //         'msj' => 'Nueva Venta'
-                //     ]
-                // ];
                 $arregloDatos['c'.$centro->id] = [
+                    'nombre' => $centro->nombre,
                     'numero' => $cant,
-                    'msj' => 'Ventas de ' . $centro->nombre
                 ];
             }
             
