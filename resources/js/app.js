@@ -35,6 +35,7 @@ Vue.component('alm_producto', require('./components/almacen/Producto.vue').defau
 
 Vue.component('enviorecibido', require('./components/EnvioRecibido.vue').default);
 Vue.component('enviorealizado', require('./components/EnvioRealizado.vue').default);
+Vue.component('notification', require('./components/Notification.vue').default);
 
 
 
@@ -48,5 +49,22 @@ const app = new Vue({
     el: '#app',
     data:{
         menu: 5,
+        notifications:[]
+    },
+    created(){
+        let me = this;
+        axios.post('notification/get').then(function(response){
+            // console.log(response.data);
+            me.notifications = response.data;
+        }).catch(function(error){
+            console.log(error);
+        });
+
+        var userId = $('meta[name="userId"]').attr('content');
+
+        Echo.private('App.Usuario.' + userId).notification((notification) =>{
+            console.log(notification);
+            me.notifications.unshift(notification);
+        });
     }
 });

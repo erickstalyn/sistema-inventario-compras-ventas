@@ -10,6 +10,8 @@ use App\Persona;
 use App\Pago;
 use Carbon\Carbon;
 use Exception;
+use App\Usuario;
+use App\Notifications\NotifyAdmin;
 
 class VentaController extends Controller {
     
@@ -141,7 +143,27 @@ class VentaController extends Controller {
             }
 
             //Sección notificaciones
+            $fechaActual = date('Y-m-d');
+            $listaCentros = DB::table('centro')->get();
+            foreach ($listaCentros as $centro) {
+                $cant = DB::table('venta')->whereDate('created_at', $fechaActual)->where('centro_id', $centro->id)->count();
+                // $valor = [
+                //     'c'.$centro->id => [
+                //         'numero' => $cant,
+                //         'msj' => 'Nueva Venta'
+                //     ]
+                // ];
+                $arregloDatos['c'.$centro->id] = [
+                    'numero' => $cant,
+                    'msj' => 'Ventas de ' . $centro->nombre
+                ];
+            }
             
+            $usersAdmin = Usuario::where('rol', 'M')->get();
+
+            foreach($usersAdmin as $notificar){
+                Usuario::findOrFail($notificar->id)->notify(new NotifyAdmin($arregloDatos));
+            }
 
             DB::commit();
             $error = NULL;
@@ -152,7 +174,8 @@ class VentaController extends Controller {
 
         return [
             'estado' => $error==NULL?0:1,
-            'error' => $error
+            'error' => $error,
+            'arreglo de datos' => $arregloDatos,
         ];
     }
 }

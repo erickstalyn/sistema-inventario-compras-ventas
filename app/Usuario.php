@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Session;
 
 class Usuario extends Authenticatable
 {
-
+    use Notifiable;
     protected $table= 'usuario';
     protected $remember_token = false;
     protected $fillable = [
