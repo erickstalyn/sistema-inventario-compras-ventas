@@ -54,29 +54,6 @@ class VentaController extends Controller {
                                 ->orWhere(DB::raw('substring(venta.tipo, 1, 1)'), '=', 3);
                         }
                     })
-                    // ->where(function ($query) use ($dia, $mes, $year) {
-                    //     if($dia != '' && $mes != '' && $year != ''){//todos los campos llenos
-                    //         $query->whereDay('venta.created_at', $dia)
-                    //             ->whereMonth('venta.created_at', $mes)
-                    //             ->whereYear('venta.created_at', $year);
-                    //     }else if($dia != '' && $mes != ''){// dia y mes llenos
-                    //         $query->whereDay('venta.created_at', $dia)
-                    //             ->whereMonth('venta.created_at', $mes);
-                    //     }else if($dia != '' && $year != ''){//dia y año lleno
-                    //         $query->whereDay('venta.created_at', $dia)
-                    //             ->whereYear('venta.created_at', $year);
-                    //     }else if($mes != '' && $year != ''){//mes y año lleno
-                    //         $query->whereMonth('venta.created_at', $mes)
-                    //             ->whereYear('venta.created_at', $year);
-                    //     }else if($dia != ''){//dia lleno
-                    //         $query->whereDay('venta.created_at', $dia);
-                    //     }else if($mes != ''){//mes lleno
-                    //         $query->whereMonth('venta.created_at', $mes);
-                    //     }else if($year != ''){//año lleno
-                    //         $query->whereYear('venta.created_at', $year);
-                    //     }else{
-                    //     }
-                    // })
                     ->where('centro_id', '=', $centro_id)
                     ->orderBy('id', 'desc')->paginate($rows);
         
@@ -162,6 +139,9 @@ class VentaController extends Controller {
                 $detalle->subtotal = $det['subtotal'];
                 $detalle->save();
             }
+
+            //Sección notificaciones
+            
 
             DB::commit();
             $error = NULL;
