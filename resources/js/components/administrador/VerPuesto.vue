@@ -124,7 +124,7 @@
                                     <td class="text-center" v-text="fix(0, venta.created_at)"></td>
                                     <td class="text-center">
                                         <template>
-                                            <button type="button" title="VER" class="btn btn-primary btn-sm" @click="abrirModalVer(venta)">
+                                            <button type="button" title="VER" class="btn btn-primary btn-sm" @click="abrirModalVerVenta(venta)">
                                                 <i class="far fa-eye"></i>
                                             </button>
                                         </template>
@@ -452,7 +452,7 @@
             <!-- Modales -->
             <div class="modal text-gray-900" :class="{'mostrar': Modal.estado}">
                 <div class="modal-dialog modal-dialog-centered animated bounceIn fast" :class="Modal.size">
-                    <div class="modal-content modal-lg">
+                    <div class="modal-content">
                         <div class="modal-header">
                             <h3 v-text="Modal.titulo" class="modal-title" ></h3>
                             <button type="button" @click="cerrarModal()" class="close">X</button>
@@ -566,6 +566,127 @@
                                     </div>
                                 </div>
                             </div>
+                            <!-- Modal ver Venta -->
+                            <div v-else-if="Modal.numero == 4" class="input-group">
+                                <div class="container-small col-md-12">
+                                    <div class="shadow bg-white rounded pt-2 form-group"  style="border: 1px solid">
+                                        <div class="col-md-12">
+                                            <label class="font-weight-bold">CLIENTE</label>
+                                        </div>
+                                        <div v-if="Cliente.tipo=='P'" class="input-group form-group">
+                                            <div class="col-md-3 input-group">
+                                                <label class="col-md-3">DNI</label>
+                                                <input type="text" class="col-md-7 form-control form-control-sm" readonly v-model="Cliente.dni">
+                                            </div>
+                                            <div class="col-md-4 input-group">
+                                                <label class="col-md-4">Nombres</label>
+                                                <input type="text" class="col-md-8 form-control form-control-sm" readonly v-model="Cliente.nombres">
+                                            </div>
+                                            <div class="col-md-4 input-group">
+                                                <label class="col-md-4">Apellidos</label>
+                                                <input type="text" class="col-md-8 form-control form-control-sm" readonly v-model="Cliente.apellidos">
+                                            </div>
+                                        </div>
+                                        <div v-else-if="Cliente.tipo=='E'" class="input-group form-group">
+                                            <div class="col-md-3 input-group">
+                                                <label class="col-md-3">RUC</label>
+                                                <input type="text" class="col-md-7 form-control form-control-sm" readonly v-model="Cliente.ruc">
+                                            </div>
+                                            <div class="col-md-8 input-group">
+                                                <label class="col-md-2">Razón social</label>&nbsp;
+                                                <input type="text" class="col-md-10 form-control form-control-sm" readonly v-model="Cliente.razon_social">
+                                            </div>
+                                        </div>
+                                        <div v-else class="col-md-12">
+                                            <label class="text-info">No se ha registrado cliente</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="container-small col-md-4" v-if="Venta.tipo_pago.charAt(0)==2||Venta.tipo_pago.charAt(0)==3">
+                                    <div class="shadow bg-white rounded pt-2" style="height: 24rem; border: 1px solid">
+                                        <div class="col-md-12 input-group">
+                                            <label class="font-weight-bold">LISTA DE PAGOS</label>
+                                        </div>
+                                        <div class="col-md-12 overflow-auto" style="height: 15rem" v-if="ListaPago.length">
+                                            <table class="table table-bordered table-striped table-sm text-gray-900">
+                                                <thead>
+                                                    <tr class="table-info">
+                                                        <th class="text-center">#</th>
+                                                        <th class="text-center">Fecha</th>
+                                                        <th class="text-center">Monto</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr v-for="(pago, index) in ListaPago" :key="index" :class="pago.color">
+                                                        <td class="text-right pr-1">{{index+1}}</td>
+                                                        <td class="text-center" v-text="fix(0, pago.created_at)"></td>
+                                                        <td class="text-right" v-text="pago.monto"></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="col-md-12 overflow-auto" style="height: 15rem" v-else>
+                                            <label class="text-info">Ningun pago registrado</label>
+                                        </div>
+                                        <div class="col-md-12 input-group d-flex justify-content-end">
+                                            <!-- Monto pagado -->
+                                            <label class="col-md-6 font-weight-bold">Monto pagado:</label>
+                                            <label class="col-md-1 text-right text-success">S/.</label>
+                                            <label class="col-md-4 text-right text-success" v-text="(Venta.total-Venta.total_faltante).toFixed(2)"></label>
+                                            <!-- Monto faltante -->
+                                            <label class="col-md-6 font-weight-bold">Monto faltante:</label>
+                                            <label class="col-md-1 text-right text-danger">S/.</label>
+                                            <label class="col-md-4 text-right text-danger" v-text="Number.parseFloat(Venta.total_faltante).toFixed(2)"></label>
+                                            <!-- Monto total -->
+                                            <label class="col-md-6 font-weight-bold">Monto total: </label>
+                                            <label class="col-md-1 text-right">S/.</label>
+                                            <label class="col-md-4 text-right" v-text="Number.parseFloat(Venta.total).toFixed(2)"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="container-small" :class="Venta.tipo_pago.charAt(0)==2||Venta.tipo_pago.charAt(0)==3?'col-md-8':'col-md-12'">
+                                    <div class="shadow bg-white rounded pt-2"  style="height: 24rem; border: 1px solid">
+                                        <div class="col-md-12 input-group">
+                                            <label class="col-md-3 font-weight-bold">LISTA DE ITEMS</label>
+                                            <div class="col-md-1"></div>
+                                            <label class="col-md-4 font-weight-bold">Pago:&nbsp;<label class="text-info font-weight-normal" v-text="fix(4, Venta.tipo_pago)"></label></label>
+                                            <label class="col-md-4 font-weight-bold">Precio:&nbsp;<label class="text-info font-weight-normal" v-text="fix(5, Venta.tipo_precio)"></label></label>
+                                        </div>
+                                        <div class="col-md-12 form-group overflow-auto" style="height: 17rem;">
+                                            <table class="table table-bordered table-striped table-sm text-gray-900">
+                                                <thead>
+                                                    <tr class="table-success">
+                                                        <th class="text-center">Nombre</th>
+                                                        <th class="text-center">Cantidad</th>
+                                                        <th class="text-center">Precio</th>
+                                                        <th class="text-center">Subtotal</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr v-for="(detalle, indice) in ListaDetalle" :key="indice">
+                                                        <td v-text="detalle.nombre_producto"></td>
+                                                        <td class="text-right" v-text="detalle.cantidad"></td>
+                                                        <td class="text-right" v-text="detalle.precio"></td>
+                                                        <td class="text-right" v-text="detalle.subtotal">
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="col-md-12 input-group">
+                                            <div class="col-md-6 input-group">
+                                                <label class="col-md-12 font-weight-bold pl-0">Registrado:&nbsp;<label class="text-info font-weight-normal" v-text="fix(0, Venta.created_at)"></label></label>
+                                            </div>
+                                            <div class="col-md-1"></div>
+                                            <div class="col-md-5 input-group">
+                                                <label class="col-md-7 font-weight-bold text-right">Monto total:</label>
+                                                <label class="col-md-5 text-right text-info pr-0 pl-0" v-text="'S/. '+Number.parseFloat(Venta.total).toFixed(2)"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
                         <div class="modal-footer">
                             <div class="row form-group col-md-12 d-flex justify-content-around">
@@ -609,6 +730,7 @@
                     abasto_id: 0
                 },
                 ListaDetalleEnvio: [],
+                ListaDetalle: [], //aqui van los detalles de venta
                 ListaEnvio: [],
                 Producto: {
                     nombre: '',
@@ -618,8 +740,26 @@
                     stock: 0,
                 },
                 Venta:{
+                    id: 0,
+                    codigo: '',
+                    centro_id: '',
+                    total: 0.00,
+                    total_faltante: 0.00,
+                    total_minimo: 0,
+                    tipo_pago: '0', // 1: contado, 2: credito prepago, 3: credito postpago
+                    tipo_precio: '0', // 1: al por menor, 2: al por mayor
+                    created_at : '',
                 },
                 ListaVenta:[],
+                Cliente:{
+                    id: -1,
+                    documento: '',
+                    nombres: '',
+                    apellidos: '',
+                    razon_social: '',
+                    tipo: 0
+                },
+                ListaPago: [],
                 //datos de busqueda y filtracion
                 Busqueda: {
                     texto: '',
@@ -667,7 +807,9 @@
                     centro: '/centro',
                     venta: '/venta',
                     envioRealizado: '/envioRealizado',
-                    envioRecibido: '/envioRecibido'
+                    envioRecibido: '/envioRecibido',
+                    detalle_venta: '/detalle_venta',
+                    pago: '/pago'
                 }
             }
         },
@@ -833,11 +975,11 @@
                     if(this.SelectPuesto[i].id == this.Puesto.id) this.Puesto.nombre = this.SelectPuesto[i].nombre;
                 }
             },
-            listarDetalles(numero){
+            listarDetalles(numero, data = ''){
                 let url;
                 let me = this;
                 switch (numero) {
-                    case 1:
+                    case 1:// Listar detalles de envios
                         url = me.Ruta.envioRealizado + '/getDetalles';
                         axios.get(url,{
                             params: {
@@ -849,7 +991,7 @@
                             console.log(error);
                         });
                         break;
-                    case 2:
+                    case 2: //Listar detalles de abastos
                         url = '/abasto/getDetalles';
                         axios.get(url,{
                             params: {
@@ -857,6 +999,27 @@
                             }
                         }).then(function(response){
                             me.ListaDetalleEnvio = response.data;
+                        }).catch(function(error){
+                            console.log(error);
+                        });
+                        break;
+                    case 3:
+                    url = this.Ruta.detalle_venta+'/list'+data+'?'
+                                    +'venta_id='+this.Venta.id;
+
+                    axios.get(url).then(function(response){
+                        me.ListaDetalle = response.data;
+                        if ( data == 'Editar' ) me.fix(6);
+                    }).catch(function(error){
+                        console.log(error);
+                    });
+                    break;
+                    case 4:
+                        url = this.Ruta.pago+'/listVenta?'
+                                        +'venta_id='+this.Venta.id;
+
+                        axios.get(url).then(function(response){
+                            me.ListaPago = response.data;
                         }).catch(function(error){
                             console.log(error);
                         });
@@ -902,6 +1065,25 @@
 
                 this.EnvioRecibido.abasto_id ? this.listarDetalles(2) : this.listarDetalles(1);
                 this.abrirModal(3, 'Ver Envio', '', 'Cerrar', '')
+            },
+            abrirModalVerVenta(data){
+                this.Venta.id = data.id;
+                this.Venta.total = data.total;
+                this.Venta.total_faltante = data.total_faltante==null?0:data.total_faltante;
+                this.Venta.tipo_pago = data.tipo.charAt(0);
+                this.Venta.tipo_precio = data.tipo.charAt(1);
+                this.Venta.created_at = data.created_at;
+                
+                this.Cliente.dni = data.dni;
+                this.Cliente.nombres = data.nombres;
+                this.Cliente.apellidos = data.apellidos;
+                this.Cliente.ruc = data.ruc;
+                this.Cliente.razon_social = data.razon_social;
+                this.Cliente.tipo = data.cliente_tipo;
+                
+                this.listarDetalles(3, 'Ver');
+                this.listarDetalles(4);
+                this.abrirModal(4, 'Ver Venta', '', 'Cerrar', 'modal-xl');
             },
             abrirModal(numero, titulo, accion, cancelar, size){
                 this.Modal.estado = 1;

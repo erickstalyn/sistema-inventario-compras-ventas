@@ -47,6 +47,6 @@ Vue.component('enviorealizado', require('./components/EnvioRealizado.vue').defau
 const app = new Vue({
     el: '#app',
     data:{
-        menu: 1,
+        menu: 5,
     }
 });
