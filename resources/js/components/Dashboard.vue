@@ -20,9 +20,9 @@
                                         </canvas>
                                     </div>
                                 </div>
-                                <div class="card-footer">
+                                <!-- <div class="card-footer">
                                     <p>Ventas de los últimos meses.</p>
-                                </div>
+                                </div> -->
                             </div>
                         </div>
                     </div>
@@ -93,19 +93,24 @@
                         });
                         me.varVenta = document.getElementById('ventas').getContext('2d');
                         me.charVenta = new Chart(me.varVenta, {
-                            type: 'bar',
+                            type: 'line',
                             data: {
                                 labels: me.varMesVenta,
                                 datasets: [{
                                     label: 'Ventas',
                                     data: me.numVentas,
-                                    backgroundColor: [
-                                        'rgba(54, 162, 235, 0.2)',
-                                    ],
                                     borderColor: [
-                                        'rgba(54, 162, 235, 0.2)',
+                                        'rgba(16, 52, 218, 0.8)'
                                     ],
-                                    borderWidth: 1
+                                    fill: false,
+                                    steppedLine: false,
+                                    pointBackgroundColor: [
+                                        'rgba(58, 18, 0, 0.3)'
+                                    ],
+                                    pointBorderWidth: [
+                                        2
+                                    ],
+                                    pointRadius: 8
                                 }]
                             },
                             options: {
