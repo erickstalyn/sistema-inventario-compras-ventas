@@ -9,26 +9,10 @@
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-12">
                             <div class="card card-chart">
                                 <div class="card-header">
-                                    <h4>Ingresos</h4>
-                                </div>
-                                <div class="card-content">
-                                    <div class="ct-chart">
-                                        <canvas id="ingresos">
-                                        </canvas>
-                                    </div>
-                                </div>
-                                <div class="card-footer">
-                                    <p>Compras de los últimos meses.</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="card card-chart">
-                                <div class="card-header">
-                                    <h4>Ventas</h4>
+                                    <h4>Número de ventas mensuales</h4>
                                 </div>
                                 <div class="card-content">
                                     <div class="ct-chart">
@@ -82,93 +66,76 @@
             //         console.log(error);
             //     });
             // },
-            getVentas(){
+            getEstadistica(numero){
                 let me = this;
-                var url = me.Ruta.estadistica + '/getEVentas';
-                axios.get(url).then(function(response){
-                    me.ventas = response.data.ventas;
-                    //cargamos los datos del chart
-                    me.loadVentas();
-                })
-                .catch(function(error){
-                    console.log(error);
-                });
+                let url;
+                switch (numero) {
+                    case 1:
+                        url = me.Ruta.estadistica + '/getEVentas';
+                        axios.get(url).then(function(response){
+                            me.ventas = response.data.ventas;
+                            //cargamos los datos del chart
+                            me.mostrar(1);
+                        })
+                        .catch(function(error){
+                            console.log(error);
+                        });
+                        break;
+                }
             },
-            // loadIngresos(){
-            //     let me = this;
-            //     me.ingresos.map(function(x){
-            //         me.varMesIngreso.push(x.mes);
-            //         me.varTotalIngreso.push(x.total);
-            //     });
-            //     me.varIngreso = document.getElementById('ingresos').getContext('2d');
-
-            //     me.charIngreso = new Chart(me.varIngreso, {
-            //         type: 'bar',
-            //         data: {
-            //             labels: me.varMesIngreso,
-            //             datasets: [{
-            //                 label: 'Ingresos',
-            //                 data: me.varTotalIngreso,
-            //                 backgroundColor: [
-            //                     'rgba(255, 99, 132, 0.2)',
-            //                 ],
-            //                 borderColor: [
-            //                     'rgba(255, 99, 132, 0.2)',
-            //                 ],
-            //                 borderWidth: 1
-            //             }]
-            //         },
-            //         options: {
-            //             scales: {
-            //                 yAxes: [{
-            //                     ticks: {
-            //                         beginAtZero: true
-            //                     }
-            //                 }]
-            //             }
-            //         }
-            //     });
-            // },
-            loadVentas(){
+            mostrar(numero){
                 let me = this;
-                me.ventas.map(function(x){
-                    me.varMesVenta.push(x.mes);
-                    me.numVentas.push(x.num_ventas);
-                });
-                me.varVenta = document.getElementById('ventas').getContext('2d');
-
-                me.charVenta = new Chart(me.varVenta, {
-                    type: 'bar',
-                    data: {
-                        labels: me.varMesVenta,
-                        datasets: [{
-                            label: 'Ventas',
-                            data: me.numVentas,
-                            backgroundColor: [
-                                'rgba(54, 162, 235, 0.2)',
-                            ],
-                            borderColor: [
-                                'rgba(54, 162, 235, 0.2)',
-                            ],
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        scales: {
-                            yAxes: [{
-                                ticks: {
-                                    beginAtZero: true
+                switch (numero) {
+                    case 1:
+                        me.ventas.map(function(x){
+                            me.varMesVenta.push(me.fix(1, x.mes));
+                            me.numVentas.push(x.num_ventas);
+                        });
+                        me.varVenta = document.getElementById('ventas').getContext('2d');
+                        me.charVenta = new Chart(me.varVenta, {
+                            type: 'bar',
+                            data: {
+                                labels: me.varMesVenta,
+                                datasets: [{
+                                    label: 'Ventas',
+                                    data: me.numVentas,
+                                    backgroundColor: [
+                                        'rgba(54, 162, 235, 0.2)',
+                                    ],
+                                    borderColor: [
+                                        'rgba(54, 162, 235, 0.2)',
+                                    ],
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                scales: {
+                                    yAxes: [{
+                                        ticks: {
+                                            beginAtZero: true
+                                        }
+                                    }]
                                 }
-                            }]
-                        }
-                    }
-                });
+                            }
+                        });
+                        break;
+                }
             },
+            fix(numero, data = ''){
+                let fixed = '';
+                switch (numero) {
+                    case 1:
+                        let meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Setiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+                        fixed = meses[data-1];
+                        break;
+                }
+                return fixed;
+            }
             
         },
         mounted(){
                 // this.getIngresos();
-                this.getVentas();
+                this.getEstadistica(1);
         }
     }
 </script>
