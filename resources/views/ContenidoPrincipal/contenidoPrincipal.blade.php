@@ -25,6 +25,9 @@
             <template v-if="menu==10">
                 <adm_usuario></adm_usuario>
             </template>
+            <template v-if="menu==20">
+                <dashboard></dashboard>
+            </template>
 
         @elseif(Auth::user()->rol=='P')
             <template v-if="menu==0">

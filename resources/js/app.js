@@ -36,6 +36,7 @@ Vue.component('alm_producto', require('./components/almacen/Producto.vue').defau
 Vue.component('enviorecibido', require('./components/EnvioRecibido.vue').default);
 Vue.component('enviorealizado', require('./components/EnvioRealizado.vue').default);
 Vue.component('notification', require('./components/Notification.vue').default);
+Vue.component('dashboard', require('./components/Dashboard.vue').default);
 
 
 
@@ -48,7 +49,7 @@ Vue.component('notification', require('./components/Notification.vue').default);
 const app = new Vue({
     el: '#app',
     data:{
-        menu: 5,
+        menu: 20,
         notifications:[]
     },
     created(){
