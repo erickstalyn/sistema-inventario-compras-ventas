@@ -49,8 +49,8 @@ Vue.component('dashboard', require('./components/Dashboard.vue').default);
 const app = new Vue({
     el: '#app',
     data:{
-        menu: 20,
-        notifications:[]
+        menu: 8,
+        notifications:[],
     },
     created(){
         let me = this;
@@ -60,11 +60,8 @@ const app = new Vue({
         }).catch(function(error){
             console.log(error);
         });
-
         var userId = $('meta[name="userId"]').attr('content');
-
         Echo.private('App.Usuario.' + userId).notification((notification) =>{
-            console.log(notification);
             me.notifications.unshift(notification);
         });
     }

@@ -1,9 +1,9 @@
 <template>
     <main class="main">
-        <ol class="breadcrumb">
+        <!-- <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="/">Escritorio</a></li>
-        </ol>
-        <div class="container-fluid">
+        </ol> -->
+        <!-- <div class="container-fluid"> -->
             <div class="card">
                 <div class="card-header">
                 </div>
@@ -16,7 +16,7 @@
                                 </div>
                                 <div class="card-content">
                                     <div class="ct-chart">
-                                        <canvas id="ventas">
+                                        <canvas id="estadistica">
                                         </canvas>
                                     </div>
                                 </div>
@@ -28,44 +28,25 @@
                     </div>
                 </div>
             </div>
-        </div>
+        <!-- </div> -->
     </main>
 </template>
 
 <script>
     export default {
+        props: ['num_mostrar'],
         data(){
             return{
-                // varIngreso:null,
-                // charIngreso:null,
-                // ingresos:[],
-                // varTotalIngreso: [],
-                // varMesIngreso: [],
-
-                varVenta:null, //almacena el valor del id donde vamos a mostrar el grafico
+                lugarMuestra: null,
                 charVenta:null, //creará el grafico chart alimentado por valores vinculados por id del objeto canvas
                 ventas:[], // que es un arreglo de datos que obtendra el listado de ventas
-                numVentas: [], //Almacenamos los datos del total de cada mes
-                varMesVenta: [], //Almacena los nombres de los meses que vamos a mostrar en el grafico
+                numMostrar: this.num_mostrar,
                 Ruta: {
                     estadistica: '/estadistica'
                 }
             }
         },
         methods: {
-            // getIngresos(){
-            //     let me = this;
-            //     var url = '/dashboard';
-            //     axios.get(url).then(function(response){
-            //         var respuesta = response.data;
-            //         me.ingresos = respuesta.ingresos;
-            //         //cargamos los datos del chart
-            //         me.loadIngresos();
-            //     })
-            //     .catch(function(error){
-            //         console.log(error);
-            //     });
-            // },
             getEstadistica(numero){
                 let me = this;
                 let url;
@@ -85,31 +66,27 @@
             },
             mostrar(numero){
                 let me = this;
+                let ejeX = [], ejeY = [];
                 switch (numero) {
                     case 1:
                         me.ventas.map(function(x){
-                            me.varMesVenta.push(me.fix(1, x.mes));
-                            me.numVentas.push(x.num_ventas);
+                            ejeX.push(me.fix(1, x.mes));
+                            ejeY.push(x.num_ventas);
                         });
-                        me.varVenta = document.getElementById('ventas').getContext('2d');
-                        me.charVenta = new Chart(me.varVenta, {
+                        // let varVenta = document.getElementById('estadistica').getContext('2d');
+                        me.lugarMuestra = document.getElementById('estadistica').getContext('2d');
+                        me.charVenta = new Chart(me.lugarMuestra, {
                             type: 'line',
                             data: {
-                                labels: me.varMesVenta,
+                                labels: ejeX,
                                 datasets: [{
                                     label: 'Ventas',
-                                    data: me.numVentas,
-                                    borderColor: [
-                                        'rgba(16, 52, 218, 0.8)'
-                                    ],
+                                    data: ejeY,
+                                    borderColor: ['rgba(16, 52, 218, 0.8)'],
                                     fill: false,
                                     steppedLine: false,
-                                    pointBackgroundColor: [
-                                        'rgba(58, 18, 0, 0.3)'
-                                    ],
-                                    pointBorderWidth: [
-                                        2
-                                    ],
+                                    pointBackgroundColor: ['rgba(58, 18, 0, 0.3)'],
+                                    pointBorderWidth: [2],
                                     pointRadius: 8
                                 }]
                             },
@@ -139,8 +116,7 @@
             
         },
         mounted(){
-                // this.getIngresos();
-                this.getEstadistica(1);
+            this.getEstadistica(this.numMostrar);
         }
     }
 </script>
