@@ -61,7 +61,7 @@
                 varVenta:null, //almacena el valor del id donde vamos a mostrar el grafico
                 charVenta:null, //creará el grafico chart alimentado por valores vinculados por id del objeto canvas
                 ventas:[], // que es un arreglo de datos que obtendra el listado de ventas
-                varTotalVenta: [], //Almacenamos los datos del total de cada mes
+                numVentas: [], //Almacenamos los datos del total de cada mes
                 varMesVenta: [], //Almacena los nombres de los meses que vamos a mostrar en el grafico
                 Ruta: {
                     estadistica: '/estadistica'
@@ -133,7 +133,7 @@
                 let me = this;
                 me.ventas.map(function(x){
                     me.varMesVenta.push(x.mes);
-                    me.varTotalVenta.push(x.total);
+                    me.numVentas.push(x.num_ventas);
                 });
                 me.varVenta = document.getElementById('ventas').getContext('2d');
 
@@ -143,7 +143,7 @@
                         labels: me.varMesVenta,
                         datasets: [{
                             label: 'Ventas',
-                            data: me.varTotalVenta,
+                            data: me.numVentas,
                             backgroundColor: [
                                 'rgba(54, 162, 235, 0.2)',
                             ],
