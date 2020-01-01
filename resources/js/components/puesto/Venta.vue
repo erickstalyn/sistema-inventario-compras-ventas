@@ -70,7 +70,7 @@
                                         </button>
                                     </template>
                                     <template v-if="(venta.tipo.charAt(0)==2 || venta.tipo.charAt(0)==3)&&(venta.total_faltante!=0&&venta.total_faltante!=null)">
-                                        <button type="button"  title="PAGAR" class="btn btn-info btn-sm" @click="abrirModalPagar(venta)">
+                                        <button type="button"  title="PAGAR" class="btn btn-success btn-sm" @click="abrirModalPagar(venta)">
                                             <i class="fas fa-hand-holding-usd"></i>
                                         </button>
                                     </template>
@@ -410,7 +410,7 @@
                         <!-- Modal Numero 3 de EDITAR -->
                         <div v-if="Modal.numero==3" class="container-small input-group">
                             <div v-if="Error.estado" class="col-md-12 d-flex justify-content-center">
-                                <div class="col-md-6 alert alert-danger">
+                                <div class="col-md-6 alert alert-danger mb-0">
                                     <button type="button" @click="Error.estado=0" class="close text-primary" data-dismiss="alert">×</button>
                                     <strong>Corregir los siguentes errores:</strong>
                                     <ul> 
@@ -515,7 +515,7 @@
                                         <label class="col-md-4 font-weight-bold">Pago:&nbsp;<label class="text-info font-weight-normal" v-text="fix(4, Venta.tipo_pago)"></label></label>
                                         <label class="col-md-4 font-weight-bold">Precio:&nbsp;<label class="text-info font-weight-normal" v-text="fix(5, Venta.tipo_precio)"></label></label>
                                     </div>
-                                    <div v-if="ListaDetalle.length" class="col-md-12 overflow-auto form-group" style="height: 14rem;">
+                                    <div v-if="ListaDetalle.length" class="col-md-12 overflow-auto" style="height: 15rem;">
                                         <table class="table table-bordered table-striped table-sm text-gray-900">
                                             <thead>
                                                 <tr class="table-success">
@@ -540,7 +540,7 @@
                                                     </td>
                                                     <td v-else class="text-center">-</td>
                                                     <td>
-                                                        <input type="number" v-model="detalle.cantidad" class="form-control form-control-sm text-right p-0" :min="detalle.cantidad_inicial" :max="detalle.substock" @click="update(0)" @keyup="update(0)">
+                                                        <input type="number" v-model="detalle.cantidad" class="form-control form-control-sm text-right p-0" :min="detalle.cantidad_inicial" :max="detalle.substock" @click="update(3)" @keyup="update(3)">
                                                     </td>
                                                     <td class="text-right" v-text="Venta.tipo_precio=='1'?detalle.precio_menor:detalle.precio_mayor"></td>
                                                     <td class="text-right" v-text="Number.parseFloat(detalle.subtotal).toFixed(2)">
@@ -549,26 +549,28 @@
                                             </tbody>
                                         </table>
                                     </div>
-                                    <div v-else class="col-md-12 form-group" style="height: 14rem;">
+                                    <div v-else class="col-md-12" style="height: 15rem;">
                                         <label class="col-md-12 text-danger">Sin detalles de venta</label>
                                     </div>
-                                    <div class="col-md-12 input-group">
-                                        <div class="col-md-7"></div>
-                                        <div class="col-md-5 input-group">
-                                            <label class="col-md-6 font-weight-bold">Minimo:</label>
-                                            <label class="col-md-1 text-danger p-0" v-text="'S/.'"></label>
-                                            <label class="col-md-5 text-right text-danger" v-text="Number.parseFloat(Venta.total_minimo).toFixed(2)"></label>
+                                    <div class="col-md-12 input-group pt-2">
+                                        <div class="col-md-7">
+                                            <div class="col-md-8 input-group p-0" v-if="Venta.total > Venta.total_minimo"> 
+                                                <label class="col-md-6 font-weight-bold p-0" for="pago_inicial">Pago extra&nbsp;<span class="text-danger">*</span></label>
+                                                <input type="number" class="col-md-6 form-control form-control-sm text-right" v-model="Pago.monto" min="0" :max="Venta.total-Venta.total_minimo" id="pago_inicial">
+                                            </div>
+                                            <div class="col-md-8 input-group p-0" v-if="Venta.total < Venta.total_minimo"> 
+                                                <label class="col-md-12 font-weight-bold">
+                                                    Se generara un vale de venta por:&nbsp;&nbsp;&nbsp;<label class="font-weight-normal text-success" v-text="'S/. '+Number.parseFloat(Venta.total_minimo-Venta.total).toFixed(2)"></label>
+                                                </label>
+                                            </div>
                                         </div>
-                                        <div class="col-md-5 input-group" v-if="Venta.total-Venta.total_minimo > 0"> 
-                                            <label class="col-md-6 font-weight-bold" for="pago_inicial">Pago inicial&nbsp;<span class="text-danger">*</span></label>
-                                            <input type="number" class="col-md-6 form-control form-control-sm text-right" v-model="Pago.monto" min="0" :max="Venta.total-Venta.total_minimo" id="pago_inicial">
-                                        </div>
-                                        <div class="col-md-5" v-else></div>
-                                        <div class="col-md-2"></div>
                                         <div class="col-md-5 input-group">
                                             <label class="col-md-6 font-weight-bold">Monto total:</label>
                                             <label class="col-md-1 text-info p-0" v-text="'S/.'"></label>
                                             <label class="col-md-5 text-right text-info" v-text="Number.parseFloat(Venta.total).toFixed(2)"></label>
+                                            <label class="col-md-6 font-weight-bold">Minimo:</label>
+                                            <label class="col-md-1 text-danger p-0" v-text="'S/.'"></label>
+                                            <label class="col-md-5 text-right text-danger" v-text="Number.parseFloat(Venta.total_minimo).toFixed(2)"></label>
                                         </div>
                                     </div>
                                 </div>
@@ -844,45 +846,69 @@
                 if ( this.validar([5]) ) return;
                 if ( this.validar([0, 1, 2, 3]) ) return;
 
-                console.log('SE EDITO LA VENTA');
-                
-                this.cerrarModal();
+                var me = this;
+                var url = this.Ruta.venta+'/editar';
 
-                // var me = this;
-                // var url = this.Ruta.venta+'/editar';
-
-                // axios.post(url, {
-                //     'centro_id': $('meta[name="idCentro"]').attr('content'),
-                //     'total': this.Venta.total,
-                //     'total_faltante': this.Venta.total_faltante,
-                //     'pago_monto': this.Pago.monto,
-                //     'tipo_pago': this.Venta.tipo_pago,
-                //     'tipo_precio': this.Venta.tipo_precio,
-                //     'cliente': this.Cliente,
-                //     'listaDetalle': this.ListaDetalle
-                // }).then(function(response){
-                //     me.cerrarModal();
-                //     me.listar();
-                //     var estado = response.data.estado;
-                //     if ( estado == 0 ) {
-                //         Swal.fire({
-                //             position: 'top-end',
-                //             toast: true,
-                //             type: 'success',
-                //             title: 'La venta se ha REGISTRADO correctamente',
-                //             showConfirmButton: false,
-                //             timer: 4500,
-                //             animation:false,
-                //             customClass:{
-                //                 popup: 'animated bounceIn fast'
-                //             }
-                //         });
-                //     } else {
-                //         console.log(response.data.error);
-                //     }
-                // }).catch(function(error){
-                //     console.log(error);
-                // });
+                axios.put(url, {
+                    'centro_id': $('meta[name="idCentro"]').attr('content'),
+                    'dataVenta': this.Venta,
+                    'dataPago': this.Pago,
+                    'dataCliente': this.Cliente,
+                    'listaDetalle': this.ListaDetalle
+                }).then(function(response){
+                    if ( response.data.vale != null ) {
+                        var vale = response.data.vale;
+                        Swal.fire({
+                            title: 'Se ha generado un vale',
+                            text: 'Monto del vale: "'+vale.monto+'", codigo del vale: "'+vale.codigo+'". Este vale lo puede utilizar en la siguiente compra que realize',
+                            type: 'success',
+                            showCancelButton: true,
+                            confirmButtonText: 'Imprimir vale',
+                            cancelButtonText: 'OK',
+                            customClass: {
+                                confirmButton: 'btn btn-primary',
+                                cancelButton: 'btn btn-success'
+                            },
+                            buttonsStyling: false
+                        }).then((result) => {
+                            if (result.value) {
+                                // ZONA PARA EL CODIGO DE IMPRESION DE VALE
+                                console.log('Se imprimio el vale');
+                            }
+                            me.cerrarModal();
+                            me.listar();
+                            Swal.fire({
+                                position: 'top-end',
+                                toast: true,
+                                type: 'success',
+                                title: 'La venta se ha EDITADO correctamente',
+                                showConfirmButton: false,
+                                timer: 4500,
+                                animation:false,
+                                customClass:{
+                                    popup: 'animated bounceIn fast'
+                                }
+                            });
+                        });
+                    } else {
+                        me.cerrarModal();
+                        me.listar();
+                        Swal.fire({
+                            position: 'top-end',
+                            toast: true,
+                            type: 'success',
+                            title: 'La venta se ha EDITADO correctamente',
+                            showConfirmButton: false,
+                            timer: 4500,
+                            animation:false,
+                            customClass:{
+                                popup: 'animated bounceIn fast'
+                            }
+                        });
+                    }
+                }).catch(function(error){
+                    console.log(error);
+                });
             },
             pagar(){
                 let pagos = [];
@@ -994,6 +1020,7 @@
                 this.Venta.tipo = data.tipo;
                 this.Venta.tipo_pago = data.tipo.charAt(0);
                 this.Venta.tipo_precio = data.tipo.charAt(1);
+                this.Venta.created_at = data.created_at;
                 
                 this.Cliente.id = data.cliente_id;
                 this.Cliente.documento = data.dni!=null?data.dni:data.ruc;
@@ -1260,7 +1287,7 @@
 
                 $.ajax({
                     type: 'GET',
-                    url: "http://localhost:80/Reniec/demo.php",
+                    url: "http://localhost:8080/Reniec/demo.php",
                     data: "dni="+dni,
                     beforeSend(){
                         me.Service.msm = 'Consultado...';
@@ -1294,7 +1321,7 @@
 
                 $.ajax({
                     type: 'GET',
-                    url: "http://localhost:80/SunatPHP/demo.php",
+                    url: "http://localhost:8080/SunatPHP/demo.php",
                     data: "ruc="+ruc,
                     beforeSend(){
                         me.Service.msm = 'Consultado...';
@@ -1437,6 +1464,15 @@
                             detalle.subtotal = (this.Venta.tipo_precio=='1'?detalle.precio_menor:detalle.precio_mayor) * (detalle.cantidad-detalle.fallidos);
                         })
                         this.update(1);
+                        this.update(4);
+                        break;
+                    case 4:
+                        if ( this.Venta.total > this.Venta.total_minimo && this.Venta.tipo_pago == '1') {
+                            this.Venta.tipo_pago = '2';
+                        } 
+                        if ( this.Venta.total <= this.Venta.total_minimo && this.Venta.tipo.charAt(0) == '1' ) {
+                            this.Venta.tipo_pago = '1';
+                        }
                         break;
                 }
             },

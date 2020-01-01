@@ -175,4 +175,104 @@ class VentaController extends Controller {
             'error' => $error
         ];
     }
+
+    public function editar(Request $request) {
+        if ( !$request->ajax() ) return redirect('/');
+        
+        $now = Carbon::now('America/Lima')->toDateTimeString();
+        $centro_id = $request->centro_id;
+        $dataCliente = $request->dataCliente;
+        $dataVenta = $request->dataVenta;
+        $dataPago = $request->dataPago;
+        $listDetalle = $request->listDetalle;
+
+        try {
+            DB::beginTransaction();
+            
+            //cliente
+            if ( $dataCliente['id'] != NULL ) {
+                if ( $dataCliente['id'] > 0 ) {
+                    $persona = Persona::findOrFail($dataCliente['id']);
+                    $persona->cliente = 1;
+                    $persona->save();
+                } else if ( $dataCliente['id'] == 0 ){
+                    $persona = new Persona();
+                    $persona->cliente = 1;
+                    if ( strlen($dataCliente['documento']) == 8 ){
+                        $persona->dni = $dataCliente['documento'];
+                        $persona->nombres = mb_convert_case($dataCliente['nombres'], MB_CASE_TITLE, "UTF-8");
+                        $persona->apellidos = mb_convert_case($dataCliente['apellidos'], MB_CASE_TITLE, "UTF-8");
+                        $persona->tipo = 'P';
+                    }else{
+                        $persona->ruc = $dataCliente['documento'];
+                        $persona->razon_social = $dataCliente['razon_social'];
+                        $persona->tipo = 'E';
+                    }
+                    $persona->save();
+                }
+            }
+
+            //venta
+            $venta = Venta::findOrFail($dataVenta['id']);
+            $venta->tipo = $dataVenta->tipo_pago.$dataVenta->tipo_precio;
+            $venta->total = $dataVenta->total;
+            $venta->total_faltante = $dataVenta->total;
+            $venta->cliente_id = ($dataCliente['id']!=NULL&&$dataCliente['id']!=-1)?$persona->id:NULL;
+            $venta->updated_at = $now;
+            $venta->save();
+
+            //vale o pago
+            if ( $dataVenta['total'] < $dataVenta['total_minimo'] ){
+                $vale = new Vale();
+                $vale->persona_id = $cliente->id;
+                $vale->venta_generada_id = $venta->id;
+                $vale->monto = $dataVenta['total']-$dataVenta['total_minimo'];
+                $vale->save();
+            } else if ( $dataVenta['total'] > $dataVenta['total_minimo'] )  {
+                $vale = NULL;
+                if ( $dataVenta['tipo']{0} == '1' ) {
+                    $pago = new Pago();
+                    $pago->monto = $dataVenta['total_minimo'];
+                    $pago->venta_id = $venta->id;
+                    $pago->created_at = $dataVenta['created_at'];
+                    $pago->save();
+                }
+                if ( $dataPago['monto'] > 0 ) {
+                    $pago = new Pago();
+                    $pago->monto = $dataPago['monto'];
+                    $pago->venta_id = $venta->id;
+                    $pago->created_at = $now;
+                    $pago->save();    
+                }
+            }
+
+            //lista de detalles
+            foreach($listaDetalle as $ep => $det){
+                if ( $det['id'] <= 0 ) $detalle = new Detalle_venta();
+                else $detalle = Detalle_venta::findOrFail($det['id']);
+                
+                $detalle->detalle_producto_id = $det['detalle_producto_id']; //AQUI ESTA EL PROBLEMA
+                $detalle->venta_id = $venta->id;
+                $detalle->nombre_producto = $det['nombre_producto'];
+                $detalle->cantidad = $det['cantidad'];
+                $detalle->fallidos = $det['fallidos'];
+                $detalle->precio = $dataVenta->tipo_precio==1?$det['precio_menor']:$det['precio_mayor'];
+                $detalle->subtotal = $det['subtotal'];
+                $detalle->save();
+            }
+
+            DB::commit();
+            $error = NULL;
+        } catch (Exception $e) {
+            DB::rollback();
+            $error = $e;
+            $vale = NULL;
+        }
+
+        return [
+            'estado' => $error==NULL?0:1,
+            'vale' => $vale,
+            'error' => $error
+        ];
+    }
 }
