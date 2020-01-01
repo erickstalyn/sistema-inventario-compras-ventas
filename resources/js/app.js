@@ -26,6 +26,7 @@ Vue.component('adm_material', require('./components/administrador/Material.vue')
 Vue.component('adm_abasto', require('./components/administrador/Abasto.vue').default);
 Vue.component('adm_verpuesto', require('./components/administrador/VerPuesto.vue').default);
 Vue.component('adm_veralmacen', require('./components/administrador/VerAlmacen.vue').default);
+Vue.component('adm_estadistica', require('./components/administrador/Estadistica.vue').default);
 
 Vue.component('pue_producto', require('./components/puesto/Producto.vue').default);
 Vue.component('pue_venta', require('./components/puesto/Venta.vue').default);

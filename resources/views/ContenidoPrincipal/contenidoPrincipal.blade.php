@@ -26,7 +26,8 @@
                 <adm_usuario></adm_usuario>
             </template>
             <template v-if="menu==8">
-                <dashboard :num_mostrar="1"></dashboard>
+                <adm_estadistica></adm_estadistica>
+                {{-- <dashboard :num_mostrar="1"></dashboard> --}}
             </template>
 
         @elseif(Auth::user()->rol=='P')

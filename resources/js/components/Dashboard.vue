@@ -40,14 +40,14 @@
                 lugarMuestra: null,
                 charVenta:null, //creará el grafico chart alimentado por valores vinculados por id del objeto canvas
                 ventas:[], // que es un arreglo de datos que obtendra el listado de ventas
-                numMostrar: this.num_mostrar,
+                // numMostrar: this.num_mostrar,
                 Ruta: {
                     estadistica: '/estadistica'
                 }
             }
         },
         methods: {
-            getEstadistica(numero){
+            showEstadistica(numero){
                 let me = this;
                 let url;
                 switch (numero) {
@@ -56,7 +56,7 @@
                         axios.get(url).then(function(response){
                             me.ventas = response.data.ventas;
                             //cargamos los datos del chart
-                            me.mostrar(1);
+                            me.generateGraphic(1);
                         })
                         .catch(function(error){
                             console.log(error);
@@ -64,7 +64,7 @@
                         break;
                 }
             },
-            mostrar(numero){
+            generateGraphic(numero){
                 let me = this;
                 let ejeX = [], ejeY = [];
                 switch (numero) {
@@ -116,7 +116,8 @@
             
         },
         mounted(){
-            this.getEstadistica(this.numMostrar);
+            // this.getEstadistica(this.numMostrar);
+            this.showEstadistica(this.num_mostrar);
         }
     }
 </script>
