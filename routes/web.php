@@ -99,7 +99,8 @@ Route::group(['middleware' => ['auth']], function () {
 
         //RUTAS DETALLES DE PRODUCTOS
         Route::put('/detalle_producto/editar', 'Detalle_productoController@editar');
-        
+        //RUTAS DE ESTADISTICAS
+        Route::get('/estadistica/getEVentas', 'DashboardController@getEVentas');
 
     });
     Route::group(['middleware' => ['Puesto']], function (){
@@ -119,10 +120,8 @@ Route::group(['middleware' => ['auth']], function () {
         Route::put('/produccion/finalizar', 'ProduccionController@finalizar'); //metodos secundarios
 
         //Rutas de ENVIOS REALIZADOS
-        // Route::get('/envioRealizado/getDetalles', 'EnvioController@getDetalles');
         Route::put('/envioRealizado/anular', 'EnvioController@anular');
 
-        // Route::get('/abasto/getDetalles', 'AbastoController@getDetalles');
     });
 
 });
