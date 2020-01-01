@@ -9,7 +9,7 @@ Route::group(['middleware' => ['guest']], function (){
 Route::group(['middleware' => ['auth']], function () {
     Route::get('/logout', 'Seguridad\LoginController@logout')->name('logout');
 
-    Route::get('/main', function () {
+    Route::get('public/main', function () {
         return view('contenidoPrincipal.contenidoPrincipal');
     })->name('main');
 
