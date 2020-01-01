@@ -46,6 +46,8 @@ Route::group(['middleware' => ['auth']], function () {
     //RUTAS PARA PRODUCCIONES
     Route::get('/produccion', 'ProduccionController@listar'); //métodos generales
     Route::get('/produccion/getDetalles', 'ProduccionController@getDetalles');
+    //RUTA PARA NOTIFICACIONES
+    Route::post('/notification/get', 'NotificationController@get');
 
     Route::group(['middleware' => ['Administrador']], function (){
         

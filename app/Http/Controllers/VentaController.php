@@ -10,6 +10,8 @@ use App\Persona;
 use App\Pago;
 use Carbon\Carbon;
 use Exception;
+use App\Usuario;
+use App\Notifications\NotifyAdmin;
 
 class VentaController extends Controller {
     
@@ -54,29 +56,6 @@ class VentaController extends Controller {
                                 ->orWhere(DB::raw('substring(venta.tipo, 1, 1)'), '=', 3);
                         }
                     })
-                    // ->where(function ($query) use ($dia, $mes, $year) {
-                    //     if($dia != '' && $mes != '' && $year != ''){//todos los campos llenos
-                    //         $query->whereDay('venta.created_at', $dia)
-                    //             ->whereMonth('venta.created_at', $mes)
-                    //             ->whereYear('venta.created_at', $year);
-                    //     }else if($dia != '' && $mes != ''){// dia y mes llenos
-                    //         $query->whereDay('venta.created_at', $dia)
-                    //             ->whereMonth('venta.created_at', $mes);
-                    //     }else if($dia != '' && $year != ''){//dia y año lleno
-                    //         $query->whereDay('venta.created_at', $dia)
-                    //             ->whereYear('venta.created_at', $year);
-                    //     }else if($mes != '' && $year != ''){//mes y año lleno
-                    //         $query->whereMonth('venta.created_at', $mes)
-                    //             ->whereYear('venta.created_at', $year);
-                    //     }else if($dia != ''){//dia lleno
-                    //         $query->whereDay('venta.created_at', $dia);
-                    //     }else if($mes != ''){//mes lleno
-                    //         $query->whereMonth('venta.created_at', $mes);
-                    //     }else if($year != ''){//año lleno
-                    //         $query->whereYear('venta.created_at', $year);
-                    //     }else{
-                    //     }
-                    // })
                     ->where('centro_id', '=', $centro_id)
                     ->orderBy('id', 'desc')->paginate($rows);
         
@@ -163,6 +142,23 @@ class VentaController extends Controller {
                 $detalle->save();
             }
 
+            //Sección notificaciones
+            $fechaActual = date('Y-m-d');
+            $listaCentros = DB::table('centro')->get();
+            foreach ($listaCentros as $centro) {
+                $cant = DB::table('venta')->whereDate('created_at', $fechaActual)->where('centro_id', $centro->id)->count();
+                $arregloDatos['c'.$centro->id] = [
+                    'nombre' => $centro->nombre,
+                    'numero' => $cant,
+                ];
+            }
+            
+            $usersAdmin = Usuario::where('rol', 'M')->get();
+
+            foreach($usersAdmin as $notificar){
+                Usuario::findOrFail($notificar->id)->notify(new NotifyAdmin($arregloDatos));
+            }
+
             DB::commit();
             $error = NULL;
         } catch (Exception $e) {
@@ -172,7 +168,8 @@ class VentaController extends Controller {
 
         return [
             'estado' => $error==NULL?0:1,
-            'error' => $error
+            'error' => $error,
+            'arreglo de datos' => $arregloDatos,
         ];
     }
 
