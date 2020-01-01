@@ -22,12 +22,7 @@
                 </div>
             </div>
             <!-- contenido -->
-            <!-- <div v-if="Busqueda.numero == 1"> -->
-                <dashboard :num_mostrar="Number.parseInt(Busqueda.numero)"></dashboard>
-            <!-- </div> -->
-            <!-- <div v-else-if="Busqueda.numero == 2"> -->
-                <!-- <dashboard :num_mostrar="Number.parseInt(Busqueda.numero)"></dashboard> -->
-            <!-- </div> -->
+            <dashboard :num_mostrar="Number.parseInt(Busqueda.numero)"></dashboard>
         </div>
     </main>
 </template>

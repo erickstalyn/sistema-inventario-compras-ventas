@@ -20,9 +20,10 @@
                                         </canvas>
                                     </div>
                                 </div>
-                                <!-- <div class="card-footer">
-                                    <p>Ventas de los últimos meses.</p>
-                                </div> -->
+                                <div class="card-footer">
+                                    <!-- <p>Ventas de los últimos meses.</p> -->
+                                    {{mostrar}}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -44,6 +45,13 @@
                 Ruta: {
                     estadistica: '/estadistica'
                 }
+            }
+        },
+        computed: {
+            mostrar: function(){
+                // let num = this.num_mostrar;
+                this.showEstadistica(this.num_mostrar);
+                // return this.num_mostrar;
             }
         },
         methods: {
@@ -116,8 +124,7 @@
             
         },
         mounted(){
-            // this.getEstadistica(this.numMostrar);
-            this.showEstadistica(this.num_mostrar);
+            // this.showEstadistica(this.num_mostrar);
         }
     }
 </script>
