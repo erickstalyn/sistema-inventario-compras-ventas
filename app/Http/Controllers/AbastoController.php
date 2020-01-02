@@ -90,7 +90,6 @@ class AbastoController extends Controller
 
     public function agregar(Request $request){
         if ( !$request->ajax() ) return redirect('/');
-       
         try {
             DB::beginTransaction();
 
