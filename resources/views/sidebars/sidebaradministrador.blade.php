@@ -69,7 +69,7 @@
 
     <!-- Elemento de navegación: MENÚ USUARIOS -->
     <li class="nav-item">
-    <a class="nav-link collapsed" href="#" @click="menu=10">
+    <a class="nav-link collapsed" href="#" @click="menu=7">
         <i class="fas fa-users"></i>
         <span>Usuarios</span>
     </a>
@@ -77,7 +77,7 @@
 
     <!-- Elemento de navegación: MENÚ ESTADISTICAS -->
     <li class="nav-item">
-    <a class="nav-link collapsed" href="#">
+    <a class="nav-link collapsed" href="#" @click="menu=8">
         <i class="fas fa-chart-pie"></i>
         <span>Estadisticas</span>
     </a>
