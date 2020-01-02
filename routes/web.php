@@ -10,7 +10,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/logout', 'Seguridad\LoginController@logout')->name('logout');
 
     Route::get('/main', function () {
-        return view('contenidoPrincipal.contenidoPrincipal');
+        return view('ContenidoPrincipal.contenidoPrincipal');
     })->name('main');
 
     //RUTAS PARA FUNCIONES COMUNES
