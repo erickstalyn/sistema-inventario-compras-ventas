@@ -14,7 +14,7 @@ class CreateValeTable extends Migration
     public function up()
     {
         Schema::create('vale', function (Blueprint $table) {
-            $table->smallInteger('id'); //-32768 al 32767
+            $table->smallIncrements('id'); //-32768 al 32767
             $table->decimal('monto', 8, 2);
 
             $table->unsignedSmallInteger('persona_id');

@@ -16,8 +16,8 @@ class CreateProductoTable extends Migration
             $table->mediumIncrements('id'); // usa 3 bytes, Cantiada max: 8 388 607
             $table->string('codigo', 13)->nullable();
             $table->string('nombre', 130)->unique(); //Se obtendrá uniendo el nombre del superproducto, el tamaño y el color
-            $table->char('size', 15);
-            $table->char('color', 15);
+            $table->string('size', 15);
+            $table->string('color', 15);
             $table->decimal('precio_menor', 8, 2);
             $table->decimal('precio_mayor', 8, 2);
             $table->decimal('costo_produccion', 8, 2)->default(0);

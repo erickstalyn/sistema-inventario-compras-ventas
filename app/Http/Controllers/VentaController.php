@@ -8,6 +8,7 @@ use App\Venta;
 use App\Detalle_venta;
 use App\Persona;
 use App\Pago;
+use App\Vale;
 use Carbon\Carbon;
 use Exception;
 use App\Usuario;
@@ -27,8 +28,10 @@ class VentaController extends Controller {
         $year = $request->year;
 
         $ventas = Venta::select('venta.id', 'venta.codigo', 'venta.tipo', 'venta.total', 'venta.total_faltante', 'venta.created_at', 
-                                'persona.id as cliente_id', 'persona.dni', 'persona.ruc', 'persona.nombres', 'persona.apellidos', 'persona.razon_social', 'persona.tipo as cliente_tipo')
+                                'persona.id as cliente_id', 'persona.dni', 'persona.ruc', 'persona.nombres', 'persona.apellidos', 'persona.razon_social', 'persona.tipo as cliente_tipo',
+                                'vale.id as vale_id', 'vale.monto as vale_monto', 'vale.created_at as vale_created_at')
                     ->leftJoin('persona', 'persona.id', '=', 'venta.cliente_id')
+                    ->leftJoin('vale', 'vale.venta_generada_id', '=', 'venta.id')
                     ->where(function ($query) use ($text, $dia, $mes, $year) {
                         if ( strlen($text) == 15 && is_numeric($text) ) {
                             $query->where('codigo', '=', $text);
@@ -181,7 +184,12 @@ class VentaController extends Controller {
         $dataCliente = $request->dataCliente;
         $dataVenta = $request->dataVenta;
         $dataPago = $request->dataPago;
+        $dataVale = $request->dataVale;
         $listDetalle = $request->listDetalle;
+
+        $error = NULL;
+        $vale = NULL;
+        $estado_vale = NULL;
 
         try {
             DB::beginTransaction();
@@ -193,6 +201,7 @@ class VentaController extends Controller {
                     $persona->cliente = 1;
                     $persona->save();
                 } else if ( $dataCliente['id'] == 0 ){
+
                     $persona = new Persona();
                     $persona->cliente = 1;
                     if ( strlen($dataCliente['documento']) == 8 ){
@@ -211,23 +220,37 @@ class VentaController extends Controller {
 
             //venta
             $venta = Venta::findOrFail($dataVenta['id']);
-            $venta->tipo = $dataVenta->tipo_pago.$dataVenta->tipo_precio;
-            $venta->total = $dataVenta->total;
-            $venta->total_faltante = $dataVenta->total;
+            $venta->tipo = $dataVenta['tipo_pago'].$dataVenta['tipo_precio'];
+            $venta->total = $dataVenta['total'];
+            if ( $dataVenta['tipo']{0} == '1' && $dataVenta['tipo_pago'] == '2' ) $venta->total_faltante = $dataVenta['total'];
             $venta->cliente_id = ($dataCliente['id']!=NULL&&$dataCliente['id']!=-1)?$persona->id:NULL;
             $venta->updated_at = $now;
             $venta->save();
 
             //vale o pago
+
             if ( $dataVenta['total'] < $dataVenta['total_minimo'] ){
-                $vale = new Vale();
-                $vale->persona_id = $cliente->id;
-                $vale->venta_generada_id = $venta->id;
-                $vale->monto = $dataVenta['total']-$dataVenta['total_minimo'];
-                $vale->save();
+                if ( $dataVale['id'] == null ) {
+                    $vale = new Vale();
+                    $vale->persona_id = $persona->id;
+                    $vale->venta_generada_id = $venta->id;
+                    $vale->monto = $dataVenta['total_minimo'] - $dataVenta['total'];
+                    $vale->created_at = $now;
+                    $vale->updated_at = NULL;
+                    $vale->save();
+                    $estado_vale = 0;
+                } else {
+                    $vale = Vale::findOrFail($dataVale['id']);
+                    $vale->monto = $dataVale['monto'] + ($dataVenta['total_minimo'] - $dataVenta['total']);
+                    $vale->created_at = $now;
+                    $vale->updated_at = NULL;
+                    $vale->save();
+                    $estado_vale = 1;
+                }
             } else if ( $dataVenta['total'] > $dataVenta['total_minimo'] )  {
                 $vale = NULL;
                 if ( $dataVenta['tipo']{0} == '1' ) {
+                    echo('Crea el pago anterior');
                     $pago = new Pago();
                     $pago->monto = $dataVenta['total_minimo'];
                     $pago->venta_id = $venta->id;
@@ -244,7 +267,7 @@ class VentaController extends Controller {
             }
 
             //lista de detalles
-            foreach($listaDetalle as $ep => $det){
+            foreach($listDetalle as $ep => $det){
                 if ( $det['id'] <= 0 ) $detalle = new Detalle_venta();
                 else $detalle = Detalle_venta::findOrFail($det['id']);
                 
@@ -253,13 +276,12 @@ class VentaController extends Controller {
                 $detalle->nombre_producto = $det['nombre_producto'];
                 $detalle->cantidad = $det['cantidad'];
                 $detalle->fallidos = $det['fallidos'];
-                $detalle->precio = $dataVenta->tipo_precio==1?$det['precio_menor']:$det['precio_mayor'];
+                $detalle->precio = $dataVenta['tipo_precio']==1?$det['precio_menor']:$det['precio_mayor'];
                 $detalle->subtotal = $det['subtotal'];
                 $detalle->save();
             }
 
             DB::commit();
-            $error = NULL;
         } catch (Exception $e) {
             DB::rollback();
             $error = $e;
@@ -269,7 +291,8 @@ class VentaController extends Controller {
         return [
             'estado' => $error==NULL?0:1,
             'vale' => $vale,
-            'error' => $error
+            'error' => $error,
+            'estado_vale' => $estado_vale
         ];
     }
 }
