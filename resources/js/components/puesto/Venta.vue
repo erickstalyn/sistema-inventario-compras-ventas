@@ -410,7 +410,7 @@
                         <!-- Modal Numero 3 de EDITAR -->
                         <div v-if="Modal.numero==3" class="container-small input-group">
                             <div v-if="Error.estado" class="col-md-12 d-flex justify-content-center">
-                                <div class="col-md-6 alert alert-danger mb-0">
+                                <div class="col-md-6 alert alert-danger pb-0">
                                     <button type="button" @click="Error.estado=0" class="close text-primary" data-dismiss="alert">×</button>
                                     <strong>Corregir los siguentes errores:</strong>
                                     <ul> 
@@ -418,28 +418,32 @@
                                     </ul>
                                 </div>
                             </div>
-                            <div class="container-small col-md-12">
-                                <div class="shadow bg-white rounded pt-2 form-group" style="border: 1px solid;">
+                            <div class="container-small col-md-10 mt-1">
+                                <div class="shadow bg-white rounded pt-2 form-group" style="border: 1px solid; height: 6.5rem;">
                                     <div class="col-md-12 form-group input-group">
                                         <label class="col-md-2 font-weight-bold">CLIENTE</label>
-                                        <label class="col-md-1 font-weight-bold">RUC/DNI&nbsp;<span class="text-danger" v-if="Venta.tipo_pago=='2'||Venta.tipo_pago=='3'">*</span></label>
-                                        <div class="col-md-2 input-group">
-                                            <input type="text" class="form-control form-control-sm" v-model="Service.document" @keyup.enter="consultar()" maxlength="11">
-                                            <button type="button" class="btn btn-sm btn-primary" @click="consultar()">
-                                                <i class="fas fa-sync-alt"></i>
-                                            </button>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <h5>
-                                                <span role="status" :class="Service.loadclass"></span>&nbsp;
-                                                <span v-text="Service.msm" :class="Service.msmclass"></span>
-                                            </h5>
+                                        <div class="col-md-10 input-group">
+                                            <label class="col-md-2 font-weight-bold">RUC/DNI&nbsp;
+                                                <span class="text-danger" v-if="Venta.tipo_pago=='2'||Venta.tipo_pago=='3'||(Venta.total<Number.parseFloat(Venta.total_minimo))">*</span>
+                                            </label>
+                                            <div class="col-md-3 input-group">
+                                                <input type="text" class="form-control form-control-sm" v-model="Service.document" @keyup.enter="consultar()" maxlength="11">
+                                                <button type="button" class="btn btn-sm btn-primary" @click="consultar()">
+                                                    <i class="fas fa-sync-alt"></i>
+                                                </button>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <h5>
+                                                    <span role="status" :class="Service.loadclass"></span>&nbsp;
+                                                    <span v-text="Service.msm" :class="Service.msmclass"></span>
+                                                </h5>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="col-md-12 form-group input-group" v-if="Cliente.tipo=='P'">
                                         <div class="col-md-3 input-group">
                                             <label class="col-md-3">DNI</label>
-                                            <input type="text" class="col-md-9 form-control form-control-sm" readonly v-model="Cliente.documento">
+                                            <input type="text" class="col-md-9 form-control form-control-sm" readonly v-model="Cliente.dni">
                                         </div>
                                         <div class="col-md-4 input-group">
                                             <label class="col-md-4">Nombres</label>
@@ -449,26 +453,47 @@
                                             <label class="col-md-4">Apellidos</label>
                                             <input type="text" class="col-md-8 form-control form-control-sm" readonly v-model="Cliente.apellidos">
                                         </div>
-                                        <div class="col-md-1 d-flex justify-content-center" v-if="Venta.tipo_pago=='1'">
+                                        <div class="col-md-1 d-flex justify-content-center" v-if="Venta.tipo_pago=='1'&&Vale.id==null">
                                             <button type="button" class="btn btn-circle btn-sm btn-outline-danger" @click="remove(1)" title="ELIMINAR"> 
                                                 <i class="fas fa-trash-alt"></i>
                                             </button>
                                         </div>
                                     </div>
-                                    <div class="col-md-12 form-group input-group" v-else-if="Cliente.tipo=='E'">
+                                    <div class="col-md-12 form-group input-group" v-if="Cliente.tipo=='E'">
                                         <div class="col-md-3 input-group">
                                             <label class="col-md-3">RUC</label>
-                                            <input type="text" class="col-md-9 form-control form-control-sm" readonly v-model="Cliente.documento">
+                                            <input type="text" class="col-md-9 form-control form-control-sm" readonly v-model="Cliente.ruc">
                                         </div>
                                         <div class="col-md-8 input-group">
                                             <label class="col-md-3">Razón social</label>&nbsp;
                                             <input type="text" class="col-md-9 form-control form-control-sm" readonly v-model="Cliente.razon_social">
                                         </div>
-                                        <div class="col-md-1 d-flex justify-content-center" v-if="Venta.tipo_pago=='1'">
+                                        <div class="col-md-1 d-flex justify-content-center" v-if="Venta.tipo_pago=='1'&&Vale.id==null">
                                             <button type="button" class="btn btn-circle btn-sm btn-outline-danger" @click="remove(1)" title="ELIMINAR"> 
                                                 <i class="fas fa-trash-alt"></i>
                                             </button>
                                         </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="container-small col-md-2 mt-1 pl-0" v-if="Vale.id!=null">
+                                <div class="shadow bg-white rounded pt-2 form-group" style="border: 1px solid; height: 6.5rem;">
+                                    <div class="col-md-12 form-group input-group">
+                                        <label class="col-md-12 font-weight-bold pl-0 mb-0">VALE</label>
+                                        <ul class="col-md-12 pr-0 pl-0">
+                                            <li class="input-group">
+                                                <label class="col-md-4 p-0 mb-0">Monto:</label>
+                                                <label class="col-md-8 p-0 mb-0 text-right text-primary" v-text="'S/.  '+Vale.monto"></label>
+                                            </li>
+                                            <li class="input-group">
+                                                <label class="col-md-4 p-0 mb-0">Fecha:</label>
+                                                <label class="col-md-8 p-0 mb-0 text-right text-primary" v-text="fix(7, Vale.created_at)"></label>
+                                            </li>
+                                            <li class="input-group">
+                                                <label class="col-md-4 p-0 mb-0">Hora:</label>
+                                                <label class="col-md-8 p-0 mb-0 text-right text-primary" v-text="fix(8, Vale.created_at)"></label>
+                                            </li>
+                                        </ul>
                                     </div>
                                 </div>
                             </div>
@@ -672,12 +697,15 @@
                 ListaDetalle: [],
                 
                 Cliente:{
-                    id: -1,
-                    documento: '',
-                    nombres: '',
-                    apellidos: '',
-                    razon_social: '',
-                    tipo: 0
+                    id: null,
+                    documento: null,
+                    dni: null,
+                    ruc: null,
+                    nombres: null,
+                    apellidos: null,
+                    razon_social: null,
+                    tipo: null,
+                    existe: null
                 },
 
                 //datos de busqueda y filtracion general
@@ -731,6 +759,11 @@
                 ListaPago: [],
                 Pago:{
                     monto: 0.00
+                },
+                Vale: {
+                    id: null,
+                    monto: null,
+                    created_at: null
                 },
 
                 //datos de Rutas
@@ -852,15 +885,16 @@
                 axios.put(url, {
                     'centro_id': $('meta[name="idCentro"]').attr('content'),
                     'dataVenta': this.Venta,
-                    'dataPago': this.Pago,
                     'dataCliente': this.Cliente,
-                    'listaDetalle': this.ListaDetalle
+                    'dataPago': this.Pago,
+                    'dataVale': this.Vale,
+                    'listDetalle': this.ListaDetalle
                 }).then(function(response){
                     if ( response.data.vale != null ) {
                         var vale = response.data.vale;
                         Swal.fire({
                             title: 'Se ha generado un vale',
-                            text: 'Monto del vale: "'+vale.monto+'", codigo del vale: "'+vale.codigo+'". Este vale lo puede utilizar en la siguiente compra que realize',
+                            text: 'Monto del vale: "'+vale.monto+'". Este vale lo puede utilizar en la siguiente compra que realize',
                             type: 'success',
                             showCancelButton: true,
                             confirmButtonText: 'Imprimir vale',
@@ -978,12 +1012,14 @@
                 this.ListaProducto = [];
                 this.Pago.monto = '';
             
-                this.Cliente.id = -1;
+                this.Cliente.id = null;
                 this.Cliente.documento = '';
-                this.Cliente.nombres = '';
-                this.Cliente.apellidos = '';
-                this.Cliente.razon_social = '';
-                this.Cliente.tipo = '';
+                this.Cliente.nombres = null;
+                this.Cliente.apellidos = null;
+                this.Cliente.dni = null;
+                this.Cliente.razon_social = null;
+                this.Cliente.ruc = null;
+                this.Cliente.tipo = null;
                 
                 this.Service.document = '';
                 this.Service.msm = '';
@@ -1023,14 +1059,19 @@
                 this.Venta.created_at = data.created_at;
                 
                 this.Cliente.id = data.cliente_id;
-                this.Cliente.documento = data.dni!=null?data.dni:data.ruc;
+                this.Cliente.documento = data.dni!=null?data.dni:(data.ruc!=null?data.ruc:'');
                 this.Cliente.dni = data.dni;
                 this.Cliente.nombres = data.nombres;
                 this.Cliente.apellidos = data.apellidos;
                 this.Cliente.ruc = data.ruc;
                 this.Cliente.razon_social = data.razon_social;
                 this.Cliente.tipo = data.cliente_tipo;
+                this.Cliente.existe = this.Cliente.id==null?0:1;
                 
+                this.Vale.id = data.vale_id;
+                this.Vale.monto = data.vale_monto;
+                this.Vale.created_at = data.vale_created_at;
+
                 this.list(1, 'Editar');
             },
             abrirModalPagar(venta = []){
@@ -1120,17 +1161,18 @@
                 this.Venta.tipo_pago = '0';
                 this.Venta.tipo_precio = '0';
 
-                this.Cliente.id = -1;
-                this.Cliente.documento = '';
-                this.Cliente.dni = '';
-                this.Cliente.nombres = '';
-                this.Cliente.apellidos = '';
-                this.Cliente.ruc = '';
-                this.Cliente.razon_social = '';
-                this.Cliente.tipo = '';
+                this.Cliente.id = null;
+                this.Cliente.documento = null;
+                this.Cliente.dni = null;
+                this.Cliente.nombres = null;
+                this.Cliente.apellidos = null;
+                this.Cliente.ruc = null;
+                this.Cliente.razon_social = null;
+                this.Cliente.tipo = null;
 
                 this.ListaPago = [];
                 this.Pago.monto = '';
+                this.Vale.monto = null;
 
                 this.ListaProducto = [];
 
@@ -1150,7 +1192,10 @@
                 for (let i = 0; i < data.length; i++) {
                     switch ( data[i] ) {
                         case 0: // cliente
-                            if ( this.Cliente.documento == '' && (this.Venta.tipo_pago == 2 || this.Venta.tipo_pago == 3) ) this.Error.mensaje.push('Debe ingresar datos del cliente');
+                            console.log('si entra a la validacion 0');
+                            if ( this.Cliente.documento == '' && (this.Venta.tipo_pago == 2 || this.Venta.tipo_pago == 3 || Number.parseFloat(this.Venta.total) < Number.parseFloat(this.Venta.total_minimo)) ) {
+                                this.Error.mensaje.push('Debe ingresar datos del cliente');
+                            }
                             break;
                         case 1: // tipo de venta
                             if( this.Venta.tipo_pago == 2 || this.Venta.tipo_pago == 3 ){
@@ -1260,13 +1305,16 @@
                         if (persona.razon_social != null){//Es una EMPRESA
                             me.Cliente.tipo = 'E';
                             me.Cliente.razon_social = persona.razon_social;
+                            me.Cliente.ruc = me.Service.document;
                         } else {//Es una PERSONA
                             me.Cliente.tipo = 'P';
                             me.Cliente.nombres = persona.nombres;
                             me.Cliente.apellidos = persona.apellidos;
+                            me.Cliente.dni = me.Service.document;
                         }
 
                         me.Cliente.id = persona.id;
+                        me.Cliente.documento = me.Service.document;
                         me.Cliente.documento = me.Service.document;
 
                         me.Service.document = '';
@@ -1483,24 +1531,28 @@
                         this.update(1);
                         break;
                     case 1:
-                        this.Cliente.id = -1;
+                        this.Cliente.id = null;
                         this.Cliente.documento = '';
-                        this.Cliente.nombres = '';
-                        this.Cliente.apellidos = '';
-                        this.Cliente.razon_social = '';
-                        this.Cliente.tipo = '';
+                        this.Cliente.nombres = null;
+                        this.Cliente.apellidos = null;
+                        this.Cliente.dni = null;
+                        this.Cliente.razon_social = null;
+                        this.Cliente.ruc = null;
+                        this.Cliente.tipo = null;
                         break;
                 }
             },
             fix(numero, data = ''){
                 var fixed;
 
+                let fecha, hora, fecha_fixed, hora_fixed;
+
                 switch (numero) {
                     case 0:
-                        let fecha = data.split(' ')[0].split('-');
-                        let hora = data.split(' ')[1].split(':');
-                        let fecha_fixed = fecha[2]+'-'+fecha[1]+'-'+fecha[0];
-                        let hora_fixed = (hora[0]>12?(hora[0]-12).toString().padStart(2, '0'):hora[0])+':'+hora[1]+':'+hora[2]+' '+(hora[0]>12?'pm':'am') ;
+                        fecha = data.split(' ')[0].split('-');
+                        hora = data.split(' ')[1].split(':');
+                        fecha_fixed = fecha[2]+'-'+fecha[1]+'-'+fecha[0];
+                        hora_fixed = (hora[0]>12?(hora[0]-12).toString().padStart(2, '0'):hora[0])+':'+hora[1]+' '+(hora[0]>12?'pm':'am') ;
                         fixed = fecha_fixed+' '+hora_fixed;
                         break;
                     case 1:
@@ -1527,6 +1579,16 @@
                             if ( this.ListaDetalle[i].fallidos_inicial == null ) this.ListaDetalle[i].fallidos_inicial = 0;
                         }
                         break;
+                    case 7:
+                        fecha = data.split(' ')[0].split('-');
+                        fecha_fixed = fecha[2]+'-'+fecha[1]+'-'+fecha[0];
+                        fixed = fecha_fixed;
+                        break;
+                    case 8:
+                        hora = data.split(' ')[1].split(':');
+                        hora_fixed = (hora[0]>12?(hora[0]-12).toString().padStart(2, '0'):hora[0])+':'+hora[1]+' '+(hora[0]>12?'pm':'am') ;
+                        fixed = hora_fixed;
+                        break; 
                     default:
                         fixed = '';
                         break;
