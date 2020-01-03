@@ -177,10 +177,10 @@ class VentaController extends Controller {
             DB::rollback();
         }
 
-        // return [
-        //     'error' => $error,
+        return [
+            'error' => $error,
         //     'arreglo de datos' => $arregloDatos,
-        // ];
+        ];
     }
 
     public function editar(Request $request) {
