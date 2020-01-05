@@ -414,28 +414,28 @@
                                 </div>
                             </div>
                             <div class="container-small col-md-10 mt-1">
-                                <div class="shadow bg-white rounded pt-2 form-group" style="border: 1px solid; height: 6.5rem;">
-                                    <div class="col-md-12 form-group input-group">
-                                        <label class="col-md-2 font-weight-bold">CLIENTE</label>
-                                        <div class="col-md-10 input-group" v-if="Vale.id==null&&Venta.tipo_pago=='1'">
-                                            <label class="col-md-2 font-weight-bold">RUC/DNI&nbsp;
-                                                <span class="text-danger" v-if="Venta.tipo_pago=='2'||Venta.tipo_pago=='3'||(Venta.total<Number.parseFloat(Venta.total_minimo))">*</span>
-                                            </label>
-                                            <div class="col-md-3 input-group">
-                                                <input type="text" class="form-control form-control-sm" v-model="Service.document" @keyup.enter="consultar()" maxlength="11">
-                                                <button type="button" class="btn btn-sm btn-primary" @click="consultar()">
-                                                    <i class="fas fa-sync-alt"></i>
-                                                </button>
-                                            </div>
-                                            <div class="col-md-3">
-                                                <h5>
-                                                    <span role="status" :class="Service.loadclass"></span>&nbsp;
-                                                    <span v-text="Service.msm" :class="Service.msmclass"></span>
-                                                </h5>
-                                            </div>
+                                <div class="shadow bg-white rounded pt-2 input-group form-group" style="border: 1px solid; height: 6.5rem;">
+                                    <div class="col-md-2 form-group">
+                                        <label class="font-weight-bold">CLIENTE</label>
+                                    </div>
+                                    <div class="col-md-10 input-group form-group" v-if="Vale.id==null&&Venta.tipo_pago=='1'">
+                                        <label class="col-md-2 font-weight-bold">RUC/DNI&nbsp;
+                                            <span class="text-danger" v-if="Venta.tipo_pago=='2'||Venta.tipo_pago=='3'||(Venta.total<Number.parseFloat(Venta.total_minimo))">*</span>
+                                        </label>
+                                        <div class="col-md-3 input-group">
+                                            <input type="text" class="form-control form-control-sm" v-model="Service.document" @keyup.enter="consultar()" maxlength="11">
+                                            <button type="button" class="btn btn-sm btn-primary" @click="consultar()">
+                                                <i class="fas fa-sync-alt"></i>
+                                            </button>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <h5>
+                                                <span role="status" :class="Service.loadclass"></span>&nbsp;
+                                                <span v-text="Service.msm" :class="Service.msmclass"></span>
+                                            </h5>
                                         </div>
                                     </div>
-                                    <div class="col-md-12 form-group input-group" v-if="Cliente.tipo=='P'">
+                                    <div class="col-md-12 input-group form-group" v-if="Cliente.tipo=='P'">
                                         <div class="col-md-3 input-group">
                                             <label class="col-md-3">DNI</label>
                                             <input type="text" class="col-md-9 form-control form-control-sm" readonly v-model="Cliente.dni">
@@ -454,7 +454,7 @@
                                             </button>
                                         </div>
                                     </div>
-                                    <div class="col-md-12 form-group input-group" v-if="Cliente.tipo=='E'">
+                                    <div class="col-md-12 input-group form-group" v-if="Cliente.tipo=='E'">
                                         <div class="col-md-3 input-group">
                                             <label class="col-md-3">RUC</label>
                                             <input type="text" class="col-md-9 form-control form-control-sm" readonly v-model="Cliente.ruc">
@@ -599,7 +599,7 @@
                             </div>
                         </div>
                         <!-- Modal Numero 4 de PAGAR-->
-                        <div v-if="Modal.numero == 4" class="container-small input-group d-flex justify-content-center">
+                        <div v-if="Modal.numero==4" class="container-small input-group d-flex justify-content-center">
                             <div v-if="Error.estado" class="row d-flex justify-content-center">
                                 <div class="alert alert-danger" style="height: 4.5rem;">
                                     <button type="button" @click="Error.estado=0" class="close text-primary" data-dismiss="alert">×</button>

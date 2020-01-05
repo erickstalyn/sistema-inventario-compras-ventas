@@ -85,18 +85,19 @@ class VentaController extends Controller {
         $dataPago = $request->dataPago;
         $listDetalle = $request->listDetalle;
 
-        $error = NULL;
+        $state = 'error';
+        $exception = NULL;
 
         try {
             DB::beginTransaction();
             
             //cliente
             if ( $dataCliente['id'] != null ) {
-                if ( $dataCliente['id'] > 0 ) {
+                if ( $dataCliente['id'] > 0 ) { //existe
                     $persona = Persona::findOrFail($dataCliente['id']);
                     $persona->cliente = 1;
                     $persona->save();
-                } else {
+                } else if ( $dataCliente['id'] == 0 ) { //nuevo
                     $persona = new Persona();
                     $persona->cliente = 1;
                     if ( strlen($dataCliente['documento']) == 8 ){
@@ -110,6 +111,9 @@ class VentaController extends Controller {
                         $persona->tipo = 'E';
                     }
                     $persona->save();
+                    $dataCliente['id'] = $persona->id;
+                } else { //excepciones
+                    $dataCliente['id'] = NULL;
                 }
             }
             
@@ -127,7 +131,7 @@ class VentaController extends Controller {
             $venta->tipo = $dataVenta['tipo_pago'].$dataVenta['tipo_precio'];
             $venta->total = $dataVenta['total'];
             if ( $dataVenta['tipo_pago'] == 2 || $dataVenta['tipo_pago'] == 3 ) $venta->total_faltante = $dataVenta['total'];
-            $venta->cliente_id = $dataCliente['id']!=NULL?$persona->id:NULL;
+            $venta->cliente_id = $dataCliente['id'];
             $venta->codigo = $codigo;
             $venta->created_at = $now;
             $venta->updated_at = NULL;
@@ -155,31 +159,34 @@ class VentaController extends Controller {
             }
 
             //Sección notificaciones
-            $fechaActual = date('Y-m-d');
-            $listaCentros = DB::table('centro')->get();
-            foreach ($listaCentros as $centro) {
-                $cant = DB::table('venta')->whereDate('created_at', $fechaActual)->where('centro_id', $centro->id)->count();
-                $arregloDatos['c'.$centro->id] = [
-                    'nombre' => $centro->nombre,
-                    'numero' => $cant,
-                ];
-            }
+            // $fechaActual = date('Y-m-d');
+            // $listaCentros = DB::table('centro')->get();
+            // foreach ($listaCentros as $centro) {
+            //     $cant = DB::table('venta')->whereDate('created_at', $fechaActual)->where('centro_id', $centro->id)->count();
+            //     $arregloDatos['c'.$centro->id] = [
+            //         'nombre' => $centro->nombre,
+            //         'numero' => $cant,
+            //     ];
+            // }
             
-            $usersAdmin = Usuario::where('rol', 'M')->get();
+            // $usersAdmin = Usuario::where('rol', 'M')->get();
 
-            foreach($usersAdmin as $notificar){
-                Usuario::findOrFail($notificar->id)->notify(new NotifyAdmin($arregloDatos));
-            }
+            // foreach($usersAdmin as $notificar){
+            //     Usuario::findOrFail($notificar->id)->notify(new NotifyAdmin($arregloDatos));
+            // }
 
             DB::commit();
+            $state = 'success';
         } catch (Exception $e) {
-            $error = $e;
             DB::rollback();
+            $state = 'exception';
+            $exception = $e;
         }
 
         return [
-            'error' => $error,
-            'arreglo de datos' => $arregloDatos,
+            'state' => $state,
+            'exception' => $exception,
+            // 'arreglo de datos' => $arregloDatos,
         ];
     }
 
@@ -292,4 +299,5 @@ class VentaController extends Controller {
             'error' => $error
         ];
     }
+    
 }
