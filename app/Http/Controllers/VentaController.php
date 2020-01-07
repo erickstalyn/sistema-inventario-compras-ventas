@@ -158,7 +158,7 @@ class VentaController extends Controller {
             $fechaActual = date('Y-m-d');
             $listaCentros = DB::table('centro')->get();
             foreach ($listaCentros as $centro) {
-                $cant = DB::table('venta')->whereDate('created_at', $fechaActual)->where('centro_id', $centro->id)->count();
+                $cant = Venta::whereDate('created_at', $fechaActual)->where('centro_id', $centro->id)->count();
                 $arregloDatos['c'.$centro->id] = [
                     'nombre' => $centro->nombre,
                     'numero' => $cant,

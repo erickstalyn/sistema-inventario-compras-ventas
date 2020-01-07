@@ -6,7 +6,7 @@ FOR EACH ROW
 BEGIN
     DECLARE esCredito TINYINT(1);
     DECLARE miTipo TINYINT(2);
-    SELECT tipo into miTipo FROM VENTA WHERE id = new.venta_id;
+    SELECT tipo into miTipo FROM venta WHERE id = new.venta_id;
     IF(miTipo = '31' or miTipo = '32') THEN
       UPDATE detalle_producto dproducto
         set dproducto.reservados = dproducto.reservados + new.cantidad
