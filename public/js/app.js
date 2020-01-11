@@ -4256,8 +4256,9 @@ __webpack_require__.r(__webpack_exports__);
         },
         success: function success(data, textStatus, jqXHR) {
           var empresa = JSON.parse(data);
+          console.log(empresa);
 
-          if (empresa.RazonSocial) {
+          if (empresa != null) {
             me.DatosServicio.documento = '';
             me.DatosServicio.alert = '';
             me.DatosServicio.mensaje = '';
