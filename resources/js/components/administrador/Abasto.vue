@@ -932,8 +932,8 @@
                     },
                     success: function (data, textStatus, jqXHR) {
                         let empresa = JSON.parse(data);
-                        
-                        if(empresa.RazonSocial){
+                        console.log(empresa);
+                        if(empresa != null){
                             me.DatosServicio.documento = '';
                             me.DatosServicio.alert = '';
                             me.DatosServicio.mensaje = '';
