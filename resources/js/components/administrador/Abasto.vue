@@ -883,6 +883,7 @@
                         'documento': me.DatosServicio.documento
                     }
                 }).then(function(response){
+		    
                     if(response.data.persona.length){//Si existe la persona en la db
                         me.DatosServicio.alert = '';
                         me.DatosServicio.mensaje = '';
