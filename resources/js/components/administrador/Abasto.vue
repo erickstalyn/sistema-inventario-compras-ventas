@@ -933,7 +933,7 @@
                     success: function (data, textStatus, jqXHR) {
                         let empresa = JSON.parse(data);
                         console.log(empresa);
-                        if(empresa != null){
+                        if(empresa.RazonSocial != ''){
                             me.DatosServicio.documento = '';
                             me.DatosServicio.alert = '';
                             me.DatosServicio.mensaje = '';
