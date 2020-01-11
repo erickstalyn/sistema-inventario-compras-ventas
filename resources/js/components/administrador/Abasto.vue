@@ -933,7 +933,7 @@
                     success: function (data, textStatus, jqXHR) {
                         let empresa = JSON.parse(data);
                         console.log(empresa);
-                        if(empresa.RazonSocial != ''){
+                        if(empresa.RazonSocial.length){
                             me.DatosServicio.documento = '';
                             me.DatosServicio.alert = '';
                             me.DatosServicio.mensaje = '';
@@ -964,6 +964,7 @@
                     },
                     success: function (data, textStatus, jqXHR) {
                         let persona = JSON.parse(data);
+                        console.log(persona);
                         if(persona.estado == true){
                             me.DatosServicio.documento = '';
                             me.DatosServicio.alert = '';
