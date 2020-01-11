@@ -1380,15 +1380,16 @@
                         me.Service.loadclass = 'spinner-border spinner-border-sm text-primary';
                     },
                     success: function (data, textStatus, jqXHR) {
-                        if (data.RazonSocial){
+                        let empresa = JSON.parse(data);
+                        if ( empresa.RazonSocial ){
                             me.Service.document = '';
                             me.Service.msm = '';
                             me.Service.msmclass = '';
 
                             me.Cliente.id = 0;
                             me.Cliente.tipo = 'E';
-                            me.Cliente.documento = data.RUC;
-                            me.Cliente.razon_social = data.RazonSocial;
+                            me.Cliente.documento = empresa.RUC;
+                            me.Cliente.razon_social = empresa.RazonSocial;
                         } else {
                             me.Service.msm = 'El RUC no existe';
                             me.Service.msmclass = 'badge badge-primary';

@@ -117,7 +117,6 @@ class VentaController extends Controller {
                 }
             }
             
-
             {
                 $data = array_merge(explode('-', explode(' ', $now)[0]), explode(':', explode(' ', $now)[1]));
                 $codigo = '';

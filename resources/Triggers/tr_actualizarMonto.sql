@@ -20,8 +20,8 @@ BEGIN
             JOIN detalle_venta dventa
                 ON dventa.detalle_producto_id = dproducto.id
                 AND dventa.venta_id = new.venta_id
-            set dproducto.reservados = dproducto.reservados - dventa.cantidad;
-	    UPDATE venta 
+            SET dproducto.reservados = dproducto.reservados - dventa.cantidad;
+	        UPDATE venta 
             SET total_faltante = NULL
             WHERE id = new.venta_id;
         END IF;
