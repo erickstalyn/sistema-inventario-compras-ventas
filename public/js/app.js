@@ -4255,14 +4255,16 @@ __webpack_require__.r(__webpack_exports__);
           me.DatosServicio.mensaje = 'Consultado...';
         },
         success: function success(data, textStatus, jqXHR) {
-          if (data.RazonSocial) {
+          var empresa = JSON.parse(data);
+
+          if (empresa.RazonSocial) {
             me.DatosServicio.documento = '';
             me.DatosServicio.alert = '';
             me.DatosServicio.mensaje = '';
             me.DatosServicio.tipo = 2;
             me.DatosServicio.readonly = false;
-            me.DatosProveedor.documento = data.RUC;
-            me.DatosProveedor.razon_social = data.RazonSocial;
+            me.DatosProveedor.documento = empresa.RUC;
+            me.DatosProveedor.razon_social = empresa.RazonSocial;
           } else {
             me.DatosServicio.alert = 'badge badge-primary';
             me.DatosServicio.mensaje = 'El RUC no existe';
