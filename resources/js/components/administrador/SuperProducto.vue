@@ -6,14 +6,16 @@
             
             <!-- Encabezado principal -->
             <div class="row form-group">
-                <i class="fas fa-briefcase"></i>&nbsp;&nbsp;
-                <span class="h3 mb-0 text-gray-900">Super Producto</span>&nbsp;&nbsp;
-                <button type="button" class="btn btn-success" @click="abrirModalAgregar()">
-                    <i class="fas fa-user-plus"></i>&nbsp; Nuevo
-                </button>
-                <button type="button" class="btn btn-danger">
-                    <i class="far fa-file-pdf"></i>&nbsp; PDF
-                </button>
+                <div class="col-md-12">
+                    <i class="fas fa-briefcase"></i>&nbsp;&nbsp;
+                    <span class="h3 mb-0 text-gray-900">Super Producto</span>&nbsp;&nbsp;
+                    <button type="button" class="btn btn-success" @click="abrirModalAgregar()">
+                        <i class="fas fa-user-plus"></i>&nbsp; Nuevo
+                    </button>
+                    <button type="button" class="btn btn-danger">
+                        <i class="far fa-file-pdf"></i>&nbsp; PDF
+                    </button>
+                </div>
             </div>
 
             <!-- Inputs de busqueda -->

@@ -79,24 +79,25 @@ class VentaController extends Controller {
         if ( !$request->ajax() ) return redirect('/');
         
         $now = Carbon::now('America/Lima')->toDateTimeString();
-        $centro_id = $request->centro_id;
         $dataVenta = $request->dataVenta;
+        $dataVale = $request->dataVale;
         $dataCliente = $request->dataCliente;
         $dataPago = $request->dataPago;
         $listDetalle = $request->listDetalle;
 
-        $error = NULL;
+        $state = 'error';
+        $exception = NULL;
 
         try {
             DB::beginTransaction();
             
             //cliente
             if ( $dataCliente['id'] != null ) {
-                if ( $dataCliente['id'] > 0 ) {
+                if ( $dataCliente['id'] > 0 ) { //existe
                     $persona = Persona::findOrFail($dataCliente['id']);
                     $persona->cliente = 1;
                     $persona->save();
-                } else {
+                } else if ( $dataCliente['id'] == 0 ) { //nuevo
                     $persona = new Persona();
                     $persona->cliente = 1;
                     if ( strlen($dataCliente['documento']) == 8 ){
@@ -110,10 +111,12 @@ class VentaController extends Controller {
                         $persona->tipo = 'E';
                     }
                     $persona->save();
+                    $dataCliente['id'] = $persona->id;
+                } else { //excepciones
+                    $dataCliente['id'] = NULL;
                 }
             }
             
-
             {
                 $data = array_merge(explode('-', explode(' ', $now)[0]), explode(':', explode(' ', $now)[1]));
                 $codigo = '';
@@ -123,29 +126,52 @@ class VentaController extends Controller {
 
             //venta
             $venta = new Venta();
-            $venta->centro_id = $centro_id;
-            $venta->tipo = $dataVenta['tipo_pago'].$dataVenta['tipo_precio'];
+            $venta->centro_id = $dataVenta['centro_id'];
+            $venta->tipo = $dataVenta['tipo_pago'].$dataVenta['tipo_entrega'].$dataVenta['tipo_precio'];
             $venta->total = $dataVenta['total'];
-            if ( $dataVenta['tipo_pago'] == 2 || $dataVenta['tipo_pago'] == 3 ) $venta->total_faltante = $dataVenta['total'];
-            $venta->cliente_id = $dataCliente['id']!=NULL?$persona->id:NULL;
+            if ( $dataVenta['tipo_pago'] == '2' ) $venta->total_faltante = $dataVenta['total'];
+            $venta->cliente_id = $dataCliente['id'];
             $venta->codigo = $codigo;
             $venta->created_at = $now;
             $venta->updated_at = NULL;
             $venta->save();
 
+            //vale
+            if ( $dataVale['id'] != null ) {
+                if ( $dataVale['id'] > 0 ) {
+                    $vale = Vale::findOrFail($dataVale['id']);
+                    $vale->venta_usada_id = $venta->id;
+                    $vale->updated_at = $now;
+                    $vale->save();
+
+                    if ( $vale->monto > $venta->total ) {
+                        $venta->total = 0;
+                        $venta->total_faltante = NULL;
+                    } else {
+                        $venta->total -= $vale->monto;
+                        $venta->total_faltante = $venta->total;
+                    }
+                    $venta->updated_at = NULL;
+                    $venta->save();
+                }
+            }
+
             //pago
-            if ( ($dataVenta['tipo_pago'] == 2 || $dataVenta['tipo_pago'] == 3) && $dataPago['monto'] > 0 ){
-                $pago = new Pago();
-                $pago->monto = $dataPago['monto'];
-                $pago->venta_id = $venta->id;
-                $pago->created_at = $now;
-                $pago->save();
+            if ( ($dataVenta['tipo_pago'] == '2' ) && $dataPago['monto'] != NULL ){
+                if ( $dataPago['monto'] > 0 ) {
+                    $pago = new Pago();
+                    $pago->monto = $dataPago['monto'];
+                    $pago->venta_id = $venta->id;
+                    $pago->created_at = $now;
+                    $pago->updated_at = NULL;
+                    $pago->save();
+                }
             }
 
             //lista de detalles
-            foreach($listDetalle as $ep => $det){
+            foreach ($listDetalle as $ep => $det){
                 $detalle = new Detalle_venta();
-                $detalle->detalle_producto_id = $det['detalle_producto_id']; //AQUI ESTA EL PROBLEMA
+                $detalle->detalle_producto_id = $det['detalle_producto_id']; 
                 $detalle->venta_id = $venta->id;
                 $detalle->nombre_producto = $det['nombre_producto'];
                 $detalle->cantidad = $det['cantidad'];
@@ -172,14 +198,17 @@ class VentaController extends Controller {
             }
 
             DB::commit();
+            $state = 'success';
         } catch (Exception $e) {
-            $error = $e;
             DB::rollback();
+            $state = 'exception';
+            $exception = $e;
         }
 
         return [
-            'error' => $error,
-            'arreglo de datos' => $arregloDatos,
+            'state' => $state,
+            'exception' => $exception,
+            // 'arreglo de datos' => $arregloDatos,
         ];
     }
 
@@ -292,4 +321,5 @@ class VentaController extends Controller {
             'error' => $error
         ];
     }
+    
 }
