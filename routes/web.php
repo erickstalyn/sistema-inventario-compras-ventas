@@ -43,6 +43,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/pago/listVenta', 'PagoController@listVenta');
     Route::post('/pago/agregar', 'PagoController@agregar');
 
+    //RUTAS PARA VALES
+    Route::get('/vale/get', 'ValeController@get');
+
     //RUTAS PARA PRODUCCIONES
     Route::get('/produccion', 'ProduccionController@listar'); //métodos generales
     Route::get('/produccion/getDetalles', 'ProduccionController@getDetalles');
