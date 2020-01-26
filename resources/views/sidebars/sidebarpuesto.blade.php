@@ -46,7 +46,7 @@
     <!-- Elemento de navegación - MENÚ ENVIOS -->
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#envios" aria-expanded="true" aria-controls="envios">
-            <i class="fas fa-cart-arrow-down"></i>
+            <i class="fas fa-plane"></i>
             <span >Envíos</span>
         </a>
         <div id="envios" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">

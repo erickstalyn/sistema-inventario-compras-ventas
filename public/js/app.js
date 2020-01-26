@@ -62381,8 +62381,8 @@ var render = function() {
   return _vm.notifications.length
     ? _c(
         "div",
-        _vm._l(_vm.listar, function(item) {
-          return _c("div", { key: item.id }, [
+        _vm._l(_vm.listar, function(item, index) {
+          return _c("div", { key: index }, [
             _c(
               "a",
               {

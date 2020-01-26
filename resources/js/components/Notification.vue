@@ -1,6 +1,6 @@
 <template>
     <div v-if="notifications.length">
-        <div v-for="item in listar" :key="item.id">
+        <div v-for="(item, index) in listar" :key="index">
             <a class="dropdown-item d-flex align-items-center" href="#">
                 <div class="mr-3">
                     <div class="icon-circle bg-success">
