@@ -1,5 +1,7 @@
 DELIMITER //
-CREATE TRIGGER tr_updateFallidos BEFORE UPDATE ON detalle_venta 
+CREATE TRIGGER detalle_venta_BU
+BEFORE UPDATE 
+ON detalle_venta 
 FOR EACH ROW 
 BEGIN
 	IF ( new.fallidos IS NOT NULL ) THEN 

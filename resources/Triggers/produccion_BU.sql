@@ -1,5 +1,5 @@
 DELIMITER //
-CREATE TRIGGER `tr_updSubStockFinProduccion` 
+CREATE TRIGGER produccion_BU
 BEFORE UPDATE 
 ON produccion
 FOR EACH ROW
