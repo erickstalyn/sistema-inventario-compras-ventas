@@ -4247,9 +4247,8 @@ __webpack_require__.r(__webpack_exports__);
       var ruc = me.DatosServicio.documento;
       $.ajax({
         type: 'GET',
-        url: "http://127.0.0.1:80/misunat/example/consulta.php",
-        // url: "http://67.205.189.29:80/SunatPHP/demo.php",
-        // data: "ruc="+ruc,
+        // url: "http://127.0.0.1:80/misunat/src/consulta.php",
+        url: "http://67.205.189.29:80/misunat/src/consulta.php",
         data: "nruc=" + ruc,
         beforeSend: function beforeSend() {
           me.Carga.clase = 'spinner-border spinner-border-sm text-primary';
@@ -4258,19 +4257,22 @@ __webpack_require__.r(__webpack_exports__);
         },
         success: function success(data, textStatus, jqXHR) {
           var empresa = JSON.parse(data);
-          console.log(empresa); // if(empresa.RUC || empresa.RazonSocial){
-          //     me.DatosServicio.documento = '';
-          //     me.DatosServicio.alert = '';
-          //     me.DatosServicio.mensaje = '';
-          //     me.DatosServicio.tipo = 2;
-          //     me.DatosServicio.readonly = false;
-          //     me.DatosProveedor.documento = empresa.RUC;
-          //     me.DatosProveedor.razon_social = empresa.RazonSocial;
-          // }else{
-          //     me.DatosServicio.alert = 'badge badge-primary';
-          //     me.DatosServicio.mensaje = 'El RUC no existe';
-          // }
-          // me.Carga.clase = '';
+          console.log(empresa.result);
+
+          if (empresa.result) {
+            me.DatosServicio.documento = '';
+            me.DatosServicio.alert = '';
+            me.DatosServicio.mensaje = '';
+            me.DatosServicio.tipo = 2;
+            me.DatosServicio.readonly = false;
+            me.DatosProveedor.documento = empresa.result.ruc;
+            me.DatosProveedor.razon_social = empresa.result.razon_social;
+          } else {
+            me.DatosServicio.alert = 'badge badge-primary';
+            me.DatosServicio.mensaje = 'El RUC no existe';
+          }
+
+          me.Carga.clase = '';
         }
       }).fail(function () {});
     },
@@ -4280,6 +4282,7 @@ __webpack_require__.r(__webpack_exports__);
       $.ajax({
         type: 'GET',
         url: "http://67.205.189.29:80/Reniec/demo.php",
+        // url: "http://127.0.0.1:80/Reniec/demo.php",
         data: "dni=" + dni,
         beforeSend: function beforeSend() {
           me.Carga.clase = 'spinner-border spinner-border-sm text-primary';
