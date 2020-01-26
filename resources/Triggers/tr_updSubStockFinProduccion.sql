@@ -15,4 +15,4 @@ BEGIN
 	END IF;
 end
 //
-DELIMITER;
+DELIMITER ;
