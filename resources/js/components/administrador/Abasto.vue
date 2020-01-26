@@ -923,7 +923,7 @@
                 let ruc = me.DatosServicio.documento;
                 $.ajax({
                     type: 'GET',
-                    url: "http://127.0.0.1:80/misunat/example/consulta.php",
+                    url: "http://67.205.189.29:80/misunat/example/consulta.php",
                     // url: "http://67.205.189.29:80/SunatPHP/demo.php",
                     // data: "ruc="+ruc,
                     data: "nruc="+ruc,
