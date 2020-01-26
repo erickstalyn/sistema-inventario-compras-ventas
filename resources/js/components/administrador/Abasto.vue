@@ -923,8 +923,10 @@
                 let ruc = me.DatosServicio.documento;
                 $.ajax({
                     type: 'GET',
-                    url: "http://67.205.189.29:80/SunatPHP/demo.php",
-                    data: "ruc="+ruc,
+                    url: "http://127.0.0.1:80/misunat/example/consulta.php",
+                    // url: "http://67.205.189.29:80/SunatPHP/demo.php",
+                    // data: "ruc="+ruc,
+                    data: "nruc="+ruc,
                     beforeSend(){
                         me.Carga.clase = 'spinner-border spinner-border-sm text-primary';
                         me.DatosServicio.alert = 'badge badge-info';
@@ -933,19 +935,19 @@
                     success: function (data, textStatus, jqXHR) {
                         let empresa = JSON.parse(data);
                         console.log(empresa);
-                        if(empresa.RUC || empresa.RazonSocial){
-                            me.DatosServicio.documento = '';
-                            me.DatosServicio.alert = '';
-                            me.DatosServicio.mensaje = '';
-                            me.DatosServicio.tipo = 2;
-                            me.DatosServicio.readonly = false;
-                            me.DatosProveedor.documento = empresa.RUC;
-                            me.DatosProveedor.razon_social = empresa.RazonSocial;
-                        }else{
-                            me.DatosServicio.alert = 'badge badge-primary';
-                            me.DatosServicio.mensaje = 'El RUC no existe';
-                        }
-                        me.Carga.clase = '';
+                        // if(empresa.RUC || empresa.RazonSocial){
+                        //     me.DatosServicio.documento = '';
+                        //     me.DatosServicio.alert = '';
+                        //     me.DatosServicio.mensaje = '';
+                        //     me.DatosServicio.tipo = 2;
+                        //     me.DatosServicio.readonly = false;
+                        //     me.DatosProveedor.documento = empresa.RUC;
+                        //     me.DatosProveedor.razon_social = empresa.RazonSocial;
+                        // }else{
+                        //     me.DatosServicio.alert = 'badge badge-primary';
+                        //     me.DatosServicio.mensaje = 'El RUC no existe';
+                        // }
+                        // me.Carga.clase = '';
                     }
                 }).fail(function(){
                 });
