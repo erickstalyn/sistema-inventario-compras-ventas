@@ -17,13 +17,10 @@ class CreateVentaTable extends Migration
             $table->decimal('total', 8, 2);
             $table->decimal('total_faltante', 8, 2)->nullable();
             $table->char('codigo', 15)->nullable();
-            $table->char('tipo', 2);
-            /*  11 -> VENTA AL CONTADO AL POR MENOR
-                12 -> VENTA AL CONTADO AL POR MAYOR
-                21 -> VENTA AL CREDITO PREPAGO AL POR MENOR 
-                22 -> VENTA AL CREDITO PREPAGO AL POR MAYOR
-                31 -> VENTA AL CREDITO POSTPAGO AL POR MENOR
-                32 -> VENTA AL CREDITO POSTPAGO AL POR MAYOR*/
+            $table->char('tipo', 3);
+            /*  -> 1er digito: (1) Contado, (2) Credito
+                -> 2do digito: (1) Prepago, (2) Postpago
+                -> 3er digito: (1) Menor, (2) Mayor */
             
             $table->unsignedSmallInteger('cliente_id')->nullable();
             $table->foreign('cliente_id')->references('id')->on('persona');
