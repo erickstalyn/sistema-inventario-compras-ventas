@@ -34,7 +34,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/venta', 'VentaController@listar');
     Route::post('/venta/agregar', 'VentaController@agregar');
     Route::put('/venta/editar', 'VentaController@editar');
-    
+
     //RUTAS PARA DETALLES DE VENTAS
     Route::get('/detalle_venta/listVer', 'DetalleVentaController@listVer');
     Route::get('/detalle_venta/listEditar', 'DetalleVentaController@listEditar');
@@ -42,6 +42,9 @@ Route::group(['middleware' => ['auth']], function () {
     //RUTAS PARA PAGOS
     Route::get('/pago/listVenta', 'PagoController@listVenta');
     Route::post('/pago/agregar', 'PagoController@agregar');
+
+    //RUTAS PARA VALES
+    Route::get('/vale/get', 'ValeController@get');
 
     //RUTAS PARA PRODUCCIONES
     Route::get('/produccion', 'ProduccionController@listar'); //métodos generales
