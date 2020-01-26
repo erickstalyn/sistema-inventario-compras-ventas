@@ -933,26 +933,16 @@
                     },
                     success: function (data, textStatus, jqXHR) {
                         let empresa = JSON.parse(data);
-<<<<<<< HEAD
                         console.log(empresa.result);
                         if(empresa.result){
-=======
-                        if( empresa.RazonSocial ){
->>>>>>> master
                             me.DatosServicio.documento = '';
                             me.DatosServicio.alert = '';
                             me.DatosServicio.mensaje = '';
                             me.DatosServicio.tipo = 2;
                             me.DatosServicio.readonly = false;
-<<<<<<< HEAD
                             me.DatosProveedor.documento = empresa.result.ruc;
                             me.DatosProveedor.razon_social = empresa.result.razon_social;
                         }else{
-=======
-                            me.DatosProveedor.documento = empresa.RUC;
-                            me.DatosProveedor.razon_social = empresa.RazonSocial;
-                        } else {
->>>>>>> master
                             me.DatosServicio.alert = 'badge badge-primary';
                             me.DatosServicio.mensaje = 'El RUC no existe';
                         }
