@@ -95,7 +95,7 @@
                         <h6 class="dropdown-header">
                           Ventas de hoy
                         </h6>
-                        <notification :notifications="notifications"></notification>
+                        <noti_venta_puesto :notifications="notifications"></noti_venta_puesto>
                       </div>
                     </li>
                     <li class="nav-item dropdown no-arrow mx-1">
@@ -110,7 +110,7 @@
                         <h6 class="dropdown-header">
                           Ventas de hoy
                         </h6>
-                        <notification :notifications="notifications"></notification>
+                        <noti_venta_alm :notifications="notifications"></noti_venta_alm>
                       </div>
                     </li>
                   @endif
