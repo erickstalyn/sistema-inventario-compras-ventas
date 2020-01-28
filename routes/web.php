@@ -105,6 +105,9 @@ Route::group(['middleware' => ['auth']], function () {
         //RUTAS DE ESTADISTICAS
         Route::get('/estadistica/getEVentas', 'DashboardController@getEVentas');
 
+        //RUTAS DE PDF
+        Route::get('/material/generatePdf', 'MaterialController@generatePdf');
+
     });
     Route::group(['middleware' => ['Puesto']], function (){
         

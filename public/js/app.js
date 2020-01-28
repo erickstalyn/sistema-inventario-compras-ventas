@@ -5527,6 +5527,9 @@ __webpack_require__.r(__webpack_exports__);
           _this4.SelectTipoFiltrado.push(unidad.subtipo);
         }
       }); // return selectTipoFiltrado;
+    },
+    generatePdf: function generatePdf() {
+      window.open('http://127.0.0.1:8000/material/generatePdf', '_blank');
     }
   },
   mounted: function mounted() {
@@ -65631,7 +65634,22 @@ var render = function() {
           ]
         ),
         _vm._v(" \n            "),
-        _vm._m(0)
+        _c(
+          "button",
+          {
+            staticClass: "btn btn-danger",
+            attrs: { type: "button" },
+            on: {
+              click: function($event) {
+                return _vm.generatePdf()
+              }
+            }
+          },
+          [
+            _c("i", { staticClass: "far fa-file-pdf" }),
+            _vm._v("  PDF\n            ")
+          ]
+        )
       ]),
       _vm._v(" "),
       _c("div", { staticClass: "row form-group" }, [
@@ -65730,7 +65748,7 @@ var render = function() {
         _vm._v(" "),
         _c("div", { staticClass: "col-md-2" }),
         _vm._v(" "),
-        _vm._m(1),
+        _vm._m(0),
         _vm._v(" "),
         _c("div", { staticClass: "col-md-1" }, [
           _c(
@@ -66079,7 +66097,7 @@ var render = function() {
                         : _vm._e(),
                       _vm._v(" "),
                       _c("div", { staticClass: "row form-group" }, [
-                        _vm._m(2),
+                        _vm._m(1),
                         _vm._v(" "),
                         _c("div", { staticClass: "col-md-9" }, [
                           _c("input", {
@@ -66115,7 +66133,7 @@ var render = function() {
                       ]),
                       _vm._v(" "),
                       _c("div", { staticClass: "row form-group" }, [
-                        _vm._m(3),
+                        _vm._m(2),
                         _vm._v(" "),
                         _c("div", { staticClass: "col-md-4" }, [
                           _c(
@@ -66232,7 +66250,7 @@ var render = function() {
                       ]),
                       _vm._v(" "),
                       _c("div", { staticClass: "row form-group" }, [
-                        _vm._m(4),
+                        _vm._m(3),
                         _vm._v(" "),
                         _c("div", { staticClass: "col-md-4" }, [
                           _c("input", {
@@ -66312,7 +66330,7 @@ var render = function() {
                         : _vm._e(),
                       _vm._v(" "),
                       _c("div", { staticClass: "row form-group" }, [
-                        _vm._m(5),
+                        _vm._m(4),
                         _vm._v(" "),
                         _c("div", { staticClass: "col-md-9" }, [
                           _c("input", {
@@ -66347,7 +66365,7 @@ var render = function() {
                       ]),
                       _vm._v(" "),
                       _c("div", { staticClass: "row form-group" }, [
-                        _vm._m(6),
+                        _vm._m(5),
                         _vm._v(" "),
                         _c("div", { staticClass: "col-md-4" }, [
                           _c(
@@ -66465,7 +66483,7 @@ var render = function() {
                       ]),
                       _vm._v(" "),
                       _c("div", { staticClass: "row form-group" }, [
-                        _vm._m(7),
+                        _vm._m(6),
                         _vm._v(" "),
                         _c("div", { staticClass: "col-md-4" }, [
                           _c("input", {
@@ -66544,19 +66562,6 @@ var render = function() {
   ])
 }
 var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "button",
-      { staticClass: "btn btn-danger", attrs: { type: "button" } },
-      [
-        _c("i", { staticClass: "far fa-file-pdf" }),
-        _vm._v("  PDF\n            ")
-      ]
-    )
-  },
   function() {
     var _vm = this
     var _h = _vm.$createElement

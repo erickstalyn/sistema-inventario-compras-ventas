@@ -11,7 +11,7 @@
                 <button type="button" class="btn btn-success" @click="abrirModalAgregar()">
                     <i class="fas fa-hammer"></i>&nbsp; Nuevo
                 </button>&nbsp;
-                <button type="button" class="btn btn-danger">
+                <button type="button" class="btn btn-danger" @click="generatePdf()">
                     <i class="far fa-file-pdf"></i>&nbsp; PDF
                 </button>
             </div>
@@ -677,7 +677,10 @@
                     }
                 });
                 // return selectTipoFiltrado;
-            }
+            },
+            generatePdf(){
+                window.open('http://127.0.0.1:8000/material/generatePdf','_blank');
+            },
         },
         mounted() {
             this.listar();
