@@ -27,7 +27,7 @@ class VentaController extends Controller {
         $mes = $request->mes;
         $year = $request->year;
 
-        $ventas = Venta::select('venta.id', 'venta.codigo', 'venta.tipo', 'venta.total', 'venta.total_faltante', 'venta.created_at', 
+        $ventas = Venta::select('venta.id', 'venta.codigo', 'venta.tipo', 'venta.total', 'venta.total_faltante', 'venta.total_descuento', 'venta.total_venta', 'venta.created_at', 
                                 'persona.id as cliente_id', 'persona.dni', 'persona.ruc', 'persona.nombres', 'persona.apellidos', 'persona.razon_social', 'persona.tipo as cliente_tipo',
                                 'vale.id as vale_id', 'vale.monto as vale_monto', 'vale.created_at as vale_created_at')
                     ->leftJoin('persona', 'persona.id', '=', 'venta.cliente_id')

@@ -1,5 +1,5 @@
 DELIMITER //
-CREATE TRIGGER tr_insertProducto
+CREATE TRIGGER producto_AI
 AFTER INSERT
 ON producto
 FOR EACH ROW

@@ -1,5 +1,5 @@
 DELIMITER //
-CREATE TRIGGER `tr_updPreciosDetallesProducto`
+CREATE TRIGGER producto_BU
 BEFORE UPDATE 
 ON producto
 FOR EACH ROW

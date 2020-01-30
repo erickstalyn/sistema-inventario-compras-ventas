@@ -14,8 +14,10 @@ class CreateVentaTable extends Migration
     public function up(){
         Schema::create('venta', function (Blueprint $table) {
             $table->mediumIncrements('id'); // usa 3 bytes, Cantiada max: 8 388 607
-            $table->decimal('total', 8, 2);
-            $table->decimal('total_faltante', 8, 2)->nullable();
+            $table->decimal('total_faltante', 8, 2)->nullable(); //En caso de ser venta al credito aqui se guardara el monto faltante
+            $table->decimal('total_venta', 8, 2); //Se guardara el verdadero valor de la venta
+            $table->decimal('total_descuento', 8, 2)->nullable(); // Se guardara el descurnto toal de la venta
+            $table->decimal('total', 8, 2); // El costo total a cobrar
             $table->char('codigo', 15)->nullable();
             $table->char('tipo', 3);
             /*  -> 1er digito: (1) Contado, (2) Credito
