@@ -82,25 +82,23 @@
     </head>
     <body>
         <div>
-        <h3>Lista de materiales <span class="derecha" id="fecha">{{date("d/m/Y h:i:s")}}</span></h3>
+        <h3>Lista de Superproducto <span class="derecha" id="fecha">{{date("d/m/Y h:i:s")}}</span></h3>
         </div>
         <div>
             <table class="table table-bordered table-striped table-sm">
                 <thead>
                     <tr>
                         <th>Nombre</th>
-                        <th>Unid. Medida</th>
-                        <th>Costo Unit.</th>
-                        <th>Estado</th>
+                        <th>Descripción</th>
+                        <th>Stock total</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($material as $mat)
+                    @foreach ($superproducto as $sup)
                     <tr>
-                        <td>{{$mat->nombre}}</td>
-                        <td>{{$mat->unidad}}</td>
-                        <td>{{$mat->costo}}</td>
-                        <td>{{$mat->estado ? 'Activado': 'Desactivado'}}</td>
+                        <td>{{$sup->nombre}}</td>
+                        <td>{{$sup->descripcion}}</td>
+                        <td>{{$sup->superstock}}</td>
                     </tr>
                     @endforeach                                
                 </tbody>

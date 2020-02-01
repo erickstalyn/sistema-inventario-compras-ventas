@@ -82,25 +82,27 @@
     </head>
     <body>
         <div>
-        <h3>Lista de materiales <span class="derecha" id="fecha">{{date("d/m/Y h:i:s")}}</span></h3>
+        <h3>Lista de producto <span class="derecha" id="fecha">{{date("d/m/Y h:i:s")}}</span></h3>
         </div>
         <div>
             <table class="table table-bordered table-striped table-sm">
                 <thead>
                     <tr>
                         <th>Nombre</th>
-                        <th>Unid. Medida</th>
-                        <th>Costo Unit.</th>
-                        <th>Estado</th>
+                        <th>Costo de producción</th>
+                        <th>Precio al por menor</th>
+                        <th>Precio al por mayor</th>
+                        <th>Stock</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($material as $mat)
+                    @foreach ($producto as $pro)
                     <tr>
-                        <td>{{$mat->nombre}}</td>
-                        <td>{{$mat->unidad}}</td>
-                        <td>{{$mat->costo}}</td>
-                        <td>{{$mat->estado ? 'Activado': 'Desactivado'}}</td>
+                        <td>{{$pro->nombre}}</td>
+                        <td>{{$pro->costo_produccion}}</td>
+                        <td>{{$pro->precio_menor}}</td>
+                        <td>{{$pro->precio_mayor}}</td>
+                        <td>{{$pro->stock}}</td>
                     </tr>
                     @endforeach                                
                 </tbody>

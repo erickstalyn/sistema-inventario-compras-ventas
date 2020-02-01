@@ -82,25 +82,58 @@
     </head>
     <body>
         <div>
-        <h3>Lista de materiales <span class="derecha" id="fecha">{{date("d/m/Y h:i:s")}}</span></h3>
+        <h3>Lista de Abastecimientos <span class="derecha" id="fecha">{{date("d/m/Y h:i:s")}}</span></h3>
         </div>
         <div>
             <table class="table table-bordered table-striped table-sm">
                 <thead>
                     <tr>
-                        <th>Nombre</th>
-                        <th>Unid. Medida</th>
-                        <th>Costo Unit.</th>
-                        <th>Estado</th>
+                        <th>Proveedor</th>
+                        <th >Almacén de destino</th>
+                        <th>Fecha de envío</th>
+                        <th>Costo total</th>
+                        <th>Tipo</th>
+                        <th>Estado de envío</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($material as $mat)
+                    @foreach ($abasto as $aba)
                     <tr>
-                        <td>{{$mat->nombre}}</td>
-                        <td>{{$mat->unidad}}</td>
-                        <td>{{$mat->costo}}</td>
-                        <td>{{$mat->estado ? 'Activado': 'Desactivado'}}</td>
+                        <td >
+                            @if($aba->proveedor_persona)
+                                {{$aba->proveedor_persona}}
+                            @else
+                                {{$aba->proveedor_empresa}}
+                            @endif
+                        </td>
+                        <td >
+                            {{$aba->nombre_centro}}
+                        </td>
+                        <td >
+                            @php
+                                $date = new DateTime($aba->fecha_envio);
+                                echo $date->format('d-m-Y');
+                            @endphp
+                        </td>
+                        <td >
+                            {{$aba->total}}
+                        </td>
+                        <td >
+                            @if($aba->tipo_abasto)
+                                <span >Crédito</span>
+                            @else
+                                <span >Contado</span>
+                            @endif
+                        </td>
+                        <td >
+                            @if($aba->estado_envio == 0)
+                                <span >Enviado</span>
+                            @elseif($aba->estado_envio == 1)
+                                <span >Aceptado</span>
+                            @else
+                                <span >Rechazado</span>
+                            @endif
+                        </td>
                     </tr>
                     @endforeach                                
                 </tbody>

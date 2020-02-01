@@ -49,7 +49,8 @@
                     <table class="table table-borderless table-sm text-gray-900">
                         <thead>
                             <tr class="table-info">
-                                <th v-for="head in Headers" :key="head.nombre" @click="listar(1, head.nombre)" class="ec-cursor" v-text="getTitulo(head.titulo)"></th>
+                                <th>Nombre</th>
+                                <th>Unid. Medida</th>
                                 <th >Costo Unit.</th>
                                 <th>Estado</th>
                                 <th>Opciones</th>
@@ -271,10 +272,9 @@
                     estado: 0,
                     mensaje: []
                 },
-                Headers:[
-                    {titulo: 'Nombre', nombre: 'nombre'},
-                    {titulo: 'Unid. Medida', nombre: 'unidad'}
-                ]
+                Ruta: {
+                    server: 'http://127.0.0.1:8000/material'
+                }
             }
         },
         computed: {
@@ -654,17 +654,6 @@
                     console.log(error);
                 });
             },
-            // selectTipoFiltrado(){
-            //     let selectTipoFiltrado = [];
-            //     console.log('Ingrese al metodo selectTipoFiltrado');
-            //     this.SelectUnidad.forEach(unidad => {
-            //         if(!selectTipoFiltrado.includes(unidad.subtipo)){
-            //             console.log('ingrese al if del metodo selectTipoFiltrado');
-            //             selectTipoFiltrado.push(unidad.subtipo);
-            //         }
-            //     });
-            //     return selectTipoFiltrado;
-            // }
             selectTipoFiltrado(){
                 // let selectTipoFiltrado = [];
                 console.log('Ingrese al metodo selectTipoFiltrado');
@@ -679,7 +668,7 @@
                 // return selectTipoFiltrado;
             },
             generatePdf(){
-                window.open('http://127.0.0.1:8000/material/generatePdf','_blank');
+                window.open(this.Ruta.server + '/generatePdf','_blank');
             },
         },
         mounted() {

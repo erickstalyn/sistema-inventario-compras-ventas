@@ -4123,6 +4123,9 @@ __webpack_require__.r(__webpack_exports__);
       Pago: {
         monto: '',
         sumaPagos: 0.00
+      },
+      Ruta: {
+        server: 'http://127.0.0.1:8000/abasto'
       }
     };
   },
@@ -4779,6 +4782,9 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       return fixed;
+    },
+    generatePdf: function generatePdf() {
+      window.open(this.Ruta.server + '/generatePdf', '_blank');
     }
   },
   mounted: function mounted() {
@@ -5069,6 +5075,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -5124,13 +5131,9 @@ __webpack_require__.r(__webpack_exports__);
         estado: 0,
         mensaje: []
       },
-      Headers: [{
-        titulo: 'Nombre',
-        nombre: 'nombre'
-      }, {
-        titulo: 'Unid. Medida',
-        nombre: 'unidad'
-      }]
+      Ruta: {
+        server: 'http://127.0.0.1:8000/material'
+      }
     };
   },
   computed: {
@@ -5503,17 +5506,6 @@ __webpack_require__.r(__webpack_exports__);
         console.log(error);
       });
     },
-    // selectTipoFiltrado(){
-    //     let selectTipoFiltrado = [];
-    //     console.log('Ingrese al metodo selectTipoFiltrado');
-    //     this.SelectUnidad.forEach(unidad => {
-    //         if(!selectTipoFiltrado.includes(unidad.subtipo)){
-    //             console.log('ingrese al if del metodo selectTipoFiltrado');
-    //             selectTipoFiltrado.push(unidad.subtipo);
-    //         }
-    //     });
-    //     return selectTipoFiltrado;
-    // }
     selectTipoFiltrado: function selectTipoFiltrado() {
       var _this4 = this;
 
@@ -5529,7 +5521,7 @@ __webpack_require__.r(__webpack_exports__);
       }); // return selectTipoFiltrado;
     },
     generatePdf: function generatePdf() {
-      window.open('http://127.0.0.1:8000/material/generatePdf', '_blank');
+      window.open(this.Ruta.server + '/generatePdf', '_blank');
     }
   },
   mounted: function mounted() {
@@ -5982,7 +5974,8 @@ __webpack_require__.r(__webpack_exports__);
         producto: '/producto',
         productomaterial: '/productomaterial',
         material: '/material',
-        data: '/data'
+        data: '/data',
+        server: 'http://127.0.0.1:8000/producto'
       }
     };
   },
@@ -6509,6 +6502,9 @@ __webpack_require__.r(__webpack_exports__);
       if (page >= 1 && page <= this.Paginacion.lastPage) {
         this.listar(page);
       }
+    },
+    generatePdf: function generatePdf() {
+      window.open(this.Ruta.server + '/generatePdf', '_blank');
     }
   },
   mounted: function mounted() {
@@ -6878,7 +6874,8 @@ __webpack_require__.r(__webpack_exports__);
       Ruta: {
         superproducto: '/superproducto',
         producto: '/producto',
-        data: '/data'
+        data: '/data',
+        server: 'http://127.0.0.1:8000/superproducto'
       }
     };
   },
@@ -7244,6 +7241,9 @@ __webpack_require__.r(__webpack_exports__);
       if (page >= 1 && page <= this.Paginacion.lastPage) {
         this.listar(page);
       }
+    },
+    generatePdf: function generatePdf() {
+      window.open(this.Ruta.server + '/generatePdf', '_blank');
     }
   },
   mounted: function mounted() {
@@ -62782,7 +62782,22 @@ var render = function() {
           ]
         ),
         _vm._v(" \n            "),
-        _vm._m(0)
+        _c(
+          "button",
+          {
+            staticClass: "btn btn-danger",
+            attrs: { type: "button" },
+            on: {
+              click: function($event) {
+                return _vm.generatePdf()
+              }
+            }
+          },
+          [
+            _c("i", { staticClass: "far fa-file-pdf" }),
+            _vm._v("  PDF\n            ")
+          ]
+        )
       ]),
       _vm._v(" "),
       _c("div", { staticClass: "row form-group" }, [
@@ -62878,7 +62893,7 @@ var render = function() {
         _vm._v(" "),
         _c("div", { staticClass: "col-md-6" }, [
           _c("div", { staticClass: "row" }, [
-            _vm._m(1),
+            _vm._m(0),
             _vm._v(" "),
             _c("div", { staticClass: "col-md-2" }, [
               _vm._v("\n                        Dia\n                        "),
@@ -63104,7 +63119,7 @@ var render = function() {
                   staticClass: "table table-borderless table-sm text-gray-900"
                 },
                 [
-                  _vm._m(2),
+                  _vm._m(1),
                   _vm._v(" "),
                   _c(
                     "tbody",
@@ -63247,7 +63262,7 @@ var render = function() {
                                 ]
                               : abasto.estado_envio == 2
                               ? [
-                                  _vm._m(3, true),
+                                  _vm._m(2, true),
                                   _vm._v(" "),
                                   _c(
                                     "button",
@@ -63449,7 +63464,7 @@ var render = function() {
                           : _vm._e(),
                         _vm._v(" "),
                         _c("div", { staticClass: "row" }, [
-                          _vm._m(4),
+                          _vm._m(3),
                           _vm._v(" "),
                           _c("div", { staticClass: "col-md-3" }, [
                             _c("div", { staticClass: "input-group" }, [
@@ -63752,7 +63767,7 @@ var render = function() {
                           { staticClass: "row shadow bg-white rounded p-2" },
                           [
                             _c("div", { staticClass: "col-md-4" }, [
-                              _vm._m(5),
+                              _vm._m(4),
                               _vm._v(" "),
                               _c("div", { staticClass: "row" }, [
                                 _c("div", { staticClass: "input-group" }, [
@@ -63843,7 +63858,7 @@ var render = function() {
                                               "table table-borderless table-striped table-sm text-gray-900"
                                           },
                                           [
-                                            _vm._m(6),
+                                            _vm._m(5),
                                             _vm._v(" "),
                                             _c(
                                               "tbody",
@@ -64007,7 +64022,7 @@ var render = function() {
                               { staticClass: "col-md-8 ml-auto container" },
                               [
                                 _c("div", { staticClass: "row" }, [
-                                  _vm._m(7),
+                                  _vm._m(6),
                                   _vm._v(" "),
                                   _c("div", { staticClass: "col-md-6" }),
                                   _vm._v(" "),
@@ -64104,7 +64119,7 @@ var render = function() {
                                                 "table tableless table-striped table-sm text-gray-900"
                                             },
                                             [
-                                              _vm._m(8),
+                                              _vm._m(7),
                                               _vm._v(" "),
                                               _c(
                                                 "tbody",
@@ -64373,7 +64388,7 @@ var render = function() {
                   _vm.Modal.numero == 2
                     ? _c("div", [
                         _c("div", { staticClass: "row" }, [
-                          _vm._m(9),
+                          _vm._m(8),
                           _vm._v(" "),
                           _c("div", { staticClass: "col-md-6" }),
                           _vm._v(" "),
@@ -64647,7 +64662,7 @@ var render = function() {
                           [
                             _vm.Abasto.tipo_abasto == 1
                               ? _c("div", { staticClass: "col-md-4" }, [
-                                  _vm._m(10),
+                                  _vm._m(9),
                                   _vm._v(" "),
                                   _c("br"),
                                   _vm._v(" "),
@@ -64669,7 +64684,7 @@ var render = function() {
                                                     "table table-borderless table-striped table-sm text-gray-900"
                                                 },
                                                 [
-                                                  _vm._m(11),
+                                                  _vm._m(10),
                                                   _vm._v(" "),
                                                   _c(
                                                     "tbody",
@@ -64829,7 +64844,7 @@ var render = function() {
                               },
                               [
                                 _c("div", { staticClass: "row" }, [
-                                  _vm._m(12),
+                                  _vm._m(11),
                                   _vm._v(" "),
                                   _c("div", { staticClass: "col-md-6" }),
                                   _vm._v(" "),
@@ -64875,7 +64890,7 @@ var render = function() {
                                           "table tableless table-striped table-sm text-gray-900"
                                       },
                                       [
-                                        _vm._m(13),
+                                        _vm._m(12),
                                         _vm._v(" "),
                                         _c(
                                           "tbody",
@@ -65016,7 +65031,7 @@ var render = function() {
                           : _vm._e(),
                         _vm._v(" "),
                         _c("div", { staticClass: "row form-group " }, [
-                          _vm._m(14),
+                          _vm._m(13),
                           _vm._v(" "),
                           _c("div", { staticClass: "col-md-1" }),
                           _vm._v(" "),
@@ -65112,7 +65127,7 @@ var render = function() {
                                           "table table-borderless table-striped table-sm text-gray-900"
                                       },
                                       [
-                                        _vm._m(15),
+                                        _vm._m(14),
                                         _vm._v(" "),
                                         _c(
                                           "tbody",
@@ -65272,19 +65287,6 @@ var render = function() {
   ])
 }
 var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "button",
-      { staticClass: "btn btn-danger", attrs: { type: "button" } },
-      [
-        _c("i", { staticClass: "far fa-file-pdf" }),
-        _vm._v("  PDF\n            ")
-      ]
-    )
-  },
   function() {
     var _vm = this
     var _h = _vm.$createElement
@@ -65801,35 +65803,7 @@ var render = function() {
                   staticClass: "table table-borderless table-sm text-gray-900"
                 },
                 [
-                  _c("thead", [
-                    _c(
-                      "tr",
-                      { staticClass: "table-info" },
-                      [
-                        _vm._l(_vm.Headers, function(head) {
-                          return _c("th", {
-                            key: head.nombre,
-                            staticClass: "ec-cursor",
-                            domProps: {
-                              textContent: _vm._s(_vm.getTitulo(head.titulo))
-                            },
-                            on: {
-                              click: function($event) {
-                                return _vm.listar(1, head.nombre)
-                              }
-                            }
-                          })
-                        }),
-                        _vm._v(" "),
-                        _c("th", [_vm._v("Costo Unit.")]),
-                        _vm._v(" "),
-                        _c("th", [_vm._v("Estado")]),
-                        _vm._v(" "),
-                        _c("th", [_vm._v("Opciones")])
-                      ],
-                      2
-                    )
-                  ]),
+                  _vm._m(1),
                   _vm._v(" "),
                   _c(
                     "tbody",
@@ -66097,7 +66071,7 @@ var render = function() {
                         : _vm._e(),
                       _vm._v(" "),
                       _c("div", { staticClass: "row form-group" }, [
-                        _vm._m(1),
+                        _vm._m(2),
                         _vm._v(" "),
                         _c("div", { staticClass: "col-md-9" }, [
                           _c("input", {
@@ -66133,7 +66107,7 @@ var render = function() {
                       ]),
                       _vm._v(" "),
                       _c("div", { staticClass: "row form-group" }, [
-                        _vm._m(2),
+                        _vm._m(3),
                         _vm._v(" "),
                         _c("div", { staticClass: "col-md-4" }, [
                           _c(
@@ -66250,7 +66224,7 @@ var render = function() {
                       ]),
                       _vm._v(" "),
                       _c("div", { staticClass: "row form-group" }, [
-                        _vm._m(3),
+                        _vm._m(4),
                         _vm._v(" "),
                         _c("div", { staticClass: "col-md-4" }, [
                           _c("input", {
@@ -66330,7 +66304,7 @@ var render = function() {
                         : _vm._e(),
                       _vm._v(" "),
                       _c("div", { staticClass: "row form-group" }, [
-                        _vm._m(4),
+                        _vm._m(5),
                         _vm._v(" "),
                         _c("div", { staticClass: "col-md-9" }, [
                           _c("input", {
@@ -66365,7 +66339,7 @@ var render = function() {
                       ]),
                       _vm._v(" "),
                       _c("div", { staticClass: "row form-group" }, [
-                        _vm._m(5),
+                        _vm._m(6),
                         _vm._v(" "),
                         _c("div", { staticClass: "col-md-4" }, [
                           _c(
@@ -66483,7 +66457,7 @@ var render = function() {
                       ]),
                       _vm._v(" "),
                       _c("div", { staticClass: "row form-group" }, [
-                        _vm._m(6),
+                        _vm._m(7),
                         _vm._v(" "),
                         _c("div", { staticClass: "col-md-4" }, [
                           _c("input", {
@@ -66568,6 +66542,24 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "col-md-1", attrs: { align: "right" } }, [
       _c("label", [_vm._v("N° filas:")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", { staticClass: "table-info" }, [
+        _c("th", [_vm._v("Nombre")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Unid. Medida")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Costo Unit.")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Estado")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Opciones")])
+      ])
     ])
   },
   function() {
@@ -66696,7 +66688,22 @@ var render = function() {
           ]
         ),
         _vm._v(" "),
-        _vm._m(0)
+        _c(
+          "button",
+          {
+            staticClass: "btn btn-danger",
+            attrs: { type: "button" },
+            on: {
+              click: function($event) {
+                return _vm.generatePdf()
+              }
+            }
+          },
+          [
+            _c("i", { staticClass: "far fa-file-pdf" }),
+            _vm._v("  PDF\n            ")
+          ]
+        )
       ]),
       _vm._v(" "),
       _c("div", { staticClass: "row form-group" }, [
@@ -66754,7 +66761,7 @@ var render = function() {
         _vm._v(" "),
         _c("div", { staticClass: "col-md-5" }),
         _vm._v(" "),
-        _vm._m(1),
+        _vm._m(0),
         _vm._v(" "),
         _c("div", { staticClass: "col-md-1" }, [
           _c(
@@ -66808,7 +66815,7 @@ var render = function() {
                     "table table-bordered table-striped table-sm text-gray-900"
                 },
                 [
-                  _vm._m(2),
+                  _vm._m(1),
                   _vm._v(" "),
                   _c(
                     "tbody",
@@ -67067,7 +67074,7 @@ var render = function() {
                       ]),
                       _vm._v(" "),
                       _c("div", { staticClass: "row form-group" }, [
-                        _vm._m(3),
+                        _vm._m(2),
                         _vm._v(" "),
                         _c(
                           "select",
@@ -67127,7 +67134,7 @@ var render = function() {
                       ]),
                       _vm._v(" "),
                       _c("div", { staticClass: "row form-group" }, [
-                        _vm._m(4),
+                        _vm._m(3),
                         _vm._v(" "),
                         _c(
                           "select",
@@ -67185,7 +67192,7 @@ var render = function() {
                       ]),
                       _vm._v(" "),
                       _c("div", { staticClass: "row form-group" }, [
-                        _vm._m(5),
+                        _vm._m(4),
                         _vm._v(" "),
                         _c(
                           "select",
@@ -67281,7 +67288,7 @@ var render = function() {
                       ]),
                       _vm._v(" "),
                       _c("div", { staticClass: "row form-group" }, [
-                        _vm._m(6),
+                        _vm._m(5),
                         _vm._v(" "),
                         _c("label", { staticClass: "col-md-3 text-right" }, [
                           _vm._v("S/.")
@@ -67319,7 +67326,7 @@ var render = function() {
                       ]),
                       _vm._v(" "),
                       _c("div", { staticClass: "row" }, [
-                        _vm._m(7),
+                        _vm._m(6),
                         _vm._v(" "),
                         _c("label", { staticClass: "col-md-3 text-right" }, [
                           _vm._v("S/.")
@@ -67540,7 +67547,7 @@ var render = function() {
                       ]),
                       _vm._v(" "),
                       _c("div", { staticClass: "row form-group" }, [
-                        _vm._m(8),
+                        _vm._m(7),
                         _vm._v(" "),
                         _c(
                           "select",
@@ -67600,7 +67607,7 @@ var render = function() {
                       ]),
                       _vm._v(" "),
                       _c("div", { staticClass: "row form-group" }, [
-                        _vm._m(9),
+                        _vm._m(8),
                         _vm._v(" "),
                         _c(
                           "select",
@@ -67658,7 +67665,7 @@ var render = function() {
                       ]),
                       _vm._v(" "),
                       _c("div", { staticClass: "row form-group" }, [
-                        _vm._m(10),
+                        _vm._m(9),
                         _vm._v(" "),
                         _c(
                           "select",
@@ -67754,7 +67761,7 @@ var render = function() {
                       ]),
                       _vm._v(" "),
                       _c("div", { staticClass: "row form-group" }, [
-                        _vm._m(11),
+                        _vm._m(10),
                         _vm._v(" "),
                         _c("label", { staticClass: "col-md-3 text-right" }, [
                           _vm._v("S/.")
@@ -67792,7 +67799,7 @@ var render = function() {
                       ]),
                       _vm._v(" "),
                       _c("div", { staticClass: "row" }, [
-                        _vm._m(12),
+                        _vm._m(11),
                         _vm._v(" "),
                         _c("label", { staticClass: "col-md-3 text-right" }, [
                           _vm._v("S/.")
@@ -67886,10 +67893,10 @@ var render = function() {
                             )
                           : _vm._e(),
                         _vm._v(" "),
-                        _vm._m(13),
+                        _vm._m(12),
                         _vm._v(" "),
                         _c("div", { staticClass: "row form-group" }, [
-                          _vm._m(14),
+                          _vm._m(13),
                           _vm._v(" "),
                           _c(
                             "select",
@@ -67968,7 +67975,7 @@ var render = function() {
                         ]),
                         _vm._v(" "),
                         _c("div", { staticClass: "row form-group" }, [
-                          _vm._m(15),
+                          _vm._m(14),
                           _vm._v(" "),
                           _c("input", {
                             directives: [
@@ -68051,7 +68058,7 @@ var render = function() {
                                 }
                               },
                               [
-                                _vm._m(16),
+                                _vm._m(15),
                                 _vm._v(" "),
                                 _c("span", { staticClass: "text" }, [
                                   _vm._v("Agregar Material")
@@ -68115,7 +68122,7 @@ var render = function() {
                             )
                           : _vm._e(),
                         _vm._v(" "),
-                        _vm._m(17),
+                        _vm._m(16),
                         _vm._v(" "),
                         _vm.ListaProductoMaterial.length
                           ? _c(
@@ -68129,7 +68136,7 @@ var render = function() {
                                       "table table-bordered table-striped table-sm text-gray-900"
                                   },
                                   [
-                                    _vm._m(18),
+                                    _vm._m(17),
                                     _vm._v(" "),
                                     _c(
                                       "tbody",
@@ -68345,19 +68352,6 @@ var render = function() {
   ])
 }
 var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "button",
-      { staticClass: "btn btn-danger", attrs: { type: "button" } },
-      [
-        _c("i", { staticClass: "far fa-file-pdf" }),
-        _vm._v("  PDF\n            ")
-      ]
-    )
-  },
   function() {
     var _vm = this
     var _h = _vm.$createElement
@@ -68597,7 +68591,22 @@ var render = function() {
             ]
           ),
           _vm._v(" "),
-          _vm._m(0)
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-danger",
+              attrs: { type: "button" },
+              on: {
+                click: function($event) {
+                  return _vm.generatePdf()
+                }
+              }
+            },
+            [
+              _c("i", { staticClass: "far fa-file-pdf" }),
+              _vm._v("  PDF\n                ")
+            ]
+          )
         ])
       ]),
       _vm._v(" "),
@@ -68656,7 +68665,7 @@ var render = function() {
         _vm._v(" "),
         _c("div", { staticClass: "col-md-5" }),
         _vm._v(" "),
-        _vm._m(1),
+        _vm._m(0),
         _vm._v(" "),
         _c("div", { staticClass: "col-md-1" }, [
           _c(
@@ -68710,7 +68719,7 @@ var render = function() {
                     "table table-bordered table-condensed table-striped table-sm text-gray-900"
                 },
                 [
-                  _vm._m(2),
+                  _vm._m(1),
                   _vm._v(" "),
                   _c(
                     "tbody",
@@ -68935,7 +68944,7 @@ var render = function() {
                       _vm._v(" "),
                       _c("div", { staticClass: "row form-group" }, [
                         _c("div", { staticClass: "col-md-4 input-group" }, [
-                          _vm._m(3),
+                          _vm._m(2),
                           _vm._v(" "),
                           _c("input", {
                             directives: [
@@ -69066,10 +69075,10 @@ var render = function() {
                               )
                             : _vm._e(),
                           _vm._v(" "),
-                          _vm._m(4),
+                          _vm._m(3),
                           _vm._v(" "),
                           _c("div", { staticClass: "row form-group" }, [
-                            _vm._m(5),
+                            _vm._m(4),
                             _vm._v(" "),
                             _c(
                               "select",
@@ -69129,7 +69138,7 @@ var render = function() {
                           ]),
                           _vm._v(" "),
                           _c("div", { staticClass: "row form-group" }, [
-                            _vm._m(6),
+                            _vm._m(5),
                             _vm._v(" "),
                             _c(
                               "select",
@@ -69189,7 +69198,7 @@ var render = function() {
                           ]),
                           _vm._v(" "),
                           _c("div", { staticClass: "row form-group" }, [
-                            _vm._m(7),
+                            _vm._m(6),
                             _vm._v(" "),
                             _c("input", {
                               directives: [
@@ -69225,7 +69234,7 @@ var render = function() {
                           ]),
                           _vm._v(" "),
                           _c("div", { staticClass: "row form-group" }, [
-                            _vm._m(8),
+                            _vm._m(7),
                             _vm._v(" "),
                             _c("input", {
                               directives: [
@@ -69279,7 +69288,7 @@ var render = function() {
                                   }
                                 },
                                 [
-                                  _vm._m(9),
+                                  _vm._m(8),
                                   _vm._v(" "),
                                   _c(
                                     "span",
@@ -69293,7 +69302,7 @@ var render = function() {
                         ]),
                         _vm._v(" "),
                         _c("div", { staticClass: "col-md-8" }, [
-                          _vm._m(10),
+                          _vm._m(9),
                           _vm._v(" "),
                           _c("div", { staticClass: "row col-md-12" }, [
                             _vm.ListaProducto.length
@@ -69305,7 +69314,7 @@ var render = function() {
                                         "table table-bordered table-striped table-sm text-gray-900"
                                     },
                                     [
-                                      _vm._m(11),
+                                      _vm._m(10),
                                       _vm._v(" "),
                                       _c(
                                         "tbody",
@@ -69453,7 +69462,7 @@ var render = function() {
                                     "table table-bordered table-striped table-sm text-gray-900"
                                 },
                                 [
-                                  _vm._m(12),
+                                  _vm._m(11),
                                   _vm._v(" "),
                                   _c(
                                     "tbody",
@@ -69571,7 +69580,7 @@ var render = function() {
                         : _vm._e(),
                       _vm._v(" "),
                       _c("div", { staticClass: "row form-group" }, [
-                        _vm._m(13),
+                        _vm._m(12),
                         _vm._v(" "),
                         _c("input", {
                           directives: [
@@ -69693,19 +69702,6 @@ var render = function() {
   ])
 }
 var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "button",
-      { staticClass: "btn btn-danger", attrs: { type: "button" } },
-      [
-        _c("i", { staticClass: "far fa-file-pdf" }),
-        _vm._v("  PDF\n                ")
-      ]
-    )
-  },
   function() {
     var _vm = this
     var _h = _vm.$createElement
