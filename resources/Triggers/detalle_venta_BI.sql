@@ -1,5 +1,5 @@
 DELIMITER //
-CREATE TRIGGER `tr_upStockPorVenta`
+CREATE TRIGGER detalle_venta_BI
 BEFORE INSERT 
 ON detalle_venta
 FOR EACH ROW

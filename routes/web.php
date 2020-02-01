@@ -28,8 +28,10 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/abasto/getDetalles', 'AbastoController@getDetalles');
     Route::get('/envioRealizado/getDetalles', 'EnvioController@getDetalles');
 
+    //RUTAS PARA LOS DETALLE_PRODUCTO
     Route::get('/detalle_producto/getDetalle_productoFiltrado', 'Detalle_productoController@getDetalle_productoFiltrado');
-
+    Route::get('/detalle_producto/listProductos', 'Detalle_productoController@listProductos');
+    
     //RUTAS PARA VENTAS
     Route::get('/venta', 'VentaController@listar');
     Route::post('/venta/agregar', 'VentaController@agregar');
@@ -114,8 +116,6 @@ Route::group(['middleware' => ['auth']], function () {
     });
     Route::group(['middleware' => ['Puesto']], function (){
         
-        //RUTAS PARA LOS DETALLE_PRODUCTO
-        Route::get('/detalle_producto/listProductos', 'Detalle_productoController@listProductos');
         
     });
     Route::group(['middleware' => ['Almacen']], function (){
