@@ -355,7 +355,7 @@
                     superproducto: '/superproducto',
                     producto: '/producto',
                     data: '/data',
-                    server: 'http://127.0.0.1:8000/superproducto'
+                    server: 'http://67.205.189.29:80'
                 }
             }
         },
@@ -725,7 +725,7 @@
                 }
             },
             generatePdf(){
-                window.open(this.Ruta.server + '/generatePdf','_blank');
+                window.open(this.Ruta.server + '/superproducto/generatePdf','_blank');
             },
         },
         mounted() {

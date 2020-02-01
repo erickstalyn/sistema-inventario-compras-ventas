@@ -926,7 +926,6 @@
                 let ruc = me.DatosServicio.documento;
                 $.ajax({
                     type: 'GET',
-                    // url: "http://67.205.189.29:80/misunat/src/consulta.php",
                     url: me.Ruta.server + '/misunat/src/consulta.php',
                     data: 'nruc=' +ruc,
                     beforeSend(){
@@ -959,7 +958,6 @@
                 let dni = me.DatosServicio.documento;
                 $.ajax({
                     type: 'GET',
-                    // url: "http://67.205.189.29:80/Reniec/demo.php",
                     url: me.Ruta.server + '/Reniec/demo.php',
                     data: 'dni=' +dni,
                     beforeSend(){

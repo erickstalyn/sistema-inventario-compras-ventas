@@ -440,7 +440,7 @@
                     productomaterial: '/productomaterial',
                     material: '/material',
                     data: '/data',
-                    server: 'http://127.0.0.1:8000/producto'
+                    server: 'http://67.205.189.29:80'
                 }
             }
         },
@@ -941,7 +941,7 @@
                 }
             },
             generatePdf(){
-                window.open(this.Ruta.server + '/generatePdf','_blank');
+                window.open(this.Ruta.server + '/producto/generatePdf','_blank');
             }
         },
         mounted() {
