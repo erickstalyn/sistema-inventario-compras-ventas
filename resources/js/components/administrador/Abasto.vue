@@ -717,7 +717,7 @@
                     sumaPagos: 0.00,
                 },
                 Ruta: {
-                    server: 'http://127.0.0.1:8000/abasto'
+                    server: 'http://127.0.0.1:8000'
                 }
             }
         },
@@ -925,8 +925,8 @@
                 let ruc = me.DatosServicio.documento;
                 $.ajax({
                     type: 'GET',
-                    url: "http://localhost:80/SunatPHP/demo.php",
-                    data: "ruc="+ruc,
+                    url: me.Ruta.server + '/SunatPHP/demo.php',
+                    data: 'ruc=' + ruc,
                     beforeSend(){
                         me.Carga.clase = 'spinner-border spinner-border-sm text-primary';
                         me.DatosServicio.alert = 'badge badge-info';
@@ -956,8 +956,8 @@
                 let dni = me.DatosServicio.documento;
                 $.ajax({
                     type: 'GET',
-                    url: "http://localhost:80/Reniec/demo.php",
-                    data: "dni="+dni,
+                    url: me.Ruta.server + '/Reniec/demo.php',
+                    data: 'dni=' + dni,
                     beforeSend(){
                         me.Carga.clase = 'spinner-border spinner-border-sm text-primary';
                         me.DatosServicio.alert = 'badge badge-info';
@@ -1359,7 +1359,7 @@
                 return fixed;
             },
             generatePdf(){
-                window.open(this.Ruta.server + '/generatePdf','_blank');
+                window.open(this.Ruta.server + '/abasto/generatePdf','_blank');
             }
         },
         mounted() {

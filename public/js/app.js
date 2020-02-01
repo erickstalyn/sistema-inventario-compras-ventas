@@ -4125,7 +4125,7 @@ __webpack_require__.r(__webpack_exports__);
         sumaPagos: 0.00
       },
       Ruta: {
-        server: 'http://127.0.0.1:8000/abasto'
+        server: 'http://127.0.0.1:8000'
       }
     };
   },
@@ -4337,8 +4337,8 @@ __webpack_require__.r(__webpack_exports__);
       var ruc = me.DatosServicio.documento;
       $.ajax({
         type: 'GET',
-        url: "http://localhost:80/SunatPHP/demo.php",
-        data: "ruc=" + ruc,
+        url: me.Ruta.server + '/SunatPHP/demo.php',
+        data: 'ruc=' + ruc,
         beforeSend: function beforeSend() {
           me.Carga.clase = 'spinner-border spinner-border-sm text-primary';
           me.DatosServicio.alert = 'badge badge-info';
@@ -4369,8 +4369,8 @@ __webpack_require__.r(__webpack_exports__);
       var dni = me.DatosServicio.documento;
       $.ajax({
         type: 'GET',
-        url: "http://localhost:80/Reniec/demo.php",
-        data: "dni=" + dni,
+        url: me.Ruta.server + '/Reniec/demo.php',
+        data: 'dni=' + dni,
         beforeSend: function beforeSend() {
           me.Carga.clase = 'spinner-border spinner-border-sm text-primary';
           me.DatosServicio.alert = 'badge badge-info';
@@ -4784,7 +4784,7 @@ __webpack_require__.r(__webpack_exports__);
       return fixed;
     },
     generatePdf: function generatePdf() {
-      window.open(this.Ruta.server + '/generatePdf', '_blank');
+      window.open(this.Ruta.server + '/abasto/generatePdf', '_blank');
     }
   },
   mounted: function mounted() {
@@ -5132,7 +5132,7 @@ __webpack_require__.r(__webpack_exports__);
         mensaje: []
       },
       Ruta: {
-        server: 'http://127.0.0.1:8000/material'
+        server: 'http://127.0.0.1:8000'
       }
     };
   },
@@ -5521,7 +5521,7 @@ __webpack_require__.r(__webpack_exports__);
       }); // return selectTipoFiltrado;
     },
     generatePdf: function generatePdf() {
-      window.open(this.Ruta.server + '/generatePdf', '_blank');
+      window.open(this.Ruta.server + '/material/generatePdf', '_blank');
     }
   },
   mounted: function mounted() {
@@ -5975,7 +5975,7 @@ __webpack_require__.r(__webpack_exports__);
         productomaterial: '/productomaterial',
         material: '/material',
         data: '/data',
-        server: 'http://127.0.0.1:8000/producto'
+        server: 'http://127.0.0.1:8000'
       }
     };
   },
@@ -6504,7 +6504,7 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     generatePdf: function generatePdf() {
-      window.open(this.Ruta.server + '/generatePdf', '_blank');
+      window.open(this.Ruta.server + '/producto/generatePdf', '_blank');
     }
   },
   mounted: function mounted() {
@@ -6875,7 +6875,7 @@ __webpack_require__.r(__webpack_exports__);
         superproducto: '/superproducto',
         producto: '/producto',
         data: '/data',
-        server: 'http://127.0.0.1:8000/superproducto'
+        server: 'http://127.0.0.1:8000'
       }
     };
   },
@@ -7243,7 +7243,7 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     generatePdf: function generatePdf() {
-      window.open(this.Ruta.server + '/generatePdf', '_blank');
+      window.open(this.Ruta.server + '/superproducto/generatePdf', '_blank');
     }
   },
   mounted: function mounted() {

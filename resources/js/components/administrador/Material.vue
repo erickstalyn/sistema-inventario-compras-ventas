@@ -273,7 +273,7 @@
                     mensaje: []
                 },
                 Ruta: {
-                    server: 'http://127.0.0.1:8000/material'
+                    server: 'http://127.0.0.1:8000'
                 }
             }
         },
@@ -668,7 +668,7 @@
                 // return selectTipoFiltrado;
             },
             generatePdf(){
-                window.open(this.Ruta.server + '/generatePdf','_blank');
+                window.open(this.Ruta.server + '/material/generatePdf','_blank');
             },
         },
         mounted() {
