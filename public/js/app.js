@@ -80958,6 +80958,27 @@ var render = function() {
                               )
                             ],
                             _vm._v(" "),
+                            Number.parseFloat(venta.total_venta) != 0
+                              ? [
+                                  _c(
+                                    "button",
+                                    {
+                                      staticClass: "btn btn-warning btn-sm",
+                                      attrs: {
+                                        type: "button",
+                                        title: "EDITAR"
+                                      },
+                                      on: {
+                                        click: function($event) {
+                                          return _vm.abrirModalEditar(venta)
+                                        }
+                                      }
+                                    },
+                                    [_c("i", { staticClass: "fas fa-edit" })]
+                                  )
+                                ]
+                              : _vm._e(),
+                            _vm._v(" "),
                             venta.tipo.charAt(0) == "2" &&
                             (venta.total_faltante != null &&
                               venta.total_faltante > 0)
@@ -80978,27 +80999,6 @@ var render = function() {
                                         staticClass: "fas fa-hand-holding-usd"
                                       })
                                     ]
-                                  )
-                                ]
-                              : _vm._e(),
-                            _vm._v(" "),
-                            Number.parseFloat(venta.total_venta) != 0
-                              ? [
-                                  _c(
-                                    "button",
-                                    {
-                                      staticClass: "btn btn-warning btn-sm",
-                                      attrs: {
-                                        type: "button",
-                                        title: "EDITAR"
-                                      },
-                                      on: {
-                                        click: function($event) {
-                                          return _vm.abrirModalEditar(venta)
-                                        }
-                                      }
-                                    },
-                                    [_c("i", { staticClass: "fas fa-edit" })]
                                   )
                                 ]
                               : _vm._e()
@@ -99660,7 +99660,7 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! E:\Programas\XAMPP\XAMPP\htdocs\EC_ci\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\laragon\www\EC_ci\resources\js\app.js */"./resources/js/app.js");
 
 
 /***/ })
