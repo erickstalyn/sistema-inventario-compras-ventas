@@ -97,24 +97,24 @@ class VentaController extends Controller {
                     $persona = Persona::findOrFail($dataCliente['id']);
                     $persona->cliente = 1;
                     $persona->save();
-                } else if ( $dataCliente['id'] == 0 ) { //nuevo
-                    $persona = new Persona();
-                    $persona->cliente = 1;
-                    if ( strlen($dataCliente['documento']) == 8 ){
-                        $persona->dni = $dataCliente['documento'];
-                        $persona->nombres = mb_convert_case($dataCliente['nombres'], MB_CASE_TITLE, "UTF-8");
-                        $persona->apellidos = mb_convert_case($dataCliente['apellidos'], MB_CASE_TITLE, "UTF-8");
-                        $persona->tipo = 'P';
-                    }else{
-                        $persona->ruc = $dataCliente['documento'];
-                        $persona->razon_social = $dataCliente['razon_social'];
-                        $persona->tipo = 'E';
-                    }
-                    $persona->save();
-                    $dataCliente['id'] = $persona->id;
                 } else { //excepciones
                     $dataCliente['id'] = NULL;
                 }
+            } else if ( $dataCliente['id'] == null ) { //nuevo
+                $persona = new Persona();
+                $persona->cliente = 1;
+                if ( strlen($dataCliente['documento']) == 8 ){
+                    $persona->dni = $dataCliente['documento'];
+                    $persona->nombres = mb_convert_case($dataCliente['nombres'], MB_CASE_TITLE, "UTF-8");
+                    $persona->apellidos = mb_convert_case($dataCliente['apellidos'], MB_CASE_TITLE, "UTF-8");
+                    $persona->tipo = 'P';
+                } else {
+                    $persona->ruc = $dataCliente['documento'];
+                    $persona->razon_social = $dataCliente['razon_social'];
+                    $persona->tipo = 'E';
+                }
+                $persona->save();
+                $dataCliente['id'] = $persona->id;
             }
             
             {
