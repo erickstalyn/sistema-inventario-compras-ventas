@@ -64,14 +64,14 @@
                                             <i class="far fa-eye"></i>
                                         </button>
                                     </template>
-                                    <template v-if="(venta.tipo.charAt(0)=='2') && (venta.total_faltante!=null && venta.total_faltante>0)">
-                                        <button type="button"  title="PAGAR" class="btn btn-success btn-sm" @click="abrirModalPagar(venta)">
-                                            <i class="fas fa-hand-holding-usd"></i>
-                                        </button>
-                                    </template>
                                     <template v-if="Number.parseFloat(venta.total_venta)!=0">
                                         <button type="button" title="EDITAR" class="btn btn-warning btn-sm" @click="abrirModalEditar(venta)">
                                             <i class="fas fa-edit"></i>
+                                        </button>
+                                    </template>
+                                    <template v-if="(venta.tipo.charAt(0)=='2') && (venta.total_faltante!=null && venta.total_faltante>0)">
+                                        <button type="button"  title="PAGAR" class="btn btn-success btn-sm" @click="abrirModalPagar(venta)">
+                                            <i class="fas fa-hand-holding-usd"></i>
                                         </button>
                                     </template>
                                 </td>
