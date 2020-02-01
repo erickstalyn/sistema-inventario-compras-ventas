@@ -126,38 +126,36 @@ class VentaController extends Controller {
 
             //venta
             $venta = new Venta();
-            $venta->centro_id = $dataVenta['centro_id'];
-            $venta->tipo = $dataVenta['tipo_pago'].$dataVenta['tipo_entrega'].$dataVenta['tipo_precio'];
-            $venta->total = $dataVenta['total'];
-            if ( $dataVenta['tipo_pago'] == '2' ) $venta->total_faltante = $dataVenta['total'];
-            $venta->cliente_id = $dataCliente['id'];
-            $venta->codigo = $codigo;
-            $venta->created_at = $now;
-            $venta->updated_at = NULL;
+            $venta->centro_id = $dataVenta['centro_id'];    // centro_id
+            $venta->tipo = $dataVenta['tipo_pago'].$dataVenta['tipo_entrega'].$dataVenta['tipo_precio'];    // tipo
+            $venta->total = $dataVenta['total'];    // total
+            $venta->total_venta = $dataVenta['total_venta'];    //total_venta
+            if ( $dataVale['monto'] != null && $dataVenta['total_descuento'] != null ) {    // total_descuento
+                if ( $dataVale['monto'] > 0 && $dataVenta['total_descuento'] > 0 ) {
+                    $venta->total_descuento = $dataVenta['total_descuento'];
+                }
+            }
+            if ( $dataVenta['tipo_pago'] == '2' ) { // total_faltante
+                $venta->total_faltante = $dataVenta['total'];
+            }
+            $venta->cliente_id = $dataCliente['id'];    // cliente_id
+            $venta->codigo = $codigo;   // codigo
+            $venta->created_at = $now;  // created_at
+            $venta->updated_at = NULL;  // updated_at
             $venta->save();
 
             //vale
             if ( $dataVale['id'] != null ) {
                 if ( $dataVale['id'] > 0 ) {
                     $vale = Vale::findOrFail($dataVale['id']);
-                    $vale->venta_usada_id = $venta->id;
-                    $vale->updated_at = $now;
+                    $vale->venta_usada_id = $venta->id; // venta_usada_id
+                    $vale->updated_at = $now;   // updated_at
                     $vale->save();
-
-                    if ( $vale->monto > $venta->total ) {
-                        $venta->total = 0;
-                        $venta->total_faltante = NULL;
-                    } else {
-                        $venta->total -= $vale->monto;
-                        $venta->total_faltante = $venta->total;
-                    }
-                    $venta->updated_at = NULL;
-                    $venta->save();
                 }
             }
 
             //pago
-            if ( ($dataVenta['tipo_pago'] == '2' ) && $dataPago['monto'] != NULL ){
+            if ( $dataVenta['tipo_pago'] == '2' && $dataPago['monto'] != NULL ){
                 if ( $dataPago['monto'] > 0 ) {
                     $pago = new Pago();
                     $pago->monto = $dataPago['monto'];
@@ -208,7 +206,7 @@ class VentaController extends Controller {
         return [
             'state' => $state,
             'exception' => $exception,
-            // 'arreglo de datos' => $arregloDatos,
+            'arreglo de datos' => $arregloDatos,
         ];
     }
 
