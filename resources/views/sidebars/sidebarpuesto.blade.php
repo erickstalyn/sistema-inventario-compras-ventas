@@ -58,7 +58,7 @@
     </li>
     
         <!-- Elemento de navegación: MENÚ REGISTROS -->
-    <li class="nav-item">
+    {{-- <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#registros" aria-expanded="true" aria-controls="registros">
             <i class="far fa-clipboard"></i><span>Registros</span>
         </a>
@@ -70,18 +70,18 @@
                 <a class="collapse-item font-weight-bold" href="#">Abastecimientos del día</a>
             </div>
         </div>
-    </li>
+    </li> --}}
 
     <!-- Divisor -->
-    <hr class="sidebar-divider">
+    {{-- <hr class="sidebar-divider"> --}}
 
     <!-- Título -->
-    <div class="sidebar-heading">
+    {{-- <div class="sidebar-heading">
         Extras
-    </div>
+    </div> --}}
 
     <!-- Nav Item - Pages Collapse Menu -->
-    <li class="nav-item">
+    {{-- <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#redes" aria-expanded="true" aria-controls="redes">
             <i class="fas fa-thumbs-up"></i><span>Nuestras Redes</span>
         </a>
@@ -91,7 +91,7 @@
                 <a class="collapse-item" href="#"><i class="fab fa-facebook"></i><span>&nbsp;Facebook Oficial</span></a>
             </div>
         </div>
-    </li>
+    </li> --}}
 
     <!-- Divisor -->
     <hr class="sidebar-divider d-none d-md-block">

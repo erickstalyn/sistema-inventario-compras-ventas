@@ -67,15 +67,15 @@
     
     
         <!-- Divisor -->
-        <hr class="sidebar-divider">
+        {{-- <hr class="sidebar-divider"> --}}
     
         <!-- Título -->
-        <div class="sidebar-heading">
+        {{-- <div class="sidebar-heading">
           Extras
-        </div>
+        </div> --}}
     
         <!-- Nav Item - Pages Collapse Menu -->
-        <li class="nav-item">
+        {{-- <li class="nav-item">
           <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#redes" aria-expanded="true" aria-controls="redes">
               <i class="fas fa-thumbs-up"></i>
             <span>Nuestras Redes</span>
@@ -86,7 +86,7 @@
               <a class="collapse-item" href="#"><i class="fab fa-facebook"></i><span>&nbsp;Facebook Oficial</span></a>
             </div>
           </div>
-        </li>
+        </li> --}}
     
         <!-- Divisor -->
         <hr class="sidebar-divider d-none d-md-block">

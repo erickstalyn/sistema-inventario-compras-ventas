@@ -60223,8 +60223,7 @@ var render = function() {
           },
           [_vm._v("\n                Nuevo\n            ")]
         ),
-        _vm._v(" \n            "),
-        _vm._m(0)
+        _vm._v(" \n            ")
       ]),
       _vm._v(" "),
       _c("div", { staticClass: "row form-group" }, [
@@ -60309,7 +60308,7 @@ var render = function() {
           })
         ]),
         _vm._v(" "),
-        _vm._m(1),
+        _vm._m(0),
         _vm._v(" "),
         _c("div", { staticClass: "col-md-1" }, [
           _vm._v("\n                Dia\n                "),
@@ -60523,7 +60522,7 @@ var render = function() {
                   staticClass: "table table-borderless table-sm text-gray-900"
                 },
                 [
-                  _vm._m(2),
+                  _vm._m(1),
                   _vm._v(" "),
                   _c(
                     "tbody",
@@ -60827,7 +60826,7 @@ var render = function() {
                           [
                             _vm.Modal.numero == 1
                               ? _c("div", { staticClass: "col-md-6" }, [
-                                  _vm._m(3),
+                                  _vm._m(2),
                                   _vm._v(" "),
                                   _c("div", { staticClass: "row" }, [
                                     _c("div", { staticClass: "input-group" }, [
@@ -60922,7 +60921,7 @@ var render = function() {
                                                   "table table-borderless table-striped table-sm text-gray-900"
                                               },
                                               [
-                                                _vm._m(4),
+                                                _vm._m(3),
                                                 _vm._v(" "),
                                                 _c(
                                                   "tbody",
@@ -61011,7 +61010,7 @@ var render = function() {
                               "div",
                               { staticClass: "col-md-6 ml-auto container" },
                               [
-                                _vm._m(5),
+                                _vm._m(4),
                                 _vm._v(" "),
                                 _c(
                                   "div",
@@ -61029,7 +61028,7 @@ var render = function() {
                                                 "table tableless table-striped table-sm text-gray-900"
                                             },
                                             [
-                                              _vm._m(6),
+                                              _vm._m(5),
                                               _vm._v(" "),
                                               _c(
                                                 "tbody",
@@ -61267,7 +61266,7 @@ var render = function() {
                               "div",
                               { staticClass: "col-md-12 ml-auto container" },
                               [
-                                _vm._m(7),
+                                _vm._m(6),
                                 _vm._v(" "),
                                 _c(
                                   "div",
@@ -61283,7 +61282,7 @@ var render = function() {
                                           "table tableless table-striped table-sm text-gray-900"
                                       },
                                       [
-                                        _vm._m(8),
+                                        _vm._m(7),
                                         _vm._v(" "),
                                         _c(
                                           "tbody",
@@ -61417,7 +61416,7 @@ var render = function() {
                           : _vm._e(),
                         _vm._v(" "),
                         _c("div", { staticClass: "row form-group" }, [
-                          _vm._m(9),
+                          _vm._m(8),
                           _vm._v(" "),
                           _c("div", { staticClass: "col-md-7" }, [
                             _c(
@@ -61527,19 +61526,6 @@ var render = function() {
   ])
 }
 var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "button",
-      { staticClass: "btn btn-danger", attrs: { type: "button" } },
-      [
-        _c("i", { staticClass: "far fa-file-pdf" }),
-        _vm._v("  PDF\n            ")
-      ]
-    )
-  },
   function() {
     var _vm = this
     var _h = _vm.$createElement
@@ -62376,16 +62362,7 @@ var staticRenderFns = [
       _vm._v("  \n            "),
       _c("span", { staticClass: "h3 mb-0 text-gray-900" }, [
         _vm._v("Mis Envios recibidos ")
-      ]),
-      _vm._v(" "),
-      _c(
-        "button",
-        { staticClass: "btn btn-danger", attrs: { type: "button" } },
-        [
-          _c("i", { staticClass: "far fa-file-pdf" }),
-          _vm._v("  PDF\n            ")
-        ]
-      )
+      ])
     ])
   },
   function() {
