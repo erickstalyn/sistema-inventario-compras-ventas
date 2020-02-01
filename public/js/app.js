@@ -13846,7 +13846,7 @@ __webpack_require__.r(__webpack_exports__);
       var dni = me.Service.document;
       $.ajax({
         type: 'GET',
-        url: "http://localhost:8080/Reniec/demo.php",
+        url: "http://localhost:80/Reniec/demo.php",
         data: "dni=" + dni,
         beforeSend: function beforeSend() {
           me.Service.msm = 'Consultado...';
@@ -13879,7 +13879,7 @@ __webpack_require__.r(__webpack_exports__);
       var ruc = me.Service.document;
       $.ajax({
         type: 'GET',
-        url: "http://localhost:8080/SunatPHP/demo.php",
+        url: "http://localhost:80/SunatPHP/demo.php",
         data: "ruc=" + ruc,
         beforeSend: function beforeSend() {
           me.Service.msm = 'Consultado...';
