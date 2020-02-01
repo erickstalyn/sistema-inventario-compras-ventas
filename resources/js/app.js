@@ -38,8 +38,10 @@ Vue.component('alm_producto', require('./components/almacen/Producto.vue').defau
 
 Vue.component('enviorecibido', require('./components/EnvioRecibido.vue').default);
 Vue.component('enviorealizado', require('./components/EnvioRealizado.vue').default);
-Vue.component('notification', require('./components/Notification.vue').default);
 Vue.component('dashboard', require('./components/Dashboard.vue').default);
+
+Vue.component('noti_venta_puesto', require('./components/Notificacion/Notification_vp.vue').default);
+Vue.component('noti_venta_alm', require('./components/Notificacion/Notification_va.vue').default);
 
 
 

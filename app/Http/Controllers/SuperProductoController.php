@@ -107,5 +107,15 @@ class SuperProductoController extends Controller{
         return $superproductos;
     }
 
+    public function generatePdf(){
+        $superproducto = SuperProducto::select('id', 'nombre', 'descripcion', 'superstock', 'created_at')
+                        ->orderBy('id', 'asc')->get();
+
+        $cont = SuperProducto::count();
+        
+        $pdf = \PDF::loadView('pdf.superproductopdf', ['superproducto'=>$superproducto, 'cont'=>$cont]);
+        return $pdf->download('superproductos_silmar.pdf');
+    }
+
 }
 

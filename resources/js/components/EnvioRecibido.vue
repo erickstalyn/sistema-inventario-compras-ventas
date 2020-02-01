@@ -8,9 +8,9 @@
             <div class="row form-group">
                 <i class="fas fa-hammer"></i>&nbsp;&nbsp;
                 <span class="h3 mb-0 text-gray-900">Mis Envios recibidos&nbsp;</span>
-                <button type="button" class="btn btn-danger">
+                <!-- <button type="button" class="btn btn-danger">
                     <i class="far fa-file-pdf"></i>&nbsp; PDF
-                </button>
+                </button> -->
             </div>
 
             <!-- Inputs de busqueda -->

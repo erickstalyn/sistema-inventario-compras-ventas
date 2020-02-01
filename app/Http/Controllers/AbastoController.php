@@ -176,7 +176,6 @@ class AbastoController extends Controller
         return $pagos;
     }
 
-
     public function getDetalles(Request $request){
         if ( !$request->ajax() ) return redirect('/') ;
         $detalles = Abasto::findOrFail($request->id)->getDetalles;
@@ -194,5 +193,23 @@ class AbastoController extends Controller
             echo($e);
             DB::rollback();
         }
+    }
+
+    public function generatePdf(){
+        $abasto = Abasto::select('abasto.id as id', DB::raw("concat_ws(' ', persona.nombres, persona.apellidos) as proveedor_persona"),
+            'persona.razon_social as proveedor_empresa', 'persona.dni as dni', 'persona.ruc as ruc',
+            'centro_to_id', 'centro.nombre as nombre_centro', 'abasto.created_at as fecha_envio',
+            'abasto.total as total', 'abasto.total_faltante as total_faltante',
+            'abasto.tipo as tipo_abasto', 'envio.estado as estado_envio')
+            ->join('persona', 'abasto.proveedor_id', '=', 'persona.id')
+            ->leftjoin('envio', 'abasto.id', '=', 'envio.abasto_id')
+            ->leftjoin('centro', 'envio.centro_to_id', 'centro.id')
+            ->where('abasto.centro_id', '=', null)
+            ->orderBy('abasto.id', 'desc')->get();
+
+        $cont = Abasto::count();
+        
+        $pdf = \PDF::loadView('pdf.abastopdf', ['abasto'=>$abasto, 'cont'=>$cont])->setPaper('a4', 'landscape');
+        return $pdf->download('abastos_silmar.pdf');
     }
 }

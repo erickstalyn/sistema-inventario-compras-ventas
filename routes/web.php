@@ -105,6 +105,12 @@ Route::group(['middleware' => ['auth']], function () {
         //RUTAS DE ESTADISTICAS
         Route::get('/estadistica/getEVentas', 'DashboardController@getEVentas');
 
+        //RUTAS DE PDF
+        Route::get('/material/generatePdf', 'MaterialController@generatePdf');
+        Route::get('/superproducto/generatePdf', 'SuperProductoController@generatePdf');
+        Route::get('/producto/generatePdf', 'ProductoController@generatePdf');
+        Route::get('/abasto/generatePdf', 'AbastoController@generatePdf');
+
     });
     Route::group(['middleware' => ['Puesto']], function (){
         

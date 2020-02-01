@@ -123,4 +123,13 @@ class MaterialController extends Controller
         return $materiales;
     }
     
+    public function generatePdf(){
+        $material = Material::select('nombre','subtipo', 'unidad', 'costo', 'estado')
+                        ->orderBy('nombre', 'asc')->get();
+
+        $cont = Material::count();
+        
+        $pdf = \PDF::loadView('pdf.materialpdf', ['material'=>$material, 'cont'=>$cont]);
+        return $pdf->download('materiales_silmar.pdf');
+    }
 }

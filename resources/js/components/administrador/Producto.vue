@@ -11,7 +11,7 @@
                 <button type="button" class="btn btn-success" @click="abrirModalAgregar()">
                     <i class="fas fa-user-plus"></i>&nbsp; Nuevo
                 </button>
-                <button type="button" class="btn btn-danger">
+                <button type="button" class="btn btn-danger" @click="generatePdf()">
                     <i class="far fa-file-pdf"></i>&nbsp; PDF
                 </button>
             </div>
@@ -439,7 +439,8 @@
                     producto: '/producto',
                     productomaterial: '/productomaterial',
                     material: '/material',
-                    data: '/data'
+                    data: '/data',
+                    server: 'http://127.0.0.1:8000/producto'
                 }
             }
         },
@@ -938,6 +939,9 @@
                 if ( page >= 1 && page <= this.Paginacion.lastPage) {
                     this.listar(page);
                 }
+            },
+            generatePdf(){
+                window.open(this.Ruta.server + '/generatePdf','_blank');
             }
         },
         mounted() {

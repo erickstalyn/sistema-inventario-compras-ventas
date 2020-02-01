@@ -1,6 +1,6 @@
 <template>
     <div v-if="notifications.length">
-        <div v-for="item in listar" :key="item.id">
+        <div v-for="(item, index) in listar" :key="index">
             <a class="dropdown-item d-flex align-items-center" href="#">
                 <div class="mr-3">
                     <div class="icon-circle bg-success">
@@ -9,8 +9,8 @@
                 </div>
                 <div >
                     <div class="small text-gray-500">Ventas de hoy</div>
-                    <h6>{{item.c1.nombre}}
-                    <span class="badge badge-success">{{item.c1.numero}}</span></h6>
+                    <h6>{{item.c4.nombre}}
+                    <span class="badge badge-success">{{item.c4.numero}}</span></h6>
                 </div>
             </a>
             <a class="dropdown-item d-flex align-items-center" href="#">
@@ -20,9 +20,9 @@
                     </div>
                 </div>
                 <div>
-                    <div class="small text-gray-500">December 7, 2019</div>
-                    <h6>{{item.c2.nombre}}
-                    <span class="badge badge-success">{{item.c2.numero}}</span></h6>
+                    <div class="small text-gray-500">Ventas de hoy</div>
+                    <h6>{{item.c5.nombre}}
+                    <span class="badge badge-success">{{item.c5.numero}}</span></h6>
                 </div>
             </a>
             <a class="dropdown-item d-flex align-items-center" href="#">
@@ -32,9 +32,9 @@
                     </div>
                 </div>
                 <div>
-                    <div class="small text-gray-500">December 7, 2019</div>
-                    <h6>{{item.c3.nombre}}
-                    <span class="badge badge-success">{{item.c3.numero}}</span></h6>
+                    <div class="small text-gray-500">Ventas de hoy</div>
+                    <h6>{{item.c6.nombre}}
+                    <span class="badge badge-success">{{item.c6.numero}}</span></h6>
                 </div>
             </a>
         </div>

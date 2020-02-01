@@ -81,20 +81,41 @@
               <!-- FIN DEL BUSCADOR-->
           
               <!-- INICIO DE ALERTAS -->
-              <li class="nav-item dropdown no-arrow mx-1">
-                <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  <i class="fas fa-bell fa-fw"></i>
-                  <!-- Counter - Alerts -->
-                  <span class="badge badge-danger badge-counter" v-text="notifications.length"></span>
-                </a>
-                <!-- Dropdown - Alerts -->
-                <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="alertsDropdown">
-                  <h6 class="dropdown-header">
-                    Ventas de hoy
-                  </h6>
-                  <notification :notifications="notifications"></notification>
-                </div>
-              </li>
+              @if(Auth::check())
+                  @if(Auth::user()->rol=='M')
+                    <li class="nav-item dropdown no-arrow mx-1">
+                      <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {{-- <i class="fas fa-bell fa-fw"></i> --}}
+                        <i class="fas fa-cart-arrow-down"></i>
+                        <!-- Counter - Alerts -->
+                        <span class="badge badge-danger badge-counter" v-text="notifications.length"></span>
+                      </a>
+                      <!-- Dropdown - Alerts -->
+                      <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="alertsDropdown">
+                        <h6 class="dropdown-header">
+                          Ventas de hoy
+                        </h6>
+                        <noti_venta_puesto :notifications="notifications"></noti_venta_puesto>
+                      </div>
+                    </li>
+                    <li class="nav-item dropdown no-arrow mx-1">
+                      <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {{-- <i class="fas fa-bell fa-fw"></i> --}}
+                        <i class="fas fa-store-alt"></i>
+                        <!-- Counter - Alerts -->
+                        <span class="badge badge-danger badge-counter" v-text="notifications.length"></span>
+                      </a>
+                      <!-- Dropdown - Alerts -->
+                      <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="alertsDropdown">
+                        <h6 class="dropdown-header">
+                          Ventas de hoy
+                        </h6>
+                        <noti_venta_alm :notifications="notifications"></noti_venta_alm>
+                      </div>
+                    </li>
+                  @endif
+              @endif
+              
               <!-- FIN DE ALERTAS -->
 
               <!-- INICIO DE LOS MENSAJES -->

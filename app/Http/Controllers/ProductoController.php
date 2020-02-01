@@ -123,4 +123,12 @@ class ProductoController extends Controller {
         ];
     }
 
+    public function generatePdf(){
+        $producto = Producto::orderBy('id', 'asc')->get();
+
+        $cont = Producto::count();
+        
+        $pdf = \PDF::loadView('pdf.productopdf', ['producto'=>$producto, 'cont'=>$cont]);
+        return $pdf->download('productos_silmar.pdf');
+    }
 }
