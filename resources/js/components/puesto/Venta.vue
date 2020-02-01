@@ -1566,6 +1566,7 @@
                 this.Venta.tipo_precio = data.tipo.charAt(2);
                 this.Venta.created_at = data.created_at;
                 
+                this.Cliente.id = data.cliente_id;
                 this.Cliente.dni = data.dni;
                 this.Cliente.nombres = data.nombres;
                 this.Cliente.apellidos = data.apellidos;
