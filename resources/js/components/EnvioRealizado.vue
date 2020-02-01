@@ -11,9 +11,9 @@
                 <button type="button" class="btn btn-success" @click="abrirModalAgregar()">
                     Nuevo
                 </button>&nbsp;
-                <button type="button" class="btn btn-danger">
+                <!-- <button type="button" class="btn btn-danger">
                     <i class="far fa-file-pdf"></i>&nbsp; PDF
-                </button>
+                </button> -->
             </div>
 
             <!-- Inputs de busqueda -->
