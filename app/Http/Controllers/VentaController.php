@@ -206,7 +206,7 @@ class VentaController extends Controller {
         return [
             'state' => $state,
             'exception' => $exception,
-            'arreglo de datos' => $arregloDatos,
+            // 'arreglo de datos' => $arregloDatos,
         ];
     }
 
