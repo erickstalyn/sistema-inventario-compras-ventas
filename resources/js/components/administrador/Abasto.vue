@@ -717,7 +717,7 @@
                     sumaPagos: 0.00,
                 },
                 Ruta: {
-                    server: 'http://127.0.0.1:8000/abasto'
+                    server: 'http://67.205.189.29:80'
                 }
             }
         },
@@ -926,9 +926,9 @@
                 let ruc = me.DatosServicio.documento;
                 $.ajax({
                     type: 'GET',
-                    // url: "http://127.0.0.1:80/misunat/src/consulta.php",
-                    url: "http://67.205.189.29:80/misunat/src/consulta.php",
-                    data: "nruc="+ruc,
+                    // url: "http://67.205.189.29:80/misunat/src/consulta.php",
+                    url: me.Ruta.server + '/misunat/src/consulta.php',
+                    data: 'nruc=' +ruc,
                     beforeSend(){
                         me.Carga.clase = 'spinner-border spinner-border-sm text-primary';
                         me.DatosServicio.alert = 'badge badge-info';
@@ -959,9 +959,9 @@
                 let dni = me.DatosServicio.documento;
                 $.ajax({
                     type: 'GET',
-                    url: "http://67.205.189.29:80/Reniec/demo.php",
-                    // url: "http://127.0.0.1:80/Reniec/demo.php",
-                    data: "dni="+dni,
+                    // url: "http://67.205.189.29:80/Reniec/demo.php",
+                    url: me.Ruta.server + '/Reniec/demo.php',
+                    data: 'dni=' +dni,
                     beforeSend(){
                         me.Carga.clase = 'spinner-border spinner-border-sm text-primary';
                         me.DatosServicio.alert = 'badge badge-info';
@@ -1364,7 +1364,7 @@
                 return fixed;
             },
             generatePdf(){
-                window.open(this.Ruta.server + '/generatePdf','_blank');
+                window.open(this.Ruta.server + '/abasto/generatePdf','_blank');
             }
         },
         mounted() {
