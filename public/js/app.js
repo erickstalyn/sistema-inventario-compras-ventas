@@ -13078,98 +13078,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -13534,17 +13442,6 @@ __webpack_require__.r(__webpack_exports__);
       this.list('pago');
       this.abrirModal(2, 'Ver Venta', 'modal-xl', '', 'Cerrar');
     },
-    abrirModalPagar: function abrirModalPagar() {
-      var venta = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
-      this.Venta.id = venta.id;
-      this.Venta.total = venta.total;
-      this.Venta.total_faltante = venta.total_faltante == null ? 0 : venta.total_faltante;
-      this.Venta.tipo_pago = venta.tipo.charAt(0);
-      this.ListaPago = [];
-      this.Pago.monto = '';
-      this.list('pago');
-      this.abrirModal(4, 'Realizar Pago', '', 'Guardar', 'Cancelar');
-    },
     abrirModalEditar: function abrirModalEditar(data) {
       if (this.fix(10, data.created_at) != this.fix(3) || this.fix(9, data.created_at) != this.fix(2)) {
         Swal.fire({
@@ -13586,6 +13483,17 @@ __webpack_require__.r(__webpack_exports__);
       this.ListaDetalle = [];
       this.list(1, 'Editar');
       this.abrirModal(3, 'Editar Venta', 'modal-xl', 'Editar', 'Cerrar');
+    },
+    abrirModalPagar: function abrirModalPagar() {
+      var venta = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+      this.Venta.id = venta.id;
+      this.Venta.total = venta.total;
+      this.Venta.total_faltante = venta.total_faltante == null ? 0 : venta.total_faltante;
+      this.Venta.tipo_pago = venta.tipo.charAt(0);
+      this.ListaPago = [];
+      this.Pago.monto = '';
+      this.list('pago');
+      this.abrirModal(4, 'Realizar Pago', '', 'Guardar', 'Cancelar');
     },
     abrirModal: function abrirModal(numero, titulo, size, btnA, btnC) {
       this.Step.number = 0;
@@ -13680,7 +13588,7 @@ __webpack_require__.r(__webpack_exports__);
           case 1:
             // tipo de venta
             if (this.Venta.tipo_pago == 2 || this.Venta.tipo_pago == 3) {
-              if (this.Pago.monto < 0 || this.Pago.monto == '') {
+              if (Number.parseFloat(this.Pago.monto) < 0 || this.Pago.monto == '') {
                 this.Error.mensaje.push('El pago inicial debe ser mayor o igual a 0');
               } else if (this.Pago.monto > this.Venta.total) {
                 this.Error.mensaje.push('El pago inicial no debe ser mayor al monto total');
@@ -13739,7 +13647,10 @@ __webpack_require__.r(__webpack_exports__);
 
           case 4:
             // monto de pago
-            if (this.Pago.monto == '' || this.Pago.monto <= 0 || this.Pago.monto > Number.parseFloat(this.Venta.total_faltante)) this.Error.mensaje.push('Debe ingresar un monto válido');
+            if (this.Pago.monto == '' || Number.parseFloat(this.Pago.monto) <= 0 || Number.parseFloat(this.Pago.monto) > Number.parseFloat(this.Venta.total_faltante)) {
+              this.Error.mensaje.push('Debe ingresar un monto válido');
+            }
+
             break;
 
           case 5:
@@ -13985,17 +13896,17 @@ __webpack_require__.r(__webpack_exports__);
           this.update('total_venta');
           break;
 
-        case 1:
+        case 'pago':
           if (this.validar([4])) return;
           this.ListaPago.push({
-            monto: Number.parseFloat(this.Pago.monto).toFixed(2),
+            monto: Number.parseFloat(this.Pago.monto),
             created_at: this.get(0),
             color: 'table-success',
             estado: 1 // 1: nuevo
 
           });
           this.Pago.monto = '';
-          this.update(2);
+          this.update('total_faltante');
           break;
       }
     },
@@ -80957,6 +80868,27 @@ var render = function() {
                               )
                             ],
                             _vm._v(" "),
+                            Number.parseFloat(venta.total_venta) != 0
+                              ? [
+                                  _c(
+                                    "button",
+                                    {
+                                      staticClass: "btn btn-warning btn-sm",
+                                      attrs: {
+                                        type: "button",
+                                        title: "EDITAR"
+                                      },
+                                      on: {
+                                        click: function($event) {
+                                          return _vm.abrirModalEditar(venta)
+                                        }
+                                      }
+                                    },
+                                    [_c("i", { staticClass: "fas fa-edit" })]
+                                  )
+                                ]
+                              : _vm._e(),
+                            _vm._v(" "),
                             venta.tipo.charAt(0) == "2" &&
                             (venta.total_faltante != null &&
                               venta.total_faltante > 0)
@@ -80977,27 +80909,6 @@ var render = function() {
                                         staticClass: "fas fa-hand-holding-usd"
                                       })
                                     ]
-                                  )
-                                ]
-                              : _vm._e(),
-                            _vm._v(" "),
-                            Number.parseFloat(venta.total_venta) != 0
-                              ? [
-                                  _c(
-                                    "button",
-                                    {
-                                      staticClass: "btn btn-warning btn-sm",
-                                      attrs: {
-                                        type: "button",
-                                        title: "EDITAR"
-                                      },
-                                      on: {
-                                        click: function($event) {
-                                          return _vm.abrirModalEditar(venta)
-                                        }
-                                      }
-                                    },
-                                    [_c("i", { staticClass: "fas fa-edit" })]
                                   )
                                 ]
                               : _vm._e()
@@ -82898,11 +82809,279 @@ var render = function() {
                               staticStyle: { height: "26rem" }
                             },
                             [
-                              _vm._m(13),
+                              _vm.Venta.tipo_pago == "2"
+                                ? _c(
+                                    "div",
+                                    { staticClass: "container-small col-md-4" },
+                                    [
+                                      _c(
+                                        "div",
+                                        {
+                                          staticClass:
+                                            "shadow rounded pt-2 bg-warning",
+                                          staticStyle: {
+                                            border: "1px solid",
+                                            height: "26rem"
+                                          }
+                                        },
+                                        [
+                                          _c(
+                                            "div",
+                                            {
+                                              staticClass:
+                                                "col-md-12 form-group"
+                                            },
+                                            [
+                                              _vm._m(13),
+                                              _vm._v(" "),
+                                              _vm.ListaPago.length
+                                                ? _c(
+                                                    "div",
+                                                    {
+                                                      staticClass:
+                                                        "col-md-12 form-group overflow-auto pr-0 pl-0",
+                                                      staticStyle: {
+                                                        height: "17rem"
+                                                      }
+                                                    },
+                                                    [
+                                                      _c(
+                                                        "table",
+                                                        {
+                                                          staticClass:
+                                                            "table table-bordered table-striped table-sm text-gray-900 bg-white"
+                                                        },
+                                                        [
+                                                          _vm._m(14),
+                                                          _vm._v(" "),
+                                                          _c(
+                                                            "tbody",
+                                                            _vm._l(
+                                                              _vm.ListaPago,
+                                                              function(
+                                                                pago,
+                                                                index
+                                                              ) {
+                                                                return _c(
+                                                                  "tr",
+                                                                  {
+                                                                    key: index,
+                                                                    class:
+                                                                      pago.color
+                                                                  },
+                                                                  [
+                                                                    _c(
+                                                                      "td",
+                                                                      {
+                                                                        staticClass:
+                                                                          "text-right"
+                                                                      },
+                                                                      [
+                                                                        _vm._v(
+                                                                          _vm._s(
+                                                                            index +
+                                                                              1
+                                                                          )
+                                                                        )
+                                                                      ]
+                                                                    ),
+                                                                    _vm._v(" "),
+                                                                    _c("td", {
+                                                                      staticClass:
+                                                                        "text-center",
+                                                                      domProps: {
+                                                                        textContent: _vm._s(
+                                                                          _vm.fix(
+                                                                            0,
+                                                                            pago.created_at
+                                                                          )
+                                                                        )
+                                                                      }
+                                                                    }),
+                                                                    _vm._v(" "),
+                                                                    _c("td", {
+                                                                      staticClass:
+                                                                        "text-right",
+                                                                      domProps: {
+                                                                        textContent: _vm._s(
+                                                                          pago.monto
+                                                                        )
+                                                                      }
+                                                                    })
+                                                                  ]
+                                                                )
+                                                              }
+                                                            ),
+                                                            0
+                                                          )
+                                                        ]
+                                                      )
+                                                    ]
+                                                  )
+                                                : _c(
+                                                    "div",
+                                                    {
+                                                      staticClass:
+                                                        "col-md-12 form-group",
+                                                      staticStyle: {
+                                                        height: "17rem"
+                                                      }
+                                                    },
+                                                    [
+                                                      _c(
+                                                        "label",
+                                                        {
+                                                          staticClass:
+                                                            "text-primary"
+                                                        },
+                                                        [
+                                                          _vm._v(
+                                                            "Ningun pago registrado"
+                                                          )
+                                                        ]
+                                                      )
+                                                    ]
+                                                  ),
+                                              _vm._v(" "),
+                                              Number.parseFloat(
+                                                _vm.Venta.total_faltante
+                                              ) > 0
+                                                ? _c(
+                                                    "div",
+                                                    {
+                                                      staticClass:
+                                                        "col-md-12 input-group"
+                                                    },
+                                                    [
+                                                      _c(
+                                                        "div",
+                                                        {
+                                                          staticClass:
+                                                            "col-md-12 p-0 m-0 input-group"
+                                                        },
+                                                        [
+                                                          _c(
+                                                            "label",
+                                                            {
+                                                              staticClass:
+                                                                "col-md-7 p-0 h5 font-weight-bold"
+                                                            },
+                                                            [
+                                                              _vm._v(
+                                                                "Monto pagado:"
+                                                              )
+                                                            ]
+                                                          ),
+                                                          _vm._v(" "),
+                                                          _c(
+                                                            "label",
+                                                            {
+                                                              staticClass:
+                                                                "col-md-1 p-0 h5 text-right text-success"
+                                                            },
+                                                            [_vm._v("S/.")]
+                                                          ),
+                                                          _vm._v(" "),
+                                                          _c("label", {
+                                                            staticClass:
+                                                              "col-md-4 p-0 h5 text-right text-success",
+                                                            domProps: {
+                                                              textContent: _vm._s(
+                                                                Number.parseFloat(
+                                                                  _vm.Venta
+                                                                    .total -
+                                                                    _vm.Venta
+                                                                      .total_faltante
+                                                                ).toFixed(2)
+                                                              )
+                                                            }
+                                                          })
+                                                        ]
+                                                      ),
+                                                      _vm._v(" "),
+                                                      _c(
+                                                        "div",
+                                                        {
+                                                          staticClass:
+                                                            "col-md-12 p-0 m-0 input-group"
+                                                        },
+                                                        [
+                                                          _c(
+                                                            "label",
+                                                            {
+                                                              staticClass:
+                                                                "col-md-7 p-0 h5 font-weight-bold"
+                                                            },
+                                                            [
+                                                              _vm._v(
+                                                                "Monto faltante:"
+                                                              )
+                                                            ]
+                                                          ),
+                                                          _vm._v(" "),
+                                                          _c(
+                                                            "label",
+                                                            {
+                                                              staticClass:
+                                                                "col-md-1 p-0 h5 text-right text-danger"
+                                                            },
+                                                            [_vm._v("S/.")]
+                                                          ),
+                                                          _vm._v(" "),
+                                                          _c("label", {
+                                                            staticClass:
+                                                              "col-md-4 p-0 h5 text-right text-danger",
+                                                            domProps: {
+                                                              textContent: _vm._s(
+                                                                Number.parseFloat(
+                                                                  _vm.Venta
+                                                                    .total_faltante
+                                                                ).toFixed(2)
+                                                              )
+                                                            }
+                                                          })
+                                                        ]
+                                                      )
+                                                    ]
+                                                  )
+                                                : _c(
+                                                    "div",
+                                                    {
+                                                      staticClass:
+                                                        "col-md-12 input-group"
+                                                    },
+                                                    [
+                                                      _c(
+                                                        "label",
+                                                        {
+                                                          staticClass:
+                                                            "col-md-12 p-0 d-flex justify-content-center font-weight-bold text-primary"
+                                                        },
+                                                        [
+                                                          _vm._v(
+                                                            "-- PAGADO COMPLETAMENTE --"
+                                                          )
+                                                        ]
+                                                      )
+                                                    ]
+                                                  )
+                                            ]
+                                          )
+                                        ]
+                                      )
+                                    ]
+                                  )
+                                : _vm._e(),
                               _vm._v(" "),
                               _c(
                                 "div",
-                                { staticClass: "container-small col-md-8" },
+                                {
+                                  staticClass: "container-small",
+                                  class:
+                                    _vm.Venta.tipo_pago == "2"
+                                      ? "col-md-8"
+                                      : "col-md-12"
+                                },
                                 [
                                   _c(
                                     "div",
@@ -82922,7 +83101,7 @@ var render = function() {
                                             "col-md-12 form-group input-group"
                                         },
                                         [
-                                          _vm._m(14),
+                                          _vm._m(15),
                                           _vm._v(" "),
                                           _c(
                                             "div",
@@ -82969,7 +83148,7 @@ var render = function() {
                                                 "table table-bordered table-striped table-sm text-gray-900 bg-white"
                                             },
                                             [
-                                              _vm._m(15),
+                                              _vm._m(16),
                                               _vm._v(" "),
                                               _c(
                                                 "tbody",
@@ -83070,7 +83249,7 @@ var render = function() {
                                               _vm._v(" "),
                                               _c("label", {
                                                 staticClass:
-                                                  "col-md-6 text-right text-info h5 p-0",
+                                                  "col-md-6 text-right text-primary h5 p-0",
                                                 domProps: {
                                                   textContent: _vm._s(
                                                     "S/. " +
@@ -83119,7 +83298,7 @@ var render = function() {
                                       }
                                     },
                                     [
-                                      _vm._m(16),
+                                      _vm._m(17),
                                       _vm._v(" "),
                                       _vm.Cliente.tipo == "P"
                                         ? _c(
@@ -83283,45 +83462,7 @@ var render = function() {
                                                     }
                                                   })
                                                 ]
-                                              ),
-                                              _vm._v(" "),
-                                              _vm.Venta.tipo_pago == "1"
-                                                ? _c(
-                                                    "div",
-                                                    {
-                                                      staticClass:
-                                                        "col-md-1 d-flex justify-content-center"
-                                                    },
-                                                    [
-                                                      _c(
-                                                        "button",
-                                                        {
-                                                          staticClass:
-                                                            "btn btn-circle btn-sm btn-outline-danger",
-                                                          attrs: {
-                                                            type: "button",
-                                                            title: "ELIMINAR"
-                                                          },
-                                                          on: {
-                                                            click: function(
-                                                              $event
-                                                            ) {
-                                                              return _vm.remove(
-                                                                1
-                                                              )
-                                                            }
-                                                          }
-                                                        },
-                                                        [
-                                                          _c("i", {
-                                                            staticClass:
-                                                              "fas fa-trash-alt"
-                                                          })
-                                                        ]
-                                                      )
-                                                    ]
-                                                  )
-                                                : _vm._e()
+                                              )
                                             ]
                                           )
                                         : _vm.Cliente.tipo == "E"
@@ -83437,45 +83578,7 @@ var render = function() {
                                                     }
                                                   })
                                                 ]
-                                              ),
-                                              _vm._v(" "),
-                                              _vm.Venta.tipo_pago == "1"
-                                                ? _c(
-                                                    "div",
-                                                    {
-                                                      staticClass:
-                                                        "col-md-1 d-flex justify-content-center"
-                                                    },
-                                                    [
-                                                      _c(
-                                                        "button",
-                                                        {
-                                                          staticClass:
-                                                            "btn btn-circle btn-sm btn-outline-danger",
-                                                          attrs: {
-                                                            type: "button",
-                                                            title: "ELIMINAR"
-                                                          },
-                                                          on: {
-                                                            click: function(
-                                                              $event
-                                                            ) {
-                                                              return _vm.remove(
-                                                                1
-                                                              )
-                                                            }
-                                                          }
-                                                        },
-                                                        [
-                                                          _c("i", {
-                                                            staticClass:
-                                                              "fas fa-trash-alt"
-                                                          })
-                                                        ]
-                                                      )
-                                                    ]
-                                                  )
-                                                : _vm._e()
+                                              )
                                             ]
                                           )
                                         : _vm._e()
@@ -83502,7 +83605,7 @@ var render = function() {
                                       }
                                     },
                                     [
-                                      _vm._m(17),
+                                      _vm._m(18),
                                       _vm._v(" "),
                                       _c(
                                         "div",
@@ -83581,7 +83684,7 @@ var render = function() {
                                       }
                                     },
                                     [
-                                      _vm._m(18),
+                                      _vm._m(19),
                                       _vm._v(" "),
                                       _vm.ValeU.monto != null
                                         ? _c(
@@ -83591,7 +83694,7 @@ var render = function() {
                                                 "col-md-12 form-group p-0"
                                             },
                                             [
-                                              _vm._m(19),
+                                              _vm._m(20),
                                               _vm._v(" "),
                                               _c(
                                                 "div",
@@ -83705,7 +83808,7 @@ var render = function() {
                                       }
                                     },
                                     [
-                                      _vm._m(20),
+                                      _vm._m(21),
                                       _vm._v(" "),
                                       _vm.ValeU.monto != null
                                         ? _c(
@@ -83715,7 +83818,7 @@ var render = function() {
                                                 "col-md-12 form-group p-0"
                                             },
                                             [
-                                              _vm._m(21),
+                                              _vm._m(22),
                                               _vm._v(" "),
                                               _c(
                                                 "div",
@@ -83829,7 +83932,7 @@ var render = function() {
                                       }
                                     },
                                     [
-                                      _vm._m(22),
+                                      _vm._m(23),
                                       _vm._v(" "),
                                       _c(
                                         "div",
@@ -83913,7 +84016,7 @@ var render = function() {
                                           )
                                         : _vm._e(),
                                       _vm._v(" "),
-                                      _vm._m(23),
+                                      _vm._m(24),
                                       _vm._v(" "),
                                       _c(
                                         "div",
@@ -84024,7 +84127,7 @@ var render = function() {
                               }
                             },
                             [
-                              _vm._m(24),
+                              _vm._m(25),
                               _vm._v(" "),
                               _vm.ValeU.id == null
                                 ? _c(
@@ -84711,7 +84814,7 @@ var render = function() {
                                           "table table-bordered table-striped table-sm text-gray-900"
                                       },
                                       [
-                                        _vm._m(25),
+                                        _vm._m(26),
                                         _vm._v(" "),
                                         _c(
                                           "tbody",
@@ -84869,7 +84972,7 @@ var render = function() {
                                           "table table-bordered table-striped table-sm text-gray-900"
                                       },
                                       [
-                                        _vm._m(26),
+                                        _vm._m(27),
                                         _vm._v(" "),
                                         _c(
                                           "tbody",
@@ -85094,7 +85197,7 @@ var render = function() {
                                             "col-md-8 input-group p-0"
                                         },
                                         [
-                                          _vm._m(27),
+                                          _vm._m(28),
                                           _vm._v(" "),
                                           _c("input", {
                                             directives: [
@@ -85354,7 +85457,7 @@ var render = function() {
                                     ) {
                                       return null
                                     }
-                                    return _vm.add(1)
+                                    return _vm.add("pago")
                                   },
                                   input: function($event) {
                                     if ($event.target.composing) {
@@ -85379,7 +85482,7 @@ var render = function() {
                                   },
                                   on: {
                                     click: function($event) {
-                                      return _vm.add(1)
+                                      return _vm.add("pago")
                                     }
                                   }
                                 },
@@ -85405,7 +85508,7 @@ var render = function() {
                                       "table table-bordered table-striped table-sm text-gray-900"
                                   },
                                   [
-                                    _vm._m(28),
+                                    _vm._m(29),
                                     _vm._v(" "),
                                     _c(
                                       "tbody",
@@ -85489,7 +85592,7 @@ var render = function() {
                             staticStyle: { "margin-bottom": "0px" },
                             domProps: {
                               textContent: _vm._s(
-                                (
+                                Number.parseFloat(
                                   _vm.Venta.total - _vm.Venta.total_faltante
                                 ).toFixed(2)
                               )
@@ -85523,7 +85626,11 @@ var render = function() {
                             staticClass: "col-md-3 text-right text-danger",
                             staticStyle: { "margin-bottom": "0px" },
                             domProps: {
-                              textContent: _vm._s(_vm.Venta.total_faltante)
+                              textContent: _vm._s(
+                                Number.parseFloat(
+                                  _vm.Venta.total_faltante
+                                ).toFixed(2)
+                              )
                             }
                           }),
                           _vm._v(" "),
@@ -85553,7 +85660,11 @@ var render = function() {
                           _c("label", {
                             staticClass: "col-md-3 text-right",
                             staticStyle: { "margin-bottom": "0px" },
-                            domProps: { textContent: _vm._s(_vm.Venta.total) }
+                            domProps: {
+                              textContent: _vm._s(
+                                Number.parseFloat(_vm.Venta.total).toFixed(2)
+                              )
+                            }
                           })
                         ])
                       ]
@@ -85763,23 +85874,24 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "container-small col-md-4" }, [
-      _c(
-        "div",
-        {
-          staticClass: "shadow rounded pt-2 bg-warning",
-          staticStyle: { border: "1px solid", height: "26rem" }
-        },
-        [
-          _c("div", { staticClass: "col-md-12 form-group input-group" }, [
-            _c("div", { staticClass: "col-md-7 p-0" }, [
-              _c("label", { staticClass: "p-0 h5 mb-0 font-weight-bold" }, [
-                _vm._v("LISTA DE PAGOS")
-              ])
-            ])
-          ])
-        ]
-      )
+    return _c("div", { staticClass: "col-md-12 p-0 form-group" }, [
+      _c("label", { staticClass: "p-0 h5 font-weight-bold" }, [
+        _vm._v("LISTA DE PAGOS")
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", { staticClass: "table-info" }, [
+        _c("th", { staticClass: "text-center" }, [_vm._v("#")]),
+        _vm._v(" "),
+        _c("th", { staticClass: "text-center" }, [_vm._v("Fecha de pago")]),
+        _vm._v(" "),
+        _c("th", { staticClass: "text-center" }, [_vm._v("Monto")])
+      ])
     ])
   },
   function() {
