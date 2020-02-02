@@ -227,8 +227,9 @@ class AbastoController extends Controller
             ->orderBy('abasto.id', 'desc')->take(1)->get();
 
         $detalles = Abasto::findOrFail($request->code)->getDetalles;
+        $pagos = Abasto::findOrFail($request->code)->getPagos;
 
-        $pdf = \PDF::loadView('pdf.comprobante_abasto', ['abasto'=>$abasto, 'detalles'=>$detalles]);
+        $pdf = \PDF::loadView('pdf.comprobante_abasto', ['abasto'=>$abasto, 'detalles'=>$detalles, 'pagos' => $pagos]);
         return $pdf->download('lista_abasto_silmar_' . $request->code . '.pdf');
             
     }
