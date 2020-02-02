@@ -240,13 +240,8 @@
                         <tr>
                             <td >{{$det->nombre_producto}}</td>
                             <td >{{$det->cantidad}}</td>
-<<<<<<< HEAD
-                            <td >{{$det->costo_abasto}}</td>
-                            <td style="padding-left: 15px">{{$det->subtotal}}</td>
-=======
                             <td style="padding-right: 35px; text-align: right;">{{$det->costo_abasto}}</td>
                             <td style="padding-right: 35px; text-align: right;">{{$det->subtotal}}</td>
->>>>>>> ReporteAbasto
                         </tr>
                         @endForeach
                     </tbody>
