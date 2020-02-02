@@ -64,7 +64,7 @@
                                             <i class="far fa-eye"></i>
                                         </button>
                                     </template>
-                                    <template v-if="Number.parseFloat(venta.total)!=0">
+                                    <template v-if="Number.parseFloat(venta.total_venta)!=0">
                                         <button type="button" title="EDITAR" class="btn btn-warning btn-sm" @click="abrirModalEditar(venta)">
                                             <i class="fas fa-edit"></i>
                                         </button>
@@ -155,7 +155,7 @@
                                                 <tbody>
                                                     <tr v-for="producto in ListaProducto" :key="producto.id">
                                                         <td class="text-center">
-                                                            <button type="button" v-if="producto.detalle.substock>0" title="AGREGAR" class="btn btn-circle btn-sm btn-outline-success" @click="add(0, producto)">
+                                                            <button type="button" v-if="producto.detalle.substock>0" title="AGREGAR" class="btn btn-circle btn-sm btn-outline-success" @click="add('detalle_venta', producto)">
                                                                 <i class="fas fa-plus"></i>
                                                             </button>
                                                         </td>
@@ -178,7 +178,7 @@
                                             </div>
                                             <div class="col-md-5 input-group">
                                                 <label class="col-md-6 font-weight-bold p-0">Tipo de precio&nbsp;<span class="text-danger">*</span></label>
-                                                <select class="col-md-6 custom-select custom-select-sm text-gray-900" v-model="Venta.tipo_precio" @click="update(0)">
+                                                <select class="col-md-6 custom-select custom-select-sm text-gray-900" v-model="Venta.tipo_precio" @click="update('subtotal')">
                                                     <option value="1">Al por menor</option>
                                                     <option value="2">Al por mayor</option>
                                                 </select>
@@ -204,7 +204,7 @@
                                                         </td>
                                                         <td v-text="detalle.nombre_producto"></td>
                                                         <td>
-                                                            <input type="number" v-model="detalle.cantidad" class="form-control form-control-sm text-right" min="1" :max="detalle.substock" @click="update(0)" @keyup="update(0)">
+                                                            <input type="number" v-model="detalle.cantidad" class="form-control form-control-sm text-right" min="1" :max="detalle.substock" @click="update('subtotal')" @keyup="update('subtotal')">
                                                         </td>
                                                         <td class="text-right" v-text="Venta.tipo_precio=='1'?detalle.precio_menor:detalle.precio_mayor"></td>
                                                         <td class="text-right" v-text="Number.parseFloat(detalle.subtotal).toFixed(2)">
@@ -217,11 +217,11 @@
                                             <label class="h5 text-danger ">Sin detalles de venta</label>
                                         </div>
                                         <div class="col-md-12 input-group mt-2">
-                                            <div class="col-md-7">
+                                            <div class="col-md-6">
                                             </div>
-                                            <div class="col-md-5 input-group">
-                                                <label class="col-md-6 text-right font-weight-bold h5 p-0">Monto total:</label>
-                                                <label class="col-md-6 text-right text-info h5 p-0" v-text="'S/. '+(Venta.total).toFixed(2)"></label>
+                                            <div class="col-md-6 input-group">
+                                                <label class="col-md-6 text-right font-weight-bold h5 p-0">Monto de venta:</label>
+                                                <label class="col-md-6 text-right text-info h5 p-0" v-text="'S/. '+Number.parseFloat(Venta.total_venta).toFixed(2)"></label>
                                             </div>
                                         </div>
                                     </div>
@@ -232,7 +232,7 @@
                                     <div class="shadow rounded pt-2 bg-success" style="border: 1px solid; height: 7rem;">
                                         <div class="col-md-12 form-group input-group">
                                             <label class="col-md-2 font-weight-bold">CLIENTE</label>
-                                            <label class="col-md-1 font-weight-bold">RUC/DNI&nbsp;<span class="text-danger" v-if="Venta.tipo_pago=='2'||Venta.tipo_pago=='3'">*</span></label>
+                                            <label class="col-md-1 font-weight-bold">RUC/DNI&nbsp;<span class="text-danger" v-if="Venta.tipo_pago=='2'">*</span></label>
                                             <div class="col-md-2 input-group">
                                                 <input type="text" class="form-control form-control-sm" v-model="Service.document" @keyup.enter="consultar()" maxlength="11">
                                                 <button type="button" class="btn btn-sm btn-primary" @click="consultar()">
@@ -249,7 +249,7 @@
                                         <div class="col-md-12 form-group input-group" v-if="Cliente.tipo=='P'">
                                             <div class="col-md-3 input-group">
                                                 <label class="col-md-3">DNI</label>
-                                                <input type="text" class="col-md-9 form-control form-control-sm" readonly v-model="Cliente.documento">
+                                                <input type="text" class="col-md-9 form-control form-control-sm" readonly v-model="Cliente.dni">
                                             </div>
                                             <div class="col-md-4 input-group">
                                                 <label class="col-md-4">Nombres</label>
@@ -260,7 +260,7 @@
                                                 <input type="text" class="col-md-8 form-control form-control-sm" readonly v-model="Cliente.apellidos">
                                             </div>
                                             <div class="col-md-1 d-flex justify-content-center" v-if="Venta.tipo_pago=='1'">
-                                                <button type="button" class="btn btn-circle btn-sm btn-outline-danger" @click="remove(1)" title="ELIMINAR"> 
+                                                <button type="button" class="btn btn-circle btn-sm btn-outline-danger" @click="remove('cliente')" title="ELIMINAR"> 
                                                     <i class="fas fa-trash-alt"></i>
                                                 </button>
                                             </div>
@@ -268,14 +268,14 @@
                                         <div class="col-md-12 form-group input-group" v-else-if="Cliente.tipo=='E'">
                                             <div class="col-md-3 input-group">
                                                 <label class="col-md-3">RUC</label>
-                                                <input type="text" class="col-md-9 form-control form-control-sm" readonly v-model="Cliente.documento">
+                                                <input type="text" class="col-md-9 form-control form-control-sm" readonly v-model="Cliente.ruc">
                                             </div>
                                             <div class="col-md-8 input-group">
                                                 <label class="col-md-3">Razón social</label>&nbsp;
                                                 <input type="text" class="col-md-9 form-control form-control-sm" readonly v-model="Cliente.razon_social">
                                             </div>
                                             <div class="col-md-1 d-flex justify-content-center" v-if="Venta.tipo_pago=='1'">
-                                                <button type="button" class="btn btn-circle btn-sm btn-outline-danger" @click="remove(1)" title="ELIMINAR"> 
+                                                <button type="button" class="btn btn-circle btn-sm btn-outline-danger" @click="remove('cliente')" title="ELIMINAR"> 
                                                     <i class="fas fa-trash-alt"></i>
                                                 </button>
                                             </div>
@@ -308,21 +308,21 @@
                                     </div>
                                 </div>
                                 <div class="container-small col-md-4">
-                                    <div class="shadow rounded pt-2 bg-success" style="border: 1px solid; height: 18rem;" v-if="Vale.id!=null">
+                                    <div class="shadow rounded pt-2 bg-success" style="border: 1px solid; height: 18rem;" v-if="ValeU.id!=null">
                                         <div class="col-md-12 form-group">
                                             <label class="font-weight-bold h5">VALE</label>
                                         </div>
                                         <div class="col-md-12 input-group form-group">
                                             <label class="col-md-6 font-weight-bold">Monto</label>
-                                            <label class="col-md-6 text-white" v-text="'S/. '+Vale.monto"></label>
+                                            <label class="col-md-6 text-white" v-text="'S/. '+ValeU.monto"></label>
                                         </div>
                                         <div class="col-md-12 input-group form-group">
                                             <label class="col-md-6 font-weight-bold">Fecha</label>
-                                            <label class="col-md-6 text-white" v-text="fix(7, Vale.created_at)"></label>
+                                            <label class="col-md-6 text-white" v-text="fix(7, ValeU.created_at)"></label>
                                         </div>
                                         <div class="col-md-12 input-group form-group">
                                             <label class="col-md-6 font-weight-bold">Hora</label>
-                                            <label class="col-md-6 text-white" v-text="fix(8, Vale.created_at)"></label>
+                                            <label class="col-md-6 text-white" v-text="fix(8, ValeU.created_at)"></label>
                                         </div>
                                     </div>
                                 </div>
@@ -334,17 +334,17 @@
                                         <div class="col-md-12 input-group form-group">
                                             <label class="col-md-6 font-weight-bold">Monto de venta</label>
                                             <label class="col-md-1 text-white text-right p-0">S/.</label>
-                                            <label class="col-md-4 text-white text-right" v-text="Number.parseFloat(Venta.total).toFixed(2)"></label>
+                                            <label class="col-md-4 text-white text-right" v-text="Number.parseFloat(Venta.total_venta).toFixed(2)"></label>
                                         </div>
-                                        <div class="col-md-12 input-group form-group" v-if="Vale.id!=null">
-                                            <label class="col-md-6 font-weight-bold">Monto de vale</label>
+                                        <div class="col-md-12 input-group form-group" v-if="ValeU.id!=null">
+                                            <label class="col-md-6 font-weight-bold">Monto de descuento</label>
                                             <label class="col-md-1 text-white text-right p-0">S/.</label>
-                                            <label class="col-md-4 text-white text-right" v-text="'-'+Number.parseFloat(Vale.monto).toFixed(2)"></label>
+                                            <label class="col-md-4 text-white text-right" v-text="'-'+Number.parseFloat(ValeU.monto).toFixed(2)"></label>
                                         </div>
                                         <div class="col-md-10 bg-white m-4"><hr></div>
                                         <div class="col-md-12 input-group form-group">
-                                            <label class="col-md-6 font-weight-bold h5">Total de venta</label>
-                                            <label class="col-md-5 text-white text-right h5" v-text="'S/. '+Number.parseFloat(update(5)).toFixed(2)"></label>
+                                            <label class="col-md-6 font-weight-bold h5">Total</label>
+                                            <label class="col-md-5 text-white text-right h5" v-text="'S/. '+Number.parseFloat(Venta.total).toFixed(2)"></label>
                                         </div>
                                     </div>
                                 </div>
@@ -352,126 +352,481 @@
                         </div>
                         <!-- Modal Numero 2 de VER-->
                         <div v-if="Modal.numero==2" class="input-group">
-                            <div class="container-small col-md-12">
-                                <div class="shadow bg-white rounded pt-2 form-group"  style="border: 1px solid">
-                                    <div class="col-md-12">
-                                        <label class="font-weight-bold">CLIENTE</label>
+                            <div class="container-small col-md-12 input-group form-group">
+                                <button type="button" class="col-md-6 btn btn-warning btn" @click="Step.number=0" style="border: 1px solid; border-color: black;">
+                                    <label class="font-weight-bold m-0" style="color: black;">DETALLES DE VENTA</label>
+                                </button>
+                                <button type="button" class="col-md-6 btn btn-success" @click="Step.number=1" style="border: 1px solid; border-color: black;">
+                                    <label class="font-weight-bold m-0" style="color: black;">CLIENTE Y PAGOS</label>
+                                </button>
+                            </div>
+                            <div class="col-md-12 p-0 m-0 input-group" v-if="Step.number==0" style="height: 26rem;">
+                                <div class="container-small col-md-4" v-if="Venta.tipo_pago=='2'">
+                                    <div class="shadow rounded pt-2 bg-warning" style="border: 1px solid; height: 26rem;">
+                                        <div class="col-md-12 form-group">
+                                            <div class="col-md-12 p-0 form-group">
+                                                <label class="p-0 h5 font-weight-bold">LISTA DE PAGOS</label>
+                                            </div>
+                                            <div class="col-md-12 form-group overflow-auto pr-0 pl-0" style="height: 17rem;" v-if="ListaPago.length">
+                                                <table class="table table-bordered table-striped table-sm text-gray-900 bg-white">
+                                                    <thead>
+                                                        <tr class="table-info">
+                                                            <th class="text-center">#</th>
+                                                            <th class="text-center">Fecha de pago</th>
+                                                            <th class="text-center">Monto</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr v-for="(pago, index) in ListaPago" :key="index" :class="pago.color">
+                                                            <td class="text-right">{{index+1}}</td>
+                                                            <td class="text-center" v-text="fix(0, pago.created_at)"></td>
+                                                            <td class="text-right" v-text="pago.monto"></td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div class="col-md-12 form-group" style="height: 17rem;" v-else>
+                                                <label class="text-primary">Ningun pago registrado</label>
+                                            </div>
+                                            <div class="col-md-12 input-group" v-if="Number.parseFloat(Venta.total_faltante)>0">
+                                                <div class="col-md-12 p-0 m-0 input-group">
+                                                    <label class="col-md-7 p-0 h5 font-weight-bold">Monto pagado:</label>
+                                                    <label class="col-md-1 p-0 h5 text-right text-success">S/.</label>
+                                                    <label class="col-md-4 p-0 h5 text-right text-success" v-text="Number.parseFloat(Venta.total-Venta.total_faltante).toFixed(2)"></label>
+                                                </div>
+                                                <div class="col-md-12 p-0 m-0 input-group">
+                                                    <label class="col-md-7 p-0 h5 font-weight-bold">Monto faltante:</label>
+                                                    <label class="col-md-1 p-0 h5 text-right text-danger">S/.</label>
+                                                    <label class="col-md-4 p-0 h5 text-right text-danger" v-text="Number.parseFloat(Venta.total_faltante).toFixed(2)"></label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12 input-group" v-else>
+                                                <label class="col-md-12 p-0 d-flex justify-content-center font-weight-bold text-primary">-- PAGADO COMPLETAMENTE --</label>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div v-if="Cliente.tipo=='P'" class="input-group form-group">
-                                        <div class="col-md-3 input-group">
-                                            <label class="col-md-3">DNI</label>
-                                            <input type="text" class="col-md-7 form-control form-control-sm" readonly v-model="Cliente.dni">
+                                </div>
+                                <div class="container-small" :class="Venta.tipo_pago=='2'?'col-md-8':'col-md-12'">
+                                    <div class="shadow rounded pt-2 bg-warning" style="border: 1px solid; height: 26rem;">
+                                        <div class="col-md-12 form-group input-group">
+                                            <div class="col-md-7 p-0">
+                                                <label class="p-0 h5 mb-0 font-weight-bold">LISTA DE ITEMS</label>
+                                            </div>
+                                            <div class="col-md-5 input-group">
+                                                <label class="col-md-6 font-weight-bold p-0">Tipo de precio</label>
+                                                <label class="col-md-6 text-primary p-0" v-text="fix('tipo_precio')"></label>
+                                            </div>
                                         </div>
-                                        <div class="col-md-4 input-group">
-                                            <label class="col-md-4">Nombres</label>
-                                            <input type="text" class="col-md-8 form-control form-control-sm" readonly v-model="Cliente.nombres">
+                                        <div class="col-md-12 overflow-auto" style="height: 19rem;">
+                                            <table class="table table-bordered table-striped table-sm text-gray-900 bg-white">
+                                                <thead>
+                                                    <tr class="table-success">
+                                                        <th class="text-center">#</th>
+                                                        <th class="text-center">Nombre</th>
+                                                        <th class="text-center">Fallidos</th>
+                                                        <th class="text-center">Cantidad</th>
+                                                        <th class="text-center">Precio</th>
+                                                        <th class="text-center">Subtotal</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr v-for="(detalle, indice) in ListaDetalle" :key="indice">
+                                                        <td class="text-right">{{indice+1}}</td>
+                                                        <td v-text="detalle.nombre_producto"></td>
+                                                        <td class="text-right" v-text="detalle.fallidos==null?'---':detalle.fallidos"></td>
+                                                        <td class="text-right" v-text="detalle.cantidad"></td>
+                                                        <td class="text-right" v-text="detalle.precio"></td>
+                                                        <td class="text-right" v-text="detalle.subtotal"></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
                                         </div>
-                                        <div class="col-md-4 input-group">
-                                            <label class="col-md-4">Apellidos</label>
-                                            <input type="text" class="col-md-8 form-control form-control-sm" readonly v-model="Cliente.apellidos">
+                                        <div class="col-md-12 input-group mt-2">
+                                            <div class="col-md-6">
+                                            </div>
+                                            <div class="col-md-6 input-group">
+                                                <label class="col-md-6 text-right font-weight-bold h5 p-0">Monto de venta:</label>
+                                                <label class="col-md-6 text-right text-primary h5 p-0" v-text="'S/. '+Number.parseFloat(Venta.total_venta).toFixed(2)"></label>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div v-else-if="Cliente.tipo=='E'" class="input-group form-group">
-                                        <div class="col-md-3 input-group">
-                                            <label class="col-md-3">RUC</label>
-                                            <input type="text" class="col-md-7 form-control form-control-sm" readonly v-model="Cliente.ruc">
-                                        </div>
-                                        <div class="col-md-8 input-group">
-                                            <label class="col-md-2">Razón social</label>&nbsp;
-                                            <input type="text" class="col-md-10 form-control form-control-sm" readonly v-model="Cliente.razon_social">
-                                        </div>
-                                    </div>
-                                    <div v-else class="col-md-12">
-                                        <label class="text-info">No se ha registrado cliente</label>
                                     </div>
                                 </div>
                             </div>
-                            <div class="container-small col-md-4" v-if="Venta.tipo_pago.charAt(0)==2||Venta.tipo_pago.charAt(0)==3">
-                                <div class="shadow bg-white rounded pt-2" style="height: 24rem; border: 1px solid">
-                                    <div class="col-md-12 input-group">
-                                        <label class="font-weight-bold">LISTA DE PAGOS</label>
-                                    </div>
-                                    <div class="col-md-12 overflow-auto" style="height: 16rem" v-if="ListaPago.length">
-                                        <table class="table table-bordered table-striped table-sm text-gray-900">
-                                            <thead>
-                                                <tr class="table-info">
-                                                    <th class="text-center">#</th>
-                                                    <th class="text-center">Fecha</th>
-                                                    <th class="text-center">Monto</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr v-for="(pago, index) in ListaPago" :key="index" :class="pago.color">
-                                                    <td class="text-right pr-1">{{index+1}}</td>
-                                                    <td class="text-center" v-text="fix(0, pago.created_at)"></td>
-                                                    <td class="text-right" v-text="pago.monto"></td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <div class="col-md-12 overflow-auto" style="height: 16rem" v-else>
-                                        <label class="text-info">Ningun pago registrado</label>
-                                    </div>
-                                    <div class="col-md-12 input-group d-flex justify-content-end">
-                                        <!-- Monto pagado -->
-                                        <label class="col-md-6 font-weight-bold p-0" style="margin-bottom: 0px;">Monto pagado:</label>
-                                        <label class="col-md-1 text-right text-success p-0" style="margin-bottom: 0px;">S/.</label>
-                                        <label class="col-md-4 text-right text-success" style="margin-bottom: 0px;" v-text="(Venta.total-Venta.total_faltante).toFixed(2)"></label>
-                                        <!-- Monto faltante -->
-                                        <label class="col-md-6 font-weight-bold p-0" style="margin-bottom: 0px;">Monto faltante:</label>
-                                        <label class="col-md-1 text-right text-danger p-0" style="margin-bottom: 0px;">S/.</label>
-                                        <label class="col-md-4 text-right text-danger" style="margin-bottom: 0px;" v-text="Number.parseFloat(Venta.total_faltante).toFixed(2)"></label>
-                                        <!-- Monto total -->
-                                        <label class="col-md-6 font-weight-bold p-0" style="margin-bottom: 0px;">Monto total: </label>
-                                        <label class="col-md-1 text-right p-0" style="margin-bottom: 0px;">S/.</label>
-                                        <label class="col-md-4 text-right" style="margin-bottom: 0px;" v-text="Number.parseFloat(Venta.total).toFixed(2)"></label>
+                            <div class="col-md-12 p-0 m-0 input-group" v-if="Step.number==1" style="height: 26rem;">
+                                <div class="container-small col-md-12 form-group" style="height: 7rem;">
+                                    <div class="shadow rounded pt-2 bg-success" style="border: 1px solid; height: 7rem;">
+                                        <div class="col-md-12 form-group input-group">
+                                            <label class="col-md-2 font-weight-bold h5">CLIENTE</label>
+                                        </div>
+                                        <div class="col-md-12 form-group input-group" v-if="Cliente.tipo=='P'">
+                                            <div class="col-md-3 input-group">
+                                                <label class="col-md-3">DNI</label>
+                                                <input type="text" class="col-md-9 form-control form-control-sm" readonly v-model="Cliente.dni">
+                                            </div>
+                                            <div class="col-md-4 input-group">
+                                                <label class="col-md-4">Nombres</label>
+                                                <input type="text" class="col-md-8 form-control form-control-sm" readonly v-model="Cliente.nombres">
+                                            </div>
+                                            <div class="col-md-4 input-group">
+                                                <label class="col-md-4">Apellidos</label>
+                                                <input type="text" class="col-md-8 form-control form-control-sm" readonly v-model="Cliente.apellidos">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12 form-group input-group" v-else-if="Cliente.tipo=='E'">
+                                            <div class="col-md-3 input-group">
+                                                <label class="col-md-3">RUC</label>
+                                                <input type="text" class="col-md-9 form-control form-control-sm" readonly v-model="Cliente.ruc">
+                                            </div>
+                                            <div class="col-md-8 input-group">
+                                                <label class="col-md-3">Razón social</label>&nbsp;
+                                                <input type="text" class="col-md-9 form-control form-control-sm" readonly v-model="Cliente.razon_social">
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="container-small" :class="Venta.tipo_pago.charAt(0)==2||Venta.tipo_pago.charAt(0)==3?'col-md-8':'col-md-12'">
-                                <div class="shadow bg-white rounded pt-2"  style="height: 24rem; border: 1px solid">
-                                    <div class="col-md-12 input-group">
-                                        <label class="col-md-3 font-weight-bold">LISTA DE ITEMS</label>
-                                        <div class="col-md-1"></div>
-                                        <label class="col-md-4 font-weight-bold">Pago:&nbsp;<label class="text-info font-weight-normal" v-text="fix(4, Venta.tipo_pago)"></label></label>
-                                        <label class="col-md-4 font-weight-bold">Precio:&nbsp;<label class="text-info font-weight-normal" v-text="fix(5, Venta.tipo_precio)"></label></label>
-                                    </div>
-                                    <div class="col-md-12 form-group overflow-auto" style="height: 17rem;">
-                                        <table class="table table-bordered table-striped table-sm text-gray-900">
-                                            <thead>
-                                                <tr class="table-success">
-                                                    <th class="text-center">Nombre</th>
-                                                    <th class="text-center">Cantidad</th>
-                                                    <th class="text-center">Precio</th>
-                                                    <th class="text-center">Subtotal</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr v-for="(detalle, indice) in ListaDetalle" :key="indice">
-                                                    <td v-text="detalle.nombre_producto"></td>
-                                                    <td class="text-right" v-text="detalle.cantidad"></td>
-                                                    <td class="text-right" v-text="detalle.precio"></td>
-                                                    <td class="text-right" v-text="detalle.subtotal">
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <div class="col-md-12 input-group">
-                                        <div class="col-md-6 input-group">
-                                            <label class="col-md-12 font-weight-bold pl-0">Registrado:&nbsp;<label class="text-info font-weight-normal" v-text="fix(0, Venta.created_at)"></label></label>
+                                <div class="container-small col-md-3" style="height: 18rem;">
+                                    <div class="shadow rounded pt-3 bg-success" style="border: 1px solid; height: 18rem;">
+                                        <div class="col-md-12 form-group">
+                                            <label class="font-weight-bold h5">TIPO DE VENTA</label>
                                         </div>
-                                        <div class="col-md-1"></div>
-                                        <div class="col-md-5 input-group">
-                                            <label class="col-md-7 font-weight-bold text-right">Monto total:</label>
-                                            <label class="col-md-5 text-right text-info pr-0 pl-0" v-text="'S/. '+Number.parseFloat(Venta.total).toFixed(2)"></label>
+                                        <div class="col-md-12 input-group form-group">
+                                            <label class="col-md-7 p-0 font-weight-bold">Tipo de pago</label>
+                                            <label class="col-md-5 p-0 text-white" v-text="fix('tipo_pago')"></label>
+                                        </div>
+                                        <div class="col-md-12 input-group form-group" v-if="Venta.tipo_pago=='2'">
+                                            <label class="col-md-7 p-0 font-weight-bold">Tipo de entrega</label>
+                                            <label class="col-md-5 p-0 text-white" v-text="fix('tipo_entrega')"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="container-small col-md-3">
+                                    <div class="shadow rounded pt-3 bg-success" style="border: 1px solid; height: 18rem;">
+                                        <div class="col-md-12 form-group">
+                                            <label class="font-weight-bold h5">BENEFICIOS</label>
+                                        </div>
+                                        <div v-if="ValeU.monto!=null" class="col-md-12 form-group p-0">
+                                            <div class="col-md-12 input-group form-group">
+                                                <label class="col-md-12 d-flex justify-content-center">-- VALE GENERADO --</label>
+                                            </div>
+                                            <div class="col-md-12 input-group form-group">
+                                                <label class="col-md-6 font-weight-bold">Monto</label>
+                                                <label class="col-md-6 text-white" v-text="'S/. '+ValeU.monto"></label>
+                                            </div>
+                                            <div class="col-md-12 input-group form-group">
+                                                <label class="col-md-6 font-weight-bold">Fecha</label>
+                                                <label class="col-md-6 text-white" v-text="fix(7, ValeU.created_at)"></label>
+                                            </div>
+                                            <div class="col-md-12 input-group form-group">
+                                                <label class="col-md-6 font-weight-bold">Hora</label>
+                                                <label class="col-md-6 text-white" v-text="fix(8, ValeU.created_at)"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="container-small col-md-3">
+                                    <div class="shadow rounded pt-3 bg-success" style="border: 1px solid; height: 18rem;">
+                                        <div class="col-md-12 form-group">
+                                            <label class="font-weight-bold h5">DESCUENTOS</label>
+                                        </div>
+                                        <div v-if="ValeU.monto!=null" class="col-md-12 form-group p-0">
+                                            <div class="col-md-12 input-group form-group">
+                                                <label class="col-md-12 d-flex justify-content-center">-- VALE USADO --</label>
+                                            </div>
+                                            <div class="col-md-12 input-group form-group">
+                                                <label class="col-md-6 font-weight-bold">Monto</label>
+                                                <label class="col-md-6 text-white" v-text="'S/. '+ValeU.monto"></label>
+                                            </div>
+                                            <div class="col-md-12 input-group form-group">
+                                                <label class="col-md-6 font-weight-bold">Fecha</label>
+                                                <label class="col-md-6 text-white" v-text="fix(7, ValeU.created_at)"></label>
+                                            </div>
+                                            <div class="col-md-12 input-group form-group">
+                                                <label class="col-md-6 font-weight-bold">Hora</label>
+                                                <label class="col-md-6 text-white" v-text="fix(8, ValeU.created_at)"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="container-small col-md-3">
+                                    <div class="shadow rounded pt-3 bg-success" style="border: 1px solid; height: 18rem;">
+                                        <div class="col-md-12 form-group">
+                                            <label class="font-weight-bold h5">TOTALES</label>
+                                        </div>
+                                        <div class="col-md-12 input-group form-group">
+                                            <label class="col-md-7 p-0 font-weight-bold">Monto de venta</label>
+                                            <label class="col-md-1 p-0 text-white text-right">S/.</label>
+                                            <label class="col-md-4 p-0 text-white text-right" v-text="Number.parseFloat(Venta.total_venta).toFixed(2)"></label>
+                                        </div>
+                                        <div class="col-md-12 input-group form-group" v-if="Venta.total_descuento!=null">
+                                            <label class="col-md-7 p-0 font-weight-bold">Monto de descuento</label>
+                                            <label class="col-md-1 p-0 text-white text-right p-0">S/.</label>
+                                            <label class="col-md-4 p-0 text-white text-right" v-text="'-'+Number.parseFloat(Venta.total_descuento).toFixed(2)"></label>
+                                        </div>
+                                        <div class="col-md-10 bg-white m-4"><hr></div>
+                                        <div class="col-md-12 input-group form-group">
+                                            <label class="col-md-6 font-weight-bold h5">Total</label>
+                                            <label class="col-md-6 p-0 text-white text-right h5" v-text="'S/. '+Number.parseFloat(Venta.total).toFixed(2)"></label>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <!-- Modal Numero 3 de EDITAR -->
-                        <div v-if="Modal.numero==3" class="container-small input-group">
+                        <div v-if="Modal.numero==3" class="input-group">
+                            <div v-if="Error.estado" class="col-md-12 d-flex justify-content-center">
+                                <div class="col-md-6 alert alert-danger">
+                                    <button type="button" @click="close(0)" class="close text-primary" data-dismiss="alert">×</button>
+                                    <strong>Corregir los siguentes errores:</strong>
+                                    <ul> 
+                                        <li v-for="error in Error.mensaje" :key="error" v-text="error"></li> 
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="container-small col-md-12 input-group form-group">
+                                <button type="button" class="col-md-6 btn btn-warning btn" @click="Step.number=0" style="border: 1px solid; border-color: black;">
+                                    <label class="font-weight-bold m-0" style="color: black;">DETALLES DE VENTA</label>
+                                </button>
+                                <button type="button" class="col-md-6 btn btn-success" @click="Step.number=1" style="border: 1px solid; border-color: black;">
+                                    <label class="font-weight-bold m-0" style="color: black;">CLIENTE Y PAGOS</label>
+                                </button>
+                            </div>
+                            <div class="col-md-12 p-0 m-0 input-group" v-if="Step.number==0" style="height: 26rem;">
+                                <div class="container-small col-md-4">
+                                    <div class="shadow rounded pt-2 bg-warning" style="border: 1px solid; height: 26rem;">
+                                        <div class="col-md-12 form-group">
+                                            <label class="h5 mb-0 font-weight-bold">LISTA DE PRODUCTOS</label>
+                                        </div>
+                                        <div class="col-md-12 input-group form-group">
+                                            <input type="search" class="form-control form-control-sm" v-model="Service.text" @keyup.enter="list(0)" id="filtroProducto" placeholder="Producto,marca,modelo,tamaño,color">
+                                            <button type="button" class="btn btn-sm btn-primary" @click="list(0)">
+                                                <i class="fa fa-search"></i>&nbsp; Buscar
+                                            </button>
+                                        </div>
+                                        <div v-if="ListaProducto.length" class="col-md-12 overflow-auto" style="height: 19rem;">
+                                            <table class="table table-bordered table-striped table-sm text-gray-900 p-0 m-0 bg-white">
+                                                <thead>
+                                                    <tr class="table-danger">
+                                                        <th class="text-center" style="width: 10%;">Agregar</th>
+                                                        <th class="text-center">Nombre</th>
+                                                        <th class="text-center">Stock</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr v-for="producto in ListaProducto" :key="producto.id">
+                                                        <td class="text-center">
+                                                            <button type="button" v-if="producto.detalle.substock>0" title="AGREGAR" class="btn btn-circle btn-sm btn-outline-success" @click="add('detalle_venta', producto)">
+                                                                <i class="fas fa-plus"></i>
+                                                            </button>
+                                                        </td>
+                                                        <td v-text="producto.nombre"></td>
+                                                        <td v-text="producto.detalle.substock" class="text-right"></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div v-else class="col-md-12">
+                                            <label class="h5 text-danger">No se han encontrado resultados</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="container-small col-md-8">
+                                    <div class="shadow rounded pt-2 bg-warning" style="border: 1px solid; height: 26rem;">
+                                        <div class="col-md-12 form-group input-group">
+                                            <div class="col-md-7 p-0">
+                                                <label class="p-0 h5 mb-0 font-weight-bold">LISTA DE ITEMS</label>
+                                            </div>
+                                            <div class="col-md-5 input-group">
+                                                <label class="col-md-6 font-weight-bold p-0">Tipo de precio&nbsp;<span class="text-danger">*</span></label>
+                                                <select class="col-md-6 custom-select custom-select-sm text-gray-900" v-model="Venta.tipo_precio" @click="update('subtotal')">
+                                                    <option value="1">Al por menor</option>
+                                                    <option value="2">Al por mayor</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div v-if="ListaDetalle.length" class="col-md-12 overflow-auto" style="height: 19rem;">
+                                            <table class="table table-bordered table-striped table-sm text-gray-900 bg-white">
+                                                <thead>
+                                                    <tr class="table-success">
+                                                        <th class="text-center">Quitar</th>
+                                                        <th class="text-center">Nombre</th>
+                                                        <th class="text-center" style="width: 5rem;">Fallidos</th>
+                                                        <th class="text-center" style="width: 5rem;">Cantidad</th>
+                                                        <th class="text-center">Precio</th>
+                                                        <th class="text-center">Subtotal</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr v-for="(detalle, indice) in ListaDetalle" :key="indice">
+                                                        <td class="text-center">
+                                                            <button type="button" class="btn btn-circle btn-outline-danger btn-sm" title="QUITAR" @click="remove(0, indice)" v-if="detalle.id==0">
+                                                                <i class="fas fa-minus"></i>
+                                                            </button>
+                                                        </td>
+                                                        <td v-text="detalle.nombre_producto"></td>
+                                                        <td v-if="detalle.id!=0">
+                                                            <input type="number" v-model="detalle.fallidos" class="form-control form-control-sm text-right" :min="detalle.fallidos_inicial" :max="detalle.cantidad_inicial" @click="update('total_faltante')" @keyup="update('total_faltante')">
+                                                        </td>
+                                                        <td v-else class="text-center">-</td>
+                                                        <td>
+                                                            <input type="number" v-model="detalle.cantidad" class="form-control form-control-sm text-right p-0" :min="detalle.cantidad_inicial" :max="detalle.substock" @click="update('total_faltante')" @keyup="update('total_faltante')">
+                                                        </td>
+                                                        <td class="text-right" v-text="Venta.tipo_precio=='1'?detalle.precio_menor:detalle.precio_mayor"></td>
+                                                        <td class="text-right" v-text="Number.parseFloat(detalle.subtotal).toFixed(2)">
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="col-md-12 input-group mt-2">
+                                            <div class="col-md-6">
+                                            </div>
+                                            <div class="col-md-6 input-group">
+                                                <label class="col-md-6 text-right font-weight-bold h5 p-0">Monto de venta:</label>
+                                                <label class="col-md-6 text-right text-info h5 p-0" v-text="'S/. '+Number.parseFloat(Venta.total).toFixed(2)"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 p-0 m-0 input-group" v-if="Step.number==1" style="height: 26rem;">
+                                <div class="container-small col-md-12 form-group">
+                                    <div class="shadow rounded pt-2 bg-success input-group" style="border: 1px solid; height: 7rem;">
+                                        <div class="col-md-12 p-0 input-group">
+                                            <div class="col-md-2 form-group">
+                                                <label class="h5 font-weight-bold">CLIENTE</label>
+                                            </div>
+                                            <div class="col-md-10 input-group form-group" v-if="Cliente.search==true">
+                                                <label class="col-md-1 p-0 font-weight-bold">RUC/DNI&nbsp;<span class="text-danger" v-if="Venta.tipo_pago=='2'">*</span></label>
+                                                <div class="col-md-3">
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control form-control-sm" v-model="Service.document" @keyup.enter="consultar()" maxlength="11">
+                                                        <button type="button" class="btn btn-sm btn-primary" @click="consultar()">
+                                                            <i class="fas fa-sync-alt"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <h5>
+                                                        <span role="status" :class="Service.loadclass"></span>&nbsp;
+                                                        <span v-text="Service.msm" :class="Service.msmclass"></span>
+                                                    </h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-11 form-group input-group" v-if="Cliente.tipo=='P'">
+                                            <div class="col-md-4 input-group">
+                                                <label class="col-md-3">DNI</label>
+                                                <input type="text" class="col-md-6 form-control form-control-sm" readonly v-model="Cliente.dni">
+                                            </div>
+                                            <div class="col-md-4 input-group">
+                                                <label class="col-md-4 p-0">Nombres</label>
+                                                <input type="text" class="col-md-8 form-control form-control-sm" readonly v-model="Cliente.nombres">
+                                            </div>
+                                            <div class="col-md-4 input-group">
+                                                <label class="col-md-4 p-0">Apellidos</label>
+                                                <input type="text" class="col-md-8 form-control form-control-sm" readonly v-model="Cliente.apellidos">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-11 form-group input-group" v-else-if="Cliente.tipo=='E'">
+                                            <div class="col-md-4 input-group">
+                                                <label class="col-md-3">RUC</label>
+                                                <input type="text" class="col-md-6 form-control form-control-sm" readonly v-model="Cliente.ruc">
+                                            </div>
+                                            <div class="col-md-8 input-group">
+                                                <label class="col-md-3">Razón social</label>&nbsp;
+                                                <input type="text" class="col-md-9 form-control form-control-sm" readonly v-model="Cliente.razon_social">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-1 form-group d-flex justify-content-center" v-if="Cliente.trash==true">
+                                            <button type="button" class="btn btn-circle btn-sm btn-outline-danger" @click="remove('cliente')" title="ELIMINAR"> 
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="container-small col-md-3">
+                                    <div class="shadow rounded pt-3 bg-success" style="border: 1px solid; height: 18rem;">
+                                        <div class="col-md-12 form-group">
+                                            <label class="font-weight-bold h5">TIPO DE VENTA</label>
+                                        </div>
+                                        <div class="col-md-12 input-group form-group">
+                                            <label class="col-md-7 p-0 font-weight-bold">Tipo de pago</label>
+                                            <label class="col-md-5 p-0 text-white" v-text="fix('tipo_pago', Venta.tipo_pago)"></label>
+                                        </div>
+                                        <div class="col-md-12 input-group form-group" v-if="Venta.tipo_pago=='2'">
+                                            <label class="col-md-7 p-0 font-weight-bold">Tipo de entrega</label>
+                                            <label class="col-md-5 p-0 text-white" v-text="fix('tipo_entrega', Venta.tipo_entrega)"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="container-small col-md-3">
+                                    <div class="shadow rounded pt-3 bg-success" style="border: 1px solid; height: 18rem;">
+                                        <div class="col-md-12 form-group">
+                                            <label class="font-weight-bold h5">BENEFICIOS</label>
+                                        </div>
+                                        <div class="col-md-12" v-if="ValeU.id!=null">
+                                            <div class="col-md-12 input-group form-group">
+                                                <label class="col-md-6 font-weight-bold">Monto</label>
+                                                <label class="col-md-6 text-white" v-text="'S/. '+ValeU.monto"></label>
+                                            </div>
+                                            <div class="col-md-12 input-group form-group">
+                                                <label class="col-md-6 font-weight-bold">Fecha</label>
+                                                <label class="col-md-6 text-white" v-text="fix(7, ValeU.created_at)"></label>
+                                            </div>
+                                            <div class="col-md-12 input-group form-group">
+                                                <label class="col-md-6 font-weight-bold">Hora</label>
+                                                <label class="col-md-6 text-white" v-text="fix(8, ValeU.created_at)"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="container-small col-md-3">
+                                    <div class="shadow rounded pt-3 bg-success" style="border: 1px solid; height: 18rem;">
+                                        <div class="col-md-12 form-group">
+                                            <label class="font-weight-bold h5">DESCUENTOS</label>
+                                        </div>
+                                        <div class="col-md-12" v-if="ValeU.id!=null">
+                                            <div class="col-md-12 input-group form-group">
+                                                <label class="col-md-6 font-weight-bold">Monto</label>
+                                                <label class="col-md-6 text-white" v-text="'S/. '+ValeU.monto"></label>
+                                            </div>
+                                            <div class="col-md-12 input-group form-group">
+                                                <label class="col-md-6 font-weight-bold">Fecha</label>
+                                                <label class="col-md-6 text-white" v-text="fix(7, ValeU.created_at)"></label>
+                                            </div>
+                                            <div class="col-md-12 input-group form-group">
+                                                <label class="col-md-6 font-weight-bold">Hora</label>
+                                                <label class="col-md-6 text-white" v-text="fix(8, ValeU.created_at)"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="container-small col-md-3">
+                                    <div class="shadow rounded pt-3 bg-success" style="border: 1px solid; height: 18rem;">
+                                        <div class="col-md-12 form-group">
+                                            <label class="font-weight-bold h5">TOTALES</label>
+                                        </div>
+                                        <div class="col-md-12 input-group form-group">
+                                            <label class="col-md-7 p-0 font-weight-bold">Monto de venta</label>
+                                            <label class="col-md-1 p-0 text-white text-right p-0">S/.</label>
+                                            <label class="col-md-4 p-0 text-white text-right" v-text="Number.parseFloat(Venta.total).toFixed(2)"></label>
+                                        </div>
+                                        <div class="col-md-12 input-group form-group" v-if="ValeU.id!=null">
+                                            <label class="col-md-7 p-0 font-weight-bold">Monto de vale</label>
+                                            <label class="col-md-1 p-0 text-white text-right p-0">S/.</label>
+                                            <label class="col-md-4 p-0 text-white text-right" v-text="'- '+Number.parseFloat(ValeU.monto).toFixed(2)"></label>
+                                        </div>
+                                        <div class="col-md-10 bg-white m-4"><hr></div>
+                                        <div class="col-md-12 input-group form-group">
+                                            <label class="col-md-6 p-0 font-weight-bold h5">Monto total</label>
+                                            <label class="col-md-6 p-0 text-white text-right h5" v-text="'S/. '+Number.parseFloat(update(5)).toFixed(2)"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- <div v-if="Modal.numero==3" class="container-small input-group">
                             <div v-if="Error.estado" class="col-md-12 d-flex justify-content-center">
                                 <div class="col-md-6 alert alert-danger pb-0">
                                     <button type="button" @click="Error.estado=0" class="close text-primary" data-dismiss="alert">×</button>
@@ -486,7 +841,7 @@
                                     <div class="col-md-2 form-group">
                                         <label class="font-weight-bold">CLIENTE</label>
                                     </div>
-                                    <div class="col-md-10 input-group form-group" v-if="Vale.id==null&&Venta.tipo_pago=='1'">
+                                    <div class="col-md-10 input-group form-group" v-if="ValeU.id==null">
                                         <label class="col-md-2 font-weight-bold">RUC/DNI&nbsp;
                                             <span class="text-danger" v-if="Venta.tipo_pago=='2'||Venta.tipo_pago=='3'||(Venta.total<Number.parseFloat(Venta.total_minimo))">*</span>
                                         </label>
@@ -516,8 +871,8 @@
                                             <label class="col-md-4">Apellidos</label>
                                             <input type="text" class="col-md-8 form-control form-control-sm" readonly v-model="Cliente.apellidos">
                                         </div>
-                                        <div class="col-md-1 d-flex justify-content-center" v-if="Venta.tipo_pago=='1'&&Vale.id==null&&Venta.total==Venta.total_minimo">
-                                            <button type="button" class="btn btn-circle btn-sm btn-outline-danger" @click="remove(1)" title="ELIMINAR"> 
+                                        <div class="col-md-1 d-flex justify-content-center" v-if="Venta.tipo_pago=='1'&&ValeU.id==null&&Venta.total==Venta.total_minimo">
+                                            <button type="button" class="btn btn-circle btn-sm btn-outline-danger" @click="remove('cliente')" title="ELIMINAR"> 
                                                 <i class="fas fa-trash-alt"></i>
                                             </button>
                                         </div>
@@ -531,30 +886,30 @@
                                             <label class="col-md-3">Razón social</label>&nbsp;
                                             <input type="text" class="col-md-9 form-control form-control-sm" readonly v-model="Cliente.razon_social">
                                         </div>
-                                        <div class="col-md-1 d-flex justify-content-center" v-if="Venta.tipo_pago=='1'&&Vale.id==null&&Venta.total==Venta.total_minimo">
-                                            <button type="button" class="btn btn-circle btn-sm btn-outline-danger" @click="remove(1)" title="ELIMINAR"> 
+                                        <div class="col-md-1 d-flex justify-content-center" v-if="Venta.tipo_pago=='1'&&ValeU.id==null&&Venta.total==Venta.total_minimo">
+                                            <button type="button" class="btn btn-circle btn-sm btn-outline-danger" @click="remove('cliente')" title="ELIMINAR"> 
                                                 <i class="fas fa-trash-alt"></i>
                                             </button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="container-small col-md-2 mt-1 pl-0" v-if="Vale.id!=null">
+                            <div class="container-small col-md-2 mt-1 pl-0" v-if="ValeG.id!=null">
                                 <div class="shadow bg-white rounded pt-2 form-group" style="border: 1px solid; height: 6.5rem;">
                                     <div class="col-md-12 form-group input-group">
                                         <label class="col-md-12 font-weight-bold pl-0 mb-0">VALE</label>
                                         <ul class="col-md-12 pr-0 pl-0">
                                             <li class="input-group">
                                                 <label class="col-md-4 p-0 mb-0">Monto:</label>
-                                                <label class="col-md-8 p-0 mb-0 text-right text-primary" v-text="'S/.  '+Vale.monto"></label>
+                                                <label class="col-md-8 p-0 mb-0 text-right text-primary" v-text="'S/.  '+ValeU.monto"></label>
                                             </li>
                                             <li class="input-group">
                                                 <label class="col-md-4 p-0 mb-0">Fecha:</label>
-                                                <label class="col-md-8 p-0 mb-0 text-right text-primary" v-text="fix(7, Vale.created_at)"></label>
+                                                <label class="col-md-8 p-0 mb-0 text-right text-primary" v-text="fix(7, ValeU.created_at)"></label>
                                             </li>
                                             <li class="input-group">
                                                 <label class="col-md-4 p-0 mb-0">Hora:</label>
-                                                <label class="col-md-8 p-0 mb-0 text-right text-primary" v-text="fix(8, Vale.created_at)"></label>
+                                                <label class="col-md-8 p-0 mb-0 text-right text-primary" v-text="fix(8, ValeU.created_at)"></label>
                                             </li>
                                         </ul>
                                     </div>
@@ -581,7 +936,7 @@
                                             <tbody>
                                                 <tr v-for="producto in ListaProducto" :key="producto.id">
                                                     <td class="text-center">
-                                                        <button type="button" v-if="producto.detalle.substock>0" title="AGREGAR" class="btn btn-circle btn-sm btn-outline-success" @click="add(0, producto)">
+                                                        <button type="button" v-if="producto.detalle.substock>0" title="AGREGAR" class="btn btn-circle btn-sm btn-outline-success" @click="add('detalle_venta', producto)">
                                                             <i class="fas fa-plus"></i>
                                                         </button>
                                                     </td>
@@ -624,11 +979,11 @@
                                                     </td>
                                                     <td v-text="detalle.nombre_producto"></td>
                                                     <td v-if="detalle.id!=0">
-                                                        <input type="number" v-model="detalle.fallidos" class="form-control form-control-sm text-right" :min="detalle.fallidos_inicial" :max="detalle.cantidad_inicial" @click="update(3)" @keyup="update(3)">
+                                                        <input type="number" v-model="detalle.fallidos" class="form-control form-control-sm text-right" :min="detalle.fallidos_inicial" :max="detalle.cantidad_inicial" @click="update('total_faltante')" @keyup="update('total_faltante')">
                                                     </td>
                                                     <td v-else class="text-center">-</td>
                                                     <td>
-                                                        <input type="number" v-model="detalle.cantidad" class="form-control form-control-sm text-right p-0" :min="detalle.cantidad_inicial" :max="detalle.substock" @click="update(3)" @keyup="update(3)">
+                                                        <input type="number" v-model="detalle.cantidad" class="form-control form-control-sm text-right p-0" :min="detalle.cantidad_inicial" :max="detalle.substock" @click="update('total_faltante')" @keyup="update('total_faltante')">
                                                     </td>
                                                     <td class="text-right" v-text="Venta.tipo_precio=='1'?detalle.precio_menor:detalle.precio_mayor"></td>
                                                     <td class="text-right" v-text="Number.parseFloat(detalle.subtotal).toFixed(2)">
@@ -648,7 +1003,7 @@
                                             </div>
                                             <div class="col-md-8 input-group p-0" v-if="Venta.total < Venta.total_minimo"> 
                                                 <label class="col-md-12 font-weight-bold">
-                                                    <span v-if="Vale.id==null">Se generara un vale de venta por:&nbsp;&nbsp;&nbsp;</span>
+                                                    <span v-if="ValeU.id==null">Se generara un vale de venta por:&nbsp;&nbsp;&nbsp;</span>
                                                     <span v-else>El vale de venta se incrementara en:&nbsp;&nbsp;&nbsp;</span>
                                                     <span class="font-weight-normal text-success" v-text="'S/. '+Number.parseFloat(Venta.total_minimo-Venta.total).toFixed(2)"></span>
                                                 </label>
@@ -665,7 +1020,8 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
+
                         <!-- Modal Numero 4 de PAGAR-->
                         <div v-if="Modal.numero==4" class="container-small input-group d-flex justify-content-center">
                             <div v-if="Error.estado" class="row d-flex justify-content-center">
@@ -682,8 +1038,8 @@
                                 <div class="col-md-2"></div>
                                 <div class="col-md-7 input-group">
                                     <label>Monto&nbsp;&nbsp;</label>
-                                    <input type="number" class="col-md-7 form-control form-control-sm text-right" v-model="Pago.monto" @keyup.enter="add(1)" min="0" :max="Venta.total_faltante" :disabled="Venta.total_faltante==0" id="PagoMonto">
-                                    <button type="button" class="btn btn-sm btn-primary" @click="add(1)" :disabled="Venta.total_faltante==0">Registrar</button>
+                                    <input type="number" class="col-md-7 form-control form-control-sm text-right" v-model="Pago.monto" @keyup.enter="add('pago')" min="0" :max="Venta.total_faltante" :disabled="Venta.total_faltante==0" id="PagoMonto">
+                                    <button type="button" class="btn btn-sm btn-primary" @click="add('pago')" :disabled="Venta.total_faltante==0">Registrar</button>
                                 </div>
                             </div>
                             <div class="col-md-10 form-group overflow-auto pr-0 pl-0" style="height: 22rem;" v-if="ListaPago.length">
@@ -699,7 +1055,7 @@
                                         <tr v-for="(pago, index) in ListaPago" :key="index" :class="pago.color">
                                             <td class="text-right">{{index+1}}</td>
                                             <td class="text-center" v-text="fix(0, pago.created_at)"></td>
-                                            <td class="text-right" v-text="pago.monto"></td>
+                                            <td class="text-right" v-text="Number.parseFloat(pago.monto).toFixed(2)"></td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -712,17 +1068,17 @@
                                 <label class="col-md-4" style="margin-bottom: 0px;"></label>
                                 <label class="col-md-4 font-weight-bold" style="margin-bottom: 0px;">Monto pagado:</label>
                                 <label class="col-md-1 text-right text-success" style="margin-bottom: 0px;">S/.</label>
-                                <label class="col-md-3 text-right text-success" style="margin-bottom: 0px;" v-text="(Venta.total-Venta.total_faltante).toFixed(2)"></label>
+                                <label class="col-md-3 text-right text-success" style="margin-bottom: 0px;" v-text="Number.parseFloat(Venta.total-Venta.total_faltante).toFixed(2)"></label>
                                 <!-- Monto faltante -->
                                 <label class="col-md-4" style="margin-bottom: 0px;"></label>
                                 <label class="col-md-4 font-weight-bold" style="margin-bottom: 0px;">Monto faltante:</label>
                                 <label class="col-md-1 text-right text-danger" style="margin-bottom: 0px;">S/.</label>
-                                <label class="col-md-3 text-right text-danger" style="margin-bottom: 0px;" v-text="Venta.total_faltante"></label>
+                                <label class="col-md-3 text-right text-danger" style="margin-bottom: 0px;" v-text="Number.parseFloat(Venta.total_faltante).toFixed(2)"></label>
                                 <!-- Monto total -->
                                 <label class="col-md-4" style="margin-bottom: 0px;"></label>
                                 <label class="col-md-4 font-weight-bold" style="margin-bottom: 0px;">Monto total: </label>
                                 <label class="col-md-1 text-right" style="margin-bottom: 0px;">S/.</label>
-                                <label class="col-md-3 text-right" style="margin-bottom: 0px;" v-text="Venta.total"></label>
+                                <label class="col-md-3 text-right" style="margin-bottom: 0px;" v-text="Number.parseFloat(Venta.total).toFixed(2)"></label>
                             </div>
                         </div>
                     </div>
@@ -753,7 +1109,8 @@
                     centro_id: null,
                     total: null,
                     total_faltante: null,
-                    total_minimo: null,
+                    total_descuento: null,
+                    total_venta: null,
                     tipo_pago: null, // 1: contado, 2: credito
                     tipo_entrega: null, // 1: prepago, 2: postpago
                     tipo_precio: null, // 1: al por menor, 2: al por mayor
@@ -770,7 +1127,9 @@
                     nombres: null,
                     apellidos: null,
                     razon_social: null,
-                    tipo: null
+                    tipo: null,
+                    search: null,
+                    trash: null
                 },
 
                 //datos de busqueda y filtracion general
@@ -814,6 +1173,7 @@
                 },
 
                 //datos de servicios necesarios
+                StartData: null,
                 Service: {
                     document: '',
                     msm: '',
@@ -827,7 +1187,12 @@
                 Pago:{
                     monto: null
                 },
-                Vale: {
+                ValeU: {
+                    id: null,
+                    monto: null,
+                    created_at: null
+                },
+                ValeG: {
                     id: null,
                     monto: null,
                     created_at: null
@@ -913,7 +1278,7 @@
                 axios.post(url, {
                     'dataVenta': this.Venta,
                     'dataPago': this.Pago,
-                    'dataVale': this.Vale,
+                    'dataVale': this.ValeU,
                     'dataCliente': this.Cliente,
                     'listDetalle': this.ListaDetalle
                 }).then(function(response){
@@ -1060,10 +1425,10 @@
                 });
             },
             abrirModalAgregar(){
-                this.abrirModal(1, 'Registrar Venta', 'modal-xl', 'Registrar', 'Cancelar');
-
-                this.Venta.total = 0;
                 this.Venta.total_faltante = 0;
+                this.Venta.total_descuento = 0;
+                this.Venta.total_venta = 0;
+                this.Venta.total = 0;
                 this.Venta.tipo_pago = '1';
                 this.Venta.tipo_entrega = '1';
                 this.Venta.tipo_precio = '1';
@@ -1088,26 +1453,35 @@
                 this.Service.msmclass = '';
                 this.Service.loadclass = '';
                 this.Service.text = '';
+
+                this.abrirModal(1, 'Registrar Venta', 'modal-xl', 'Registrar', 'Cancelar');
             },
             abrirModalVer(data){
-                this.abrirModal(2, 'Ver Venta', 'modal-xl', '', 'Cerrar');
-
                 this.Venta.id = data.id;
                 this.Venta.total = data.total;
+                this.Venta.total_venta = data.total_venta;
+                this.Venta.total_descuento = data.total_descuento;
                 this.Venta.total_faltante = data.total_faltante==null?0:data.total_faltante;
                 this.Venta.tipo_pago = data.tipo.charAt(0);
-                this.Venta.tipo_precio = data.tipo.charAt(1);
+                this.Venta.tipo_entrega = data.tipo.charAt(1);
+                this.Venta.tipo_precio = data.tipo.charAt(2);
                 this.Venta.created_at = data.created_at;
                 
+                this.Cliente.id = data.cliente_id;
                 this.Cliente.dni = data.dni;
                 this.Cliente.nombres = data.nombres;
                 this.Cliente.apellidos = data.apellidos;
                 this.Cliente.ruc = data.ruc;
                 this.Cliente.razon_social = data.razon_social;
                 this.Cliente.tipo = data.cliente_tipo;
+
+                this.ListaPago = [];
+                this.ListaDetalle = []; 
                 
                 this.list(1, 'Ver');
-                this.list(2);
+                this.list('pago');
+
+                this.abrirModal(2, 'Ver Venta', 'modal-xl', '', 'Cerrar');
             },
             abrirModalEditar(data){
                 if ( this.fix(10, data.created_at) != this.fix(3) || this.fix(9, data.created_at) != this.fix(2) ) {
@@ -1129,37 +1503,47 @@
                 this.Venta.total_minimo = data.total;
                 this.Venta.tipo = data.tipo;
                 this.Venta.tipo_pago = data.tipo.charAt(0);
-                this.Venta.tipo_precio = data.tipo.charAt(1);
+                this.Venta.tipo_entrega = data.tipo.charAt(1);
+                this.Venta.tipo_precio = data.tipo.charAt(2);
                 this.Venta.created_at = data.created_at;
                 
                 this.Cliente.id = data.cliente_id;
-                this.Cliente.documento = data.dni!=null?data.dni:(data.ruc!=null?data.ruc:'');
                 this.Cliente.dni = data.dni;
                 this.Cliente.nombres = data.nombres;
                 this.Cliente.apellidos = data.apellidos;
                 this.Cliente.ruc = data.ruc;
                 this.Cliente.razon_social = data.razon_social;
                 this.Cliente.tipo = data.cliente_tipo;
-                
-                this.Vale.id = data.vale_id;
-                this.Vale.monto = data.vale_monto;
-                this.Vale.created_at = data.vale_created_at;
+                this.Cliente.search = data.cliente_id==null?true:false;
+                this.Cliente.trash = false;
+
+                this.ValeU.id = data.vale_id;
+                this.ValeU.monto = data.vale_monto;
+                this.ValeU.created_at = data.vale_created_at;
+
+                this.ValeG.id = data.vale_id;
+                this.ValeG.monto = data.vale_monto;
+                this.ValeG.created_at = data.vale_created_at;
+
+                this.ListaProducto = [];
+                this.ListaDetalle = [];
 
                 this.list(1, 'Editar');
 
                 this.abrirModal(3, 'Editar Venta', 'modal-xl', 'Editar', 'Cerrar');
             },
             abrirModalPagar(venta = []){
-                this.abrirModal(4, 'Realizar Pago', '', 'Guardar', 'Cancelar');
-
-                this.Venta.id = venta['id'];
-                this.Venta.total = venta['total'];
-                this.Venta.total_faltante = venta['total_faltante']==null?0:venta.total_faltante;
-                this.Venta.tipo_pago = venta['tipo'].charAt(0);
+                this.Venta.id = venta.id;
+                this.Venta.total = venta.total;
+                this.Venta.total_faltante = venta.total_faltante==null?0:venta.total_faltante;
+                this.Venta.tipo_pago = venta.tipo.charAt(0);
                 
+                this.ListaPago = [];
                 this.Pago.monto = '';
 
-                this.list(2);
+                this.list('pago');
+
+                this.abrirModal(4, 'Realizar Pago', '', 'Guardar', 'Cancelar');
             },
             abrirModal(numero, titulo, size, btnA, btnC){
                 this.Step.number = 0;
@@ -1195,15 +1579,20 @@
                 this.Service.loadclass = '';
                 this.Service.text = '';
 
+                this.StartData = null;
+
                 this.Venta.id = null;
                 this.Venta.total = null;
                 this.Venta.total_faltante = null;
-                this.Venta.total_start = null;
+                this.Venta.total_descuento = null;
+                this.Venta.total_venta = null;
+                // this.Venta.total_inicial = null;
                 this.Venta.centro_id = null;
-                this.Venta.tipo = null;
+                // this.Venta.tipo = null;
                 this.Venta.tipo_pago = null;
                 this.Venta.tipo_entrega = null;
                 this.Venta.tipo_precio = null;
+                this.Venta.created_at = null;
 
                 this.Cliente.id = null;
                 this.Cliente.documento = null;
@@ -1213,13 +1602,19 @@
                 this.Cliente.ruc = null;
                 this.Cliente.razon_social = null;
                 this.Cliente.tipo = null;
+                this.Cliente.search = null;
+                this.Cliente.trash = null;
 
                 this.ListaPago = null;
                 this.Pago.monto = null;
 
-                this.Vale.id = null;
-                this.Vale.monto = null;
-                this.Vale.created_at = null;
+                this.ValeU.id = null;
+                this.ValeU.monto = null;
+                this.ValeU.created_at = null;
+
+                this.ValeG.id = null;
+                this.ValeG.monto = null;
+                this.ValeG.created_at = null;
 
                 this.ListaProducto = null;
 
@@ -1245,7 +1640,7 @@
                             break;
                         case 1: // tipo de venta
                             if( this.Venta.tipo_pago == 2 || this.Venta.tipo_pago == 3 ){
-                                if ( this.Pago.monto < 0 || this.Pago.monto == '' ){
+                                if ( Number.parseFloat(this.Pago.monto) < 0 || this.Pago.monto == '' ){
                                     this.Error.mensaje.push('El pago inicial debe ser mayor o igual a 0')
                                 } else if (this.Pago.monto > this.Venta.total){
                                     this.Error.mensaje.push('El pago inicial no debe ser mayor al monto total')
@@ -1283,7 +1678,9 @@
                             }
                             break;
                         case 4: // monto de pago
-                            if (this.Pago.monto == '' || this.Pago.monto <= 0 || this.Pago.monto > Number.parseFloat(this.Venta.total_faltante)) this.Error.mensaje.push('Debe ingresar un monto válido');
+                            if ( this.Pago.monto == '' || Number.parseFloat(this.Pago.monto) <= 0 || Number.parseFloat(this.Pago.monto) > Number.parseFloat(this.Venta.total_faltante) ) {
+                                this.Error.mensaje.push('Debe ingresar un monto válido');
+                            }
                             break;
                         case 5: // cambio de valores
                             let change1 = false, change2 = false, change3 = false;
@@ -1348,7 +1745,7 @@
 
                         const persona = response.data.persona[0];
                         
-                        if (persona.razon_social != null){ //Es una EMPRESA
+                        if ( persona.razon_social != null ){ //Es una EMPRESA
                             me.Cliente.tipo = 'E';
                             me.Cliente.razon_social = persona.razon_social;
                             me.Cliente.ruc = me.Service.document;
@@ -1361,11 +1758,11 @@
 
                         me.Cliente.id = persona.id;
                         me.Cliente.documento = me.Service.document;
-                        me.Cliente.documento = me.Service.document;
+                        me.Cliente.trash = true;
 
                         me.Service.document = '';
 
-                        me.get(1, persona.id);
+                        me.get('vale', persona.id);
                     } else { //No esxiste la persona en la db
                         if ( me.Service.document.length == 8 ){
                             me.consultarDNI();
@@ -1383,7 +1780,7 @@
 
                 $.ajax({
                     type: 'GET',
-                    url: "http://localhost:8080/Reniec/demo.php",
+                    url: "http://localhost:80/Reniec/demo.php",
                     data: "dni="+dni,
                     beforeSend(){
                         me.Service.msm = 'Consultado...';
@@ -1402,6 +1799,7 @@
                             me.Cliente.documento = persona.dni;
                             me.Cliente.nombres = persona.nombres;
                             me.Cliente.apellidos = persona.apellidos;
+                            me.Cliente.trash = true;
                         } else {
                             me.Service.msm = 'El DNI no existe';
                             me.Service.msmclass = 'badge badge-primary';
@@ -1417,7 +1815,7 @@
 
                 $.ajax({
                     type: 'GET',
-                    url: "http://localhost:8080/SunatPHP/demo.php",
+                    url: "http://localhost:80/SunatPHP/demo.php",
                     data: "ruc="+ruc,
                     beforeSend(){
                         me.Service.msm = 'Consultado...';
@@ -1435,6 +1833,7 @@
                             me.Cliente.tipo = 'E';
                             me.Cliente.documento = empresa.RUC;
                             me.Cliente.razon_social = empresa.RazonSocial;
+                            me.Cliente.trash = true;
                         } else {
                             me.Service.msm = 'El RUC no existe';
                             me.Service.msmclass = 'badge badge-primary';
@@ -1458,7 +1857,7 @@
 
                         axios.get(url).then(function(response){
                             if ( response.data.length == 1 && me.Service.text == response.data[0].codigo ){
-                                if ( response.data[0].detalle.substock > 0 ) me.add(0, response.data[0]);
+                                if ( response.data[0].detalle.substock > 0 ) me.add('detalle_venta', response.data[0]);
                                 else me.ListaProducto = response.data;
                                 me.Service.text = '';
                             } else {
@@ -1469,7 +1868,7 @@
                             console.log(error);
                         });
                         break;
-                    case 1:
+                    case 1: //lista de detalles de venta para "VER" y "EDITAR"
                         url = this.Ruta.detalle_venta+'/list'+data+'?'
                                         +'venta_id='+this.Venta.id;
 
@@ -1480,7 +1879,7 @@
                             console.log(error);
                         });
                         break;
-                    case 2:
+                    case 'pago':
                         url = this.Ruta.pago+'/listVenta?'
                                         +'venta_id='+this.Venta.id;
 
@@ -1494,7 +1893,7 @@
             },
             add(numero, data = ''){
                 switch (numero) {
-                    case 0:
+                    case 'detalle_venta':
                         let found = false;
                         for (let i = 0; i < this.ListaDetalle.length; i++) {
                             if ( this.ListaDetalle[i].detalle_producto_id == data.detalle.id ){
@@ -1517,21 +1916,21 @@
                                 subtotal: Number.parseFloat(this.Venta.tipo_precio=='1'?data.detalle.precio_menor:data.detalle.precio_mayor).toFixed(2)
                             });
                         } else {
-                            this.update(0);
+                            this.update('subtotal');
                         }
-                        this.update(1);
+                        this.update('total_venta');
                         break;
-                    case 1:
+                    case 'pago':
                         if ( this.validar([4]) ) return;
 
                         this.ListaPago.push({
-                            monto: Number.parseFloat(this.Pago.monto).toFixed(2),
+                            monto: Number.parseFloat(this.Pago.monto),
                             created_at: this.get(0),
                             color: 'table-success',
                             estado: 1 // 1: nuevo
                         });
                         this.Pago.monto = '';
-                        this.update(2);
+                        this.update('total_faltante');
                         break;
                 }
             },
@@ -1539,43 +1938,51 @@
                 var updated = '';
 
                 switch (numero) {
-                    case 0:
+                    case 'subtotal':
                         this.ListaDetalle.forEach(detalle => {
-                            detalle.subtotal = (this.Venta.tipo_precio=='1'?detalle.precio_menor:detalle.precio_mayor)*detalle.cantidad;
-                        })
-                        this.update(1);
-                        break;
-                    case 1:
-                        this.Venta.total = 0;
-                        this.ListaDetalle.forEach(detalle => {
-                            this.Venta.total += Number.parseFloat(detalle.subtotal);
+                            let precio = this.Venta.tipo_precio=='1'?detalle.precio_menor:(this.Venta.tipo_precio=='2'?detalle.precio_mayor:0);
+                            detalle.subtotal = Number.parseFloat(precio) * Number.parseFloat(detalle.cantidad!=''?detalle.cantidad:0);
                         });
+                        this.update('total_venta');
                         break;
-                    case 2:
-                        this.Venta.total_faltante = this.Venta.total;
+                    case 'total_venta':
+                        this.Venta.total_venta = 0;
+                        this.ListaDetalle.forEach(detalle => {
+                            this.Venta.total_venta += Number.parseFloat(detalle.subtotal);
+                        });
+                        this.update('total');
+                        break;
+                    case 'total_descuento':
+                        this.Venta.total_descuento = this.ValeU.monto==null?0:Number.parseFloat(this.ValeU.monto);
+                        this.update('total');
+                        break;
+                    case 'total':
+                        this.Venta.total = this.Venta.total_venta - this.Venta.total_descuento;
+                        break;
+                    case 'total_faltante':
+                        this.Venta.total_faltante = Number.parseFloat(this.Venta.total);
                         this.ListaPago.forEach( pago => {
-                            this.Venta.total_faltante = Number.parseFloat(this.Venta.total_faltante)-Number.parseFloat(pago.monto);
+                            this.Venta.total_faltante -= Number.parseFloat(pago.monto);
                         });
-                        this.Venta.total_faltante = Number.parseFloat(this.Venta.total_faltante).toFixed(2);
                         break;
                     case 3:
                         this.ListaDetalle.forEach(detalle => {
                             detalle.subtotal = (this.Venta.tipo_precio=='1'?detalle.precio_menor:detalle.precio_mayor) * (detalle.cantidad-detalle.fallidos);
                         })
-                        this.update(1);
+                        this.update('total_venta');
                         this.update(4);
                         break;
                     case 4:
-                        if ( this.Venta.total > this.Venta.total_minimo && this.Venta.tipo_pago == '1') {
+                        if ( this.Venta.total > this.Venta.total_inicial && this.Venta.tipo_pago == '1') {
                             this.Venta.tipo_pago = '2';
                         } 
-                        if ( this.Venta.total <= this.Venta.total_minimo && this.Venta.tipo.charAt(0) == '1' ) {
+                        if ( this.Venta.total <= this.Venta.total_inicial && this.Venta.tipo.charAt(0) == '1' ) {
                             this.Venta.tipo_pago = '1';
                         }
                         break;
                     case 5: //actualizar el total de la venta
                         updated = Number.parseFloat(this.Venta.total);
-                        if ( this.Vale.id != null ) updated -= Number.parseFloat(this.Vale.monto);
+                        if ( this.ValeU.id != null ) updated -= Number.parseFloat(this.ValeU.monto);
                         if ( updated < 0 ) updated = 0;
                         break;
                     case 6:
@@ -1594,13 +2001,13 @@
                 switch (numero) {
                     case 0:
                         this.ListaDetalle.splice(data, 1);
-                        this.update(1);
+                        this.update('total_venta');
                         break;
-                    case 1:
-                        this.Vale.id = null;
-                        this.Vale.monto = null;
-                        this.Vale.created_at = null;
-                    case 2:
+                    case 'vale':
+                        this.ValeU.id = null;
+                        this.ValeU.monto = null;
+                        this.ValeU.created_at = null;
+                    case 'cliente':
                         this.Cliente.id = null;
                         this.Cliente.documento = '';
                         this.Cliente.nombres = null;
@@ -1609,6 +2016,7 @@
                         this.Cliente.razon_social = null;
                         this.Cliente.ruc = null;
                         this.Cliente.tipo = null;
+                        this.Cliente.trash = false;
                         break;
                 }
             },
@@ -1634,15 +2042,6 @@
                     case 3:
                         fixed = (new Date()).getFullYear();
                         break;
-                    case 4:
-                        if ( data == '1' ) fixed = 'Contado'; 
-                        if ( data == '2' ) fixed = 'Credito Prepago'; 
-                        if ( data == '3' ) fixed = 'Credito Postpago'; 
-                        break;
-                    case 5:
-                        if ( data == '1' ) fixed = 'Al por menor'; 
-                        if ( data == '2' ) fixed = 'Al por mayor'; 
-                        break;
                     case 6:
                         for (let i = 0; i < this.ListaDetalle.length; i++) {
                             if ( this.ListaDetalle[i].fallidos == null ) this.ListaDetalle[i].fallidos = 0;
@@ -1665,6 +2064,18 @@
                     case 10:
                         fixed = data.split(' ')[0].split('-')[0];
                         break; 
+                    case 'tipo_pago': //para conseguir el nombre del tipo de pago
+                        if ( this.Venta.tipo_pago == '1' ) fixed = "Contado";
+                        if ( this.Venta.tipo_pago == '2' ) fixed = "Credito";
+                        break;
+                    case 'tipo_entrega': //para conseguir el nombre del tipo de entrega
+                        if ( this.Venta.tipo_entrega == '1' ) fixed = "Prepago";
+                        if ( this.Venta.tipo_entrega == '2' ) fixed = "Postpago";
+                        break;
+                    case 'tipo_precio': //para conseguir el nombre del tipo de precio
+                        if ( this.Venta.tipo_precio == '1' ) fixed = 'Al por menor'; 
+                        if ( this.Venta.tipo_precio == '2' ) fixed = 'Al por mayor'; 
+                        break;
                     default:
                         fixed = '';
                         break;
@@ -1688,7 +2099,12 @@
                         let seg = n.getSeconds().toString().padStart(2, 0);
                         got =  y + '-' + m + '-' + d + ' ' + h + ':' + minu + ':' + seg;
                         break;
-                    case 1:
+                    case 'vale':
+                        if ( this.Modal.numero == 3 ){
+                            if ( this.Venta.tipo_pago == '1' ) break;
+                            if ( this.Venta.tipo_pago == '2' && this.Venta.total_faltante > 0 ) break;
+                        }
+
                         url = this.Ruta.vale+'/get';
 
                         axios.get(url, {
@@ -1696,19 +2112,19 @@
                                 'id': data
                             }
                         }).then(function (response) {
-                            if ( response.data.state == 'success' ) {
-                                me.Vale.id = response.data.vale.id;
-                                me.Vale.monto = response.data.vale.monto;
-                                me.Vale.created_at = response.data.vale.created_at;
+                            if ( response.data.state == 'success' && response.data.vale != null ) {
+                                me.ValeU.id = response.data.vale.id;
+                                me.ValeU.monto = response.data.vale.monto;
+                                me.ValeU.created_at = response.data.vale.created_at;
                             } else {
-                                me.Vale.id = null;
-                                me.Vale.monto = null;
-                                me.Vale.created_at = null;
+                                me.ValeU.id = null;
+                                me.ValeU.monto = null;
+                                me.ValeU.created_at = null;
                             }
                         }).catch(function (error) {
-                            me.Vale.id = null;
-                            me.Vale.monto = null;
-                            me.Vale.created_at = null;
+                            me.ValeU.id = null;
+                            me.ValeU.monto = null;
+                            me.ValeU.created_at = null;
 
                             console.log(error);
                         });

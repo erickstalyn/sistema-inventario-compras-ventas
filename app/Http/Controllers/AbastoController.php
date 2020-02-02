@@ -210,6 +210,26 @@ class AbastoController extends Controller
         $cont = Abasto::count();
         
         $pdf = \PDF::loadView('pdf.abastopdf', ['abasto'=>$abasto, 'cont'=>$cont])->setPaper('a4', 'landscape');
-        return $pdf->download('abastos_silmar.pdf');
+        return $pdf->download('lista_abastos_silmar.pdf');
+    }
+
+    public function generatePdfSpecific(Request $request){
+        $abasto = Abasto::select('abasto.id as id', DB::raw("concat_ws(' ', persona.nombres, persona.apellidos) as proveedor_persona"),
+            'persona.razon_social as proveedor_empresa', 'persona.dni as dni', 'persona.ruc as ruc',
+            'centro_to_id', 'centro.nombre as nombre_centro', 'abasto.created_at as fecha_envio',
+            'abasto.total as total', 'abasto.total_faltante as total_faltante',
+            'abasto.tipo as tipo_abasto', 'envio.estado as estado_envio')
+            ->join('persona', 'abasto.proveedor_id', '=', 'persona.id')
+            ->leftjoin('envio', 'abasto.id', '=', 'envio.abasto_id')
+            ->leftjoin('centro', 'envio.centro_to_id', 'centro.id')
+            ->where('abasto.centro_id', '=', null)
+            ->where('abasto.id', '=', $request->code)
+            ->orderBy('abasto.id', 'desc')->take(1)->get();
+
+        $detalles = Abasto::findOrFail($request->code)->getDetalles;
+
+        $pdf = \PDF::loadView('pdf.comprobante_abasto', ['abasto'=>$abasto, 'detalles'=>$detalles]);
+        return $pdf->download('lista_abasto_silmar_' . $request->code . '.pdf');
+            
     }
 }

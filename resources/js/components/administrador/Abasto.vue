@@ -614,7 +614,12 @@
                     <div class="modal-footer" v-if="permisoModalFooter">
                         <div class="row form-group col-md-12 d-flex justify-content-around">
                             <div v-if="Modal.accion">
-                                <button type="button" @click="accionar(Modal.accion)" class="btn btn-success" v-text="Modal.accion"></button>
+                                <button type="button" @click="accionar(Modal.accion)" :class="[Modal.accion == 'Generar comprobante' ? 'btn btn-danger' : 'btn btn-success']">
+                                    <div v-if="Modal.accion == 'Generar comprobante'">
+                                        <i class="far fa-file-pdf"></i>&nbsp; {{Modal.accion}}
+                                    </div>
+                                    <div v-else>{{Modal.accion}}</div>
+                                </button>
                             </div>
                             <button type="button" @click="cerrarModal()" class="btn btn-secondary" v-text="Modal.cancelar"></button>
                         </div>
@@ -717,7 +722,12 @@
                     sumaPagos: 0.00,
                 },
                 Ruta: {
+<<<<<<< HEAD
                     server: 'http://67.205.189.29:80'
+=======
+                    serverApache: 'http://localhost:80',
+                    serverPhp: 'http://127.0.0.1:8000'
+>>>>>>> master
                 }
             }
         },
@@ -926,8 +936,13 @@
                 let ruc = me.DatosServicio.documento;
                 $.ajax({
                     type: 'GET',
+<<<<<<< HEAD
                     url: me.Ruta.server + '/misunat/src/consulta.php',
                     data: 'nruc=' +ruc,
+=======
+                    url: me.Ruta.serverApache + '/SunatPHP/demo.php',
+                    data: 'ruc=' + ruc,
+>>>>>>> master
                     beforeSend(){
                         me.Carga.clase = 'spinner-border spinner-border-sm text-primary';
                         me.DatosServicio.alert = 'badge badge-info';
@@ -958,8 +973,13 @@
                 let dni = me.DatosServicio.documento;
                 $.ajax({
                     type: 'GET',
+<<<<<<< HEAD
                     url: me.Ruta.server + '/Reniec/demo.php',
                     data: 'dni=' +dni,
+=======
+                    url: me.Ruta.serverApache + '/Reniec/demo.php',
+                    data: 'dni=' + dni,
+>>>>>>> master
                     beforeSend(){
                         me.Carga.clase = 'spinner-border spinner-border-sm text-primary';
                         me.DatosServicio.alert = 'badge badge-info';
@@ -997,6 +1017,7 @@
                     this.DatosProveedor.documento = abasto['ruc'];
                     this.DatosProveedor.razon_social = abasto['proveedor_empresa'];
                 }
+                this.Abasto.id = abasto['id'];
                 this.Abasto.nombre_centro = abasto['nombre_centro'];
                 this.Abasto.estado_envio = abasto['estado_envio'];
                 this.Abasto.tipo_abasto = abasto['tipo_abasto'];
@@ -1004,7 +1025,7 @@
 
                 this.listarPagos(abasto['id']);
                 this.listarDetallesAbasto(abasto['id']);
-                this.abrirModal(2, 'Ver Abasto', '', 'Cerrar', 'modal-xl modal-dialog-scrollable');
+                this.abrirModal(2, 'Ver Abasto', 'Generar comprobante', 'Cerrar', 'modal-xl modal-dialog-scrollable');
             },
             abrirModal(numero, titulo, accion, cancelar, size){
                 this.Modal.estado = 1;
@@ -1016,14 +1037,15 @@
             },
             accionar(accion){
                 switch( accion ){
-                    case 'Agregar': {
+                    case 'Agregar': 
                         this.agregar();
                         break;
-                    }
-                    case 'Guardar': {
+                    case 'Guardar': 
                         this.agregarPago();
                         break;
-                    }
+                    case 'Generar comprobante': 
+                        this.generatePdfSpecific();
+                        break;
                 }
             },
             validar(){
@@ -1362,7 +1384,14 @@
                 return fixed;
             },
             generatePdf(){
+<<<<<<< HEAD
                 window.open(this.Ruta.server + '/abasto/generatePdf','_blank');
+=======
+                window.open(this.Ruta.serverPhp + '/abasto/generatePdf','_blank');
+            },
+            generatePdfSpecific(){
+                window.open(this.Ruta.serverPhp + '/abasto/generatePdfSpecific?code=' + this.Abasto.id,'_blank');
+>>>>>>> master
             }
         },
         mounted() {

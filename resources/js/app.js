@@ -54,7 +54,7 @@ Vue.component('noti_venta_alm', require('./components/Notificacion/Notification_
 const app = new Vue({
     el: '#app',
     data:{
-        menu: 1,
+        menu: 3,
         notifications:[],
     },
     created(){

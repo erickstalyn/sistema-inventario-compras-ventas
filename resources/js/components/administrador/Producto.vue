@@ -440,7 +440,11 @@
                     productomaterial: '/productomaterial',
                     material: '/material',
                     data: '/data',
+<<<<<<< HEAD
                     server: 'http://67.205.189.29:80'
+=======
+                    serverPhp: 'http://127.0.0.1:8000'
+>>>>>>> master
                 }
             }
         },
@@ -941,7 +945,11 @@
                 }
             },
             generatePdf(){
+<<<<<<< HEAD
                 window.open(this.Ruta.server + '/producto/generatePdf','_blank');
+=======
+                window.open(this.Ruta.serverPhp + '/producto/generatePdf','_blank');
+>>>>>>> master
             }
         },
         mounted() {

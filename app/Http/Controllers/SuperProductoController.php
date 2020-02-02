@@ -114,7 +114,7 @@ class SuperProductoController extends Controller{
         $cont = SuperProducto::count();
         
         $pdf = \PDF::loadView('pdf.superproductopdf', ['superproducto'=>$superproducto, 'cont'=>$cont]);
-        return $pdf->download('superproductos_silmar.pdf');
+        return $pdf->download('lista_superproductos_silmar.pdf');
     }
 
 }

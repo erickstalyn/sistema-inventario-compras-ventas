@@ -27,7 +27,7 @@ class VentaController extends Controller {
         $mes = $request->mes;
         $year = $request->year;
 
-        $ventas = Venta::select('venta.id', 'venta.codigo', 'venta.tipo', 'venta.total', 'venta.total_faltante', 'venta.created_at', 
+        $ventas = Venta::select('venta.id', 'venta.codigo', 'venta.tipo', 'venta.total', 'venta.total_faltante', 'venta.total_descuento', 'venta.total_venta', 'venta.created_at', 
                                 'persona.id as cliente_id', 'persona.dni', 'persona.ruc', 'persona.nombres', 'persona.apellidos', 'persona.razon_social', 'persona.tipo as cliente_tipo',
                                 'vale.id as vale_id', 'vale.monto as vale_monto', 'vale.created_at as vale_created_at')
                     ->leftJoin('persona', 'persona.id', '=', 'venta.cliente_id')
@@ -97,24 +97,24 @@ class VentaController extends Controller {
                     $persona = Persona::findOrFail($dataCliente['id']);
                     $persona->cliente = 1;
                     $persona->save();
-                } else if ( $dataCliente['id'] == 0 ) { //nuevo
-                    $persona = new Persona();
-                    $persona->cliente = 1;
-                    if ( strlen($dataCliente['documento']) == 8 ){
-                        $persona->dni = $dataCliente['documento'];
-                        $persona->nombres = mb_convert_case($dataCliente['nombres'], MB_CASE_TITLE, "UTF-8");
-                        $persona->apellidos = mb_convert_case($dataCliente['apellidos'], MB_CASE_TITLE, "UTF-8");
-                        $persona->tipo = 'P';
-                    }else{
-                        $persona->ruc = $dataCliente['documento'];
-                        $persona->razon_social = $dataCliente['razon_social'];
-                        $persona->tipo = 'E';
-                    }
-                    $persona->save();
-                    $dataCliente['id'] = $persona->id;
                 } else { //excepciones
                     $dataCliente['id'] = NULL;
                 }
+            } else if ( $dataCliente['documento'] != NULL ) { //nuevo
+                $persona = new Persona();
+                $persona->cliente = 1;
+                if ( strlen($dataCliente['documento']) == 8 ){
+                    $persona->dni = $dataCliente['documento'];
+                    $persona->nombres = mb_convert_case($dataCliente['nombres'], MB_CASE_TITLE, "UTF-8");
+                    $persona->apellidos = mb_convert_case($dataCliente['apellidos'], MB_CASE_TITLE, "UTF-8");
+                    $persona->tipo = 'P';
+                } else {
+                    $persona->ruc = $dataCliente['documento'];
+                    $persona->razon_social = $dataCliente['razon_social'];
+                    $persona->tipo = 'E';
+                }
+                $persona->save();
+                $dataCliente['id'] = $persona->id;
             }
             
             {
@@ -126,38 +126,36 @@ class VentaController extends Controller {
 
             //venta
             $venta = new Venta();
-            $venta->centro_id = $dataVenta['centro_id'];
-            $venta->tipo = $dataVenta['tipo_pago'].$dataVenta['tipo_entrega'].$dataVenta['tipo_precio'];
-            $venta->total = $dataVenta['total'];
-            if ( $dataVenta['tipo_pago'] == '2' ) $venta->total_faltante = $dataVenta['total'];
-            $venta->cliente_id = $dataCliente['id'];
-            $venta->codigo = $codigo;
-            $venta->created_at = $now;
-            $venta->updated_at = NULL;
+            $venta->centro_id = $dataVenta['centro_id'];    // centro_id
+            $venta->tipo = $dataVenta['tipo_pago'].$dataVenta['tipo_entrega'].$dataVenta['tipo_precio'];    // tipo
+            $venta->total = $dataVenta['total'];    // total
+            $venta->total_venta = $dataVenta['total_venta'];    //total_venta
+            if ( $dataVale['monto'] != null && $dataVenta['total_descuento'] != null ) {    // total_descuento
+                if ( $dataVale['monto'] > 0 && $dataVenta['total_descuento'] > 0 ) {
+                    $venta->total_descuento = $dataVenta['total_descuento'];
+                }
+            }
+            if ( $dataVenta['tipo_pago'] == '2' ) { // total_faltante
+                $venta->total_faltante = $dataVenta['total'];
+            }
+            $venta->cliente_id = $dataCliente['id'];    // cliente_id
+            $venta->codigo = $codigo;   // codigo
+            $venta->created_at = $now;  // created_at
+            $venta->updated_at = NULL;  // updated_at
             $venta->save();
 
             //vale
             if ( $dataVale['id'] != null ) {
                 if ( $dataVale['id'] > 0 ) {
                     $vale = Vale::findOrFail($dataVale['id']);
-                    $vale->venta_usada_id = $venta->id;
-                    $vale->updated_at = $now;
+                    $vale->venta_usada_id = $venta->id; // venta_usada_id
+                    $vale->updated_at = $now;   // updated_at
                     $vale->save();
-
-                    if ( $vale->monto > $venta->total ) {
-                        $venta->total = 0;
-                        $venta->total_faltante = NULL;
-                    } else {
-                        $venta->total -= $vale->monto;
-                        $venta->total_faltante = $venta->total;
-                    }
-                    $venta->updated_at = NULL;
-                    $venta->save();
                 }
             }
 
             //pago
-            if ( ($dataVenta['tipo_pago'] == '2' ) && $dataPago['monto'] != NULL ){
+            if ( $dataVenta['tipo_pago'] == '2' && $dataPago['monto'] != NULL ){
                 if ( $dataPago['monto'] > 0 ) {
                     $pago = new Pago();
                     $pago->monto = $dataPago['monto'];
