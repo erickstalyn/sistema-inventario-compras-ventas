@@ -61,7 +61,7 @@
         }
 
         #facliente{
-        width: 40%;
+        /* width: 100%; */
         border-collapse: collapse;
         border-spacing: 0;
         margin-bottom: 15px;
@@ -74,7 +74,8 @@
 
         #facliente thead{
         padding: 20px;
-        background: #2183E3;
+        /* background: #00b894; */
+        background: #000000;
         text-align: left;
         border-bottom: 1px solid #FFFFFF;  
         }
@@ -101,9 +102,9 @@
         }
 
         #facarticulo thead{
-        padding: 20px;
-        background: #2183E3;
-        text-align: center;
+        padding: 5px;
+        background: #000000;
+        text-align: left;
         border-bottom: 1px solid #FFFFFF;  
         }
 
@@ -119,15 +120,20 @@
             </div>
             <div id="datos">
                 <p id="encabezado">
-                    <b>SILMAR</b><br>José Gálvez 1368, Lambayeque - Chiclayo, Perú<br>Telefono:(+51)931742904<br>Email: empresa_silmar@gmail.com
+                    <b>EMPRESA SILMAR</b>
+                    <br>José Gálvez 1368, Lambayeque - Chiclayo, Perú
+                    <br>Telefono:(+51)931742904<br>
+                    Email: empresa_silmar@gmail.com<br><br>
+                    <u><i>Reporte de abastecimiento</i></u>
                 </p>
             </div>
             <div id="fact">
                 <p style="font-size: 15px;">
-                    @php
+                    {{-- @php
                         $date = new DateTime($aba->fecha_envio);
                         echo $date->format('d/m/Y');
-                    @endphp
+                    @endphp --}}
+                    {{date("d/m/Y")}}
                 </p>
             </div>
         </header>
@@ -136,106 +142,111 @@
             <div>
                 <table id="facliente">
                     <thead>                        
-                        <tr>
-                            <th id="fac">Proveedor</th>
+                        <tr id="fa">
+                            <th style="width: 18rem">Proveedor</th>
+                            <th style="width: 8rem">Alm. Dest.</th>
+                            <th style="width: 8rem">Fec. Envío</th>
+                            <th style="width: 8rem">Est. Envio</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                        <th>
-                            @if($aba->dni)
-                                <p id="cliente">Sr(a). {{$aba->proveedor_persona}}<br>
-                                DNI: {{$aba->dni}}<br>
-                                </p>
-                            @else
-                                <p id="cliente">{{$aba->razon_social}}<br>
-                                RUC: {{$aba->ruc}}<br>
-                                </p>
-                            @endif
-                        </th>
+                            <td>
+                                @if($aba->dni)
+                                    <p >Sr(a). {{$aba->proveedor_persona}}<br>
+                                    DNI: {{$aba->dni}}<br>
+                                    </p>
+                                @else
+                                    <p >Empresa: {{$aba->proveedor_empresa}}<br>
+                                    RUC: {{$aba->ruc}}<br>
+                                    </p>
+                                @endif
+                            </td>
+                            <td>
+                                {{$aba->nombre_centro}}
+                            </td>
+                            <td>
+                                @php
+                                    $date = new DateTime($aba->fecha_envio);
+                                    echo $date->format('d/m/Y');
+                                @endphp
+                            </td>
+                            <td>
+                                @if($aba->estado_envio == 0)
+                                    Enviado
+                                @elseif($aba->estado_envio == 1)
+                                    Aceptado
+                                @else
+                                    Rechazado
+                                @endif
+                            </td>
                         </tr>
                     </tbody>
                 </table>
+                {{-- <p style="font-size: 15px;">Reporte de abastecimiento
+                    <br>
+                        @php
+                            $date = new DateTime($aba->fecha_envio);
+                            echo $date->format('d/m/Y');
+                        @endphp
+                    <br>
+                </p> --}}
             </div>
         </section>
-        <br>
         {{-- <section>
             <div>
-                <table id="facvendedor">
-                    <thead>
-                        <tr id="fv">
-                            <th>VENDEDOR</th>
-                            <th>FECHA</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>{{$aba->usuario}}</td>
-                            <td>{{$aba->created_at}}</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <p style="font-size: 15px;">Reporte de abastecimiento
+                    <br>
+                        @php
+                            $date = new DateTime($aba->fecha_envio);
+                            echo $date->format('d/m/Y');
+                        @endphp
+                    <br>
+                </p>
             </div>
         </section> --}}
         @endForeach
         <br>
-        {{-- <section>
+        <section>
             <div>
                 <table id="facarticulo">
                     <thead>
                         <tr id="fa">
-                            <th>CANT</th>
-                            <th>DESCRIPCION</th>
-                            <th>PRECIO UNIT</th>
-                            <th>DESC.</th>
-                            <th>PRECIO TOTAL</th>
+                            <th>Nombre</th>
+                            <th>Cant.</th>
+                            <th>P. unit.</th>
+                            <th style="padding-left: 23px">Subtotal</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($detalles as $det)
                         <tr>
-                            <td>{{$det->cantidad}}</td>
-                            <td>{{$det->articulo}}</td>
-                            <td>{{$det->precio}}</td>
-                            <td>{{$det->descuento}}</td>
-                            <td>{{$det->cantidad*$det->precio-$det->descuento}}</td>
+                            <td >{{$det->nombre_producto}}</td>
+                            <td >{{$det->cantidad}}</td>
+                            <td >{{$det->costo_abasto}}</td>
+                            <td style="padding-left: 23px">{{$det->subtotal}}</td>
                         </tr>
                         @endForeach
                     </tbody>
                     <tfoot>
-                        @foreach($abaenta as $aba)
+                        @foreach($abasto as $aba)
                         <tr>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th>SUBTOTAL</th>
-                            <td>$ {{round($aba->total-($aba->total*$aba->impuesto), 2)}}</td>
-                        </tr>
-                        <tr>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th>Impuesto</th>
-                            <td>$ {{round($aba->total*$aba->impuesto, 2)}}</td>
-                        </tr>
-                        <tr>
-                            <th></th>
                             <th></th>
                             <th></th>
                             <th>TOTAL</th>
-                            <td>$ {{$aba->total}}</td>
+                            <td>s/ {{$aba->total}}</td>
                         </tr>
                         @endForeach
                     </tfoot>
                 </table>
             </div>
-        </section> --}}
-        <br>
+        </section>
+        {{-- <br>
         <br>
         <footer>
             <div id="gracias">
                 <p><b>Gracias por su compra!</b></p>
             </div>
-        </footer>
+        </footer> --}}
     </body>
 </html>
