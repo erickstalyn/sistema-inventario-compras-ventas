@@ -112,6 +112,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/superproducto/generatePdf', 'SuperProductoController@generatePdf');
         Route::get('/producto/generatePdf', 'ProductoController@generatePdf');
         Route::get('/abasto/generatePdf', 'AbastoController@generatePdf');
+        Route::get('/abasto/generatePdfSpecific', 'AbastoController@generatePdfSpecific');
 
     });
     Route::group(['middleware' => ['Puesto']], function (){
