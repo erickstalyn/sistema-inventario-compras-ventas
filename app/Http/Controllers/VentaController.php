@@ -100,7 +100,7 @@ class VentaController extends Controller {
                 } else { //excepciones
                     $dataCliente['id'] = NULL;
                 }
-            } else if ( $dataCliente['id'] == null ) { //nuevo
+            } else if ( $dataCliente['documento'] != NULL ) { //nuevo
                 $persona = new Persona();
                 $persona->cliente = 1;
                 if ( strlen($dataCliente['documento']) == 8 ){

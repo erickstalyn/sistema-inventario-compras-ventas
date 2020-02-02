@@ -217,10 +217,10 @@
                                             <label class="h5 text-danger ">Sin detalles de venta</label>
                                         </div>
                                         <div class="col-md-12 input-group mt-2">
-                                            <div class="col-md-7">
+                                            <div class="col-md-6">
                                             </div>
-                                            <div class="col-md-5 input-group">
-                                                <label class="col-md-6 text-right font-weight-bold h5 p-0">Total de venta:</label>
+                                            <div class="col-md-6 input-group">
+                                                <label class="col-md-6 text-right font-weight-bold h5 p-0">Monto de venta:</label>
                                                 <label class="col-md-6 text-right text-info h5 p-0" v-text="'S/. '+Number.parseFloat(Venta.total_venta).toFixed(2)"></label>
                                             </div>
                                         </div>
@@ -249,7 +249,7 @@
                                         <div class="col-md-12 form-group input-group" v-if="Cliente.tipo=='P'">
                                             <div class="col-md-3 input-group">
                                                 <label class="col-md-3">DNI</label>
-                                                <input type="text" class="col-md-9 form-control form-control-sm" readonly v-model="Cliente.documento">
+                                                <input type="text" class="col-md-9 form-control form-control-sm" readonly v-model="Cliente.dni">
                                             </div>
                                             <div class="col-md-4 input-group">
                                                 <label class="col-md-4">Nombres</label>
@@ -260,7 +260,7 @@
                                                 <input type="text" class="col-md-8 form-control form-control-sm" readonly v-model="Cliente.apellidos">
                                             </div>
                                             <div class="col-md-1 d-flex justify-content-center" v-if="Venta.tipo_pago=='1'">
-                                                <button type="button" class="btn btn-circle btn-sm btn-outline-danger" @click="remove(1)" title="ELIMINAR"> 
+                                                <button type="button" class="btn btn-circle btn-sm btn-outline-danger" @click="remove('cliente')" title="ELIMINAR"> 
                                                     <i class="fas fa-trash-alt"></i>
                                                 </button>
                                             </div>
@@ -268,14 +268,14 @@
                                         <div class="col-md-12 form-group input-group" v-else-if="Cliente.tipo=='E'">
                                             <div class="col-md-3 input-group">
                                                 <label class="col-md-3">RUC</label>
-                                                <input type="text" class="col-md-9 form-control form-control-sm" readonly v-model="Cliente.documento">
+                                                <input type="text" class="col-md-9 form-control form-control-sm" readonly v-model="Cliente.ruc">
                                             </div>
                                             <div class="col-md-8 input-group">
                                                 <label class="col-md-3">Razón social</label>&nbsp;
                                                 <input type="text" class="col-md-9 form-control form-control-sm" readonly v-model="Cliente.razon_social">
                                             </div>
                                             <div class="col-md-1 d-flex justify-content-center" v-if="Venta.tipo_pago=='1'">
-                                                <button type="button" class="btn btn-circle btn-sm btn-outline-danger" @click="remove(1)" title="ELIMINAR"> 
+                                                <button type="button" class="btn btn-circle btn-sm btn-outline-danger" @click="remove('cliente')" title="ELIMINAR"> 
                                                     <i class="fas fa-trash-alt"></i>
                                                 </button>
                                             </div>
@@ -421,6 +421,7 @@
                                             <table class="table table-bordered table-striped table-sm text-gray-900 bg-white">
                                                 <thead>
                                                     <tr class="table-success">
+                                                        <th class="text-center">#</th>
                                                         <th class="text-center">Nombre</th>
                                                         <th class="text-center">Fallidos</th>
                                                         <th class="text-center">Cantidad</th>
@@ -430,6 +431,7 @@
                                                 </thead>
                                                 <tbody>
                                                     <tr v-for="(detalle, indice) in ListaDetalle" :key="indice">
+                                                        <td class="text-right">{{indice+1}}</td>
                                                         <td v-text="detalle.nombre_producto"></td>
                                                         <td class="text-right" v-text="detalle.fallidos==null?'---':detalle.fallidos"></td>
                                                         <td class="text-right" v-text="detalle.cantidad"></td>
@@ -443,7 +445,7 @@
                                             <div class="col-md-6">
                                             </div>
                                             <div class="col-md-6 input-group">
-                                                <label class="col-md-6 text-right font-weight-bold h5 p-0">Total de venta:</label>
+                                                <label class="col-md-6 text-right font-weight-bold h5 p-0">Monto de venta:</label>
                                                 <label class="col-md-6 text-right text-primary h5 p-0" v-text="'S/. '+Number.parseFloat(Venta.total_venta).toFixed(2)"></label>
                                             </div>
                                         </div>
@@ -570,8 +572,7 @@
                             </div>
                         </div>
                         <!-- Modal Numero 3 de EDITAR -->
-
-                        <!-- <div v-if="Modal.numero==3" class="input-group">
+                        <div v-if="Modal.numero==3" class="input-group">
                             <div v-if="Error.estado" class="col-md-12 d-flex justify-content-center">
                                 <div class="col-md-6 alert alert-danger">
                                     <button type="button" @click="close(0)" class="close text-primary" data-dismiss="alert">×</button>
@@ -676,14 +677,11 @@
                                                 </tbody>
                                             </table>
                                         </div>
-                                        <div v-else class="col-md-12" style="height: 19rem;">
-                                            <label class="h5 text-danger ">Sin detalles de venta</label>
-                                        </div>
                                         <div class="col-md-12 input-group mt-2">
-                                            <div class="col-md-7">
+                                            <div class="col-md-6">
                                             </div>
-                                            <div class="col-md-5 input-group">
-                                                <label class="col-md-6 text-right font-weight-bold h5 p-0">Monto total:</label>
+                                            <div class="col-md-6 input-group">
+                                                <label class="col-md-6 text-right font-weight-bold h5 p-0">Monto de venta:</label>
                                                 <label class="col-md-6 text-right text-info h5 p-0" v-text="'S/. '+Number.parseFloat(Venta.total).toFixed(2)"></label>
                                             </div>
                                         </div>
@@ -692,56 +690,57 @@
                             </div>
                             <div class="col-md-12 p-0 m-0 input-group" v-if="Step.number==1" style="height: 26rem;">
                                 <div class="container-small col-md-12 form-group">
-                                    <div class="shadow rounded pt-2 bg-success" style="border: 1px solid; height: 7rem;">
-                                        <div class="col-md-12 input-group form-group">
-                                            <label class="col-md-2 h5 font-weight-bold">CLIENTE</label>
-                                            <label class="col-md-1 font-weight-bold p-0">RUC/DNI&nbsp;<span class="text-danger" v-if="Venta.tipo_pago=='2'||Venta.tipo_pago=='3'">*</span></label>
-                                            <div class="col-md-2 input-group p-0">
-                                                <input type="text" class="form-control form-control-sm" v-model="Service.document" @keyup.enter="consultar()" maxlength="11">
-                                                <button type="button" class="btn btn-sm btn-primary" @click="consultar()">
-                                                    <i class="fas fa-sync-alt"></i>
-                                                </button>
+                                    <div class="shadow rounded pt-2 bg-success input-group" style="border: 1px solid; height: 7rem;">
+                                        <div class="col-md-12 p-0 input-group">
+                                            <div class="col-md-2 form-group">
+                                                <label class="h5 font-weight-bold">CLIENTE</label>
                                             </div>
-                                            <div class="col-md-3">
-                                                <h5>
-                                                    <span role="status" :class="Service.loadclass"></span>&nbsp;
-                                                    <span v-text="Service.msm" :class="Service.msmclass"></span>
-                                                </h5>
+                                            <div class="col-md-10 input-group form-group" v-if="Cliente.search==true">
+                                                <label class="col-md-1 p-0 font-weight-bold">RUC/DNI&nbsp;<span class="text-danger" v-if="Venta.tipo_pago=='2'">*</span></label>
+                                                <div class="col-md-3">
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control form-control-sm" v-model="Service.document" @keyup.enter="consultar()" maxlength="11">
+                                                        <button type="button" class="btn btn-sm btn-primary" @click="consultar()">
+                                                            <i class="fas fa-sync-alt"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <h5>
+                                                        <span role="status" :class="Service.loadclass"></span>&nbsp;
+                                                        <span v-text="Service.msm" :class="Service.msmclass"></span>
+                                                    </h5>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-12 form-group input-group" v-if="Cliente.tipo=='P'">
-                                            <div class="col-md-3 input-group">
+                                        <div class="col-md-11 form-group input-group" v-if="Cliente.tipo=='P'">
+                                            <div class="col-md-4 input-group">
                                                 <label class="col-md-3">DNI</label>
-                                                <input type="text" class="col-md-9 form-control form-control-sm" readonly v-model="Cliente.documento">
+                                                <input type="text" class="col-md-6 form-control form-control-sm" readonly v-model="Cliente.dni">
                                             </div>
                                             <div class="col-md-4 input-group">
-                                                <label class="col-md-4">Nombres</label>
+                                                <label class="col-md-4 p-0">Nombres</label>
                                                 <input type="text" class="col-md-8 form-control form-control-sm" readonly v-model="Cliente.nombres">
                                             </div>
                                             <div class="col-md-4 input-group">
-                                                <label class="col-md-4">Apellidos</label>
+                                                <label class="col-md-4 p-0">Apellidos</label>
                                                 <input type="text" class="col-md-8 form-control form-control-sm" readonly v-model="Cliente.apellidos">
                                             </div>
-                                            <div class="col-md-1 d-flex justify-content-center" v-if="Venta.tipo_pago=='1'&&ValeU.id==null&&Venta.total==Venta.total_minimo">
-                                                <button type="button" class="btn btn-circle btn-sm btn-outline-danger" @click="remove(1)" title="ELIMINAR"> 
-                                                    <i class="fas fa-trash-alt"></i>
-                                                </button>
-                                            </div>
                                         </div>
-                                        <div class="col-md-12 form-group input-group" v-else-if="Cliente.tipo=='E'">
-                                            <div class="col-md-3 input-group">
+                                        <div class="col-md-11 form-group input-group" v-else-if="Cliente.tipo=='E'">
+                                            <div class="col-md-4 input-group">
                                                 <label class="col-md-3">RUC</label>
-                                                <input type="text" class="col-md-9 form-control form-control-sm" readonly v-model="Cliente.documento">
+                                                <input type="text" class="col-md-6 form-control form-control-sm" readonly v-model="Cliente.ruc">
                                             </div>
                                             <div class="col-md-8 input-group">
                                                 <label class="col-md-3">Razón social</label>&nbsp;
                                                 <input type="text" class="col-md-9 form-control form-control-sm" readonly v-model="Cliente.razon_social">
                                             </div>
-                                            <div class="col-md-1 d-flex justify-content-center" v-if="Venta.tipo_pago=='1'&&ValeU.id==null&&Venta.total==Venta.total_minimo">
-                                                <button type="button" class="btn btn-circle btn-sm btn-outline-danger" @click="remove(1)" title="ELIMINAR"> 
-                                                    <i class="fas fa-trash-alt"></i>
-                                                </button>
-                                            </div>
+                                        </div>
+                                        <div class="col-md-1 form-group d-flex justify-content-center" v-if="Cliente.trash==true">
+                                            <button type="button" class="btn btn-circle btn-sm btn-outline-danger" @click="remove('cliente')" title="ELIMINAR"> 
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -752,20 +751,16 @@
                                         </div>
                                         <div class="col-md-12 input-group form-group">
                                             <label class="col-md-7 p-0 font-weight-bold">Tipo de pago</label>
-                                            <label class="col-md-5 p-0 font-weight-bold text-primary" v-text="fix('tipo_pago', Venta.tipo_pago)"></label>
+                                            <label class="col-md-5 p-0 text-white" v-text="fix('tipo_pago', Venta.tipo_pago)"></label>
                                         </div>
                                         <div class="col-md-12 input-group form-group" v-if="Venta.tipo_pago=='2'">
                                             <label class="col-md-7 p-0 font-weight-bold">Tipo de entrega</label>
-                                            <label class="col-md-5 p-0 font-weight-bold text-primary" v-text="fix('tipo_entrega', Venta.tipo_entrega)"></label>
-                                        </div>
-                                        <div class="col-md-12 input-group" v-if="Venta.tipo.charAt(1)=='1' && Venta.tipo_pago=='2'"> 
-                                            <label class="col-md-7 p-0 font-weight-bold" for="pago_inicial">Pago adicional</label>
-                                            <input type="number" class="col-md-5 form-control form-control-sm text-right" v-model="Pago.monto" min="0" :max="Venta.total-Venta.total_faltante" id="pago_inicial">
+                                            <label class="col-md-5 p-0 text-white" v-text="fix('tipo_entrega', Venta.tipo_entrega)"></label>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="container-small col-md-3">
-                                    <div class="shadow rounded pt-2 bg-success" style="border: 1px solid; height: 18rem;">
+                                    <div class="shadow rounded pt-3 bg-success" style="border: 1px solid; height: 18rem;">
                                         <div class="col-md-12 form-group">
                                             <label class="font-weight-bold h5">BENEFICIOS</label>
                                         </div>
@@ -786,7 +781,7 @@
                                     </div>
                                 </div>
                                 <div class="container-small col-md-3">
-                                    <div class="shadow rounded pt-2 bg-success" style="border: 1px solid; height: 18rem;">
+                                    <div class="shadow rounded pt-3 bg-success" style="border: 1px solid; height: 18rem;">
                                         <div class="col-md-12 form-group">
                                             <label class="font-weight-bold h5">DESCUENTOS</label>
                                         </div>
@@ -812,30 +807,26 @@
                                             <label class="font-weight-bold h5">TOTALES</label>
                                         </div>
                                         <div class="col-md-12 input-group form-group">
-                                            <label class="col-md-6 font-weight-bold">Monto de venta</label>
-                                            <label class="col-md-1 text-white text-right p-0">S/.</label>
-                                            <label class="col-md-4 text-white text-right" v-text="Number.parseFloat(Venta.total).toFixed(2)"></label>
+                                            <label class="col-md-7 p-0 font-weight-bold">Monto de venta</label>
+                                            <label class="col-md-1 p-0 text-white text-right p-0">S/.</label>
+                                            <label class="col-md-4 p-0 text-white text-right" v-text="Number.parseFloat(Venta.total).toFixed(2)"></label>
                                         </div>
                                         <div class="col-md-12 input-group form-group" v-if="ValeU.id!=null">
-                                            <label class="col-md-6 font-weight-bold">Monto de vale</label>
-                                            <label class="col-md-1 text-white text-right p-0">S/.</label>
-                                            <label class="col-md-4 text-white text-right" v-text="'-'+Number.parseFloat(ValeU.monto).toFixed(2)"></label>
+                                            <label class="col-md-7 p-0 font-weight-bold">Monto de vale</label>
+                                            <label class="col-md-1 p-0 text-white text-right p-0">S/.</label>
+                                            <label class="col-md-4 p-0 text-white text-right" v-text="'- '+Number.parseFloat(ValeU.monto).toFixed(2)"></label>
                                         </div>
                                         <div class="col-md-10 bg-white m-4"><hr></div>
                                         <div class="col-md-12 input-group form-group">
                                             <label class="col-md-6 p-0 font-weight-bold h5">Monto total</label>
                                             <label class="col-md-6 p-0 text-white text-right h5" v-text="'S/. '+Number.parseFloat(update(5)).toFixed(2)"></label>
                                         </div>
-                                        <div class="col-md-12 input-group form-group">
-                                            <label class="col-md-6 p-0 font-weight-bold h5">Monto faltante</label>
-                                            <label class="col-md-6 p-0 text-white text-right h5" v-text="'S/. '+Number.parseFloat(Venta.total_faltante).toFixed(2)"></label>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div> -->
+                        </div>
 
-                        <div v-if="Modal.numero==3" class="container-small input-group">
+                        <!-- <div v-if="Modal.numero==3" class="container-small input-group">
                             <div v-if="Error.estado" class="col-md-12 d-flex justify-content-center">
                                 <div class="col-md-6 alert alert-danger pb-0">
                                     <button type="button" @click="Error.estado=0" class="close text-primary" data-dismiss="alert">×</button>
@@ -881,7 +872,7 @@
                                             <input type="text" class="col-md-8 form-control form-control-sm" readonly v-model="Cliente.apellidos">
                                         </div>
                                         <div class="col-md-1 d-flex justify-content-center" v-if="Venta.tipo_pago=='1'&&ValeU.id==null&&Venta.total==Venta.total_minimo">
-                                            <button type="button" class="btn btn-circle btn-sm btn-outline-danger" @click="remove(1)" title="ELIMINAR"> 
+                                            <button type="button" class="btn btn-circle btn-sm btn-outline-danger" @click="remove('cliente')" title="ELIMINAR"> 
                                                 <i class="fas fa-trash-alt"></i>
                                             </button>
                                         </div>
@@ -896,14 +887,14 @@
                                             <input type="text" class="col-md-9 form-control form-control-sm" readonly v-model="Cliente.razon_social">
                                         </div>
                                         <div class="col-md-1 d-flex justify-content-center" v-if="Venta.tipo_pago=='1'&&ValeU.id==null&&Venta.total==Venta.total_minimo">
-                                            <button type="button" class="btn btn-circle btn-sm btn-outline-danger" @click="remove(1)" title="ELIMINAR"> 
+                                            <button type="button" class="btn btn-circle btn-sm btn-outline-danger" @click="remove('cliente')" title="ELIMINAR"> 
                                                 <i class="fas fa-trash-alt"></i>
                                             </button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="container-small col-md-2 mt-1 pl-0" v-if="ValeU.id!=null">
+                            <div class="container-small col-md-2 mt-1 pl-0" v-if="ValeG.id!=null">
                                 <div class="shadow bg-white rounded pt-2 form-group" style="border: 1px solid; height: 6.5rem;">
                                     <div class="col-md-12 form-group input-group">
                                         <label class="col-md-12 font-weight-bold pl-0 mb-0">VALE</label>
@@ -1029,7 +1020,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
 
                         <!-- Modal Numero 4 de PAGAR-->
                         <div v-if="Modal.numero==4" class="container-small input-group d-flex justify-content-center">
@@ -1064,7 +1055,7 @@
                                         <tr v-for="(pago, index) in ListaPago" :key="index" :class="pago.color">
                                             <td class="text-right">{{index+1}}</td>
                                             <td class="text-center" v-text="fix(0, pago.created_at)"></td>
-                                            <td class="text-right" v-text="pago.monto"></td>
+                                            <td class="text-right" v-text="Number.parseFloat(pago.monto).toFixed(2)"></td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -1136,7 +1127,9 @@
                     nombres: null,
                     apellidos: null,
                     razon_social: null,
-                    tipo: null
+                    tipo: null,
+                    search: null,
+                    trash: null
                 },
 
                 //datos de busqueda y filtracion general
@@ -1515,14 +1508,15 @@
                 this.Venta.created_at = data.created_at;
                 
                 this.Cliente.id = data.cliente_id;
-                this.Cliente.documento = data.dni!=null?data.dni:(data.ruc!=null?data.ruc:'');
                 this.Cliente.dni = data.dni;
                 this.Cliente.nombres = data.nombres;
                 this.Cliente.apellidos = data.apellidos;
                 this.Cliente.ruc = data.ruc;
                 this.Cliente.razon_social = data.razon_social;
                 this.Cliente.tipo = data.cliente_tipo;
-                
+                this.Cliente.search = data.cliente_id==null?true:false;
+                this.Cliente.trash = false;
+
                 this.ValeU.id = data.vale_id;
                 this.ValeU.monto = data.vale_monto;
                 this.ValeU.created_at = data.vale_created_at;
@@ -1608,6 +1602,8 @@
                 this.Cliente.ruc = null;
                 this.Cliente.razon_social = null;
                 this.Cliente.tipo = null;
+                this.Cliente.search = null;
+                this.Cliente.trash = null;
 
                 this.ListaPago = null;
                 this.Pago.monto = null;
@@ -1762,6 +1758,7 @@
 
                         me.Cliente.id = persona.id;
                         me.Cliente.documento = me.Service.document;
+                        me.Cliente.trash = true;
 
                         me.Service.document = '';
 
@@ -1802,6 +1799,7 @@
                             me.Cliente.documento = persona.dni;
                             me.Cliente.nombres = persona.nombres;
                             me.Cliente.apellidos = persona.apellidos;
+                            me.Cliente.trash = true;
                         } else {
                             me.Service.msm = 'El DNI no existe';
                             me.Service.msmclass = 'badge badge-primary';
@@ -1835,6 +1833,7 @@
                             me.Cliente.tipo = 'E';
                             me.Cliente.documento = empresa.RUC;
                             me.Cliente.razon_social = empresa.RazonSocial;
+                            me.Cliente.trash = true;
                         } else {
                             me.Service.msm = 'El RUC no existe';
                             me.Service.msmclass = 'badge badge-primary';
@@ -2004,11 +2003,11 @@
                         this.ListaDetalle.splice(data, 1);
                         this.update('total_venta');
                         break;
-                    case 1:
+                    case 'vale':
                         this.ValeU.id = null;
                         this.ValeU.monto = null;
                         this.ValeU.created_at = null;
-                    case 2:
+                    case 'cliente':
                         this.Cliente.id = null;
                         this.Cliente.documento = '';
                         this.Cliente.nombres = null;
@@ -2017,6 +2016,7 @@
                         this.Cliente.razon_social = null;
                         this.Cliente.ruc = null;
                         this.Cliente.tipo = null;
+                        this.Cliente.trash = false;
                         break;
                 }
             },
