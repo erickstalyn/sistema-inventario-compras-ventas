@@ -722,8 +722,8 @@
                     sumaPagos: 0.00,
                 },
                 Ruta: {
-                    serverApache: 'http://localhost:80',
-                    serverPhp: 'http://127.0.0.1:8000'
+                    serverApache: 'http://67.205.189.29:8000',
+                    serverPhp: 'http://67.205.189.29:8000'
                 }
             }
         },
