@@ -722,12 +722,8 @@
                     sumaPagos: 0.00,
                 },
                 Ruta: {
-<<<<<<< HEAD
-                    server: 'http://67.205.189.29:80'
-=======
                     serverApache: 'http://localhost:80',
                     serverPhp: 'http://127.0.0.1:8000'
->>>>>>> master
                 }
             }
         },
@@ -936,13 +932,8 @@
                 let ruc = me.DatosServicio.documento;
                 $.ajax({
                     type: 'GET',
-<<<<<<< HEAD
-                    url: me.Ruta.server + '/misunat/src/consulta.php',
+                    url: me.Ruta.serverPhp + '/misunat/src/consulta.php',
                     data: 'nruc=' +ruc,
-=======
-                    url: me.Ruta.serverApache + '/SunatPHP/demo.php',
-                    data: 'ruc=' + ruc,
->>>>>>> master
                     beforeSend(){
                         me.Carga.clase = 'spinner-border spinner-border-sm text-primary';
                         me.DatosServicio.alert = 'badge badge-info';
@@ -973,13 +964,8 @@
                 let dni = me.DatosServicio.documento;
                 $.ajax({
                     type: 'GET',
-<<<<<<< HEAD
-                    url: me.Ruta.server + '/Reniec/demo.php',
-                    data: 'dni=' +dni,
-=======
                     url: me.Ruta.serverApache + '/Reniec/demo.php',
                     data: 'dni=' + dni,
->>>>>>> master
                     beforeSend(){
                         me.Carga.clase = 'spinner-border spinner-border-sm text-primary';
                         me.DatosServicio.alert = 'badge badge-info';
@@ -1384,14 +1370,10 @@
                 return fixed;
             },
             generatePdf(){
-<<<<<<< HEAD
-                window.open(this.Ruta.server + '/abasto/generatePdf','_blank');
-=======
                 window.open(this.Ruta.serverPhp + '/abasto/generatePdf','_blank');
             },
             generatePdfSpecific(){
                 window.open(this.Ruta.serverPhp + '/abasto/generatePdfSpecific?code=' + this.Abasto.id,'_blank');
->>>>>>> master
             }
         },
         mounted() {

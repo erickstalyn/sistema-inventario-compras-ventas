@@ -4033,6 +4033,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -4125,7 +4130,8 @@ __webpack_require__.r(__webpack_exports__);
         sumaPagos: 0.00
       },
       Ruta: {
-        server: 'http://127.0.0.1:8000/abasto'
+        serverApache: 'http://localhost:80',
+        serverPhp: 'http://127.0.0.1:8000'
       }
     };
   },
@@ -4337,9 +4343,8 @@ __webpack_require__.r(__webpack_exports__);
       var ruc = me.DatosServicio.documento;
       $.ajax({
         type: 'GET',
-        // url: "http://127.0.0.1:80/misunat/src/consulta.php",
-        url: "http://67.205.189.29:80/misunat/src/consulta.php",
-        data: "nruc=" + ruc,
+        url: me.Ruta.serverPhp + '/misunat/src/consulta.php',
+        data: 'nruc=' + ruc,
         beforeSend: function beforeSend() {
           me.Carga.clase = 'spinner-border spinner-border-sm text-primary';
           me.DatosServicio.alert = 'badge badge-info';
@@ -4347,26 +4352,16 @@ __webpack_require__.r(__webpack_exports__);
         },
         success: function success(data, textStatus, jqXHR) {
           var empresa = JSON.parse(data);
-<<<<<<< HEAD
           console.log(empresa.result);
 
           if (empresa.result) {
-=======
-
-          if (empresa.RazonSocial) {
->>>>>>> master
             me.DatosServicio.documento = '';
             me.DatosServicio.alert = '';
             me.DatosServicio.mensaje = '';
             me.DatosServicio.tipo = 2;
             me.DatosServicio.readonly = false;
-<<<<<<< HEAD
             me.DatosProveedor.documento = empresa.result.ruc;
             me.DatosProveedor.razon_social = empresa.result.razon_social;
-=======
-            me.DatosProveedor.documento = empresa.RUC;
-            me.DatosProveedor.razon_social = empresa.RazonSocial;
->>>>>>> master
           } else {
             me.DatosServicio.alert = 'badge badge-primary';
             me.DatosServicio.mensaje = 'El RUC no existe';
@@ -4381,9 +4376,8 @@ __webpack_require__.r(__webpack_exports__);
       var dni = me.DatosServicio.documento;
       $.ajax({
         type: 'GET',
-        url: "http://67.205.189.29:80/Reniec/demo.php",
-        // url: "http://127.0.0.1:80/Reniec/demo.php",
-        data: "dni=" + dni,
+        url: me.Ruta.serverApache + '/Reniec/demo.php',
+        data: 'dni=' + dni,
         beforeSend: function beforeSend() {
           me.Carga.clase = 'spinner-border spinner-border-sm text-primary';
           me.DatosServicio.alert = 'badge badge-info';
@@ -4425,13 +4419,14 @@ __webpack_require__.r(__webpack_exports__);
         this.DatosProveedor.razon_social = abasto['proveedor_empresa'];
       }
 
+      this.Abasto.id = abasto['id'];
       this.Abasto.nombre_centro = abasto['nombre_centro'];
       this.Abasto.estado_envio = abasto['estado_envio'];
       this.Abasto.tipo_abasto = abasto['tipo_abasto'];
       this.Abasto.total_ver = abasto['total'];
       this.listarPagos(abasto['id']);
       this.listarDetallesAbasto(abasto['id']);
-      this.abrirModal(2, 'Ver Abasto', '', 'Cerrar', 'modal-xl modal-dialog-scrollable');
+      this.abrirModal(2, 'Ver Abasto', 'Generar comprobante', 'Cerrar', 'modal-xl modal-dialog-scrollable');
     },
     abrirModal: function abrirModal(numero, titulo, accion, cancelar, size) {
       this.Modal.estado = 1;
@@ -4444,16 +4439,16 @@ __webpack_require__.r(__webpack_exports__);
     accionar: function accionar(accion) {
       switch (accion) {
         case 'Agregar':
-          {
-            this.agregar();
-            break;
-          }
+          this.agregar();
+          break;
 
         case 'Guardar':
-          {
-            this.agregarPago();
-            break;
-          }
+          this.agregarPago();
+          break;
+
+        case 'Generar comprobante':
+          this.generatePdfSpecific();
+          break;
       }
     },
     validar: function validar() {
@@ -4798,7 +4793,10 @@ __webpack_require__.r(__webpack_exports__);
       return fixed;
     },
     generatePdf: function generatePdf() {
-      window.open(this.Ruta.server + '/generatePdf', '_blank');
+      window.open(this.Ruta.serverPhp + '/abasto/generatePdf', '_blank');
+    },
+    generatePdfSpecific: function generatePdfSpecific() {
+      window.open(this.Ruta.serverPhp + '/abasto/generatePdfSpecific?code=' + this.Abasto.id, '_blank');
     }
   },
   mounted: function mounted() {
@@ -5146,7 +5144,7 @@ __webpack_require__.r(__webpack_exports__);
         mensaje: []
       },
       Ruta: {
-        server: 'http://127.0.0.1:8000/material'
+        serverPhp: 'http://127.0.0.1:8000'
       }
     };
   },
@@ -5535,7 +5533,7 @@ __webpack_require__.r(__webpack_exports__);
       }); // return selectTipoFiltrado;
     },
     generatePdf: function generatePdf() {
-      window.open(this.Ruta.server + '/generatePdf', '_blank');
+      window.open(this.Ruta.serverPhp + '/material/generatePdf', '_blank');
     }
   },
   mounted: function mounted() {
@@ -5989,7 +5987,7 @@ __webpack_require__.r(__webpack_exports__);
         productomaterial: '/productomaterial',
         material: '/material',
         data: '/data',
-        server: 'http://127.0.0.1:8000/producto'
+        serverPhp: 'http://127.0.0.1:8000'
       }
     };
   },
@@ -6518,7 +6516,7 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     generatePdf: function generatePdf() {
-      window.open(this.Ruta.server + '/generatePdf', '_blank');
+      window.open(this.Ruta.serverPhp + '/producto/generatePdf', '_blank');
     }
   },
   mounted: function mounted() {
@@ -6889,7 +6887,7 @@ __webpack_require__.r(__webpack_exports__);
         superproducto: '/superproducto',
         producto: '/producto',
         data: '/data',
-        server: 'http://127.0.0.1:8000/superproducto'
+        serverPhp: 'http://127.0.0.1:8000'
       }
     };
   },
@@ -7257,7 +7255,7 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     generatePdf: function generatePdf() {
-      window.open(this.Ruta.server + '/generatePdf', '_blank');
+      window.open(this.Ruta.serverPhp + '/superproducto/generatePdf', '_blank');
     }
   },
   mounted: function mounted() {
@@ -12659,8 +12657,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-<<<<<<< HEAD
-=======
 //
 //
 //
@@ -12729,7 +12725,362 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
->>>>>>> master
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -12741,7 +13092,8 @@ __webpack_require__.r(__webpack_exports__);
         centro_id: null,
         total: null,
         total_faltante: null,
-        total_minimo: null,
+        total_descuento: null,
+        total_venta: null,
         tipo_pago: null,
         // 1: contado, 2: credito
         tipo_entrega: null,
@@ -12760,7 +13112,9 @@ __webpack_require__.r(__webpack_exports__);
         nombres: null,
         apellidos: null,
         razon_social: null,
-        tipo: null
+        tipo: null,
+        search: null,
+        trash: null
       },
       //datos de busqueda y filtracion general
       Busqueda: {
@@ -12800,6 +13154,7 @@ __webpack_require__.r(__webpack_exports__);
         mensaje: null
       },
       //datos de servicios necesarios
+      StartData: null,
       Service: {
         document: '',
         msm: '',
@@ -12812,12 +13167,12 @@ __webpack_require__.r(__webpack_exports__);
       Pago: {
         monto: null
       },
-      Vale: {
+      ValeU: {
         id: null,
         monto: null,
         created_at: null
       },
-      Vale: {
+      ValeG: {
         id: null,
         monto: null,
         created_at: null
@@ -12892,15 +13247,9 @@ __webpack_require__.r(__webpack_exports__);
       var me = this;
       var url = this.Ruta.venta + '/agregar';
       axios.post(url, {
-<<<<<<< HEAD
-        'centro_id': $('meta[name="idCentro"]').attr('content'),
         'dataVenta': this.Venta,
         'dataPago': this.Pago,
-=======
-        'dataVenta': this.Venta,
-        'dataPago': this.Pago,
-        'dataVale': this.Vale,
->>>>>>> master
+        'dataVale': this.ValeU,
         'dataCliente': this.Cliente,
         'listDetalle': this.ListaDetalle
       }).then(function (response) {
@@ -13049,9 +13398,10 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     abrirModalAgregar: function abrirModalAgregar() {
-      this.abrirModal(1, 'Registrar Venta', 'modal-xl', 'Registrar', 'Cancelar');
-      this.Venta.total = 0;
       this.Venta.total_faltante = 0;
+      this.Venta.total_descuento = 0;
+      this.Venta.total_venta = 0;
+      this.Venta.total = 0;
       this.Venta.tipo_pago = '1';
       this.Venta.tipo_entrega = '1';
       this.Venta.tipo_precio = '1';
@@ -13072,23 +13422,30 @@ __webpack_require__.r(__webpack_exports__);
       this.Service.msmclass = '';
       this.Service.loadclass = '';
       this.Service.text = '';
+      this.abrirModal(1, 'Registrar Venta', 'modal-xl', 'Registrar', 'Cancelar');
     },
     abrirModalVer: function abrirModalVer(data) {
-      this.abrirModal(2, 'Ver Venta', 'modal-xl', '', 'Cerrar');
       this.Venta.id = data.id;
       this.Venta.total = data.total;
+      this.Venta.total_venta = data.total_venta;
+      this.Venta.total_descuento = data.total_descuento;
       this.Venta.total_faltante = data.total_faltante == null ? 0 : data.total_faltante;
       this.Venta.tipo_pago = data.tipo.charAt(0);
-      this.Venta.tipo_precio = data.tipo.charAt(1);
+      this.Venta.tipo_entrega = data.tipo.charAt(1);
+      this.Venta.tipo_precio = data.tipo.charAt(2);
       this.Venta.created_at = data.created_at;
+      this.Cliente.id = data.cliente_id;
       this.Cliente.dni = data.dni;
       this.Cliente.nombres = data.nombres;
       this.Cliente.apellidos = data.apellidos;
       this.Cliente.ruc = data.ruc;
       this.Cliente.razon_social = data.razon_social;
       this.Cliente.tipo = data.cliente_tipo;
+      this.ListaPago = [];
+      this.ListaDetalle = [];
       this.list(1, 'Ver');
-      this.list(2);
+      this.list('pago');
+      this.abrirModal(2, 'Ver Venta', 'modal-xl', '', 'Cerrar');
     },
     abrirModalEditar: function abrirModalEditar(data) {
       if (this.fix(10, data.created_at) != this.fix(3) || this.fix(9, data.created_at) != this.fix(2)) {
@@ -13110,31 +13467,39 @@ __webpack_require__.r(__webpack_exports__);
       this.Venta.total_minimo = data.total;
       this.Venta.tipo = data.tipo;
       this.Venta.tipo_pago = data.tipo.charAt(0);
-      this.Venta.tipo_precio = data.tipo.charAt(1);
+      this.Venta.tipo_entrega = data.tipo.charAt(1);
+      this.Venta.tipo_precio = data.tipo.charAt(2);
       this.Venta.created_at = data.created_at;
       this.Cliente.id = data.cliente_id;
-      this.Cliente.documento = data.dni != null ? data.dni : data.ruc != null ? data.ruc : '';
       this.Cliente.dni = data.dni;
       this.Cliente.nombres = data.nombres;
       this.Cliente.apellidos = data.apellidos;
       this.Cliente.ruc = data.ruc;
       this.Cliente.razon_social = data.razon_social;
       this.Cliente.tipo = data.cliente_tipo;
-      this.Vale.id = data.vale_id;
-      this.Vale.monto = data.vale_monto;
-      this.Vale.created_at = data.vale_created_at;
+      this.Cliente.search = data.cliente_id == null ? true : false;
+      this.Cliente.trash = false;
+      this.ValeU.id = data.vale_id;
+      this.ValeU.monto = data.vale_monto;
+      this.ValeU.created_at = data.vale_created_at;
+      this.ValeG.id = data.vale_id;
+      this.ValeG.monto = data.vale_monto;
+      this.ValeG.created_at = data.vale_created_at;
+      this.ListaProducto = [];
+      this.ListaDetalle = [];
       this.list(1, 'Editar');
       this.abrirModal(3, 'Editar Venta', 'modal-xl', 'Editar', 'Cerrar');
     },
     abrirModalPagar: function abrirModalPagar() {
       var venta = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
-      this.abrirModal(4, 'Realizar Pago', '', 'Guardar', 'Cancelar');
-      this.Venta.id = venta['id'];
-      this.Venta.total = venta['total'];
-      this.Venta.total_faltante = venta['total_faltante'] == null ? 0 : venta.total_faltante;
-      this.Venta.tipo_pago = venta['tipo'].charAt(0);
+      this.Venta.id = venta.id;
+      this.Venta.total = venta.total;
+      this.Venta.total_faltante = venta.total_faltante == null ? 0 : venta.total_faltante;
+      this.Venta.tipo_pago = venta.tipo.charAt(0);
+      this.ListaPago = [];
       this.Pago.monto = '';
-      this.list(2);
+      this.list('pago');
+      this.abrirModal(4, 'Realizar Pago', '', 'Guardar', 'Cancelar');
     },
     abrirModal: function abrirModal(numero, titulo, size, btnA, btnC) {
       this.Step.number = 0;
@@ -13164,26 +13529,19 @@ __webpack_require__.r(__webpack_exports__);
       this.Service.msmclass = '';
       this.Service.loadclass = '';
       this.Service.text = '';
-<<<<<<< HEAD
-      this.Venta.id = 0;
-      this.Venta.total = 0.00;
-      this.Venta.total_faltante = 0;
-      this.Venta.total_minimo = 0;
-      this.Venta.centro_id = 0;
-      this.Venta.tipo = '00';
-      this.Venta.tipo_pago = '0';
-      this.Venta.tipo_precio = '0';
-=======
+      this.StartData = null;
       this.Venta.id = null;
       this.Venta.total = null;
       this.Venta.total_faltante = null;
-      this.Venta.total_start = null;
-      this.Venta.centro_id = null;
-      this.Venta.tipo = null;
+      this.Venta.total_descuento = null;
+      this.Venta.total_venta = null; // this.Venta.total_inicial = null;
+
+      this.Venta.centro_id = null; // this.Venta.tipo = null;
+
       this.Venta.tipo_pago = null;
       this.Venta.tipo_entrega = null;
       this.Venta.tipo_precio = null;
->>>>>>> master
+      this.Venta.created_at = null;
       this.Cliente.id = null;
       this.Cliente.documento = null;
       this.Cliente.dni = null;
@@ -13192,21 +13550,18 @@ __webpack_require__.r(__webpack_exports__);
       this.Cliente.ruc = null;
       this.Cliente.razon_social = null;
       this.Cliente.tipo = null;
-<<<<<<< HEAD
-      this.ListaPago = [];
-      this.Pago.monto = '';
-      this.Vale.monto = null;
-      this.ListaProducto = [];
-      this.ListaDetalle = [];
-=======
+      this.Cliente.search = null;
+      this.Cliente.trash = null;
       this.ListaPago = null;
       this.Pago.monto = null;
-      this.Vale.id = null;
-      this.Vale.monto = null;
-      this.Vale.created_at = null;
+      this.ValeU.id = null;
+      this.ValeU.monto = null;
+      this.ValeU.created_at = null;
+      this.ValeG.id = null;
+      this.ValeG.monto = null;
+      this.ValeG.created_at = null;
       this.ListaProducto = null;
       this.ListaDetalle = null;
->>>>>>> master
     },
     accionar: function accionar() {
       switch (this.Modal.numero) {
@@ -13241,7 +13596,7 @@ __webpack_require__.r(__webpack_exports__);
           case 1:
             // tipo de venta
             if (this.Venta.tipo_pago == 2 || this.Venta.tipo_pago == 3) {
-              if (this.Pago.monto < 0 || this.Pago.monto == '') {
+              if (Number.parseFloat(this.Pago.monto) < 0 || this.Pago.monto == '') {
                 this.Error.mensaje.push('El pago inicial debe ser mayor o igual a 0');
               } else if (this.Pago.monto > this.Venta.total) {
                 this.Error.mensaje.push('El pago inicial no debe ser mayor al monto total');
@@ -13300,7 +13655,10 @@ __webpack_require__.r(__webpack_exports__);
 
           case 4:
             // monto de pago
-            if (this.Pago.monto == '' || this.Pago.monto <= 0 || this.Pago.monto > Number.parseFloat(this.Venta.total_faltante)) this.Error.mensaje.push('Debe ingresar un monto válido');
+            if (this.Pago.monto == '' || Number.parseFloat(this.Pago.monto) <= 0 || Number.parseFloat(this.Pago.monto) > Number.parseFloat(this.Venta.total_faltante)) {
+              this.Error.mensaje.push('Debe ingresar un monto válido');
+            }
+
             break;
 
           case 5:
@@ -13388,9 +13746,9 @@ __webpack_require__.r(__webpack_exports__);
 
           me.Cliente.id = persona.id;
           me.Cliente.documento = me.Service.document;
-          me.Cliente.documento = me.Service.document;
+          me.Cliente.trash = true;
           me.Service.document = '';
-          me.get(1, persona.id);
+          me.get('vale', persona.id);
         } else {
           //No esxiste la persona en la db
           if (me.Service.document.length == 8) {
@@ -13408,7 +13766,7 @@ __webpack_require__.r(__webpack_exports__);
       var dni = me.Service.document;
       $.ajax({
         type: 'GET',
-        url: "http://localhost:8080/Reniec/demo.php",
+        url: "http://localhost:80/Reniec/demo.php",
         data: "dni=" + dni,
         beforeSend: function beforeSend() {
           me.Service.msm = 'Consultado...';
@@ -13427,6 +13785,7 @@ __webpack_require__.r(__webpack_exports__);
             me.Cliente.documento = persona.dni;
             me.Cliente.nombres = persona.nombres;
             me.Cliente.apellidos = persona.apellidos;
+            me.Cliente.trash = true;
           } else {
             me.Service.msm = 'El DNI no existe';
             me.Service.msmclass = 'badge badge-primary';
@@ -13441,7 +13800,7 @@ __webpack_require__.r(__webpack_exports__);
       var ruc = me.Service.document;
       $.ajax({
         type: 'GET',
-        url: "http://localhost:8080/SunatPHP/demo.php",
+        url: "http://localhost:80/SunatPHP/demo.php",
         data: "ruc=" + ruc,
         beforeSend: function beforeSend() {
           me.Service.msm = 'Consultado...';
@@ -13459,6 +13818,7 @@ __webpack_require__.r(__webpack_exports__);
             me.Cliente.tipo = 'E';
             me.Cliente.documento = empresa.RUC;
             me.Cliente.razon_social = empresa.RazonSocial;
+            me.Cliente.trash = true;
           } else {
             me.Service.msm = 'El RUC no existe';
             me.Service.msmclass = 'badge badge-primary';
@@ -13479,7 +13839,7 @@ __webpack_require__.r(__webpack_exports__);
           url = this.Ruta.detalle_producto + '/listProductos?' + 'text=' + this.Service.text + '&centro_id=' + $('meta[name="idCentro"]').attr('content');
           axios.get(url).then(function (response) {
             if (response.data.length == 1 && me.Service.text == response.data[0].codigo) {
-              if (response.data[0].detalle.substock > 0) me.add(0, response.data[0]);else me.ListaProducto = response.data;
+              if (response.data[0].detalle.substock > 0) me.add('detalle_venta', response.data[0]);else me.ListaProducto = response.data;
               me.Service.text = '';
             } else {
               me.ListaProducto = response.data;
@@ -13492,6 +13852,7 @@ __webpack_require__.r(__webpack_exports__);
           break;
 
         case 1:
+          //lista de detalles de venta para "VER" y "EDITAR"
           url = this.Ruta.detalle_venta + '/list' + data + '?' + 'venta_id=' + this.Venta.id;
           axios.get(url).then(function (response) {
             me.ListaDetalle = response.data;
@@ -13501,7 +13862,7 @@ __webpack_require__.r(__webpack_exports__);
           });
           break;
 
-        case 2:
+        case 'pago':
           url = this.Ruta.pago + '/listVenta?' + 'venta_id=' + this.Venta.id;
           axios.get(url).then(function (response) {
             me.ListaPago = response.data;
@@ -13515,7 +13876,7 @@ __webpack_require__.r(__webpack_exports__);
       var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
 
       switch (numero) {
-        case 0:
+        case 'detalle_venta':
           var found = false;
 
           for (var i = 0; i < this.ListaDetalle.length; i++) {
@@ -13540,23 +13901,23 @@ __webpack_require__.r(__webpack_exports__);
               subtotal: Number.parseFloat(this.Venta.tipo_precio == '1' ? data.detalle.precio_menor : data.detalle.precio_mayor).toFixed(2)
             });
           } else {
-            this.update(0);
+            this.update('subtotal');
           }
 
-          this.update(1);
+          this.update('total_venta');
           break;
 
-        case 1:
+        case 'pago':
           if (this.validar([4])) return;
           this.ListaPago.push({
-            monto: Number.parseFloat(this.Pago.monto).toFixed(2),
+            monto: Number.parseFloat(this.Pago.monto),
             created_at: this.get(0),
             color: 'table-success',
             estado: 1 // 1: nuevo
 
           });
           this.Pago.monto = '';
-          this.update(2);
+          this.update('total_faltante');
           break;
       }
     },
@@ -13566,42 +13927,52 @@ __webpack_require__.r(__webpack_exports__);
       var updated = '';
 
       switch (numero) {
-        case 0:
+        case 'subtotal':
           this.ListaDetalle.forEach(function (detalle) {
-            detalle.subtotal = (_this.Venta.tipo_precio == '1' ? detalle.precio_menor : detalle.precio_mayor) * detalle.cantidad;
+            var precio = _this.Venta.tipo_precio == '1' ? detalle.precio_menor : _this.Venta.tipo_precio == '2' ? detalle.precio_mayor : 0;
+            detalle.subtotal = Number.parseFloat(precio) * Number.parseFloat(detalle.cantidad != '' ? detalle.cantidad : 0);
           });
-          this.update(1);
+          this.update('total_venta');
           break;
 
-        case 1:
-          this.Venta.total = 0;
+        case 'total_venta':
+          this.Venta.total_venta = 0;
           this.ListaDetalle.forEach(function (detalle) {
-            _this.Venta.total += Number.parseFloat(detalle.subtotal);
+            _this.Venta.total_venta += Number.parseFloat(detalle.subtotal);
           });
+          this.update('total');
           break;
 
-        case 2:
-          this.Venta.total_faltante = this.Venta.total;
+        case 'total_descuento':
+          this.Venta.total_descuento = this.ValeU.monto == null ? 0 : Number.parseFloat(this.ValeU.monto);
+          this.update('total');
+          break;
+
+        case 'total':
+          this.Venta.total = this.Venta.total_venta - this.Venta.total_descuento;
+          break;
+
+        case 'total_faltante':
+          this.Venta.total_faltante = Number.parseFloat(this.Venta.total);
           this.ListaPago.forEach(function (pago) {
-            _this.Venta.total_faltante = Number.parseFloat(_this.Venta.total_faltante) - Number.parseFloat(pago.monto);
+            _this.Venta.total_faltante -= Number.parseFloat(pago.monto);
           });
-          this.Venta.total_faltante = Number.parseFloat(this.Venta.total_faltante).toFixed(2);
           break;
 
         case 3:
           this.ListaDetalle.forEach(function (detalle) {
             detalle.subtotal = (_this.Venta.tipo_precio == '1' ? detalle.precio_menor : detalle.precio_mayor) * (detalle.cantidad - detalle.fallidos);
           });
-          this.update(1);
+          this.update('total_venta');
           this.update(4);
           break;
 
         case 4:
-          if (this.Venta.total > this.Venta.total_minimo && this.Venta.tipo_pago == '1') {
+          if (this.Venta.total > this.Venta.total_inicial && this.Venta.tipo_pago == '1') {
             this.Venta.tipo_pago = '2';
           }
 
-          if (this.Venta.total <= this.Venta.total_minimo && this.Venta.tipo.charAt(0) == '1') {
+          if (this.Venta.total <= this.Venta.total_inicial && this.Venta.tipo.charAt(0) == '1') {
             this.Venta.tipo_pago = '1';
           }
 
@@ -13610,7 +13981,7 @@ __webpack_require__.r(__webpack_exports__);
         case 5:
           //actualizar el total de la venta
           updated = Number.parseFloat(this.Venta.total);
-          if (this.Vale.id != null) updated -= Number.parseFloat(this.Vale.monto);
+          if (this.ValeU.id != null) updated -= Number.parseFloat(this.ValeU.monto);
           if (updated < 0) updated = 0;
           break;
 
@@ -13633,18 +14004,15 @@ __webpack_require__.r(__webpack_exports__);
       switch (numero) {
         case 0:
           this.ListaDetalle.splice(data, 1);
-          this.update(1);
+          this.update('total_venta');
           break;
 
-        case 1:
-<<<<<<< HEAD
-=======
-          this.Vale.id = null;
-          this.Vale.monto = null;
-          this.Vale.created_at = null;
+        case 'vale':
+          this.ValeU.id = null;
+          this.ValeU.monto = null;
+          this.ValeU.created_at = null;
 
-        case 2:
->>>>>>> master
+        case 'cliente':
           this.Cliente.id = null;
           this.Cliente.documento = '';
           this.Cliente.nombres = null;
@@ -13653,6 +14021,7 @@ __webpack_require__.r(__webpack_exports__);
           this.Cliente.razon_social = null;
           this.Cliente.ruc = null;
           this.Cliente.tipo = null;
+          this.Cliente.trash = false;
           break;
       }
     },
@@ -13680,17 +14049,6 @@ __webpack_require__.r(__webpack_exports__);
 
         case 3:
           fixed = new Date().getFullYear();
-          break;
-
-        case 4:
-          if (data == '1') fixed = 'Contado';
-          if (data == '2') fixed = 'Credito Prepago';
-          if (data == '3') fixed = 'Credito Postpago';
-          break;
-
-        case 5:
-          if (data == '1') fixed = 'Al por menor';
-          if (data == '2') fixed = 'Al por mayor';
           break;
 
         case 6:
@@ -13721,6 +14079,24 @@ __webpack_require__.r(__webpack_exports__);
           fixed = data.split(' ')[0].split('-')[0];
           break;
 
+        case 'tipo_pago':
+          //para conseguir el nombre del tipo de pago
+          if (this.Venta.tipo_pago == '1') fixed = "Contado";
+          if (this.Venta.tipo_pago == '2') fixed = "Credito";
+          break;
+
+        case 'tipo_entrega':
+          //para conseguir el nombre del tipo de entrega
+          if (this.Venta.tipo_entrega == '1') fixed = "Prepago";
+          if (this.Venta.tipo_entrega == '2') fixed = "Postpago";
+          break;
+
+        case 'tipo_precio':
+          //para conseguir el nombre del tipo de precio
+          if (this.Venta.tipo_precio == '1') fixed = 'Al por menor';
+          if (this.Venta.tipo_precio == '2') fixed = 'Al por mayor';
+          break;
+
         default:
           fixed = '';
           break;
@@ -13746,26 +14122,31 @@ __webpack_require__.r(__webpack_exports__);
           got = y + '-' + m + '-' + d + ' ' + h + ':' + minu + ':' + seg;
           break;
 
-        case 1:
+        case 'vale':
+          if (this.Modal.numero == 3) {
+            if (this.Venta.tipo_pago == '1') break;
+            if (this.Venta.tipo_pago == '2' && this.Venta.total_faltante > 0) break;
+          }
+
           url = this.Ruta.vale + '/get';
           axios.get(url, {
             params: {
               'id': data
             }
           }).then(function (response) {
-            if (response.data.state == 'success') {
-              me.Vale.id = response.data.vale.id;
-              me.Vale.monto = response.data.vale.monto;
-              me.Vale.created_at = response.data.vale.created_at;
+            if (response.data.state == 'success' && response.data.vale != null) {
+              me.ValeU.id = response.data.vale.id;
+              me.ValeU.monto = response.data.vale.monto;
+              me.ValeU.created_at = response.data.vale.created_at;
             } else {
-              me.Vale.id = null;
-              me.Vale.monto = null;
-              me.Vale.created_at = null;
+              me.ValeU.id = null;
+              me.ValeU.monto = null;
+              me.ValeU.created_at = null;
             }
           })["catch"](function (error) {
-            me.Vale.id = null;
-            me.Vale.monto = null;
-            me.Vale.created_at = null;
+            me.ValeU.id = null;
+            me.ValeU.monto = null;
+            me.ValeU.created_at = null;
             console.log(error);
           });
           break;
@@ -65277,18 +65658,38 @@ var render = function() {
                       [
                         _vm.Modal.accion
                           ? _c("div", [
-                              _c("button", {
-                                staticClass: "btn btn-success",
-                                attrs: { type: "button" },
-                                domProps: {
-                                  textContent: _vm._s(_vm.Modal.accion)
-                                },
-                                on: {
-                                  click: function($event) {
-                                    return _vm.accionar(_vm.Modal.accion)
+                              _c(
+                                "button",
+                                {
+                                  class: [
+                                    _vm.Modal.accion == "Generar comprobante"
+                                      ? "btn btn-danger"
+                                      : "btn btn-success"
+                                  ],
+                                  attrs: { type: "button" },
+                                  on: {
+                                    click: function($event) {
+                                      return _vm.accionar(_vm.Modal.accion)
+                                    }
                                   }
-                                }
-                              })
+                                },
+                                [
+                                  _vm.Modal.accion == "Generar comprobante"
+                                    ? _c("div", [
+                                        _c("i", {
+                                          staticClass: "far fa-file-pdf"
+                                        }),
+                                        _vm._v(
+                                          "  " +
+                                            _vm._s(_vm.Modal.accion) +
+                                            "\n                                "
+                                        )
+                                      ])
+                                    : _c("div", [
+                                        _vm._v(_vm._s(_vm.Modal.accion))
+                                      ])
+                                ]
+                              )
                             ])
                           : _vm._e(),
                         _vm._v(" "),
@@ -80499,7 +80900,7 @@ var render = function() {
                               )
                             ],
                             _vm._v(" "),
-                            Number.parseFloat(venta.total) != 0
+                            Number.parseFloat(venta.total_venta) != 0
                               ? [
                                   _c(
                                     "button",
@@ -80936,7 +81337,7 @@ var render = function() {
                                                                             $event
                                                                           ) {
                                                                             return _vm.add(
-                                                                              0,
+                                                                              "detalle_venta",
                                                                               producto
                                                                             )
                                                                           }
@@ -81057,7 +81458,9 @@ var render = function() {
                                                     "col-md-6 custom-select custom-select-sm text-gray-900",
                                                   on: {
                                                     click: function($event) {
-                                                      return _vm.update(0)
+                                                      return _vm.update(
+                                                        "subtotal"
+                                                      )
                                                     },
                                                     change: function($event) {
                                                       var $$selectedVal = Array.prototype.filter
@@ -81212,14 +81615,14 @@ var render = function() {
                                                                     $event
                                                                   ) {
                                                                     return _vm.update(
-                                                                      0
+                                                                      "subtotal"
                                                                     )
                                                                   },
                                                                   keyup: function(
                                                                     $event
                                                                   ) {
                                                                     return _vm.update(
-                                                                      0
+                                                                      "subtotal"
                                                                     )
                                                                   },
                                                                   input: function(
@@ -81308,14 +81711,14 @@ var render = function() {
                                         },
                                         [
                                           _c("div", {
-                                            staticClass: "col-md-7"
+                                            staticClass: "col-md-6"
                                           }),
                                           _vm._v(" "),
                                           _c(
                                             "div",
                                             {
                                               staticClass:
-                                                "col-md-5 input-group"
+                                                "col-md-6 input-group"
                                             },
                                             [
                                               _c(
@@ -81324,7 +81727,7 @@ var render = function() {
                                                   staticClass:
                                                     "col-md-6 text-right font-weight-bold h5 p-0"
                                                 },
-                                                [_vm._v("Monto total:")]
+                                                [_vm._v("Monto de venta:")]
                                               ),
                                               _vm._v(" "),
                                               _c("label", {
@@ -81333,7 +81736,9 @@ var render = function() {
                                                 domProps: {
                                                   textContent: _vm._s(
                                                     "S/. " +
-                                                      _vm.Venta.total.toFixed(2)
+                                                      Number.parseFloat(
+                                                        _vm.Venta.total_venta
+                                                      ).toFixed(2)
                                                   )
                                                 }
                                               })
@@ -81400,8 +81805,7 @@ var render = function() {
                                             },
                                             [
                                               _vm._v("RUC/DNI "),
-                                              _vm.Venta.tipo_pago == "2" ||
-                                              _vm.Venta.tipo_pago == "3"
+                                              _vm.Venta.tipo_pago == "2"
                                                 ? _c(
                                                     "span",
                                                     {
@@ -81546,10 +81950,9 @@ var render = function() {
                                                       {
                                                         name: "model",
                                                         rawName: "v-model",
-                                                        value:
-                                                          _vm.Cliente.documento,
+                                                        value: _vm.Cliente.dni,
                                                         expression:
-                                                          "Cliente.documento"
+                                                          "Cliente.dni"
                                                       }
                                                     ],
                                                     staticClass:
@@ -81559,8 +81962,7 @@ var render = function() {
                                                       readonly: ""
                                                     },
                                                     domProps: {
-                                                      value:
-                                                        _vm.Cliente.documento
+                                                      value: _vm.Cliente.dni
                                                     },
                                                     on: {
                                                       input: function($event) {
@@ -81572,7 +81974,7 @@ var render = function() {
                                                         }
                                                         _vm.$set(
                                                           _vm.Cliente,
-                                                          "documento",
+                                                          "dni",
                                                           $event.target.value
                                                         )
                                                       }
@@ -81708,7 +82110,7 @@ var render = function() {
                                                               $event
                                                             ) {
                                                               return _vm.remove(
-                                                                1
+                                                                "cliente"
                                                               )
                                                             }
                                                           }
@@ -81751,10 +82153,9 @@ var render = function() {
                                                       {
                                                         name: "model",
                                                         rawName: "v-model",
-                                                        value:
-                                                          _vm.Cliente.documento,
+                                                        value: _vm.Cliente.ruc,
                                                         expression:
-                                                          "Cliente.documento"
+                                                          "Cliente.ruc"
                                                       }
                                                     ],
                                                     staticClass:
@@ -81764,8 +82165,7 @@ var render = function() {
                                                       readonly: ""
                                                     },
                                                     domProps: {
-                                                      value:
-                                                        _vm.Cliente.documento
+                                                      value: _vm.Cliente.ruc
                                                     },
                                                     on: {
                                                       input: function($event) {
@@ -81777,7 +82177,7 @@ var render = function() {
                                                         }
                                                         _vm.$set(
                                                           _vm.Cliente,
-                                                          "documento",
+                                                          "ruc",
                                                           $event.target.value
                                                         )
                                                       }
@@ -81864,7 +82264,7 @@ var render = function() {
                                                               $event
                                                             ) {
                                                               return _vm.remove(
-                                                                1
+                                                                "cliente"
                                                               )
                                                             }
                                                           }
@@ -82115,7 +82515,7 @@ var render = function() {
                                 "div",
                                 { staticClass: "container-small col-md-4" },
                                 [
-                                  _vm.Vale.id != null
+                                  _vm.ValeU.id != null
                                     ? _c(
                                         "div",
                                         {
@@ -82150,7 +82550,7 @@ var render = function() {
                                                   "col-md-6 text-white",
                                                 domProps: {
                                                   textContent: _vm._s(
-                                                    "S/. " + _vm.Vale.monto
+                                                    "S/. " + _vm.ValeU.monto
                                                   )
                                                 }
                                               })
@@ -82180,7 +82580,7 @@ var render = function() {
                                                   textContent: _vm._s(
                                                     _vm.fix(
                                                       7,
-                                                      _vm.Vale.created_at
+                                                      _vm.ValeU.created_at
                                                     )
                                                   )
                                                 }
@@ -82211,7 +82611,7 @@ var render = function() {
                                                   textContent: _vm._s(
                                                     _vm.fix(
                                                       8,
-                                                      _vm.Vale.created_at
+                                                      _vm.ValeU.created_at
                                                     )
                                                   )
                                                 }
@@ -82272,7 +82672,7 @@ var render = function() {
                                             domProps: {
                                               textContent: _vm._s(
                                                 Number.parseFloat(
-                                                  _vm.Venta.total
+                                                  _vm.Venta.total_venta
                                                 ).toFixed(2)
                                               )
                                             }
@@ -82280,7 +82680,7 @@ var render = function() {
                                         ]
                                       ),
                                       _vm._v(" "),
-                                      _vm.Vale.id != null
+                                      _vm.ValeU.id != null
                                         ? _c(
                                             "div",
                                             {
@@ -82294,7 +82694,7 @@ var render = function() {
                                                   staticClass:
                                                     "col-md-6 font-weight-bold"
                                                 },
-                                                [_vm._v("Monto de vale")]
+                                                [_vm._v("Monto de descuento")]
                                               ),
                                               _vm._v(" "),
                                               _c(
@@ -82313,7 +82713,7 @@ var render = function() {
                                                   textContent: _vm._s(
                                                     "-" +
                                                       Number.parseFloat(
-                                                        _vm.Vale.monto
+                                                        _vm.ValeU.monto
                                                       ).toFixed(2)
                                                   )
                                                 }
@@ -82337,7 +82737,7 @@ var render = function() {
                                               staticClass:
                                                 "col-md-6 font-weight-bold h5"
                                             },
-                                            [_vm._v("Total de venta")]
+                                            [_vm._v("Total")]
                                           ),
                                           _vm._v(" "),
                                           _c("label", {
@@ -82347,7 +82747,7 @@ var render = function() {
                                               textContent: _vm._s(
                                                 "S/. " +
                                                   Number.parseFloat(
-                                                    _vm.update(5)
+                                                    _vm.Venta.total
                                                   ).toFixed(2)
                                               )
                                             }
@@ -82366,467 +82766,544 @@ var render = function() {
                 _vm._v(" "),
                 _vm.Modal.numero == 2
                   ? _c("div", { staticClass: "input-group" }, [
-                      _c("div", { staticClass: "container-small col-md-12" }, [
-                        _c(
-                          "div",
-                          {
-                            staticClass:
-                              "shadow bg-white rounded pt-2 form-group",
-                            staticStyle: { border: "1px solid" }
-                          },
-                          [
-                            _vm._m(13),
-                            _vm._v(" "),
-                            _vm.Cliente.tipo == "P"
-                              ? _c(
-                                  "div",
-                                  { staticClass: "input-group form-group" },
-                                  [
-                                    _c(
-                                      "div",
-                                      { staticClass: "col-md-3 input-group" },
-                                      [
-                                        _c(
-                                          "label",
-                                          { staticClass: "col-md-3" },
-                                          [_vm._v("DNI")]
-                                        ),
-                                        _vm._v(" "),
-                                        _c("input", {
-                                          directives: [
-                                            {
-                                              name: "model",
-                                              rawName: "v-model",
-                                              value: _vm.Cliente.dni,
-                                              expression: "Cliente.dni"
-                                            }
-                                          ],
-                                          staticClass:
-                                            "col-md-7 form-control form-control-sm",
-                                          attrs: { type: "text", readonly: "" },
-                                          domProps: { value: _vm.Cliente.dni },
-                                          on: {
-                                            input: function($event) {
-                                              if ($event.target.composing) {
-                                                return
-                                              }
-                                              _vm.$set(
-                                                _vm.Cliente,
-                                                "dni",
-                                                $event.target.value
-                                              )
-                                            }
-                                          }
-                                        })
-                                      ]
-                                    ),
-                                    _vm._v(" "),
-                                    _c(
-                                      "div",
-                                      { staticClass: "col-md-4 input-group" },
-                                      [
-                                        _c(
-                                          "label",
-                                          { staticClass: "col-md-4" },
-                                          [_vm._v("Nombres")]
-                                        ),
-                                        _vm._v(" "),
-                                        _c("input", {
-                                          directives: [
-                                            {
-                                              name: "model",
-                                              rawName: "v-model",
-                                              value: _vm.Cliente.nombres,
-                                              expression: "Cliente.nombres"
-                                            }
-                                          ],
-                                          staticClass:
-                                            "col-md-8 form-control form-control-sm",
-                                          attrs: { type: "text", readonly: "" },
-                                          domProps: {
-                                            value: _vm.Cliente.nombres
-                                          },
-                                          on: {
-                                            input: function($event) {
-                                              if ($event.target.composing) {
-                                                return
-                                              }
-                                              _vm.$set(
-                                                _vm.Cliente,
-                                                "nombres",
-                                                $event.target.value
-                                              )
-                                            }
-                                          }
-                                        })
-                                      ]
-                                    ),
-                                    _vm._v(" "),
-                                    _c(
-                                      "div",
-                                      { staticClass: "col-md-4 input-group" },
-                                      [
-                                        _c(
-                                          "label",
-                                          { staticClass: "col-md-4" },
-                                          [_vm._v("Apellidos")]
-                                        ),
-                                        _vm._v(" "),
-                                        _c("input", {
-                                          directives: [
-                                            {
-                                              name: "model",
-                                              rawName: "v-model",
-                                              value: _vm.Cliente.apellidos,
-                                              expression: "Cliente.apellidos"
-                                            }
-                                          ],
-                                          staticClass:
-                                            "col-md-8 form-control form-control-sm",
-                                          attrs: { type: "text", readonly: "" },
-                                          domProps: {
-                                            value: _vm.Cliente.apellidos
-                                          },
-                                          on: {
-                                            input: function($event) {
-                                              if ($event.target.composing) {
-                                                return
-                                              }
-                                              _vm.$set(
-                                                _vm.Cliente,
-                                                "apellidos",
-                                                $event.target.value
-                                              )
-                                            }
-                                          }
-                                        })
-                                      ]
-                                    )
-                                  ]
-                                )
-                              : _vm.Cliente.tipo == "E"
-                              ? _c(
-                                  "div",
-                                  { staticClass: "input-group form-group" },
-                                  [
-                                    _c(
-                                      "div",
-                                      { staticClass: "col-md-3 input-group" },
-                                      [
-                                        _c(
-                                          "label",
-                                          { staticClass: "col-md-3" },
-                                          [_vm._v("RUC")]
-                                        ),
-                                        _vm._v(" "),
-                                        _c("input", {
-                                          directives: [
-                                            {
-                                              name: "model",
-                                              rawName: "v-model",
-                                              value: _vm.Cliente.ruc,
-                                              expression: "Cliente.ruc"
-                                            }
-                                          ],
-                                          staticClass:
-                                            "col-md-7 form-control form-control-sm",
-                                          attrs: { type: "text", readonly: "" },
-                                          domProps: { value: _vm.Cliente.ruc },
-                                          on: {
-                                            input: function($event) {
-                                              if ($event.target.composing) {
-                                                return
-                                              }
-                                              _vm.$set(
-                                                _vm.Cliente,
-                                                "ruc",
-                                                $event.target.value
-                                              )
-                                            }
-                                          }
-                                        })
-                                      ]
-                                    ),
-                                    _vm._v(" "),
-                                    _c(
-                                      "div",
-                                      { staticClass: "col-md-8 input-group" },
-                                      [
-                                        _c(
-                                          "label",
-                                          { staticClass: "col-md-2" },
-                                          [_vm._v("Razón social")]
-                                        ),
-                                        _vm._v(
-                                          " \n                                        "
-                                        ),
-                                        _c("input", {
-                                          directives: [
-                                            {
-                                              name: "model",
-                                              rawName: "v-model",
-                                              value: _vm.Cliente.razon_social,
-                                              expression: "Cliente.razon_social"
-                                            }
-                                          ],
-                                          staticClass:
-                                            "col-md-10 form-control form-control-sm",
-                                          attrs: { type: "text", readonly: "" },
-                                          domProps: {
-                                            value: _vm.Cliente.razon_social
-                                          },
-                                          on: {
-                                            input: function($event) {
-                                              if ($event.target.composing) {
-                                                return
-                                              }
-                                              _vm.$set(
-                                                _vm.Cliente,
-                                                "razon_social",
-                                                $event.target.value
-                                              )
-                                            }
-                                          }
-                                        })
-                                      ]
-                                    )
-                                  ]
-                                )
-                              : _c("div", { staticClass: "col-md-12" }, [
-                                  _c("label", { staticClass: "text-info" }, [
-                                    _vm._v("No se ha registrado cliente")
-                                  ])
-                                ])
-                          ]
-                        )
-                      ]),
+                      _c(
+                        "div",
+                        {
+                          staticClass:
+                            "container-small col-md-12 input-group form-group"
+                        },
+                        [
+                          _c(
+                            "button",
+                            {
+                              staticClass: "col-md-6 btn btn-warning btn",
+                              staticStyle: {
+                                border: "1px solid",
+                                "border-color": "black"
+                              },
+                              attrs: { type: "button" },
+                              on: {
+                                click: function($event) {
+                                  _vm.Step.number = 0
+                                }
+                              }
+                            },
+                            [
+                              _c(
+                                "label",
+                                {
+                                  staticClass: "font-weight-bold m-0",
+                                  staticStyle: { color: "black" }
+                                },
+                                [_vm._v("DETALLES DE VENTA")]
+                              )
+                            ]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "button",
+                            {
+                              staticClass: "col-md-6 btn btn-success",
+                              staticStyle: {
+                                border: "1px solid",
+                                "border-color": "black"
+                              },
+                              attrs: { type: "button" },
+                              on: {
+                                click: function($event) {
+                                  _vm.Step.number = 1
+                                }
+                              }
+                            },
+                            [
+                              _c(
+                                "label",
+                                {
+                                  staticClass: "font-weight-bold m-0",
+                                  staticStyle: { color: "black" }
+                                },
+                                [_vm._v("CLIENTE Y PAGOS")]
+                              )
+                            ]
+                          )
+                        ]
+                      ),
                       _vm._v(" "),
-                      _vm.Venta.tipo_pago.charAt(0) == 2 ||
-                      _vm.Venta.tipo_pago.charAt(0) == 3
+                      _vm.Step.number == 0
                         ? _c(
                             "div",
-                            { staticClass: "container-small col-md-4" },
+                            {
+                              staticClass: "col-md-12 p-0 m-0 input-group",
+                              staticStyle: { height: "26rem" }
+                            },
                             [
+                              _vm.Venta.tipo_pago == "2"
+                                ? _c(
+                                    "div",
+                                    { staticClass: "container-small col-md-4" },
+                                    [
+                                      _c(
+                                        "div",
+                                        {
+                                          staticClass:
+                                            "shadow rounded pt-2 bg-warning",
+                                          staticStyle: {
+                                            border: "1px solid",
+                                            height: "26rem"
+                                          }
+                                        },
+                                        [
+                                          _c(
+                                            "div",
+                                            {
+                                              staticClass:
+                                                "col-md-12 form-group"
+                                            },
+                                            [
+                                              _vm._m(13),
+                                              _vm._v(" "),
+                                              _vm.ListaPago.length
+                                                ? _c(
+                                                    "div",
+                                                    {
+                                                      staticClass:
+                                                        "col-md-12 form-group overflow-auto pr-0 pl-0",
+                                                      staticStyle: {
+                                                        height: "17rem"
+                                                      }
+                                                    },
+                                                    [
+                                                      _c(
+                                                        "table",
+                                                        {
+                                                          staticClass:
+                                                            "table table-bordered table-striped table-sm text-gray-900 bg-white"
+                                                        },
+                                                        [
+                                                          _vm._m(14),
+                                                          _vm._v(" "),
+                                                          _c(
+                                                            "tbody",
+                                                            _vm._l(
+                                                              _vm.ListaPago,
+                                                              function(
+                                                                pago,
+                                                                index
+                                                              ) {
+                                                                return _c(
+                                                                  "tr",
+                                                                  {
+                                                                    key: index,
+                                                                    class:
+                                                                      pago.color
+                                                                  },
+                                                                  [
+                                                                    _c(
+                                                                      "td",
+                                                                      {
+                                                                        staticClass:
+                                                                          "text-right"
+                                                                      },
+                                                                      [
+                                                                        _vm._v(
+                                                                          _vm._s(
+                                                                            index +
+                                                                              1
+                                                                          )
+                                                                        )
+                                                                      ]
+                                                                    ),
+                                                                    _vm._v(" "),
+                                                                    _c("td", {
+                                                                      staticClass:
+                                                                        "text-center",
+                                                                      domProps: {
+                                                                        textContent: _vm._s(
+                                                                          _vm.fix(
+                                                                            0,
+                                                                            pago.created_at
+                                                                          )
+                                                                        )
+                                                                      }
+                                                                    }),
+                                                                    _vm._v(" "),
+                                                                    _c("td", {
+                                                                      staticClass:
+                                                                        "text-right",
+                                                                      domProps: {
+                                                                        textContent: _vm._s(
+                                                                          pago.monto
+                                                                        )
+                                                                      }
+                                                                    })
+                                                                  ]
+                                                                )
+                                                              }
+                                                            ),
+                                                            0
+                                                          )
+                                                        ]
+                                                      )
+                                                    ]
+                                                  )
+                                                : _c(
+                                                    "div",
+                                                    {
+                                                      staticClass:
+                                                        "col-md-12 form-group",
+                                                      staticStyle: {
+                                                        height: "17rem"
+                                                      }
+                                                    },
+                                                    [
+                                                      _c(
+                                                        "label",
+                                                        {
+                                                          staticClass:
+                                                            "text-primary"
+                                                        },
+                                                        [
+                                                          _vm._v(
+                                                            "Ningun pago registrado"
+                                                          )
+                                                        ]
+                                                      )
+                                                    ]
+                                                  ),
+                                              _vm._v(" "),
+                                              Number.parseFloat(
+                                                _vm.Venta.total_faltante
+                                              ) > 0
+                                                ? _c(
+                                                    "div",
+                                                    {
+                                                      staticClass:
+                                                        "col-md-12 input-group"
+                                                    },
+                                                    [
+                                                      _c(
+                                                        "div",
+                                                        {
+                                                          staticClass:
+                                                            "col-md-12 p-0 m-0 input-group"
+                                                        },
+                                                        [
+                                                          _c(
+                                                            "label",
+                                                            {
+                                                              staticClass:
+                                                                "col-md-7 p-0 h5 font-weight-bold"
+                                                            },
+                                                            [
+                                                              _vm._v(
+                                                                "Monto pagado:"
+                                                              )
+                                                            ]
+                                                          ),
+                                                          _vm._v(" "),
+                                                          _c(
+                                                            "label",
+                                                            {
+                                                              staticClass:
+                                                                "col-md-1 p-0 h5 text-right text-success"
+                                                            },
+                                                            [_vm._v("S/.")]
+                                                          ),
+                                                          _vm._v(" "),
+                                                          _c("label", {
+                                                            staticClass:
+                                                              "col-md-4 p-0 h5 text-right text-success",
+                                                            domProps: {
+                                                              textContent: _vm._s(
+                                                                Number.parseFloat(
+                                                                  _vm.Venta
+                                                                    .total -
+                                                                    _vm.Venta
+                                                                      .total_faltante
+                                                                ).toFixed(2)
+                                                              )
+                                                            }
+                                                          })
+                                                        ]
+                                                      ),
+                                                      _vm._v(" "),
+                                                      _c(
+                                                        "div",
+                                                        {
+                                                          staticClass:
+                                                            "col-md-12 p-0 m-0 input-group"
+                                                        },
+                                                        [
+                                                          _c(
+                                                            "label",
+                                                            {
+                                                              staticClass:
+                                                                "col-md-7 p-0 h5 font-weight-bold"
+                                                            },
+                                                            [
+                                                              _vm._v(
+                                                                "Monto faltante:"
+                                                              )
+                                                            ]
+                                                          ),
+                                                          _vm._v(" "),
+                                                          _c(
+                                                            "label",
+                                                            {
+                                                              staticClass:
+                                                                "col-md-1 p-0 h5 text-right text-danger"
+                                                            },
+                                                            [_vm._v("S/.")]
+                                                          ),
+                                                          _vm._v(" "),
+                                                          _c("label", {
+                                                            staticClass:
+                                                              "col-md-4 p-0 h5 text-right text-danger",
+                                                            domProps: {
+                                                              textContent: _vm._s(
+                                                                Number.parseFloat(
+                                                                  _vm.Venta
+                                                                    .total_faltante
+                                                                ).toFixed(2)
+                                                              )
+                                                            }
+                                                          })
+                                                        ]
+                                                      )
+                                                    ]
+                                                  )
+                                                : _c(
+                                                    "div",
+                                                    {
+                                                      staticClass:
+                                                        "col-md-12 input-group"
+                                                    },
+                                                    [
+                                                      _c(
+                                                        "label",
+                                                        {
+                                                          staticClass:
+                                                            "col-md-12 p-0 d-flex justify-content-center font-weight-bold text-primary"
+                                                        },
+                                                        [
+                                                          _vm._v(
+                                                            "-- PAGADO COMPLETAMENTE --"
+                                                          )
+                                                        ]
+                                                      )
+                                                    ]
+                                                  )
+                                            ]
+                                          )
+                                        ]
+                                      )
+                                    ]
+                                  )
+                                : _vm._e(),
+                              _vm._v(" "),
                               _c(
                                 "div",
                                 {
-                                  staticClass: "shadow bg-white rounded pt-2",
-                                  staticStyle: {
-                                    height: "24rem",
-                                    border: "1px solid"
-                                  }
+                                  staticClass: "container-small",
+                                  class:
+                                    _vm.Venta.tipo_pago == "2"
+                                      ? "col-md-8"
+                                      : "col-md-12"
                                 },
                                 [
-                                  _vm._m(14),
-                                  _vm._v(" "),
-                                  _vm.ListaPago.length
-                                    ? _c(
+                                  _c(
+                                    "div",
+                                    {
+                                      staticClass:
+                                        "shadow rounded pt-2 bg-warning",
+                                      staticStyle: {
+                                        border: "1px solid",
+                                        height: "26rem"
+                                      }
+                                    },
+                                    [
+                                      _c(
+                                        "div",
+                                        {
+                                          staticClass:
+                                            "col-md-12 form-group input-group"
+                                        },
+                                        [
+                                          _vm._m(15),
+                                          _vm._v(" "),
+                                          _c(
+                                            "div",
+                                            {
+                                              staticClass:
+                                                "col-md-5 input-group"
+                                            },
+                                            [
+                                              _c(
+                                                "label",
+                                                {
+                                                  staticClass:
+                                                    "col-md-6 font-weight-bold p-0"
+                                                },
+                                                [_vm._v("Tipo de precio")]
+                                              ),
+                                              _vm._v(" "),
+                                              _c("label", {
+                                                staticClass:
+                                                  "col-md-6 text-primary p-0",
+                                                domProps: {
+                                                  textContent: _vm._s(
+                                                    _vm.fix("tipo_precio")
+                                                  )
+                                                }
+                                              })
+                                            ]
+                                          )
+                                        ]
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
                                         "div",
                                         {
                                           staticClass:
                                             "col-md-12 overflow-auto",
-                                          staticStyle: { height: "16rem" }
+                                          staticStyle: { height: "19rem" }
                                         },
                                         [
                                           _c(
                                             "table",
                                             {
                                               staticClass:
-                                                "table table-bordered table-striped table-sm text-gray-900"
+                                                "table table-bordered table-striped table-sm text-gray-900 bg-white"
                                             },
                                             [
-                                              _vm._m(15),
+                                              _vm._m(16),
                                               _vm._v(" "),
                                               _c(
                                                 "tbody",
-                                                _vm._l(_vm.ListaPago, function(
-                                                  pago,
-                                                  index
-                                                ) {
-                                                  return _c(
-                                                    "tr",
-                                                    {
-                                                      key: index,
-                                                      class: pago.color
-                                                    },
-                                                    [
-                                                      _c(
-                                                        "td",
-                                                        {
-                                                          staticClass:
-                                                            "text-right pr-1"
-                                                        },
-                                                        [
-                                                          _vm._v(
-                                                            _vm._s(index + 1)
-                                                          )
-                                                        ]
-                                                      ),
-                                                      _vm._v(" "),
-                                                      _c("td", {
-                                                        staticClass:
-                                                          "text-center",
-                                                        domProps: {
-                                                          textContent: _vm._s(
-                                                            _vm.fix(
-                                                              0,
-                                                              pago.created_at
+                                                _vm._l(
+                                                  _vm.ListaDetalle,
+                                                  function(detalle, indice) {
+                                                    return _c(
+                                                      "tr",
+                                                      { key: indice },
+                                                      [
+                                                        _c(
+                                                          "td",
+                                                          {
+                                                            staticClass:
+                                                              "text-right"
+                                                          },
+                                                          [
+                                                            _vm._v(
+                                                              _vm._s(indice + 1)
                                                             )
-                                                          )
-                                                        }
-                                                      }),
-                                                      _vm._v(" "),
-                                                      _c("td", {
-                                                        staticClass:
-                                                          "text-right",
-                                                        domProps: {
-                                                          textContent: _vm._s(
-                                                            pago.monto
-                                                          )
-                                                        }
-                                                      })
-                                                    ]
-                                                  )
-                                                }),
+                                                          ]
+                                                        ),
+                                                        _vm._v(" "),
+                                                        _c("td", {
+                                                          domProps: {
+                                                            textContent: _vm._s(
+                                                              detalle.nombre_producto
+                                                            )
+                                                          }
+                                                        }),
+                                                        _vm._v(" "),
+                                                        _c("td", {
+                                                          staticClass:
+                                                            "text-right",
+                                                          domProps: {
+                                                            textContent: _vm._s(
+                                                              detalle.fallidos ==
+                                                                null
+                                                                ? "---"
+                                                                : detalle.fallidos
+                                                            )
+                                                          }
+                                                        }),
+                                                        _vm._v(" "),
+                                                        _c("td", {
+                                                          staticClass:
+                                                            "text-right",
+                                                          domProps: {
+                                                            textContent: _vm._s(
+                                                              detalle.cantidad
+                                                            )
+                                                          }
+                                                        }),
+                                                        _vm._v(" "),
+                                                        _c("td", {
+                                                          staticClass:
+                                                            "text-right",
+                                                          domProps: {
+                                                            textContent: _vm._s(
+                                                              detalle.precio
+                                                            )
+                                                          }
+                                                        }),
+                                                        _vm._v(" "),
+                                                        _c("td", {
+                                                          staticClass:
+                                                            "text-right",
+                                                          domProps: {
+                                                            textContent: _vm._s(
+                                                              detalle.subtotal
+                                                            )
+                                                          }
+                                                        })
+                                                      ]
+                                                    )
+                                                  }
+                                                ),
                                                 0
                                               )
                                             ]
                                           )
                                         ]
-                                      )
-                                    : _c(
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
                                         "div",
                                         {
                                           staticClass:
-                                            "col-md-12 overflow-auto",
-                                          staticStyle: { height: "16rem" }
+                                            "col-md-12 input-group mt-2"
                                         },
                                         [
+                                          _c("div", {
+                                            staticClass: "col-md-6"
+                                          }),
+                                          _vm._v(" "),
                                           _c(
-                                            "label",
-                                            { staticClass: "text-info" },
-                                            [_vm._v("Ningun pago registrado")]
+                                            "div",
+                                            {
+                                              staticClass:
+                                                "col-md-6 input-group"
+                                            },
+                                            [
+                                              _c(
+                                                "label",
+                                                {
+                                                  staticClass:
+                                                    "col-md-6 text-right font-weight-bold h5 p-0"
+                                                },
+                                                [_vm._v("Monto de venta:")]
+                                              ),
+                                              _vm._v(" "),
+                                              _c("label", {
+                                                staticClass:
+                                                  "col-md-6 text-right text-primary h5 p-0",
+                                                domProps: {
+                                                  textContent: _vm._s(
+                                                    "S/. " +
+                                                      Number.parseFloat(
+                                                        _vm.Venta.total_venta
+                                                      ).toFixed(2)
+                                                  )
+                                                }
+                                              })
+                                            ]
                                           )
                                         ]
-                                      ),
-                                  _vm._v(" "),
-                                  _c(
-                                    "div",
-                                    {
-                                      staticClass:
-                                        "col-md-12 input-group d-flex justify-content-end"
-                                    },
-                                    [
-                                      _c(
-                                        "label",
-                                        {
-                                          staticClass:
-                                            "col-md-6 font-weight-bold p-0",
-                                          staticStyle: {
-                                            "margin-bottom": "0px"
-                                          }
-                                        },
-                                        [_vm._v("Monto pagado:")]
-                                      ),
-                                      _vm._v(" "),
-                                      _c(
-                                        "label",
-                                        {
-                                          staticClass:
-                                            "col-md-1 text-right text-success p-0",
-                                          staticStyle: {
-                                            "margin-bottom": "0px"
-                                          }
-                                        },
-                                        [_vm._v("S/.")]
-                                      ),
-                                      _vm._v(" "),
-                                      _c("label", {
-                                        staticClass:
-                                          "col-md-4 text-right text-success",
-                                        staticStyle: { "margin-bottom": "0px" },
-                                        domProps: {
-                                          textContent: _vm._s(
-                                            (
-                                              _vm.Venta.total -
-                                              _vm.Venta.total_faltante
-                                            ).toFixed(2)
-                                          )
-                                        }
-                                      }),
-                                      _vm._v(" "),
-                                      _c(
-                                        "label",
-                                        {
-                                          staticClass:
-                                            "col-md-6 font-weight-bold p-0",
-                                          staticStyle: {
-                                            "margin-bottom": "0px"
-                                          }
-                                        },
-                                        [_vm._v("Monto faltante:")]
-                                      ),
-                                      _vm._v(" "),
-                                      _c(
-                                        "label",
-                                        {
-                                          staticClass:
-                                            "col-md-1 text-right text-danger p-0",
-                                          staticStyle: {
-                                            "margin-bottom": "0px"
-                                          }
-                                        },
-                                        [_vm._v("S/.")]
-                                      ),
-                                      _vm._v(" "),
-                                      _c("label", {
-                                        staticClass:
-                                          "col-md-4 text-right text-danger",
-                                        staticStyle: { "margin-bottom": "0px" },
-                                        domProps: {
-                                          textContent: _vm._s(
-                                            Number.parseFloat(
-                                              _vm.Venta.total_faltante
-                                            ).toFixed(2)
-                                          )
-                                        }
-                                      }),
-                                      _vm._v(" "),
-                                      _c(
-                                        "label",
-                                        {
-                                          staticClass:
-                                            "col-md-6 font-weight-bold p-0",
-                                          staticStyle: {
-                                            "margin-bottom": "0px"
-                                          }
-                                        },
-                                        [_vm._v("Monto total: ")]
-                                      ),
-                                      _vm._v(" "),
-                                      _c(
-                                        "label",
-                                        {
-                                          staticClass:
-                                            "col-md-1 text-right p-0",
-                                          staticStyle: {
-                                            "margin-bottom": "0px"
-                                          }
-                                        },
-                                        [_vm._v("S/.")]
-                                      ),
-                                      _vm._v(" "),
-                                      _c("label", {
-                                        staticClass: "col-md-4 text-right",
-                                        staticStyle: { "margin-bottom": "0px" },
-                                        domProps: {
-                                          textContent: _vm._s(
-                                            Number.parseFloat(
-                                              _vm.Venta.total
-                                            ).toFixed(2)
-                                          )
-                                        }
-                                      })
+                                      )
                                     ]
                                   )
                                 ]
@@ -82835,76 +83312,317 @@ var render = function() {
                           )
                         : _vm._e(),
                       _vm._v(" "),
-                      _c(
-                        "div",
-                        {
-                          staticClass: "container-small",
-                          class:
-                            _vm.Venta.tipo_pago.charAt(0) == 2 ||
-                            _vm.Venta.tipo_pago.charAt(0) == 3
-                              ? "col-md-8"
-                              : "col-md-12"
-                        },
-                        [
-                          _c(
+                      _vm.Step.number == 1
+                        ? _c(
                             "div",
                             {
-                              staticClass: "shadow bg-white rounded pt-2",
-                              staticStyle: {
-                                height: "24rem",
-                                border: "1px solid"
-                              }
+                              staticClass: "col-md-12 p-0 m-0 input-group",
+                              staticStyle: { height: "26rem" }
                             },
                             [
                               _c(
                                 "div",
-                                { staticClass: "col-md-12 input-group" },
+                                {
+                                  staticClass:
+                                    "container-small col-md-12 form-group",
+                                  staticStyle: { height: "7rem" }
+                                },
                                 [
                                   _c(
-                                    "label",
+                                    "div",
                                     {
-                                      staticClass: "col-md-3 font-weight-bold"
-                                    },
-                                    [_vm._v("LISTA DE ITEMS")]
-                                  ),
-                                  _vm._v(" "),
-                                  _c("div", { staticClass: "col-md-1" }),
-                                  _vm._v(" "),
-                                  _c(
-                                    "label",
-                                    {
-                                      staticClass: "col-md-4 font-weight-bold"
+                                      staticClass:
+                                        "shadow rounded pt-2 bg-success",
+                                      staticStyle: {
+                                        border: "1px solid",
+                                        height: "7rem"
+                                      }
                                     },
                                     [
-                                      _vm._v("Pago: "),
-                                      _c("label", {
-                                        staticClass:
-                                          "text-info font-weight-normal",
-                                        domProps: {
-                                          textContent: _vm._s(
-                                            _vm.fix(4, _vm.Venta.tipo_pago)
+                                      _vm._m(17),
+                                      _vm._v(" "),
+                                      _vm.Cliente.tipo == "P"
+                                        ? _c(
+                                            "div",
+                                            {
+                                              staticClass:
+                                                "col-md-12 form-group input-group"
+                                            },
+                                            [
+                                              _c(
+                                                "div",
+                                                {
+                                                  staticClass:
+                                                    "col-md-3 input-group"
+                                                },
+                                                [
+                                                  _c(
+                                                    "label",
+                                                    { staticClass: "col-md-3" },
+                                                    [_vm._v("DNI")]
+                                                  ),
+                                                  _vm._v(" "),
+                                                  _c("input", {
+                                                    directives: [
+                                                      {
+                                                        name: "model",
+                                                        rawName: "v-model",
+                                                        value: _vm.Cliente.dni,
+                                                        expression:
+                                                          "Cliente.dni"
+                                                      }
+                                                    ],
+                                                    staticClass:
+                                                      "col-md-9 form-control form-control-sm",
+                                                    attrs: {
+                                                      type: "text",
+                                                      readonly: ""
+                                                    },
+                                                    domProps: {
+                                                      value: _vm.Cliente.dni
+                                                    },
+                                                    on: {
+                                                      input: function($event) {
+                                                        if (
+                                                          $event.target
+                                                            .composing
+                                                        ) {
+                                                          return
+                                                        }
+                                                        _vm.$set(
+                                                          _vm.Cliente,
+                                                          "dni",
+                                                          $event.target.value
+                                                        )
+                                                      }
+                                                    }
+                                                  })
+                                                ]
+                                              ),
+                                              _vm._v(" "),
+                                              _c(
+                                                "div",
+                                                {
+                                                  staticClass:
+                                                    "col-md-4 input-group"
+                                                },
+                                                [
+                                                  _c(
+                                                    "label",
+                                                    { staticClass: "col-md-4" },
+                                                    [_vm._v("Nombres")]
+                                                  ),
+                                                  _vm._v(" "),
+                                                  _c("input", {
+                                                    directives: [
+                                                      {
+                                                        name: "model",
+                                                        rawName: "v-model",
+                                                        value:
+                                                          _vm.Cliente.nombres,
+                                                        expression:
+                                                          "Cliente.nombres"
+                                                      }
+                                                    ],
+                                                    staticClass:
+                                                      "col-md-8 form-control form-control-sm",
+                                                    attrs: {
+                                                      type: "text",
+                                                      readonly: ""
+                                                    },
+                                                    domProps: {
+                                                      value: _vm.Cliente.nombres
+                                                    },
+                                                    on: {
+                                                      input: function($event) {
+                                                        if (
+                                                          $event.target
+                                                            .composing
+                                                        ) {
+                                                          return
+                                                        }
+                                                        _vm.$set(
+                                                          _vm.Cliente,
+                                                          "nombres",
+                                                          $event.target.value
+                                                        )
+                                                      }
+                                                    }
+                                                  })
+                                                ]
+                                              ),
+                                              _vm._v(" "),
+                                              _c(
+                                                "div",
+                                                {
+                                                  staticClass:
+                                                    "col-md-4 input-group"
+                                                },
+                                                [
+                                                  _c(
+                                                    "label",
+                                                    { staticClass: "col-md-4" },
+                                                    [_vm._v("Apellidos")]
+                                                  ),
+                                                  _vm._v(" "),
+                                                  _c("input", {
+                                                    directives: [
+                                                      {
+                                                        name: "model",
+                                                        rawName: "v-model",
+                                                        value:
+                                                          _vm.Cliente.apellidos,
+                                                        expression:
+                                                          "Cliente.apellidos"
+                                                      }
+                                                    ],
+                                                    staticClass:
+                                                      "col-md-8 form-control form-control-sm",
+                                                    attrs: {
+                                                      type: "text",
+                                                      readonly: ""
+                                                    },
+                                                    domProps: {
+                                                      value:
+                                                        _vm.Cliente.apellidos
+                                                    },
+                                                    on: {
+                                                      input: function($event) {
+                                                        if (
+                                                          $event.target
+                                                            .composing
+                                                        ) {
+                                                          return
+                                                        }
+                                                        _vm.$set(
+                                                          _vm.Cliente,
+                                                          "apellidos",
+                                                          $event.target.value
+                                                        )
+                                                      }
+                                                    }
+                                                  })
+                                                ]
+                                              )
+                                            ]
                                           )
-                                        }
-                                      })
-                                    ]
-                                  ),
-                                  _vm._v(" "),
-                                  _c(
-                                    "label",
-                                    {
-                                      staticClass: "col-md-4 font-weight-bold"
-                                    },
-                                    [
-                                      _vm._v("Precio: "),
-                                      _c("label", {
-                                        staticClass:
-                                          "text-info font-weight-normal",
-                                        domProps: {
-                                          textContent: _vm._s(
-                                            _vm.fix(5, _vm.Venta.tipo_precio)
+                                        : _vm.Cliente.tipo == "E"
+                                        ? _c(
+                                            "div",
+                                            {
+                                              staticClass:
+                                                "col-md-12 form-group input-group"
+                                            },
+                                            [
+                                              _c(
+                                                "div",
+                                                {
+                                                  staticClass:
+                                                    "col-md-3 input-group"
+                                                },
+                                                [
+                                                  _c(
+                                                    "label",
+                                                    { staticClass: "col-md-3" },
+                                                    [_vm._v("RUC")]
+                                                  ),
+                                                  _vm._v(" "),
+                                                  _c("input", {
+                                                    directives: [
+                                                      {
+                                                        name: "model",
+                                                        rawName: "v-model",
+                                                        value: _vm.Cliente.ruc,
+                                                        expression:
+                                                          "Cliente.ruc"
+                                                      }
+                                                    ],
+                                                    staticClass:
+                                                      "col-md-9 form-control form-control-sm",
+                                                    attrs: {
+                                                      type: "text",
+                                                      readonly: ""
+                                                    },
+                                                    domProps: {
+                                                      value: _vm.Cliente.ruc
+                                                    },
+                                                    on: {
+                                                      input: function($event) {
+                                                        if (
+                                                          $event.target
+                                                            .composing
+                                                        ) {
+                                                          return
+                                                        }
+                                                        _vm.$set(
+                                                          _vm.Cliente,
+                                                          "ruc",
+                                                          $event.target.value
+                                                        )
+                                                      }
+                                                    }
+                                                  })
+                                                ]
+                                              ),
+                                              _vm._v(" "),
+                                              _c(
+                                                "div",
+                                                {
+                                                  staticClass:
+                                                    "col-md-8 input-group"
+                                                },
+                                                [
+                                                  _c(
+                                                    "label",
+                                                    { staticClass: "col-md-3" },
+                                                    [_vm._v("Razón social")]
+                                                  ),
+                                                  _vm._v(
+                                                    " \n                                            "
+                                                  ),
+                                                  _c("input", {
+                                                    directives: [
+                                                      {
+                                                        name: "model",
+                                                        rawName: "v-model",
+                                                        value:
+                                                          _vm.Cliente
+                                                            .razon_social,
+                                                        expression:
+                                                          "Cliente.razon_social"
+                                                      }
+                                                    ],
+                                                    staticClass:
+                                                      "col-md-9 form-control form-control-sm",
+                                                    attrs: {
+                                                      type: "text",
+                                                      readonly: ""
+                                                    },
+                                                    domProps: {
+                                                      value:
+                                                        _vm.Cliente.razon_social
+                                                    },
+                                                    on: {
+                                                      input: function($event) {
+                                                        if (
+                                                          $event.target
+                                                            .composing
+                                                        ) {
+                                                          return
+                                                        }
+                                                        _vm.$set(
+                                                          _vm.Cliente,
+                                                          "razon_social",
+                                                          $event.target.value
+                                                        )
+                                                      }
+                                                    }
+                                                  })
+                                                ]
+                                              )
+                                            ]
                                           )
-                                        }
-                                      })
+                                        : _vm._e()
                                     ]
                                   )
                                 ]
@@ -82913,65 +83631,80 @@ var render = function() {
                               _c(
                                 "div",
                                 {
-                                  staticClass:
-                                    "col-md-12 form-group overflow-auto",
-                                  staticStyle: { height: "17rem" }
+                                  staticClass: "container-small col-md-3",
+                                  staticStyle: { height: "18rem" }
                                 },
                                 [
                                   _c(
-                                    "table",
+                                    "div",
                                     {
                                       staticClass:
-                                        "table table-bordered table-striped table-sm text-gray-900"
+                                        "shadow rounded pt-3 bg-success",
+                                      staticStyle: {
+                                        border: "1px solid",
+                                        height: "18rem"
+                                      }
                                     },
                                     [
-                                      _vm._m(16),
+                                      _vm._m(18),
                                       _vm._v(" "),
                                       _c(
-                                        "tbody",
-                                        _vm._l(_vm.ListaDetalle, function(
-                                          detalle,
-                                          indice
-                                        ) {
-                                          return _c("tr", { key: indice }, [
-                                            _c("td", {
-                                              domProps: {
-                                                textContent: _vm._s(
-                                                  detalle.nombre_producto
-                                                )
-                                              }
-                                            }),
-                                            _vm._v(" "),
-                                            _c("td", {
-                                              staticClass: "text-right",
-                                              domProps: {
-                                                textContent: _vm._s(
-                                                  detalle.cantidad
-                                                )
-                                              }
-                                            }),
-                                            _vm._v(" "),
-                                            _c("td", {
-                                              staticClass: "text-right",
-                                              domProps: {
-                                                textContent: _vm._s(
-                                                  detalle.precio
-                                                )
-                                              }
-                                            }),
-                                            _vm._v(" "),
-                                            _c("td", {
-                                              staticClass: "text-right",
-                                              domProps: {
-                                                textContent: _vm._s(
-                                                  detalle.subtotal
-                                                )
-                                              }
-                                            })
-                                          ])
-                                        }),
-                                        0
-                                      )
+                                        "div",
+                                        {
+                                          staticClass:
+                                            "col-md-12 input-group form-group"
+                                        },
+                                        [
+                                          _c(
+                                            "label",
+                                            {
+                                              staticClass:
+                                                "col-md-7 p-0 font-weight-bold"
+                                            },
+                                            [_vm._v("Tipo de pago")]
+                                          ),
+                                          _vm._v(" "),
+                                          _c("label", {
+                                            staticClass:
+                                              "col-md-5 p-0 text-white",
+                                            domProps: {
+                                              textContent: _vm._s(
+                                                _vm.fix("tipo_pago")
+                                              )
+                                            }
+                                          })
+                                        ]
+                                      ),
+                                      _vm._v(" "),
+                                      _vm.Venta.tipo_pago == "2"
+                                        ? _c(
+                                            "div",
+                                            {
+                                              staticClass:
+                                                "col-md-12 input-group form-group"
+                                            },
+                                            [
+                                              _c(
+                                                "label",
+                                                {
+                                                  staticClass:
+                                                    "col-md-7 p-0 font-weight-bold"
+                                                },
+                                                [_vm._v("Tipo de entrega")]
+                                              ),
+                                              _vm._v(" "),
+                                              _c("label", {
+                                                staticClass:
+                                                  "col-md-5 p-0 text-white",
+                                                domProps: {
+                                                  textContent: _vm._s(
+                                                    _vm.fix("tipo_entrega")
+                                                  )
+                                                }
+                                              })
+                                            ]
+                                          )
+                                        : _vm._e()
                                     ]
                                   )
                                 ]
@@ -82979,74 +83712,395 @@ var render = function() {
                               _vm._v(" "),
                               _c(
                                 "div",
-                                { staticClass: "col-md-12 input-group" },
+                                { staticClass: "container-small col-md-3" },
                                 [
                                   _c(
                                     "div",
-                                    { staticClass: "col-md-6 input-group" },
+                                    {
+                                      staticClass:
+                                        "shadow rounded pt-3 bg-success",
+                                      staticStyle: {
+                                        border: "1px solid",
+                                        height: "18rem"
+                                      }
+                                    },
                                     [
+                                      _vm._m(19),
+                                      _vm._v(" "),
+                                      _vm.ValeU.monto != null
+                                        ? _c(
+                                            "div",
+                                            {
+                                              staticClass:
+                                                "col-md-12 form-group p-0"
+                                            },
+                                            [
+                                              _vm._m(20),
+                                              _vm._v(" "),
+                                              _c(
+                                                "div",
+                                                {
+                                                  staticClass:
+                                                    "col-md-12 input-group form-group"
+                                                },
+                                                [
+                                                  _c(
+                                                    "label",
+                                                    {
+                                                      staticClass:
+                                                        "col-md-6 font-weight-bold"
+                                                    },
+                                                    [_vm._v("Monto")]
+                                                  ),
+                                                  _vm._v(" "),
+                                                  _c("label", {
+                                                    staticClass:
+                                                      "col-md-6 text-white",
+                                                    domProps: {
+                                                      textContent: _vm._s(
+                                                        "S/. " + _vm.ValeU.monto
+                                                      )
+                                                    }
+                                                  })
+                                                ]
+                                              ),
+                                              _vm._v(" "),
+                                              _c(
+                                                "div",
+                                                {
+                                                  staticClass:
+                                                    "col-md-12 input-group form-group"
+                                                },
+                                                [
+                                                  _c(
+                                                    "label",
+                                                    {
+                                                      staticClass:
+                                                        "col-md-6 font-weight-bold"
+                                                    },
+                                                    [_vm._v("Fecha")]
+                                                  ),
+                                                  _vm._v(" "),
+                                                  _c("label", {
+                                                    staticClass:
+                                                      "col-md-6 text-white",
+                                                    domProps: {
+                                                      textContent: _vm._s(
+                                                        _vm.fix(
+                                                          7,
+                                                          _vm.ValeU.created_at
+                                                        )
+                                                      )
+                                                    }
+                                                  })
+                                                ]
+                                              ),
+                                              _vm._v(" "),
+                                              _c(
+                                                "div",
+                                                {
+                                                  staticClass:
+                                                    "col-md-12 input-group form-group"
+                                                },
+                                                [
+                                                  _c(
+                                                    "label",
+                                                    {
+                                                      staticClass:
+                                                        "col-md-6 font-weight-bold"
+                                                    },
+                                                    [_vm._v("Hora")]
+                                                  ),
+                                                  _vm._v(" "),
+                                                  _c("label", {
+                                                    staticClass:
+                                                      "col-md-6 text-white",
+                                                    domProps: {
+                                                      textContent: _vm._s(
+                                                        _vm.fix(
+                                                          8,
+                                                          _vm.ValeU.created_at
+                                                        )
+                                                      )
+                                                    }
+                                                  })
+                                                ]
+                                              )
+                                            ]
+                                          )
+                                        : _vm._e()
+                                    ]
+                                  )
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "div",
+                                { staticClass: "container-small col-md-3" },
+                                [
+                                  _c(
+                                    "div",
+                                    {
+                                      staticClass:
+                                        "shadow rounded pt-3 bg-success",
+                                      staticStyle: {
+                                        border: "1px solid",
+                                        height: "18rem"
+                                      }
+                                    },
+                                    [
+                                      _vm._m(21),
+                                      _vm._v(" "),
+                                      _vm.ValeU.monto != null
+                                        ? _c(
+                                            "div",
+                                            {
+                                              staticClass:
+                                                "col-md-12 form-group p-0"
+                                            },
+                                            [
+                                              _vm._m(22),
+                                              _vm._v(" "),
+                                              _c(
+                                                "div",
+                                                {
+                                                  staticClass:
+                                                    "col-md-12 input-group form-group"
+                                                },
+                                                [
+                                                  _c(
+                                                    "label",
+                                                    {
+                                                      staticClass:
+                                                        "col-md-6 font-weight-bold"
+                                                    },
+                                                    [_vm._v("Monto")]
+                                                  ),
+                                                  _vm._v(" "),
+                                                  _c("label", {
+                                                    staticClass:
+                                                      "col-md-6 text-white",
+                                                    domProps: {
+                                                      textContent: _vm._s(
+                                                        "S/. " + _vm.ValeU.monto
+                                                      )
+                                                    }
+                                                  })
+                                                ]
+                                              ),
+                                              _vm._v(" "),
+                                              _c(
+                                                "div",
+                                                {
+                                                  staticClass:
+                                                    "col-md-12 input-group form-group"
+                                                },
+                                                [
+                                                  _c(
+                                                    "label",
+                                                    {
+                                                      staticClass:
+                                                        "col-md-6 font-weight-bold"
+                                                    },
+                                                    [_vm._v("Fecha")]
+                                                  ),
+                                                  _vm._v(" "),
+                                                  _c("label", {
+                                                    staticClass:
+                                                      "col-md-6 text-white",
+                                                    domProps: {
+                                                      textContent: _vm._s(
+                                                        _vm.fix(
+                                                          7,
+                                                          _vm.ValeU.created_at
+                                                        )
+                                                      )
+                                                    }
+                                                  })
+                                                ]
+                                              ),
+                                              _vm._v(" "),
+                                              _c(
+                                                "div",
+                                                {
+                                                  staticClass:
+                                                    "col-md-12 input-group form-group"
+                                                },
+                                                [
+                                                  _c(
+                                                    "label",
+                                                    {
+                                                      staticClass:
+                                                        "col-md-6 font-weight-bold"
+                                                    },
+                                                    [_vm._v("Hora")]
+                                                  ),
+                                                  _vm._v(" "),
+                                                  _c("label", {
+                                                    staticClass:
+                                                      "col-md-6 text-white",
+                                                    domProps: {
+                                                      textContent: _vm._s(
+                                                        _vm.fix(
+                                                          8,
+                                                          _vm.ValeU.created_at
+                                                        )
+                                                      )
+                                                    }
+                                                  })
+                                                ]
+                                              )
+                                            ]
+                                          )
+                                        : _vm._e()
+                                    ]
+                                  )
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "div",
+                                { staticClass: "container-small col-md-3" },
+                                [
+                                  _c(
+                                    "div",
+                                    {
+                                      staticClass:
+                                        "shadow rounded pt-3 bg-success",
+                                      staticStyle: {
+                                        border: "1px solid",
+                                        height: "18rem"
+                                      }
+                                    },
+                                    [
+                                      _vm._m(23),
+                                      _vm._v(" "),
                                       _c(
-                                        "label",
+                                        "div",
                                         {
                                           staticClass:
-                                            "col-md-12 font-weight-bold pl-0"
+                                            "col-md-12 input-group form-group"
                                         },
                                         [
-                                          _vm._v("Registrado: "),
+                                          _c(
+                                            "label",
+                                            {
+                                              staticClass:
+                                                "col-md-7 p-0 font-weight-bold"
+                                            },
+                                            [_vm._v("Monto de venta")]
+                                          ),
+                                          _vm._v(" "),
+                                          _c(
+                                            "label",
+                                            {
+                                              staticClass:
+                                                "col-md-1 p-0 text-white text-right"
+                                            },
+                                            [_vm._v("S/.")]
+                                          ),
+                                          _vm._v(" "),
                                           _c("label", {
                                             staticClass:
-                                              "text-info font-weight-normal",
+                                              "col-md-4 p-0 text-white text-right",
                                             domProps: {
                                               textContent: _vm._s(
-                                                _vm.fix(0, _vm.Venta.created_at)
+                                                Number.parseFloat(
+                                                  _vm.Venta.total_venta
+                                                ).toFixed(2)
+                                              )
+                                            }
+                                          })
+                                        ]
+                                      ),
+                                      _vm._v(" "),
+                                      _vm.Venta.total_descuento != null
+                                        ? _c(
+                                            "div",
+                                            {
+                                              staticClass:
+                                                "col-md-12 input-group form-group"
+                                            },
+                                            [
+                                              _c(
+                                                "label",
+                                                {
+                                                  staticClass:
+                                                    "col-md-7 p-0 font-weight-bold"
+                                                },
+                                                [_vm._v("Monto de descuento")]
+                                              ),
+                                              _vm._v(" "),
+                                              _c(
+                                                "label",
+                                                {
+                                                  staticClass:
+                                                    "col-md-1 p-0 text-white text-right p-0"
+                                                },
+                                                [_vm._v("S/.")]
+                                              ),
+                                              _vm._v(" "),
+                                              _c("label", {
+                                                staticClass:
+                                                  "col-md-4 p-0 text-white text-right",
+                                                domProps: {
+                                                  textContent: _vm._s(
+                                                    "-" +
+                                                      Number.parseFloat(
+                                                        _vm.Venta
+                                                          .total_descuento
+                                                      ).toFixed(2)
+                                                  )
+                                                }
+                                              })
+                                            ]
+                                          )
+                                        : _vm._e(),
+                                      _vm._v(" "),
+                                      _vm._m(24),
+                                      _vm._v(" "),
+                                      _c(
+                                        "div",
+                                        {
+                                          staticClass:
+                                            "col-md-12 input-group form-group"
+                                        },
+                                        [
+                                          _c(
+                                            "label",
+                                            {
+                                              staticClass:
+                                                "col-md-6 font-weight-bold h5"
+                                            },
+                                            [_vm._v("Total")]
+                                          ),
+                                          _vm._v(" "),
+                                          _c("label", {
+                                            staticClass:
+                                              "col-md-6 p-0 text-white text-right h5",
+                                            domProps: {
+                                              textContent: _vm._s(
+                                                "S/. " +
+                                                  Number.parseFloat(
+                                                    _vm.Venta.total
+                                                  ).toFixed(2)
                                               )
                                             }
                                           })
                                         ]
                                       )
                                     ]
-                                  ),
-                                  _vm._v(" "),
-                                  _c("div", { staticClass: "col-md-1" }),
-                                  _vm._v(" "),
-                                  _c(
-                                    "div",
-                                    { staticClass: "col-md-5 input-group" },
-                                    [
-                                      _c(
-                                        "label",
-                                        {
-                                          staticClass:
-                                            "col-md-7 font-weight-bold text-right"
-                                        },
-                                        [_vm._v("Monto total:")]
-                                      ),
-                                      _vm._v(" "),
-                                      _c("label", {
-                                        staticClass:
-                                          "col-md-5 text-right text-info pr-0 pl-0",
-                                        domProps: {
-                                          textContent: _vm._s(
-                                            "S/. " +
-                                              Number.parseFloat(
-                                                _vm.Venta.total
-                                              ).toFixed(2)
-                                          )
-                                        }
-                                      })
-                                    ]
                                   )
                                 ]
                               )
                             ]
                           )
-                        ]
-                      )
+                        : _vm._e()
                     ])
                   : _vm._e(),
                 _vm._v(" "),
                 _vm.Modal.numero == 3
-                  ? _c("div", { staticClass: "container-small input-group" }, [
+                  ? _c("div", { staticClass: "input-group" }, [
                       _vm.Error.estado
                         ? _c(
                             "div",
@@ -83057,10 +84111,7 @@ var render = function() {
                             [
                               _c(
                                 "div",
-                                {
-                                  staticClass:
-                                    "col-md-6 alert alert-danger pb-0"
-                                },
+                                { staticClass: "col-md-6 alert alert-danger" },
                                 [
                                   _c(
                                     "button",
@@ -83072,7 +84123,7 @@ var render = function() {
                                       },
                                       on: {
                                         click: function($event) {
-                                          _vm.Error.estado = 0
+                                          return _vm.close(0)
                                         }
                                       }
                                     },
@@ -83101,75 +84152,118 @@ var render = function() {
                       _vm._v(" "),
                       _c(
                         "div",
-                        { staticClass: "container-small col-md-10 mt-1" },
+                        {
+                          staticClass:
+                            "container-small col-md-12 input-group form-group"
+                        },
                         [
                           _c(
-                            "div",
+                            "button",
                             {
-                              staticClass:
-                                "shadow bg-white rounded pt-2 input-group form-group",
+                              staticClass: "col-md-6 btn btn-warning btn",
                               staticStyle: {
                                 border: "1px solid",
-                                height: "6.5rem"
+                                "border-color": "black"
+                              },
+                              attrs: { type: "button" },
+                              on: {
+                                click: function($event) {
+                                  _vm.Step.number = 0
+                                }
                               }
                             },
                             [
-                              _vm._m(17),
-                              _vm._v(" "),
-                              _vm.Vale.id == null && _vm.Venta.tipo_pago == "1"
-                                ? _c(
+                              _c(
+                                "label",
+                                {
+                                  staticClass: "font-weight-bold m-0",
+                                  staticStyle: { color: "black" }
+                                },
+                                [_vm._v("DETALLES DE VENTA")]
+                              )
+                            ]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "button",
+                            {
+                              staticClass: "col-md-6 btn btn-success",
+                              staticStyle: {
+                                border: "1px solid",
+                                "border-color": "black"
+                              },
+                              attrs: { type: "button" },
+                              on: {
+                                click: function($event) {
+                                  _vm.Step.number = 1
+                                }
+                              }
+                            },
+                            [
+                              _c(
+                                "label",
+                                {
+                                  staticClass: "font-weight-bold m-0",
+                                  staticStyle: { color: "black" }
+                                },
+                                [_vm._v("CLIENTE Y PAGOS")]
+                              )
+                            ]
+                          )
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _vm.Step.number == 0
+                        ? _c(
+                            "div",
+                            {
+                              staticClass: "col-md-12 p-0 m-0 input-group",
+                              staticStyle: { height: "26rem" }
+                            },
+                            [
+                              _c(
+                                "div",
+                                { staticClass: "container-small col-md-4" },
+                                [
+                                  _c(
                                     "div",
                                     {
                                       staticClass:
-                                        "col-md-10 input-group form-group"
+                                        "shadow rounded pt-2 bg-warning",
+                                      staticStyle: {
+                                        border: "1px solid",
+                                        height: "26rem"
+                                      }
                                     },
                                     [
-                                      _c(
-                                        "label",
-                                        {
-                                          staticClass:
-                                            "col-md-2 font-weight-bold"
-                                        },
-                                        [
-                                          _vm._v(
-                                            "RUC/DNI \n                                        "
-                                          ),
-                                          _vm.Venta.tipo_pago == "2" ||
-                                          _vm.Venta.tipo_pago == "3" ||
-                                          _vm.Venta.total <
-                                            Number.parseFloat(
-                                              _vm.Venta.total_minimo
-                                            )
-                                            ? _c(
-                                                "span",
-                                                { staticClass: "text-danger" },
-                                                [_vm._v("*")]
-                                              )
-                                            : _vm._e()
-                                        ]
-                                      ),
+                                      _vm._m(25),
                                       _vm._v(" "),
                                       _c(
                                         "div",
-                                        { staticClass: "col-md-3 input-group" },
+                                        {
+                                          staticClass:
+                                            "col-md-12 input-group form-group"
+                                        },
                                         [
                                           _c("input", {
                                             directives: [
                                               {
                                                 name: "model",
                                                 rawName: "v-model",
-                                                value: _vm.Service.document,
-                                                expression: "Service.document"
+                                                value: _vm.Service.text,
+                                                expression: "Service.text"
                                               }
                                             ],
                                             staticClass:
                                               "form-control form-control-sm",
                                             attrs: {
-                                              type: "text",
-                                              maxlength: "11"
+                                              type: "search",
+                                              id: "filtroProducto",
+                                              placeholder:
+                                                "Producto,marca,modelo,tamaño,color"
                                             },
                                             domProps: {
-                                              value: _vm.Service.document
+                                              value: _vm.Service.text
                                             },
                                             on: {
                                               keyup: function($event) {
@@ -83185,7 +84279,7 @@ var render = function() {
                                                 ) {
                                                   return null
                                                 }
-                                                return _vm.consultar()
+                                                return _vm.list(0)
                                               },
                                               input: function($event) {
                                                 if ($event.target.composing) {
@@ -83193,7 +84287,7 @@ var render = function() {
                                                 }
                                                 _vm.$set(
                                                   _vm.Service,
-                                                  "document",
+                                                  "text",
                                                   $event.target.value
                                                 )
                                               }
@@ -83208,724 +84302,537 @@ var render = function() {
                                               attrs: { type: "button" },
                                               on: {
                                                 click: function($event) {
-                                                  return _vm.consultar()
+                                                  return _vm.list(0)
                                                 }
                                               }
                                             },
                                             [
                                               _c("i", {
-                                                staticClass: "fas fa-sync-alt"
-                                              })
+                                                staticClass: "fa fa-search"
+                                              }),
+                                              _vm._v(
+                                                "  Buscar\n                                        "
+                                              )
                                             ]
                                           )
                                         ]
                                       ),
                                       _vm._v(" "),
-                                      _c("div", { staticClass: "col-md-3" }, [
-                                        _c("h5", [
-                                          _c("span", {
-                                            class: _vm.Service.loadclass,
-                                            attrs: { role: "status" }
-                                          }),
-                                          _vm._v(
-                                            " \n                                            "
-                                          ),
-                                          _c("span", {
-                                            class: _vm.Service.msmclass,
-                                            domProps: {
-                                              textContent: _vm._s(
-                                                _vm.Service.msm
-                                              )
-                                            }
-                                          })
-                                        ])
-                                      ])
-                                    ]
-                                  )
-                                : _vm._e(),
-                              _vm._v(" "),
-                              _vm.Cliente.tipo == "P"
-                                ? _c(
-                                    "div",
-                                    {
-                                      staticClass:
-                                        "col-md-12 input-group form-group"
-                                    },
-                                    [
-                                      _c(
-                                        "div",
-                                        { staticClass: "col-md-3 input-group" },
-                                        [
-                                          _c(
-                                            "label",
-                                            { staticClass: "col-md-3" },
-                                            [_vm._v("DNI")]
-                                          ),
-                                          _vm._v(" "),
-                                          _c("input", {
-                                            directives: [
-                                              {
-                                                name: "model",
-                                                rawName: "v-model",
-                                                value: _vm.Cliente.dni,
-                                                expression: "Cliente.dni"
-                                              }
-                                            ],
-                                            staticClass:
-                                              "col-md-9 form-control form-control-sm",
-                                            attrs: {
-                                              type: "text",
-                                              readonly: ""
-                                            },
-                                            domProps: {
-                                              value: _vm.Cliente.dni
-                                            },
-                                            on: {
-                                              input: function($event) {
-                                                if ($event.target.composing) {
-                                                  return
-                                                }
-                                                _vm.$set(
-                                                  _vm.Cliente,
-                                                  "dni",
-                                                  $event.target.value
-                                                )
-                                              }
-                                            }
-                                          })
-                                        ]
-                                      ),
-                                      _vm._v(" "),
-                                      _c(
-                                        "div",
-                                        { staticClass: "col-md-4 input-group" },
-                                        [
-                                          _c(
-                                            "label",
-                                            { staticClass: "col-md-4" },
-                                            [_vm._v("Nombres")]
-                                          ),
-                                          _vm._v(" "),
-                                          _c("input", {
-                                            directives: [
-                                              {
-                                                name: "model",
-                                                rawName: "v-model",
-                                                value: _vm.Cliente.nombres,
-                                                expression: "Cliente.nombres"
-                                              }
-                                            ],
-                                            staticClass:
-                                              "col-md-8 form-control form-control-sm",
-                                            attrs: {
-                                              type: "text",
-                                              readonly: ""
-                                            },
-                                            domProps: {
-                                              value: _vm.Cliente.nombres
-                                            },
-                                            on: {
-                                              input: function($event) {
-                                                if ($event.target.composing) {
-                                                  return
-                                                }
-                                                _vm.$set(
-                                                  _vm.Cliente,
-                                                  "nombres",
-                                                  $event.target.value
-                                                )
-                                              }
-                                            }
-                                          })
-                                        ]
-                                      ),
-                                      _vm._v(" "),
-                                      _c(
-                                        "div",
-                                        { staticClass: "col-md-4 input-group" },
-                                        [
-                                          _c(
-                                            "label",
-                                            { staticClass: "col-md-4" },
-                                            [_vm._v("Apellidos")]
-                                          ),
-                                          _vm._v(" "),
-                                          _c("input", {
-                                            directives: [
-                                              {
-                                                name: "model",
-                                                rawName: "v-model",
-                                                value: _vm.Cliente.apellidos,
-                                                expression: "Cliente.apellidos"
-                                              }
-                                            ],
-                                            staticClass:
-                                              "col-md-8 form-control form-control-sm",
-                                            attrs: {
-                                              type: "text",
-                                              readonly: ""
-                                            },
-                                            domProps: {
-                                              value: _vm.Cliente.apellidos
-                                            },
-                                            on: {
-                                              input: function($event) {
-                                                if ($event.target.composing) {
-                                                  return
-                                                }
-                                                _vm.$set(
-                                                  _vm.Cliente,
-                                                  "apellidos",
-                                                  $event.target.value
-                                                )
-                                              }
-                                            }
-                                          })
-                                        ]
-                                      ),
-                                      _vm._v(" "),
-                                      _vm.Venta.tipo_pago == "1" &&
-                                      _vm.Vale.id == null &&
-                                      _vm.Venta.total == _vm.Venta.total_minimo
+                                      _vm.ListaProducto.length
                                         ? _c(
                                             "div",
                                             {
                                               staticClass:
-                                                "col-md-1 d-flex justify-content-center"
+                                                "col-md-12 overflow-auto",
+                                              staticStyle: { height: "19rem" }
                                             },
                                             [
                                               _c(
-                                                "button",
+                                                "table",
                                                 {
                                                   staticClass:
-                                                    "btn btn-circle btn-sm btn-outline-danger",
-                                                  attrs: {
-                                                    type: "button",
-                                                    title: "ELIMINAR"
-                                                  },
-                                                  on: {
-                                                    click: function($event) {
-                                                      return _vm.remove(1)
-                                                    }
-                                                  }
+                                                    "table table-bordered table-striped table-sm text-gray-900 p-0 m-0 bg-white"
                                                 },
                                                 [
-                                                  _c("i", {
-                                                    staticClass:
-                                                      "fas fa-trash-alt"
-                                                  })
+                                                  _vm._m(26),
+                                                  _vm._v(" "),
+                                                  _c(
+                                                    "tbody",
+                                                    _vm._l(
+                                                      _vm.ListaProducto,
+                                                      function(producto) {
+                                                        return _c(
+                                                          "tr",
+                                                          { key: producto.id },
+                                                          [
+                                                            _c(
+                                                              "td",
+                                                              {
+                                                                staticClass:
+                                                                  "text-center"
+                                                              },
+                                                              [
+                                                                producto.detalle
+                                                                  .substock > 0
+                                                                  ? _c(
+                                                                      "button",
+                                                                      {
+                                                                        staticClass:
+                                                                          "btn btn-circle btn-sm btn-outline-success",
+                                                                        attrs: {
+                                                                          type:
+                                                                            "button",
+                                                                          title:
+                                                                            "AGREGAR"
+                                                                        },
+                                                                        on: {
+                                                                          click: function(
+                                                                            $event
+                                                                          ) {
+                                                                            return _vm.add(
+                                                                              "detalle_venta",
+                                                                              producto
+                                                                            )
+                                                                          }
+                                                                        }
+                                                                      },
+                                                                      [
+                                                                        _c(
+                                                                          "i",
+                                                                          {
+                                                                            staticClass:
+                                                                              "fas fa-plus"
+                                                                          }
+                                                                        )
+                                                                      ]
+                                                                    )
+                                                                  : _vm._e()
+                                                              ]
+                                                            ),
+                                                            _vm._v(" "),
+                                                            _c("td", {
+                                                              domProps: {
+                                                                textContent: _vm._s(
+                                                                  producto.nombre
+                                                                )
+                                                              }
+                                                            }),
+                                                            _vm._v(" "),
+                                                            _c("td", {
+                                                              staticClass:
+                                                                "text-right",
+                                                              domProps: {
+                                                                textContent: _vm._s(
+                                                                  producto
+                                                                    .detalle
+                                                                    .substock
+                                                                )
+                                                              }
+                                                            })
+                                                          ]
+                                                        )
+                                                      }
+                                                    ),
+                                                    0
+                                                  )
                                                 ]
                                               )
                                             ]
                                           )
-                                        : _vm._e()
-                                    ]
-                                  )
-                                : _vm._e(),
-                              _vm._v(" "),
-                              _vm.Cliente.tipo == "E"
-                                ? _c(
-                                    "div",
-                                    {
-                                      staticClass:
-                                        "col-md-12 input-group form-group"
-                                    },
-                                    [
-                                      _c(
-                                        "div",
-                                        { staticClass: "col-md-3 input-group" },
-                                        [
-                                          _c(
-                                            "label",
-                                            { staticClass: "col-md-3" },
-                                            [_vm._v("RUC")]
-                                          ),
-                                          _vm._v(" "),
-                                          _c("input", {
-                                            directives: [
-                                              {
-                                                name: "model",
-                                                rawName: "v-model",
-                                                value: _vm.Cliente.ruc,
-                                                expression: "Cliente.ruc"
-                                              }
-                                            ],
-                                            staticClass:
-                                              "col-md-9 form-control form-control-sm",
-                                            attrs: {
-                                              type: "text",
-                                              readonly: ""
-                                            },
-                                            domProps: {
-                                              value: _vm.Cliente.ruc
-                                            },
-                                            on: {
-                                              input: function($event) {
-                                                if ($event.target.composing) {
-                                                  return
-                                                }
-                                                _vm.$set(
-                                                  _vm.Cliente,
-                                                  "ruc",
-                                                  $event.target.value
-                                                )
-                                              }
-                                            }
-                                          })
-                                        ]
-                                      ),
-                                      _vm._v(" "),
-                                      _c(
-                                        "div",
-                                        { staticClass: "col-md-8 input-group" },
-                                        [
-                                          _c(
-                                            "label",
-                                            { staticClass: "col-md-3" },
-<<<<<<< HEAD
-                                            [_vm._v("DNI")]
-                                          ),
-                                          _vm._v(" "),
-=======
-                                            [_vm._v("Razón social")]
-                                          ),
-                                          _vm._v(
-                                            " \n                                        "
-                                          ),
->>>>>>> master
-                                          _c("input", {
-                                            directives: [
-                                              {
-                                                name: "model",
-                                                rawName: "v-model",
-<<<<<<< HEAD
-                                                value: _vm.Cliente.dni,
-                                                expression: "Cliente.dni"
-=======
-                                                value: _vm.Cliente.razon_social,
-                                                expression:
-                                                  "Cliente.razon_social"
->>>>>>> master
-                                              }
-                                            ],
-                                            staticClass:
-                                              "col-md-9 form-control form-control-sm",
-                                            attrs: {
-                                              type: "text",
-                                              readonly: ""
-                                            },
-                                            domProps: {
-<<<<<<< HEAD
-                                              value: _vm.Cliente.dni
-=======
-                                              value: _vm.Cliente.razon_social
->>>>>>> master
-                                            },
-                                            on: {
-                                              input: function($event) {
-                                                if ($event.target.composing) {
-                                                  return
-                                                }
-                                                _vm.$set(
-                                                  _vm.Cliente,
-<<<<<<< HEAD
-                                                  "dni",
-=======
-                                                  "razon_social",
->>>>>>> master
-                                                  $event.target.value
-                                                )
-                                              }
-                                            }
-                                          })
-                                        ]
-                                      ),
-                                      _vm._v(" "),
-<<<<<<< HEAD
-                                      _c(
-                                        "div",
-                                        { staticClass: "col-md-4 input-group" },
-                                        [
-                                          _c(
-                                            "label",
-                                            { staticClass: "col-md-4" },
-                                            [_vm._v("Nombres")]
-                                          ),
-                                          _vm._v(" "),
-                                          _c("input", {
-                                            directives: [
-                                              {
-                                                name: "model",
-                                                rawName: "v-model",
-                                                value: _vm.Cliente.nombres,
-                                                expression: "Cliente.nombres"
-                                              }
-                                            ],
-                                            staticClass:
-                                              "col-md-8 form-control form-control-sm",
-                                            attrs: {
-                                              type: "text",
-                                              readonly: ""
-                                            },
-                                            domProps: {
-                                              value: _vm.Cliente.nombres
-                                            },
-                                            on: {
-                                              input: function($event) {
-                                                if ($event.target.composing) {
-                                                  return
-                                                }
-                                                _vm.$set(
-                                                  _vm.Cliente,
-                                                  "nombres",
-                                                  $event.target.value
-                                                )
-                                              }
-                                            }
-                                          })
-                                        ]
-                                      ),
-                                      _vm._v(" "),
-                                      _c(
-                                        "div",
-                                        { staticClass: "col-md-4 input-group" },
-                                        [
-                                          _c(
-                                            "label",
-                                            { staticClass: "col-md-4" },
-                                            [_vm._v("Apellidos")]
-                                          ),
-                                          _vm._v(" "),
-                                          _c("input", {
-                                            directives: [
-                                              {
-                                                name: "model",
-                                                rawName: "v-model",
-                                                value: _vm.Cliente.apellidos,
-                                                expression: "Cliente.apellidos"
-                                              }
-                                            ],
-                                            staticClass:
-                                              "col-md-8 form-control form-control-sm",
-                                            attrs: {
-                                              type: "text",
-                                              readonly: ""
-                                            },
-                                            domProps: {
-                                              value: _vm.Cliente.apellidos
-                                            },
-                                            on: {
-                                              input: function($event) {
-                                                if ($event.target.composing) {
-                                                  return
-                                                }
-                                                _vm.$set(
-                                                  _vm.Cliente,
-                                                  "apellidos",
-                                                  $event.target.value
-                                                )
-                                              }
-                                            }
-                                          })
-                                        ]
-                                      ),
-                                      _vm._v(" "),
-                                      _vm.Venta.tipo_pago == "1" &&
-                                      _vm.Vale.id == null &&
-                                      _vm.Venta.total == _vm.Venta.total_minimo
-                                        ? _c(
+                                        : _c(
                                             "div",
-                                            {
-                                              staticClass:
-                                                "col-md-1 d-flex justify-content-center"
-                                            },
+                                            { staticClass: "col-md-12" },
                                             [
                                               _c(
-                                                "button",
+                                                "label",
                                                 {
-                                                  staticClass:
-                                                    "btn btn-circle btn-sm btn-outline-danger",
-                                                  attrs: {
-                                                    type: "button",
-                                                    title: "ELIMINAR"
-                                                  },
-                                                  on: {
-                                                    click: function($event) {
-                                                      return _vm.remove(1)
-                                                    }
-                                                  }
+                                                  staticClass: "h5 text-danger"
                                                 },
                                                 [
-                                                  _c("i", {
-                                                    staticClass:
-                                                      "fas fa-trash-alt"
-                                                  })
+                                                  _vm._v(
+                                                    "No se han encontrado resultados"
+                                                  )
                                                 ]
                                               )
                                             ]
                                           )
-                                        : _vm._e()
                                     ]
                                   )
-                                : _vm._e(),
+                                ]
+                              ),
                               _vm._v(" "),
-                              _vm.Cliente.tipo == "E"
-                                ? _c(
-                                    "div",
-                                    {
-                                      staticClass:
-                                        "col-md-12 form-group input-group"
-                                    },
-                                    [
-                                      _c(
-                                        "div",
-                                        { staticClass: "col-md-3 input-group" },
-                                        [
-                                          _c(
-                                            "label",
-                                            { staticClass: "col-md-3" },
-                                            [_vm._v("RUC")]
-                                          ),
-                                          _vm._v(" "),
-                                          _c("input", {
-                                            directives: [
-                                              {
-                                                name: "model",
-                                                rawName: "v-model",
-                                                value: _vm.Cliente.ruc,
-                                                expression: "Cliente.ruc"
-                                              }
-                                            ],
-                                            staticClass:
-                                              "col-md-9 form-control form-control-sm",
-                                            attrs: {
-                                              type: "text",
-                                              readonly: ""
-                                            },
-                                            domProps: {
-                                              value: _vm.Cliente.ruc
-                                            },
-                                            on: {
-                                              input: function($event) {
-                                                if ($event.target.composing) {
-                                                  return
-                                                }
-                                                _vm.$set(
-                                                  _vm.Cliente,
-                                                  "ruc",
-                                                  $event.target.value
-                                                )
-                                              }
-                                            }
-                                          })
-                                        ]
-                                      ),
-                                      _vm._v(" "),
-                                      _c(
-                                        "div",
-                                        { staticClass: "col-md-8 input-group" },
-                                        [
-                                          _c(
-                                            "label",
-                                            { staticClass: "col-md-3" },
-                                            [_vm._v("Razón social")]
-                                          ),
-                                          _vm._v(
-                                            " \n                                        "
-                                          ),
-                                          _c("input", {
-                                            directives: [
-                                              {
-                                                name: "model",
-                                                rawName: "v-model",
-                                                value: _vm.Cliente.razon_social,
-                                                expression:
-                                                  "Cliente.razon_social"
-                                              }
-                                            ],
-                                            staticClass:
-                                              "col-md-9 form-control form-control-sm",
-                                            attrs: {
-                                              type: "text",
-                                              readonly: ""
-                                            },
-                                            domProps: {
-                                              value: _vm.Cliente.razon_social
-                                            },
-                                            on: {
-                                              input: function($event) {
-                                                if ($event.target.composing) {
-                                                  return
-                                                }
-                                                _vm.$set(
-                                                  _vm.Cliente,
-                                                  "razon_social",
-                                                  $event.target.value
-                                                )
-                                              }
-                                            }
-                                          })
-                                        ]
-                                      ),
-                                      _vm._v(" "),
-=======
->>>>>>> master
-                                      _vm.Venta.tipo_pago == "1" &&
-                                      _vm.Vale.id == null &&
-                                      _vm.Venta.total == _vm.Venta.total_minimo
-                                        ? _c(
-                                            "div",
-                                            {
-                                              staticClass:
-                                                "col-md-1 d-flex justify-content-center"
-                                            },
-                                            [
-                                              _c(
-                                                "button",
-                                                {
-                                                  staticClass:
-                                                    "btn btn-circle btn-sm btn-outline-danger",
-                                                  attrs: {
-                                                    type: "button",
-                                                    title: "ELIMINAR"
-                                                  },
-                                                  on: {
-                                                    click: function($event) {
-                                                      return _vm.remove(1)
-                                                    }
-                                                  }
-                                                },
-                                                [
-                                                  _c("i", {
-                                                    staticClass:
-                                                      "fas fa-trash-alt"
-                                                  })
-                                                ]
-                                              )
-                                            ]
-                                          )
-                                        : _vm._e()
-                                    ]
-                                  )
-                                : _vm._e()
-                            ]
-                          )
-                        ]
-                      ),
-                      _vm._v(" "),
-                      _vm.Vale.id != null
-                        ? _c(
-                            "div",
-                            {
-                              staticClass: "container-small col-md-2 mt-1 pl-0"
-                            },
-                            [
                               _c(
                                 "div",
-                                {
-                                  staticClass:
-                                    "shadow bg-white rounded pt-2 form-group",
-                                  staticStyle: {
-                                    border: "1px solid",
-                                    height: "6.5rem"
-                                  }
-                                },
+                                { staticClass: "container-small col-md-8" },
                                 [
                                   _c(
                                     "div",
                                     {
                                       staticClass:
-                                        "col-md-12 form-group input-group"
+                                        "shadow rounded pt-2 bg-warning",
+                                      staticStyle: {
+                                        border: "1px solid",
+                                        height: "26rem"
+                                      }
                                     },
                                     [
                                       _c(
-                                        "label",
+                                        "div",
                                         {
                                           staticClass:
-                                            "col-md-12 font-weight-bold pl-0 mb-0"
+                                            "col-md-12 form-group input-group"
                                         },
-                                        [_vm._v("VALE")]
+                                        [
+                                          _vm._m(27),
+                                          _vm._v(" "),
+                                          _c(
+                                            "div",
+                                            {
+                                              staticClass:
+                                                "col-md-5 input-group"
+                                            },
+                                            [
+                                              _vm._m(28),
+                                              _vm._v(" "),
+                                              _c(
+                                                "select",
+                                                {
+                                                  directives: [
+                                                    {
+                                                      name: "model",
+                                                      rawName: "v-model",
+                                                      value:
+                                                        _vm.Venta.tipo_precio,
+                                                      expression:
+                                                        "Venta.tipo_precio"
+                                                    }
+                                                  ],
+                                                  staticClass:
+                                                    "col-md-6 custom-select custom-select-sm text-gray-900",
+                                                  on: {
+                                                    click: function($event) {
+                                                      return _vm.update(
+                                                        "subtotal"
+                                                      )
+                                                    },
+                                                    change: function($event) {
+                                                      var $$selectedVal = Array.prototype.filter
+                                                        .call(
+                                                          $event.target.options,
+                                                          function(o) {
+                                                            return o.selected
+                                                          }
+                                                        )
+                                                        .map(function(o) {
+                                                          var val =
+                                                            "_value" in o
+                                                              ? o._value
+                                                              : o.value
+                                                          return val
+                                                        })
+                                                      _vm.$set(
+                                                        _vm.Venta,
+                                                        "tipo_precio",
+                                                        $event.target.multiple
+                                                          ? $$selectedVal
+                                                          : $$selectedVal[0]
+                                                      )
+                                                    }
+                                                  }
+                                                },
+                                                [
+                                                  _c(
+                                                    "option",
+                                                    { attrs: { value: "1" } },
+                                                    [_vm._v("Al por menor")]
+                                                  ),
+                                                  _vm._v(" "),
+                                                  _c(
+                                                    "option",
+                                                    { attrs: { value: "2" } },
+                                                    [_vm._v("Al por mayor")]
+                                                  )
+                                                ]
+                                              )
+                                            ]
+                                          )
+                                        ]
                                       ),
                                       _vm._v(" "),
+                                      _vm.ListaDetalle.length
+                                        ? _c(
+                                            "div",
+                                            {
+                                              staticClass:
+                                                "col-md-12 overflow-auto",
+                                              staticStyle: { height: "19rem" }
+                                            },
+                                            [
+                                              _c(
+                                                "table",
+                                                {
+                                                  staticClass:
+                                                    "table table-bordered table-striped table-sm text-gray-900 bg-white"
+                                                },
+                                                [
+                                                  _vm._m(29),
+                                                  _vm._v(" "),
+                                                  _c(
+                                                    "tbody",
+                                                    _vm._l(
+                                                      _vm.ListaDetalle,
+                                                      function(
+                                                        detalle,
+                                                        indice
+                                                      ) {
+                                                        return _c(
+                                                          "tr",
+                                                          { key: indice },
+                                                          [
+                                                            _c(
+                                                              "td",
+                                                              {
+                                                                staticClass:
+                                                                  "text-center"
+                                                              },
+                                                              [
+                                                                detalle.id == 0
+                                                                  ? _c(
+                                                                      "button",
+                                                                      {
+                                                                        staticClass:
+                                                                          "btn btn-circle btn-outline-danger btn-sm",
+                                                                        attrs: {
+                                                                          type:
+                                                                            "button",
+                                                                          title:
+                                                                            "QUITAR"
+                                                                        },
+                                                                        on: {
+                                                                          click: function(
+                                                                            $event
+                                                                          ) {
+                                                                            return _vm.remove(
+                                                                              0,
+                                                                              indice
+                                                                            )
+                                                                          }
+                                                                        }
+                                                                      },
+                                                                      [
+                                                                        _c(
+                                                                          "i",
+                                                                          {
+                                                                            staticClass:
+                                                                              "fas fa-minus"
+                                                                          }
+                                                                        )
+                                                                      ]
+                                                                    )
+                                                                  : _vm._e()
+                                                              ]
+                                                            ),
+                                                            _vm._v(" "),
+                                                            _c("td", {
+                                                              domProps: {
+                                                                textContent: _vm._s(
+                                                                  detalle.nombre_producto
+                                                                )
+                                                              }
+                                                            }),
+                                                            _vm._v(" "),
+                                                            detalle.id != 0
+                                                              ? _c("td", [
+                                                                  _c("input", {
+                                                                    directives: [
+                                                                      {
+                                                                        name:
+                                                                          "model",
+                                                                        rawName:
+                                                                          "v-model",
+                                                                        value:
+                                                                          detalle.fallidos,
+                                                                        expression:
+                                                                          "detalle.fallidos"
+                                                                      }
+                                                                    ],
+                                                                    staticClass:
+                                                                      "form-control form-control-sm text-right",
+                                                                    attrs: {
+                                                                      type:
+                                                                        "number",
+                                                                      min:
+                                                                        detalle.fallidos_inicial,
+                                                                      max:
+                                                                        detalle.cantidad_inicial
+                                                                    },
+                                                                    domProps: {
+                                                                      value:
+                                                                        detalle.fallidos
+                                                                    },
+                                                                    on: {
+                                                                      click: function(
+                                                                        $event
+                                                                      ) {
+                                                                        return _vm.update(
+                                                                          "total_faltante"
+                                                                        )
+                                                                      },
+                                                                      keyup: function(
+                                                                        $event
+                                                                      ) {
+                                                                        return _vm.update(
+                                                                          "total_faltante"
+                                                                        )
+                                                                      },
+                                                                      input: function(
+                                                                        $event
+                                                                      ) {
+                                                                        if (
+                                                                          $event
+                                                                            .target
+                                                                            .composing
+                                                                        ) {
+                                                                          return
+                                                                        }
+                                                                        _vm.$set(
+                                                                          detalle,
+                                                                          "fallidos",
+                                                                          $event
+                                                                            .target
+                                                                            .value
+                                                                        )
+                                                                      }
+                                                                    }
+                                                                  })
+                                                                ])
+                                                              : _c(
+                                                                  "td",
+                                                                  {
+                                                                    staticClass:
+                                                                      "text-center"
+                                                                  },
+                                                                  [_vm._v("-")]
+                                                                ),
+                                                            _vm._v(" "),
+                                                            _c("td", [
+                                                              _c("input", {
+                                                                directives: [
+                                                                  {
+                                                                    name:
+                                                                      "model",
+                                                                    rawName:
+                                                                      "v-model",
+                                                                    value:
+                                                                      detalle.cantidad,
+                                                                    expression:
+                                                                      "detalle.cantidad"
+                                                                  }
+                                                                ],
+                                                                staticClass:
+                                                                  "form-control form-control-sm text-right p-0",
+                                                                attrs: {
+                                                                  type:
+                                                                    "number",
+                                                                  min:
+                                                                    detalle.cantidad_inicial,
+                                                                  max:
+                                                                    detalle.substock
+                                                                },
+                                                                domProps: {
+                                                                  value:
+                                                                    detalle.cantidad
+                                                                },
+                                                                on: {
+                                                                  click: function(
+                                                                    $event
+                                                                  ) {
+                                                                    return _vm.update(
+                                                                      "total_faltante"
+                                                                    )
+                                                                  },
+                                                                  keyup: function(
+                                                                    $event
+                                                                  ) {
+                                                                    return _vm.update(
+                                                                      "total_faltante"
+                                                                    )
+                                                                  },
+                                                                  input: function(
+                                                                    $event
+                                                                  ) {
+                                                                    if (
+                                                                      $event
+                                                                        .target
+                                                                        .composing
+                                                                    ) {
+                                                                      return
+                                                                    }
+                                                                    _vm.$set(
+                                                                      detalle,
+                                                                      "cantidad",
+                                                                      $event
+                                                                        .target
+                                                                        .value
+                                                                    )
+                                                                  }
+                                                                }
+                                                              })
+                                                            ]),
+                                                            _vm._v(" "),
+                                                            _c("td", {
+                                                              staticClass:
+                                                                "text-right",
+                                                              domProps: {
+                                                                textContent: _vm._s(
+                                                                  _vm.Venta
+                                                                    .tipo_precio ==
+                                                                    "1"
+                                                                    ? detalle.precio_menor
+                                                                    : detalle.precio_mayor
+                                                                )
+                                                              }
+                                                            }),
+                                                            _vm._v(" "),
+                                                            _c("td", {
+                                                              staticClass:
+                                                                "text-right",
+                                                              domProps: {
+                                                                textContent: _vm._s(
+                                                                  Number.parseFloat(
+                                                                    detalle.subtotal
+                                                                  ).toFixed(2)
+                                                                )
+                                                              }
+                                                            })
+                                                          ]
+                                                        )
+                                                      }
+                                                    ),
+                                                    0
+                                                  )
+                                                ]
+                                              )
+                                            ]
+                                          )
+                                        : _vm._e(),
+                                      _vm._v(" "),
                                       _c(
-                                        "ul",
-                                        { staticClass: "col-md-12 pr-0 pl-0" },
+                                        "div",
+                                        {
+                                          staticClass:
+                                            "col-md-12 input-group mt-2"
+                                        },
                                         [
-                                          _c(
-                                            "li",
-                                            { staticClass: "input-group" },
-                                            [
-                                              _c(
-                                                "label",
-                                                {
-                                                  staticClass:
-                                                    "col-md-4 p-0 mb-0"
-                                                },
-                                                [_vm._v("Monto:")]
-                                              ),
-                                              _vm._v(" "),
-                                              _c("label", {
-                                                staticClass:
-                                                  "col-md-8 p-0 mb-0 text-right text-primary",
-                                                domProps: {
-                                                  textContent: _vm._s(
-                                                    "S/.  " + _vm.Vale.monto
-                                                  )
-                                                }
-                                              })
-                                            ]
-                                          ),
+                                          _c("div", {
+                                            staticClass: "col-md-6"
+                                          }),
                                           _vm._v(" "),
                                           _c(
-                                            "li",
-                                            { staticClass: "input-group" },
+                                            "div",
+                                            {
+                                              staticClass:
+                                                "col-md-6 input-group"
+                                            },
                                             [
                                               _c(
                                                 "label",
                                                 {
                                                   staticClass:
-                                                    "col-md-4 p-0 mb-0"
+                                                    "col-md-6 text-right font-weight-bold h5 p-0"
                                                 },
-                                                [_vm._v("Fecha:")]
+                                                [_vm._v("Monto de venta:")]
                                               ),
                                               _vm._v(" "),
                                               _c("label", {
                                                 staticClass:
-                                                  "col-md-8 p-0 mb-0 text-right text-primary",
+                                                  "col-md-6 text-right text-info h5 p-0",
                                                 domProps: {
                                                   textContent: _vm._s(
-                                                    _vm.fix(
-                                                      7,
-                                                      _vm.Vale.created_at
-                                                    )
-                                                  )
-                                                }
-                                              })
-                                            ]
-                                          ),
-                                          _vm._v(" "),
-                                          _c(
-                                            "li",
-                                            { staticClass: "input-group" },
-                                            [
-                                              _c(
-                                                "label",
-                                                {
-                                                  staticClass:
-                                                    "col-md-4 p-0 mb-0"
-                                                },
-                                                [_vm._v("Hora:")]
-                                              ),
-                                              _vm._v(" "),
-                                              _c("label", {
-                                                staticClass:
-                                                  "col-md-8 p-0 mb-0 text-right text-primary",
-                                                domProps: {
-                                                  textContent: _vm._s(
-                                                    _vm.fix(
-                                                      8,
-                                                      _vm.Vale.created_at
-                                                    )
+                                                    "S/. " +
+                                                      Number.parseFloat(
+                                                        _vm.Venta.total
+                                                      ).toFixed(2)
                                                   )
                                                 }
                                               })
@@ -83941,635 +84848,996 @@ var render = function() {
                           )
                         : _vm._e(),
                       _vm._v(" "),
-                      _c("div", { staticClass: "container-small col-md-4" }, [
-                        _c(
-                          "div",
-                          {
-                            staticClass: "shadow bg-white rounded pt-2",
-                            staticStyle: {
-                              border: "1px solid",
-                              height: "23rem"
-                            }
-                          },
-                          [
-                            _c(
-                              "label",
-                              {
-                                staticClass:
-                                  "col-md-12 form-group font-weight-bold"
-                              },
-                              [_vm._v("PRODUCTOS")]
-                            ),
-                            _vm._v(" "),
-                            _c(
-                              "div",
-                              {
-                                staticClass: "col-md-12 input-group form-group"
-                              },
-                              [
-                                _c("input", {
-                                  directives: [
+                      _vm.Step.number == 1
+                        ? _c(
+                            "div",
+                            {
+                              staticClass: "col-md-12 p-0 m-0 input-group",
+                              staticStyle: { height: "26rem" }
+                            },
+                            [
+                              _c(
+                                "div",
+                                {
+                                  staticClass:
+                                    "container-small col-md-12 form-group"
+                                },
+                                [
+                                  _c(
+                                    "div",
                                     {
-                                      name: "model",
-                                      rawName: "v-model",
-                                      value: _vm.Service.text,
-                                      expression: "Service.text"
-                                    }
-                                  ],
-                                  staticClass: "form-control form-control-sm",
-                                  attrs: {
-                                    type: "search",
-                                    id: "filtroProducto",
-                                    placeholder:
-                                      "Producto,marca,modelo,tamaño,color"
-                                  },
-                                  domProps: { value: _vm.Service.text },
-                                  on: {
-                                    keyup: function($event) {
-                                      if (
-                                        !$event.type.indexOf("key") &&
-                                        _vm._k(
-                                          $event.keyCode,
-                                          "enter",
-                                          13,
-                                          $event.key,
-                                          "Enter"
-                                        )
-                                      ) {
-                                        return null
+                                      staticClass:
+                                        "shadow rounded pt-2 bg-success input-group",
+                                      staticStyle: {
+                                        border: "1px solid",
+                                        height: "7rem"
                                       }
-                                      return _vm.list(0)
                                     },
-                                    input: function($event) {
-                                      if ($event.target.composing) {
-                                        return
-                                      }
-                                      _vm.$set(
-                                        _vm.Service,
-                                        "text",
-                                        $event.target.value
-                                      )
-                                    }
-                                  }
-                                }),
-                                _vm._v(" "),
-                                _c(
-                                  "button",
-                                  {
-                                    staticClass: "btn btn-sm btn-primary",
-                                    attrs: { type: "button" },
-                                    on: {
-                                      click: function($event) {
-                                        return _vm.list(0)
-                                      }
-                                    }
-                                  },
-                                  [
-                                    _c("i", { staticClass: "fa fa-search" }),
-                                    _vm._v(
-                                      "  Buscar\n                                    "
-                                    )
-                                  ]
-                                )
-                              ]
-                            ),
-                            _vm._v(" "),
-                            _vm.ListaProducto.length
-                              ? _c(
-                                  "div",
-                                  {
-                                    staticClass: "col-md-12 overflow-auto",
-                                    staticStyle: { height: "16rem" }
-                                  },
-                                  [
-                                    _c(
-                                      "table",
-                                      {
-                                        staticClass:
-                                          "table table-bordered table-striped table-sm text-gray-900"
-                                      },
-                                      [
-                                        _vm._m(18),
-                                        _vm._v(" "),
-                                        _c(
-                                          "tbody",
-                                          _vm._l(_vm.ListaProducto, function(
-                                            producto
-                                          ) {
-                                            return _c(
-                                              "tr",
-                                              { key: producto.id },
-                                              [
-                                                _c(
-                                                  "td",
-                                                  {
-                                                    staticClass: "text-center"
-                                                  },
-                                                  [
-                                                    producto.detalle.substock >
-                                                    0
-                                                      ? _c(
-                                                          "button",
-                                                          {
+                                    [
+                                      _c(
+                                        "div",
+                                        {
+                                          staticClass:
+                                            "col-md-12 p-0 input-group"
+                                        },
+                                        [
+                                          _vm._m(30),
+                                          _vm._v(" "),
+                                          _vm.Cliente.search == true
+                                            ? _c(
+                                                "div",
+                                                {
+                                                  staticClass:
+                                                    "col-md-10 input-group form-group"
+                                                },
+                                                [
+                                                  _c(
+                                                    "label",
+                                                    {
+                                                      staticClass:
+                                                        "col-md-1 p-0 font-weight-bold"
+                                                    },
+                                                    [
+                                                      _vm._v("RUC/DNI "),
+                                                      _vm.Venta.tipo_pago == "2"
+                                                        ? _c(
+                                                            "span",
+                                                            {
+                                                              staticClass:
+                                                                "text-danger"
+                                                            },
+                                                            [_vm._v("*")]
+                                                          )
+                                                        : _vm._e()
+                                                    ]
+                                                  ),
+                                                  _vm._v(" "),
+                                                  _c(
+                                                    "div",
+                                                    { staticClass: "col-md-3" },
+                                                    [
+                                                      _c(
+                                                        "div",
+                                                        {
+                                                          staticClass:
+                                                            "input-group"
+                                                        },
+                                                        [
+                                                          _c("input", {
+                                                            directives: [
+                                                              {
+                                                                name: "model",
+                                                                rawName:
+                                                                  "v-model",
+                                                                value:
+                                                                  _vm.Service
+                                                                    .document,
+                                                                expression:
+                                                                  "Service.document"
+                                                              }
+                                                            ],
                                                             staticClass:
-                                                              "btn btn-circle btn-sm btn-outline-success",
+                                                              "form-control form-control-sm",
                                                             attrs: {
-                                                              type: "button",
-                                                              title: "AGREGAR"
+                                                              type: "text",
+                                                              maxlength: "11"
+                                                            },
+                                                            domProps: {
+                                                              value:
+                                                                _vm.Service
+                                                                  .document
                                                             },
                                                             on: {
-                                                              click: function(
+                                                              keyup: function(
                                                                 $event
                                                               ) {
-                                                                return _vm.add(
-                                                                  0,
-                                                                  producto
+                                                                if (
+                                                                  !$event.type.indexOf(
+                                                                    "key"
+                                                                  ) &&
+                                                                  _vm._k(
+                                                                    $event.keyCode,
+                                                                    "enter",
+                                                                    13,
+                                                                    $event.key,
+                                                                    "Enter"
+                                                                  )
+                                                                ) {
+                                                                  return null
+                                                                }
+                                                                return _vm.consultar()
+                                                              },
+                                                              input: function(
+                                                                $event
+                                                              ) {
+                                                                if (
+                                                                  $event.target
+                                                                    .composing
+                                                                ) {
+                                                                  return
+                                                                }
+                                                                _vm.$set(
+                                                                  _vm.Service,
+                                                                  "document",
+                                                                  $event.target
+                                                                    .value
                                                                 )
                                                               }
                                                             }
-                                                          },
-                                                          [
-                                                            _c("i", {
+                                                          }),
+                                                          _vm._v(" "),
+                                                          _c(
+                                                            "button",
+                                                            {
                                                               staticClass:
-                                                                "fas fa-plus"
-                                                            })
-                                                          ]
-                                                        )
-                                                      : _vm._e()
-                                                  ]
-                                                ),
-                                                _vm._v(" "),
-                                                _c("td", {
-                                                  domProps: {
-                                                    textContent: _vm._s(
-                                                      producto.nombre
-                                                    )
-                                                  }
-                                                }),
-                                                _vm._v(" "),
-                                                _c("td", {
-                                                  staticClass: "text-right",
-                                                  domProps: {
-                                                    textContent: _vm._s(
-                                                      producto.detalle.substock
-                                                    )
-                                                  }
-                                                })
-                                              ]
-                                            )
-                                          }),
-                                          0
-                                        )
-                                      ]
-                                    )
-                                  ]
-                                )
-                              : _c("div", [
-                                  _c(
-                                    "label",
-                                    { staticClass: "col-md-12 text-danger" },
-                                    [_vm._v("No se han encontrado resultados")]
-                                  )
-                                ])
-                          ]
-                        )
-                      ]),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "container-small col-md-8" }, [
-                        _c(
-                          "div",
-                          {
-                            staticClass: "shadow bg-white rounded pt-2",
-                            staticStyle: {
-                              border: "1px solid",
-                              height: "23rem"
-                            }
-                          },
-                          [
-                            _c(
-                              "div",
-                              { staticClass: "col-md-12 input-group" },
-                              [
-                                _c(
-                                  "label",
-                                  { staticClass: "col-md-4 font-weight-bold" },
-                                  [_vm._v("LISTA DE ITEMS")]
-                                ),
-                                _vm._v(" "),
-                                _c(
-                                  "label",
-                                  { staticClass: "col-md-4 font-weight-bold" },
-                                  [
-                                    _vm._v("Pago: "),
-                                    _c("label", {
-                                      staticClass:
-                                        "text-info font-weight-normal",
-                                      domProps: {
-                                        textContent: _vm._s(
-                                          _vm.fix(4, _vm.Venta.tipo_pago)
-                                        )
-                                      }
-                                    })
-                                  ]
-                                ),
-                                _vm._v(" "),
-                                _c(
-                                  "label",
-                                  { staticClass: "col-md-4 font-weight-bold" },
-                                  [
-                                    _vm._v("Precio: "),
-                                    _c("label", {
-                                      staticClass:
-                                        "text-info font-weight-normal",
-                                      domProps: {
-                                        textContent: _vm._s(
-                                          _vm.fix(5, _vm.Venta.tipo_precio)
-                                        )
-                                      }
-                                    })
-                                  ]
-                                )
-                              ]
-                            ),
-                            _vm._v(" "),
-                            _vm.ListaDetalle.length
-                              ? _c(
-                                  "div",
-                                  {
-                                    staticClass: "col-md-12 overflow-auto",
-                                    staticStyle: { height: "15rem" }
-                                  },
-                                  [
-                                    _c(
-                                      "table",
-                                      {
-                                        staticClass:
-                                          "table table-bordered table-striped table-sm text-gray-900"
-                                      },
-                                      [
-                                        _vm._m(19),
-                                        _vm._v(" "),
-                                        _c(
-                                          "tbody",
-                                          _vm._l(_vm.ListaDetalle, function(
-                                            detalle,
-                                            indice
-                                          ) {
-                                            return _c("tr", { key: indice }, [
-                                              _c(
-                                                "td",
-                                                { staticClass: "text-center" },
-                                                [
-                                                  detalle.id == 0
-                                                    ? _c(
-                                                        "button",
-                                                        {
-                                                          staticClass:
-                                                            "btn btn-circle btn-outline-danger btn-sm",
-                                                          attrs: {
-                                                            type: "button",
-                                                            title: "QUITAR"
-                                                          },
-                                                          on: {
-                                                            click: function(
-                                                              $event
-                                                            ) {
-                                                              return _vm.remove(
-                                                                0,
-                                                                indice
-                                                              )
-                                                            }
-                                                          }
-                                                        },
-                                                        [
-                                                          _c("i", {
-                                                            staticClass:
-                                                              "fas fa-minus"
-                                                          })
+                                                                "btn btn-sm btn-primary",
+                                                              attrs: {
+                                                                type: "button"
+                                                              },
+                                                              on: {
+                                                                click: function(
+                                                                  $event
+                                                                ) {
+                                                                  return _vm.consultar()
+                                                                }
+                                                              }
+                                                            },
+                                                            [
+                                                              _c("i", {
+                                                                staticClass:
+                                                                  "fas fa-sync-alt"
+                                                              })
+                                                            ]
+                                                          )
                                                         ]
                                                       )
-                                                    : _vm._e()
+                                                    ]
+                                                  ),
+                                                  _vm._v(" "),
+                                                  _c(
+                                                    "div",
+                                                    { staticClass: "col-md-3" },
+                                                    [
+                                                      _c("h5", [
+                                                        _c("span", {
+                                                          class:
+                                                            _vm.Service
+                                                              .loadclass,
+                                                          attrs: {
+                                                            role: "status"
+                                                          }
+                                                        }),
+                                                        _vm._v(
+                                                          " \n                                                    "
+                                                        ),
+                                                        _c("span", {
+                                                          class:
+                                                            _vm.Service
+                                                              .msmclass,
+                                                          domProps: {
+                                                            textContent: _vm._s(
+                                                              _vm.Service.msm
+                                                            )
+                                                          }
+                                                        })
+                                                      ])
+                                                    ]
+                                                  )
+                                                ]
+                                              )
+                                            : _vm._e()
+                                        ]
+                                      ),
+                                      _vm._v(" "),
+                                      _vm.Cliente.tipo == "P"
+                                        ? _c(
+                                            "div",
+                                            {
+                                              staticClass:
+                                                "col-md-11 form-group input-group"
+                                            },
+                                            [
+                                              _c(
+                                                "div",
+                                                {
+                                                  staticClass:
+                                                    "col-md-4 input-group"
+                                                },
+                                                [
+                                                  _c(
+                                                    "label",
+                                                    { staticClass: "col-md-3" },
+                                                    [_vm._v("DNI")]
+                                                  ),
+                                                  _vm._v(" "),
+                                                  _c("input", {
+                                                    directives: [
+                                                      {
+                                                        name: "model",
+                                                        rawName: "v-model",
+                                                        value: _vm.Cliente.dni,
+                                                        expression:
+                                                          "Cliente.dni"
+                                                      }
+                                                    ],
+                                                    staticClass:
+                                                      "col-md-6 form-control form-control-sm",
+                                                    attrs: {
+                                                      type: "text",
+                                                      readonly: ""
+                                                    },
+                                                    domProps: {
+                                                      value: _vm.Cliente.dni
+                                                    },
+                                                    on: {
+                                                      input: function($event) {
+                                                        if (
+                                                          $event.target
+                                                            .composing
+                                                        ) {
+                                                          return
+                                                        }
+                                                        _vm.$set(
+                                                          _vm.Cliente,
+                                                          "dni",
+                                                          $event.target.value
+                                                        )
+                                                      }
+                                                    }
+                                                  })
                                                 ]
                                               ),
                                               _vm._v(" "),
-                                              _c("td", {
-                                                domProps: {
-                                                  textContent: _vm._s(
-                                                    detalle.nombre_producto
-                                                  )
-                                                }
-                                              }),
-                                              _vm._v(" "),
-                                              detalle.id != 0
-                                                ? _c("td", [
-                                                    _c("input", {
-                                                      directives: [
-                                                        {
-                                                          name: "model",
-                                                          rawName: "v-model",
-                                                          value:
-                                                            detalle.fallidos,
-                                                          expression:
-                                                            "detalle.fallidos"
-                                                        }
-                                                      ],
-                                                      staticClass:
-                                                        "form-control form-control-sm text-right",
-                                                      attrs: {
-                                                        type: "number",
-                                                        min:
-                                                          detalle.fallidos_inicial,
-                                                        max:
-                                                          detalle.cantidad_inicial
-                                                      },
-                                                      domProps: {
-                                                        value: detalle.fallidos
-                                                      },
-                                                      on: {
-                                                        click: function(
-                                                          $event
-                                                        ) {
-                                                          return _vm.update(3)
-                                                        },
-                                                        keyup: function(
-                                                          $event
-                                                        ) {
-                                                          return _vm.update(3)
-                                                        },
-                                                        input: function(
-                                                          $event
-                                                        ) {
-                                                          if (
-                                                            $event.target
-                                                              .composing
-                                                          ) {
-                                                            return
-                                                          }
-                                                          _vm.$set(
-                                                            detalle,
-                                                            "fallidos",
-                                                            $event.target.value
-                                                          )
-                                                        }
-                                                      }
-                                                    })
-                                                  ])
-                                                : _c(
-                                                    "td",
-                                                    {
-                                                      staticClass: "text-center"
-                                                    },
-                                                    [_vm._v("-")]
-                                                  ),
-                                              _vm._v(" "),
-                                              _c("td", [
-                                                _c("input", {
-                                                  directives: [
-                                                    {
-                                                      name: "model",
-                                                      rawName: "v-model",
-                                                      value: detalle.cantidad,
-                                                      expression:
-                                                        "detalle.cantidad"
-                                                    }
-                                                  ],
+                                              _c(
+                                                "div",
+                                                {
                                                   staticClass:
-                                                    "form-control form-control-sm text-right p-0",
+                                                    "col-md-4 input-group"
+                                                },
+                                                [
+                                                  _c(
+                                                    "label",
+                                                    {
+                                                      staticClass:
+                                                        "col-md-4 p-0"
+                                                    },
+                                                    [_vm._v("Nombres")]
+                                                  ),
+                                                  _vm._v(" "),
+                                                  _c("input", {
+                                                    directives: [
+                                                      {
+                                                        name: "model",
+                                                        rawName: "v-model",
+                                                        value:
+                                                          _vm.Cliente.nombres,
+                                                        expression:
+                                                          "Cliente.nombres"
+                                                      }
+                                                    ],
+                                                    staticClass:
+                                                      "col-md-8 form-control form-control-sm",
+                                                    attrs: {
+                                                      type: "text",
+                                                      readonly: ""
+                                                    },
+                                                    domProps: {
+                                                      value: _vm.Cliente.nombres
+                                                    },
+                                                    on: {
+                                                      input: function($event) {
+                                                        if (
+                                                          $event.target
+                                                            .composing
+                                                        ) {
+                                                          return
+                                                        }
+                                                        _vm.$set(
+                                                          _vm.Cliente,
+                                                          "nombres",
+                                                          $event.target.value
+                                                        )
+                                                      }
+                                                    }
+                                                  })
+                                                ]
+                                              ),
+                                              _vm._v(" "),
+                                              _c(
+                                                "div",
+                                                {
+                                                  staticClass:
+                                                    "col-md-4 input-group"
+                                                },
+                                                [
+                                                  _c(
+                                                    "label",
+                                                    {
+                                                      staticClass:
+                                                        "col-md-4 p-0"
+                                                    },
+                                                    [_vm._v("Apellidos")]
+                                                  ),
+                                                  _vm._v(" "),
+                                                  _c("input", {
+                                                    directives: [
+                                                      {
+                                                        name: "model",
+                                                        rawName: "v-model",
+                                                        value:
+                                                          _vm.Cliente.apellidos,
+                                                        expression:
+                                                          "Cliente.apellidos"
+                                                      }
+                                                    ],
+                                                    staticClass:
+                                                      "col-md-8 form-control form-control-sm",
+                                                    attrs: {
+                                                      type: "text",
+                                                      readonly: ""
+                                                    },
+                                                    domProps: {
+                                                      value:
+                                                        _vm.Cliente.apellidos
+                                                    },
+                                                    on: {
+                                                      input: function($event) {
+                                                        if (
+                                                          $event.target
+                                                            .composing
+                                                        ) {
+                                                          return
+                                                        }
+                                                        _vm.$set(
+                                                          _vm.Cliente,
+                                                          "apellidos",
+                                                          $event.target.value
+                                                        )
+                                                      }
+                                                    }
+                                                  })
+                                                ]
+                                              )
+                                            ]
+                                          )
+                                        : _vm.Cliente.tipo == "E"
+                                        ? _c(
+                                            "div",
+                                            {
+                                              staticClass:
+                                                "col-md-11 form-group input-group"
+                                            },
+                                            [
+                                              _c(
+                                                "div",
+                                                {
+                                                  staticClass:
+                                                    "col-md-4 input-group"
+                                                },
+                                                [
+                                                  _c(
+                                                    "label",
+                                                    { staticClass: "col-md-3" },
+                                                    [_vm._v("RUC")]
+                                                  ),
+                                                  _vm._v(" "),
+                                                  _c("input", {
+                                                    directives: [
+                                                      {
+                                                        name: "model",
+                                                        rawName: "v-model",
+                                                        value: _vm.Cliente.ruc,
+                                                        expression:
+                                                          "Cliente.ruc"
+                                                      }
+                                                    ],
+                                                    staticClass:
+                                                      "col-md-6 form-control form-control-sm",
+                                                    attrs: {
+                                                      type: "text",
+                                                      readonly: ""
+                                                    },
+                                                    domProps: {
+                                                      value: _vm.Cliente.ruc
+                                                    },
+                                                    on: {
+                                                      input: function($event) {
+                                                        if (
+                                                          $event.target
+                                                            .composing
+                                                        ) {
+                                                          return
+                                                        }
+                                                        _vm.$set(
+                                                          _vm.Cliente,
+                                                          "ruc",
+                                                          $event.target.value
+                                                        )
+                                                      }
+                                                    }
+                                                  })
+                                                ]
+                                              ),
+                                              _vm._v(" "),
+                                              _c(
+                                                "div",
+                                                {
+                                                  staticClass:
+                                                    "col-md-8 input-group"
+                                                },
+                                                [
+                                                  _c(
+                                                    "label",
+                                                    { staticClass: "col-md-3" },
+                                                    [_vm._v("Razón social")]
+                                                  ),
+                                                  _vm._v(
+                                                    " \n                                            "
+                                                  ),
+                                                  _c("input", {
+                                                    directives: [
+                                                      {
+                                                        name: "model",
+                                                        rawName: "v-model",
+                                                        value:
+                                                          _vm.Cliente
+                                                            .razon_social,
+                                                        expression:
+                                                          "Cliente.razon_social"
+                                                      }
+                                                    ],
+                                                    staticClass:
+                                                      "col-md-9 form-control form-control-sm",
+                                                    attrs: {
+                                                      type: "text",
+                                                      readonly: ""
+                                                    },
+                                                    domProps: {
+                                                      value:
+                                                        _vm.Cliente.razon_social
+                                                    },
+                                                    on: {
+                                                      input: function($event) {
+                                                        if (
+                                                          $event.target
+                                                            .composing
+                                                        ) {
+                                                          return
+                                                        }
+                                                        _vm.$set(
+                                                          _vm.Cliente,
+                                                          "razon_social",
+                                                          $event.target.value
+                                                        )
+                                                      }
+                                                    }
+                                                  })
+                                                ]
+                                              )
+                                            ]
+                                          )
+                                        : _vm._e(),
+                                      _vm._v(" "),
+                                      _vm.Cliente.trash == true
+                                        ? _c(
+                                            "div",
+                                            {
+                                              staticClass:
+                                                "col-md-1 form-group d-flex justify-content-center"
+                                            },
+                                            [
+                                              _c(
+                                                "button",
+                                                {
+                                                  staticClass:
+                                                    "btn btn-circle btn-sm btn-outline-danger",
                                                   attrs: {
-                                                    type: "number",
-                                                    min:
-                                                      detalle.cantidad_inicial,
-                                                    max: detalle.substock
-                                                  },
-                                                  domProps: {
-                                                    value: detalle.cantidad
+                                                    type: "button",
+                                                    title: "ELIMINAR"
                                                   },
                                                   on: {
                                                     click: function($event) {
-                                                      return _vm.update(3)
-                                                    },
-                                                    keyup: function($event) {
-                                                      return _vm.update(3)
-                                                    },
-                                                    input: function($event) {
-                                                      if (
-                                                        $event.target.composing
-                                                      ) {
-                                                        return
-                                                      }
-                                                      _vm.$set(
-                                                        detalle,
-                                                        "cantidad",
-                                                        $event.target.value
+                                                      return _vm.remove(
+                                                        "cliente"
                                                       )
                                                     }
                                                   }
-                                                })
-                                              ]),
-                                              _vm._v(" "),
-                                              _c("td", {
-                                                staticClass: "text-right",
-                                                domProps: {
-                                                  textContent: _vm._s(
-                                                    _vm.Venta.tipo_precio == "1"
-                                                      ? detalle.precio_menor
-                                                      : detalle.precio_mayor
-                                                  )
-                                                }
-                                              }),
-                                              _vm._v(" "),
-                                              _c("td", {
-                                                staticClass: "text-right",
-                                                domProps: {
-                                                  textContent: _vm._s(
-                                                    Number.parseFloat(
-                                                      detalle.subtotal
-                                                    ).toFixed(2)
-                                                  )
-                                                }
-                                              })
-                                            ])
-                                          }),
-                                          0
-                                        )
-                                      ]
-                                    )
-                                  ]
-                                )
-                              : _c(
-                                  "div",
-                                  {
-                                    staticClass: "col-md-12",
-                                    staticStyle: { height: "15rem" }
-                                  },
-                                  [
-                                    _c(
-                                      "label",
-                                      { staticClass: "col-md-12 text-danger" },
-                                      [_vm._v("Sin detalles de venta")]
-                                    )
-                                  ]
-                                ),
-                            _vm._v(" "),
-                            _c(
-                              "div",
-                              { staticClass: "col-md-12 input-group pt-2" },
-                              [
-                                _c("div", { staticClass: "col-md-7" }, [
-                                  _vm.Venta.total > _vm.Venta.total_minimo
-                                    ? _c(
+                                                },
+                                                [
+                                                  _c("i", {
+                                                    staticClass:
+                                                      "fas fa-trash-alt"
+                                                  })
+                                                ]
+                                              )
+                                            ]
+                                          )
+                                        : _vm._e()
+                                    ]
+                                  )
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "div",
+                                { staticClass: "container-small col-md-3" },
+                                [
+                                  _c(
+                                    "div",
+                                    {
+                                      staticClass:
+                                        "shadow rounded pt-3 bg-success",
+                                      staticStyle: {
+                                        border: "1px solid",
+                                        height: "18rem"
+                                      }
+                                    },
+                                    [
+                                      _vm._m(31),
+                                      _vm._v(" "),
+                                      _c(
                                         "div",
                                         {
                                           staticClass:
-                                            "col-md-8 input-group p-0"
-                                        },
-                                        [
-                                          _vm._m(20),
-                                          _vm._v(" "),
-                                          _c("input", {
-                                            directives: [
-                                              {
-                                                name: "model",
-                                                rawName: "v-model",
-                                                value: _vm.Pago.monto,
-                                                expression: "Pago.monto"
-                                              }
-                                            ],
-                                            staticClass:
-                                              "col-md-6 form-control form-control-sm text-right",
-                                            attrs: {
-                                              type: "number",
-                                              min: "0",
-                                              max:
-                                                _vm.Venta.total -
-                                                _vm.Venta.total_minimo,
-                                              id: "pago_inicial"
-                                            },
-                                            domProps: { value: _vm.Pago.monto },
-                                            on: {
-                                              input: function($event) {
-                                                if ($event.target.composing) {
-                                                  return
-                                                }
-                                                _vm.$set(
-                                                  _vm.Pago,
-                                                  "monto",
-                                                  $event.target.value
-                                                )
-                                              }
-                                            }
-                                          })
-                                        ]
-                                      )
-                                    : _vm._e(),
-                                  _vm._v(" "),
-                                  _vm.Venta.total < _vm.Venta.total_minimo
-                                    ? _c(
-                                        "div",
-                                        {
-                                          staticClass:
-                                            "col-md-8 input-group p-0"
+                                            "col-md-12 input-group form-group"
                                         },
                                         [
                                           _c(
                                             "label",
                                             {
                                               staticClass:
-                                                "col-md-12 font-weight-bold"
+                                                "col-md-7 p-0 font-weight-bold"
+                                            },
+                                            [_vm._v("Tipo de pago")]
+                                          ),
+                                          _vm._v(" "),
+                                          _c("label", {
+                                            staticClass:
+                                              "col-md-5 p-0 text-white",
+                                            domProps: {
+                                              textContent: _vm._s(
+                                                _vm.fix(
+                                                  "tipo_pago",
+                                                  _vm.Venta.tipo_pago
+                                                )
+                                              )
+                                            }
+                                          })
+                                        ]
+                                      ),
+                                      _vm._v(" "),
+                                      _vm.Venta.tipo_pago == "2"
+                                        ? _c(
+                                            "div",
+                                            {
+                                              staticClass:
+                                                "col-md-12 input-group form-group"
                                             },
                                             [
-                                              _vm.Vale.id == null
-                                                ? _c("span", [
-                                                    _vm._v(
-                                                      "Se generara un vale de venta por:   "
-                                                    )
-                                                  ])
-                                                : _c("span", [
-                                                    _vm._v(
-                                                      "El vale de venta se incrementara en:   "
-                                                    )
-                                                  ]),
+                                              _c(
+                                                "label",
+                                                {
+                                                  staticClass:
+                                                    "col-md-7 p-0 font-weight-bold"
+                                                },
+                                                [_vm._v("Tipo de entrega")]
+                                              ),
                                               _vm._v(" "),
-                                              _c("span", {
+                                              _c("label", {
                                                 staticClass:
-                                                  "font-weight-normal text-success",
+                                                  "col-md-5 p-0 text-white",
                                                 domProps: {
                                                   textContent: _vm._s(
-                                                    "S/. " +
+                                                    _vm.fix(
+                                                      "tipo_entrega",
+                                                      _vm.Venta.tipo_entrega
+                                                    )
+                                                  )
+                                                }
+                                              })
+                                            ]
+                                          )
+                                        : _vm._e()
+                                    ]
+                                  )
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "div",
+                                { staticClass: "container-small col-md-3" },
+                                [
+                                  _c(
+                                    "div",
+                                    {
+                                      staticClass:
+                                        "shadow rounded pt-3 bg-success",
+                                      staticStyle: {
+                                        border: "1px solid",
+                                        height: "18rem"
+                                      }
+                                    },
+                                    [
+                                      _vm._m(32),
+                                      _vm._v(" "),
+                                      _vm.ValeU.id != null
+                                        ? _c(
+                                            "div",
+                                            { staticClass: "col-md-12" },
+                                            [
+                                              _c(
+                                                "div",
+                                                {
+                                                  staticClass:
+                                                    "col-md-12 input-group form-group"
+                                                },
+                                                [
+                                                  _c(
+                                                    "label",
+                                                    {
+                                                      staticClass:
+                                                        "col-md-6 font-weight-bold"
+                                                    },
+                                                    [_vm._v("Monto")]
+                                                  ),
+                                                  _vm._v(" "),
+                                                  _c("label", {
+                                                    staticClass:
+                                                      "col-md-6 text-white",
+                                                    domProps: {
+                                                      textContent: _vm._s(
+                                                        "S/. " + _vm.ValeU.monto
+                                                      )
+                                                    }
+                                                  })
+                                                ]
+                                              ),
+                                              _vm._v(" "),
+                                              _c(
+                                                "div",
+                                                {
+                                                  staticClass:
+                                                    "col-md-12 input-group form-group"
+                                                },
+                                                [
+                                                  _c(
+                                                    "label",
+                                                    {
+                                                      staticClass:
+                                                        "col-md-6 font-weight-bold"
+                                                    },
+                                                    [_vm._v("Fecha")]
+                                                  ),
+                                                  _vm._v(" "),
+                                                  _c("label", {
+                                                    staticClass:
+                                                      "col-md-6 text-white",
+                                                    domProps: {
+                                                      textContent: _vm._s(
+                                                        _vm.fix(
+                                                          7,
+                                                          _vm.ValeU.created_at
+                                                        )
+                                                      )
+                                                    }
+                                                  })
+                                                ]
+                                              ),
+                                              _vm._v(" "),
+                                              _c(
+                                                "div",
+                                                {
+                                                  staticClass:
+                                                    "col-md-12 input-group form-group"
+                                                },
+                                                [
+                                                  _c(
+                                                    "label",
+                                                    {
+                                                      staticClass:
+                                                        "col-md-6 font-weight-bold"
+                                                    },
+                                                    [_vm._v("Hora")]
+                                                  ),
+                                                  _vm._v(" "),
+                                                  _c("label", {
+                                                    staticClass:
+                                                      "col-md-6 text-white",
+                                                    domProps: {
+                                                      textContent: _vm._s(
+                                                        _vm.fix(
+                                                          8,
+                                                          _vm.ValeU.created_at
+                                                        )
+                                                      )
+                                                    }
+                                                  })
+                                                ]
+                                              )
+                                            ]
+                                          )
+                                        : _vm._e()
+                                    ]
+                                  )
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "div",
+                                { staticClass: "container-small col-md-3" },
+                                [
+                                  _c(
+                                    "div",
+                                    {
+                                      staticClass:
+                                        "shadow rounded pt-3 bg-success",
+                                      staticStyle: {
+                                        border: "1px solid",
+                                        height: "18rem"
+                                      }
+                                    },
+                                    [
+                                      _vm._m(33),
+                                      _vm._v(" "),
+                                      _vm.ValeU.id != null
+                                        ? _c(
+                                            "div",
+                                            { staticClass: "col-md-12" },
+                                            [
+                                              _c(
+                                                "div",
+                                                {
+                                                  staticClass:
+                                                    "col-md-12 input-group form-group"
+                                                },
+                                                [
+                                                  _c(
+                                                    "label",
+                                                    {
+                                                      staticClass:
+                                                        "col-md-6 font-weight-bold"
+                                                    },
+                                                    [_vm._v("Monto")]
+                                                  ),
+                                                  _vm._v(" "),
+                                                  _c("label", {
+                                                    staticClass:
+                                                      "col-md-6 text-white",
+                                                    domProps: {
+                                                      textContent: _vm._s(
+                                                        "S/. " + _vm.ValeU.monto
+                                                      )
+                                                    }
+                                                  })
+                                                ]
+                                              ),
+                                              _vm._v(" "),
+                                              _c(
+                                                "div",
+                                                {
+                                                  staticClass:
+                                                    "col-md-12 input-group form-group"
+                                                },
+                                                [
+                                                  _c(
+                                                    "label",
+                                                    {
+                                                      staticClass:
+                                                        "col-md-6 font-weight-bold"
+                                                    },
+                                                    [_vm._v("Fecha")]
+                                                  ),
+                                                  _vm._v(" "),
+                                                  _c("label", {
+                                                    staticClass:
+                                                      "col-md-6 text-white",
+                                                    domProps: {
+                                                      textContent: _vm._s(
+                                                        _vm.fix(
+                                                          7,
+                                                          _vm.ValeU.created_at
+                                                        )
+                                                      )
+                                                    }
+                                                  })
+                                                ]
+                                              ),
+                                              _vm._v(" "),
+                                              _c(
+                                                "div",
+                                                {
+                                                  staticClass:
+                                                    "col-md-12 input-group form-group"
+                                                },
+                                                [
+                                                  _c(
+                                                    "label",
+                                                    {
+                                                      staticClass:
+                                                        "col-md-6 font-weight-bold"
+                                                    },
+                                                    [_vm._v("Hora")]
+                                                  ),
+                                                  _vm._v(" "),
+                                                  _c("label", {
+                                                    staticClass:
+                                                      "col-md-6 text-white",
+                                                    domProps: {
+                                                      textContent: _vm._s(
+                                                        _vm.fix(
+                                                          8,
+                                                          _vm.ValeU.created_at
+                                                        )
+                                                      )
+                                                    }
+                                                  })
+                                                ]
+                                              )
+                                            ]
+                                          )
+                                        : _vm._e()
+                                    ]
+                                  )
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "div",
+                                { staticClass: "container-small col-md-3" },
+                                [
+                                  _c(
+                                    "div",
+                                    {
+                                      staticClass:
+                                        "shadow rounded pt-3 bg-success",
+                                      staticStyle: {
+                                        border: "1px solid",
+                                        height: "18rem"
+                                      }
+                                    },
+                                    [
+                                      _vm._m(34),
+                                      _vm._v(" "),
+                                      _c(
+                                        "div",
+                                        {
+                                          staticClass:
+                                            "col-md-12 input-group form-group"
+                                        },
+                                        [
+                                          _c(
+                                            "label",
+                                            {
+                                              staticClass:
+                                                "col-md-7 p-0 font-weight-bold"
+                                            },
+                                            [_vm._v("Monto de venta")]
+                                          ),
+                                          _vm._v(" "),
+                                          _c(
+                                            "label",
+                                            {
+                                              staticClass:
+                                                "col-md-1 p-0 text-white text-right p-0"
+                                            },
+                                            [_vm._v("S/.")]
+                                          ),
+                                          _vm._v(" "),
+                                          _c("label", {
+                                            staticClass:
+                                              "col-md-4 p-0 text-white text-right",
+                                            domProps: {
+                                              textContent: _vm._s(
+                                                Number.parseFloat(
+                                                  _vm.Venta.total
+                                                ).toFixed(2)
+                                              )
+                                            }
+                                          })
+                                        ]
+                                      ),
+                                      _vm._v(" "),
+                                      _vm.ValeU.id != null
+                                        ? _c(
+                                            "div",
+                                            {
+                                              staticClass:
+                                                "col-md-12 input-group form-group"
+                                            },
+                                            [
+                                              _c(
+                                                "label",
+                                                {
+                                                  staticClass:
+                                                    "col-md-7 p-0 font-weight-bold"
+                                                },
+                                                [_vm._v("Monto de vale")]
+                                              ),
+                                              _vm._v(" "),
+                                              _c(
+                                                "label",
+                                                {
+                                                  staticClass:
+                                                    "col-md-1 p-0 text-white text-right p-0"
+                                                },
+                                                [_vm._v("S/.")]
+                                              ),
+                                              _vm._v(" "),
+                                              _c("label", {
+                                                staticClass:
+                                                  "col-md-4 p-0 text-white text-right",
+                                                domProps: {
+                                                  textContent: _vm._s(
+                                                    "- " +
                                                       Number.parseFloat(
-                                                        _vm.Venta.total_minimo -
-                                                          _vm.Venta.total
+                                                        _vm.ValeU.monto
                                                       ).toFixed(2)
                                                   )
                                                 }
                                               })
                                             ]
                                           )
+                                        : _vm._e(),
+                                      _vm._v(" "),
+                                      _vm._m(35),
+                                      _vm._v(" "),
+                                      _c(
+                                        "div",
+                                        {
+                                          staticClass:
+                                            "col-md-12 input-group form-group"
+                                        },
+                                        [
+                                          _c(
+                                            "label",
+                                            {
+                                              staticClass:
+                                                "col-md-6 p-0 font-weight-bold h5"
+                                            },
+                                            [_vm._v("Monto total")]
+                                          ),
+                                          _vm._v(" "),
+                                          _c("label", {
+                                            staticClass:
+                                              "col-md-6 p-0 text-white text-right h5",
+                                            domProps: {
+                                              textContent: _vm._s(
+                                                "S/. " +
+                                                  Number.parseFloat(
+                                                    _vm.update(5)
+                                                  ).toFixed(2)
+                                              )
+                                            }
+                                          })
                                         ]
                                       )
-                                    : _vm._e()
-                                ]),
-                                _vm._v(" "),
-                                _c(
-                                  "div",
-                                  { staticClass: "col-md-5 input-group" },
-                                  [
-                                    _c(
-                                      "label",
-                                      {
-                                        staticClass: "col-md-6 font-weight-bold"
-                                      },
-                                      [_vm._v("Monto total:")]
-                                    ),
-                                    _vm._v(" "),
-                                    _c("label", {
-                                      staticClass: "col-md-1 text-info p-0",
-                                      domProps: { textContent: _vm._s("S/.") }
-                                    }),
-                                    _vm._v(" "),
-                                    _c("label", {
-                                      staticClass:
-                                        "col-md-5 text-right text-info",
-                                      domProps: {
-                                        textContent: _vm._s(
-                                          Number.parseFloat(
-                                            _vm.Venta.total
-                                          ).toFixed(2)
-                                        )
-                                      }
-                                    }),
-                                    _vm._v(" "),
-                                    _c(
-                                      "label",
-                                      {
-                                        staticClass: "col-md-6 font-weight-bold"
-                                      },
-                                      [_vm._v("Minimo:")]
-                                    ),
-                                    _vm._v(" "),
-                                    _c("label", {
-                                      staticClass: "col-md-1 text-danger p-0",
-                                      domProps: { textContent: _vm._s("S/.") }
-                                    }),
-                                    _vm._v(" "),
-                                    _c("label", {
-                                      staticClass:
-                                        "col-md-5 text-right text-danger",
-                                      domProps: {
-                                        textContent: _vm._s(
-                                          Number.parseFloat(
-                                            _vm.Venta.total_minimo
-                                          ).toFixed(2)
-                                        )
-                                      }
-                                    })
-                                  ]
-                                )
-                              ]
-                            )
-                          ]
-                        )
-                      ])
+                                    ]
+                                  )
+                                ]
+                              )
+                            ]
+                          )
+                        : _vm._e()
                     ])
                   : _vm._e(),
                 _vm._v(" "),
@@ -84684,7 +85952,7 @@ var render = function() {
                                     ) {
                                       return null
                                     }
-                                    return _vm.add(1)
+                                    return _vm.add("pago")
                                   },
                                   input: function($event) {
                                     if ($event.target.composing) {
@@ -84709,7 +85977,7 @@ var render = function() {
                                   },
                                   on: {
                                     click: function($event) {
-                                      return _vm.add(1)
+                                      return _vm.add("pago")
                                     }
                                   }
                                 },
@@ -84735,7 +86003,7 @@ var render = function() {
                                       "table table-bordered table-striped table-sm text-gray-900"
                                   },
                                   [
-                                    _vm._m(21),
+                                    _vm._m(36),
                                     _vm._v(" "),
                                     _c(
                                       "tbody",
@@ -84765,7 +86033,11 @@ var render = function() {
                                             _c("td", {
                                               staticClass: "text-right",
                                               domProps: {
-                                                textContent: _vm._s(pago.monto)
+                                                textContent: _vm._s(
+                                                  Number.parseFloat(
+                                                    pago.monto
+                                                  ).toFixed(2)
+                                                )
                                               }
                                             })
                                           ]
@@ -84819,7 +86091,7 @@ var render = function() {
                             staticStyle: { "margin-bottom": "0px" },
                             domProps: {
                               textContent: _vm._s(
-                                (
+                                Number.parseFloat(
                                   _vm.Venta.total - _vm.Venta.total_faltante
                                 ).toFixed(2)
                               )
@@ -84853,7 +86125,11 @@ var render = function() {
                             staticClass: "col-md-3 text-right text-danger",
                             staticStyle: { "margin-bottom": "0px" },
                             domProps: {
-                              textContent: _vm._s(_vm.Venta.total_faltante)
+                              textContent: _vm._s(
+                                Number.parseFloat(
+                                  _vm.Venta.total_faltante
+                                ).toFixed(2)
+                              )
                             }
                           }),
                           _vm._v(" "),
@@ -84883,7 +86159,11 @@ var render = function() {
                           _c("label", {
                             staticClass: "col-md-3 text-right",
                             staticStyle: { "margin-bottom": "0px" },
-                            domProps: { textContent: _vm._s(_vm.Venta.total) }
+                            domProps: {
+                              textContent: _vm._s(
+                                Number.parseFloat(_vm.Venta.total).toFixed(2)
+                              )
+                            }
                           })
                         ])
                       ]
@@ -85093,16 +86373,8 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col-md-12" }, [
-      _c("label", { staticClass: "font-weight-bold" }, [_vm._v("CLIENTE")])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col-md-12 input-group" }, [
-      _c("label", { staticClass: "font-weight-bold" }, [
+    return _c("div", { staticClass: "col-md-12 p-0 form-group" }, [
+      _c("label", { staticClass: "p-0 h5 font-weight-bold" }, [
         _vm._v("LISTA DE PAGOS")
       ])
     ])
@@ -85115,7 +86387,7 @@ var staticRenderFns = [
       _c("tr", { staticClass: "table-info" }, [
         _c("th", { staticClass: "text-center" }, [_vm._v("#")]),
         _vm._v(" "),
-        _c("th", { staticClass: "text-center" }, [_vm._v("Fecha")]),
+        _c("th", { staticClass: "text-center" }, [_vm._v("Fecha de pago")]),
         _vm._v(" "),
         _c("th", { staticClass: "text-center" }, [_vm._v("Monto")])
       ])
@@ -85125,9 +86397,23 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-md-7 p-0" }, [
+      _c("label", { staticClass: "p-0 h5 mb-0 font-weight-bold" }, [
+        _vm._v("LISTA DE ITEMS")
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
     return _c("thead", [
       _c("tr", { staticClass: "table-success" }, [
+        _c("th", { staticClass: "text-center" }, [_vm._v("#")]),
+        _vm._v(" "),
         _c("th", { staticClass: "text-center" }, [_vm._v("Nombre")]),
+        _vm._v(" "),
+        _c("th", { staticClass: "text-center" }, [_vm._v("Fallidos")]),
         _vm._v(" "),
         _c("th", { staticClass: "text-center" }, [_vm._v("Cantidad")]),
         _vm._v(" "),
@@ -85141,8 +86427,84 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col-md-2 form-group" }, [
-      _c("label", { staticClass: "font-weight-bold" }, [_vm._v("CLIENTE")])
+    return _c("div", { staticClass: "col-md-12 form-group input-group" }, [
+      _c("label", { staticClass: "col-md-2 font-weight-bold h5" }, [
+        _vm._v("CLIENTE")
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-md-12 form-group" }, [
+      _c("label", { staticClass: "font-weight-bold h5" }, [
+        _vm._v("TIPO DE VENTA")
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-md-12 form-group" }, [
+      _c("label", { staticClass: "font-weight-bold h5" }, [
+        _vm._v("BENEFICIOS")
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-md-12 input-group form-group" }, [
+      _c("label", { staticClass: "col-md-12 d-flex justify-content-center" }, [
+        _vm._v("-- VALE GENERADO --")
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-md-12 form-group" }, [
+      _c("label", { staticClass: "font-weight-bold h5" }, [
+        _vm._v("DESCUENTOS")
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-md-12 input-group form-group" }, [
+      _c("label", { staticClass: "col-md-12 d-flex justify-content-center" }, [
+        _vm._v("-- VALE USADO --")
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-md-12 form-group" }, [
+      _c("label", { staticClass: "font-weight-bold h5" }, [_vm._v("TOTALES")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-md-10 bg-white m-4" }, [_c("hr")])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-md-12 form-group" }, [
+      _c("label", { staticClass: "h5 mb-0 font-weight-bold" }, [
+        _vm._v("LISTA DE PRODUCTOS")
+      ])
     ])
   },
   function() {
@@ -85161,6 +86523,25 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", { staticClass: "text-center" }, [_vm._v("Stock")])
       ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-md-7 p-0" }, [
+      _c("label", { staticClass: "p-0 h5 mb-0 font-weight-bold" }, [
+        _vm._v("LISTA DE ITEMS")
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("label", { staticClass: "col-md-6 font-weight-bold p-0" }, [
+      _vm._v("Tipo de precio "),
+      _c("span", { staticClass: "text-danger" }, [_vm._v("*")])
     ])
   },
   function() {
@@ -85195,17 +86576,53 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c(
-      "label",
-      {
-        staticClass: "col-md-6 font-weight-bold p-0",
-        attrs: { for: "pago_inicial" }
-      },
-      [
-        _vm._v("Pago extra "),
-        _c("span", { staticClass: "text-danger" }, [_vm._v("*")])
-      ]
-    )
+    return _c("div", { staticClass: "col-md-2 form-group" }, [
+      _c("label", { staticClass: "h5 font-weight-bold" }, [_vm._v("CLIENTE")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-md-12 form-group" }, [
+      _c("label", { staticClass: "font-weight-bold h5" }, [
+        _vm._v("TIPO DE VENTA")
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-md-12 form-group" }, [
+      _c("label", { staticClass: "font-weight-bold h5" }, [
+        _vm._v("BENEFICIOS")
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-md-12 form-group" }, [
+      _c("label", { staticClass: "font-weight-bold h5" }, [
+        _vm._v("DESCUENTOS")
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-md-12 form-group" }, [
+      _c("label", { staticClass: "font-weight-bold h5" }, [_vm._v("TOTALES")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-md-10 bg-white m-4" }, [_c("hr")])
   },
   function() {
     var _vm = this
@@ -97415,7 +98832,7 @@ Vue.component('noti_venta_alm', __webpack_require__(/*! ./components/Notificacio
 var app = new Vue({
   el: '#app',
   data: {
-    menu: 1,
+    menu: 3,
     notifications: []
   },
   created: function created() {
