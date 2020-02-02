@@ -4125,7 +4125,8 @@ __webpack_require__.r(__webpack_exports__);
         sumaPagos: 0.00
       },
       Ruta: {
-        server: 'http://127.0.0.1:8000'
+        serverApache: 'http://localhost:80',
+        serverPhp: 'http://127.0.0.1:8000'
       }
     };
   },
@@ -4337,7 +4338,7 @@ __webpack_require__.r(__webpack_exports__);
       var ruc = me.DatosServicio.documento;
       $.ajax({
         type: 'GET',
-        url: me.Ruta.server + '/SunatPHP/demo.php',
+        url: me.Ruta.serverApache + '/SunatPHP/demo.php',
         data: 'ruc=' + ruc,
         beforeSend: function beforeSend() {
           me.Carga.clase = 'spinner-border spinner-border-sm text-primary';
@@ -4369,7 +4370,7 @@ __webpack_require__.r(__webpack_exports__);
       var dni = me.DatosServicio.documento;
       $.ajax({
         type: 'GET',
-        url: me.Ruta.server + '/Reniec/demo.php',
+        url: me.Ruta.serverApache + '/Reniec/demo.php',
         data: 'dni=' + dni,
         beforeSend: function beforeSend() {
           me.Carga.clase = 'spinner-border spinner-border-sm text-primary';
@@ -4784,7 +4785,7 @@ __webpack_require__.r(__webpack_exports__);
       return fixed;
     },
     generatePdf: function generatePdf() {
-      window.open(this.Ruta.server + '/abasto/generatePdf', '_blank');
+      window.open(this.Ruta.serverPhp + '/abasto/generatePdf', '_blank');
     }
   },
   mounted: function mounted() {
@@ -5132,7 +5133,7 @@ __webpack_require__.r(__webpack_exports__);
         mensaje: []
       },
       Ruta: {
-        server: 'http://127.0.0.1:8000'
+        serverPhp: 'http://127.0.0.1:8000'
       }
     };
   },
@@ -5521,7 +5522,7 @@ __webpack_require__.r(__webpack_exports__);
       }); // return selectTipoFiltrado;
     },
     generatePdf: function generatePdf() {
-      window.open(this.Ruta.server + '/material/generatePdf', '_blank');
+      window.open(this.Ruta.serverPhp + '/material/generatePdf', '_blank');
     }
   },
   mounted: function mounted() {
@@ -5975,7 +5976,7 @@ __webpack_require__.r(__webpack_exports__);
         productomaterial: '/productomaterial',
         material: '/material',
         data: '/data',
-        server: 'http://127.0.0.1:8000'
+        serverPhp: 'http://127.0.0.1:8000'
       }
     };
   },
@@ -6504,7 +6505,7 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     generatePdf: function generatePdf() {
-      window.open(this.Ruta.server + '/producto/generatePdf', '_blank');
+      window.open(this.Ruta.serverPhp + '/producto/generatePdf', '_blank');
     }
   },
   mounted: function mounted() {
@@ -6875,7 +6876,7 @@ __webpack_require__.r(__webpack_exports__);
         superproducto: '/superproducto',
         producto: '/producto',
         data: '/data',
-        server: 'http://127.0.0.1:8000'
+        serverPhp: 'http://127.0.0.1:8000'
       }
     };
   },
@@ -7243,7 +7244,7 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     generatePdf: function generatePdf() {
-      window.open(this.Ruta.server + '/superproducto/generatePdf', '_blank');
+      window.open(this.Ruta.serverPhp + '/superproducto/generatePdf', '_blank');
     }
   },
   mounted: function mounted() {
@@ -99771,7 +99772,7 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! E:\Programas\XAMPP\XAMPP\htdocs\EC_ci\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\laragon\www\EC_ci\resources\js\app.js */"./resources/js/app.js");
 
 
 /***/ })
