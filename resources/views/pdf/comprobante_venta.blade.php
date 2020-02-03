@@ -3,7 +3,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Reporte de abastecimiento</title>
+    <title>Reporte de venta</title>
     <style>
         body {
         /*position: relative;*/
@@ -127,7 +127,7 @@
         }
     </style>
     <body>
-        @foreach($abasto as $aba)
+        @foreach($venta as $ven)
         <header>
             <div id="logo">
                 <img src="img/logo2.png" alt="incanatoIT" id="imagen">
@@ -146,12 +146,19 @@
                     {{date("d/m/Y")}}
                 </p>
                 <span style="font-size: 15px;">
-                    @if($aba->tipo_abasto)
-                        Tipo: Crédito
-                    @else
+                    @if(substr($ven->tipo, 0) == '1')
                         Tipo: Contado
+                    @else
+                        Tipo: Crédito
                     @endif
                 </span>
+                {{-- <span style="font-size: 15px;">
+                    @if(substr($ven->tipo, 1) == '1')
+                        Tipo entrega: Postpago
+                    @else
+                        Tipo entrega: Prepago
+                    @endif
+                </span> --}}
             </div>
         </header>
         <br>
@@ -160,68 +167,42 @@
                 <table id="facliente">
                     <thead>                        
                         <tr class="fa">
-                            <th style="width: 18rem">Proveedor</th>
-                            <th style="width: 8rem">Alm. Dest.</th>
-                            <th style="width: 8rem">Fec. Envío</th>
-                            <th style="width: 8rem">Est. Envio</th>
+                            <th style="width: 18rem">Cliente</th>
+                            <th style="width: 8rem">Beneficio</th>
+                            <th style="width: 8rem">Descuentos</th>
+                            <th style="width: 8rem">Fecha</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td>
-                                @if($aba->dni)
-                                    <p >Sr(a). {{$aba->proveedor_persona}}<br>
-                                    DNI: {{$aba->dni}}<br>
+                                @if($ven->nombres)
+                                    <p >Sr(a). {{$ven->nombres . '' . $ven->apellidos}}<br>
+                                    DNI: {{$ven->dni}}<br>
+                                    </p>
+                                @elseif($ven->razon_social)
+                                    <p >Empresa: {{$ven->razon_social}}<br>
+                                    RUC: {{$ven->ruc}}<br>
                                     </p>
                                 @else
-                                    <p >Empresa: {{$aba->proveedor_empresa}}<br>
-                                    RUC: {{$aba->ruc}}<br>
-                                    </p>
+                                    ------
                                 @endif
                             </td>
                             <td>
-                                {{$aba->nombre_centro}}
+                            </td>
+                            <td>
                             </td>
                             <td>
                                 @php
-                                    $date = new DateTime($aba->fecha_envio);
-                                    echo $date->format('d/m/Y');
+                                    $date = new DateTime($ven->created_at);
+                                    echo $date->format('d/m/Y h:i:s');
                                 @endphp
-                            </td>
-                            <td>
-                                @if($aba->estado_envio == 0)
-                                    Enviado
-                                @elseif($aba->estado_envio == 1)
-                                    Aceptado
-                                @else
-                                    Rechazado
-                                @endif
                             </td>
                         </tr>
                     </tbody>
                 </table>
-                {{-- <p style="font-size: 15px;">Reporte de abastecimiento
-                    <br>
-                        @php
-                            $date = new DateTime($aba->fecha_envio);
-                            echo $date->format('d/m/Y');
-                        @endphp
-                    <br>
-                </p> --}}
             </div>
         </section>
-        {{-- <section>
-            <div>
-                <p style="font-size: 15px;">Reporte de abastecimiento
-                    <br>
-                        @php
-                            $date = new DateTime($aba->fecha_envio);
-                            echo $date->format('d/m/Y');
-                        @endphp
-                    <br>
-                </p>
-            </div>
-        </section> --}}
         @endForeach
         <br>
         <section>
@@ -230,7 +211,8 @@
                     <thead>
                         <tr class="fa">
                             <th>Nombre</th>
-                            <th>Cant.</th>
+                            <th>Fallidos</th>
+                            <th>Cantidad</th>
                             <th style="padding-right: 35px; text-align: right;">P. unit.</th>
                             <th style="padding-right: 35px; text-align: right;">Subtotal</th>
                         </tr>
@@ -239,19 +221,35 @@
                         @foreach($detalles as $det)
                         <tr>
                             <td >{{$det->nombre_producto}}</td>
+                            <td >{{$det->fallidos == null ? '---': $det->fallidos}}</td>
                             <td >{{$det->cantidad}}</td>
-                            <td style="padding-right: 35px; text-align: right;">{{$det->costo_abasto}}</td>
+                            <td style="padding-right: 35px; text-align: right;">{{$det->precio}}</td>
                             <td style="padding-right: 35px; text-align: right;">{{$det->subtotal}}</td>
                         </tr>
                         @endForeach
                     </tbody>
                     <tfoot>
-                        @foreach($abasto as $aba)
+                        @foreach($venta as $ven)
                         <tr>
                             <th></th>
                             <th></th>
+                            <th></th>
+                            <th style="padding-right: 35px; text-align: right;">TOTAL VENTA</th>
+                            <td style="padding-right: 35px; text-align: right;">s/ {{$ven->total_venta}}</td>
+                        </tr>
+                        <tr>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th style="padding-right: 35px; text-align: right;">TOTAL DESCUENTO</th>
+                            <td style="padding-right: 35px; text-align: right;">s/ {{$ven->total_descuento ? $ven->total_descuento : 0}}</td>
+                        </tr>
+                        <tr>
+                            <th></th>
+                            <th></th>
+                            <th></th>
                             <th style="padding-right: 35px; text-align: right;">TOTAL</th>
-                            <td style="padding-right: 35px; text-align: right;">s/ {{$aba->total}}</td>
+                            <td style="padding-right: 35px; text-align: right;">s/ {{$ven->total}}</td>
                         </tr>
                         @endForeach
                     </tfoot>
@@ -259,14 +257,13 @@
             </div>
         </section>
         <hr>
-        {{-- <br>
         <br>
         <footer>
             <div id="gracias">
                 <p><b>Gracias por su compra!</b></p>
             </div>
-        </footer> --}}
-        @if($abasto[0]->tipo_abasto)
+        </footer>
+        {{-- @if($abasto[0]->tipo_abasto)
             Lista de pagos realizados
             <br><br>
             <section>
@@ -315,6 +312,6 @@
                     </table>
                 </div>
             </section>
-        @endif
+        @endif --}}
     </body>
 </html>

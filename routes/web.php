@@ -54,6 +54,9 @@ Route::group(['middleware' => ['auth']], function () {
     //RUTA PARA NOTIFICACIONES
     Route::post('/notification/get', 'NotificationController@get');
 
+    //RUTA PARA PDF
+    Route::get('/venta/generatePdfSpecific', 'VentaController@generatePdfSpecific');
+
     Route::group(['middleware' => ['Administrador']], function (){
         
         //Rutas para USUARIO

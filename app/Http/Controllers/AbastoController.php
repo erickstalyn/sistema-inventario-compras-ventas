@@ -230,7 +230,7 @@ class AbastoController extends Controller
         $pagos = Abasto::findOrFail($request->code)->getPagos;
 
         $pdf = \PDF::loadView('pdf.comprobante_abasto', ['abasto'=>$abasto, 'detalles'=>$detalles, 'pagos' => $pagos]);
-        return $pdf->download('lista_abasto_silmar_' . $request->code . '.pdf');
+        return $pdf->download('abasto_silmar_' . $request->code . '.pdf');
             
     }
 }

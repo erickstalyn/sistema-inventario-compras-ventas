@@ -319,5 +319,20 @@ class VentaController extends Controller {
             'error' => $error
         ];
     }
+
+    public function generatePdfSpecific(Request $request){
+        $venta = Venta::select('venta.id', 'venta.codigo', 'venta.tipo', 'venta.total', 'venta.total_faltante', 'venta.total_descuento', 'venta.total_venta', 'venta.created_at', 
+                                'persona.id as cliente_id', 'persona.dni', 'persona.ruc', 'persona.nombres', 'persona.apellidos', 'persona.razon_social', 'persona.tipo as cliente_tipo',
+                                'vale.id as vale_id', 'vale.monto as vale_monto', 'vale.created_at as vale_created_at')
+                    ->leftJoin('persona', 'persona.id', '=', 'venta.cliente_id')
+                    ->leftJoin('vale', 'vale.venta_generada_id', '=', 'venta.id')
+                    ->where('venta.id', '=', $request->id)->take(1)->get();
+
+        $detalles = Venta::findOrFail($request->id)->getDetalleVenta;
+        $pagos = Venta::findOrFail($request->id)->getPago;
+
+        $pdf = \PDF::loadView('pdf.comprobante_venta', ['venta'=>$venta, 'detalles'=>$detalles, 'pagos' => $pagos]);
+        return $pdf->download('venta_silmar_' . $venta[0]->codigo . '.pdf');
+    }
     
 }
