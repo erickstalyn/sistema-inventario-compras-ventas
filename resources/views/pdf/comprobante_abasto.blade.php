@@ -174,7 +174,7 @@
                                     DNI: {{$aba->dni}}<br>
                                     </p>
                                 @else
-                                    <p >Empresa: {{$aba->proveedor_empresa}}<br>
+                                    <p >{{$aba->proveedor_empresa}}<br>
                                     RUC: {{$aba->ruc}}<br>
                                     </p>
                                 @endif
@@ -229,7 +229,7 @@
                 <table class="facarticulo">
                     <thead>
                         <tr class="fa">
-                            <th>Nombre</th>
+                            <th style="width: 20rem">Nombre</th>
                             <th>Cant.</th>
                             <th style="padding-right: 35px; text-align: right;">P. unit.</th>
                             <th style="padding-right: 35px; text-align: right;">Subtotal</th>
@@ -249,8 +249,8 @@
                         @foreach($abasto as $aba)
                         <tr>
                             <th></th>
-                            <th></th>
-                            <th style="padding-right: 35px; text-align: right;">TOTAL</th>
+                            {{-- <th></th> --}}
+                            <th colspan="2" style="padding-right: 35px; text-align: right;">TOTAL</th>
                             <td style="padding-right: 35px; text-align: right;">s/ {{$aba->total}}</td>
                         </tr>
                         @endForeach
@@ -286,7 +286,7 @@
                                 <td style="padding-right: 20px; text-align: right;">
                                     @php
                                         $date = new DateTime($pag->created_at);
-                                        echo $date->format('d/m/Y h:i:s');
+                                        echo $date->format('d/m/Y h:i a');
                                     @endphp
                                 </td>
                                 <td style="padding-right: 23px; text-align: right;">{{$pag->monto}}</td>

@@ -146,11 +146,11 @@
                     {{date("d/m/Y")}}
                 </p>
                 <span style="font-size: 15px;">
-                    @if(substr($ven->tipo, 0) == '1')
+                    {{-- @if(substr($ven->tipo, 0, 1) == '1')
                         Tipo: Contado
                     @else
                         Tipo: Crédito
-                    @endif
+                    @endif --}}
                 </span>
                 {{-- <span style="font-size: 15px;">
                     @if(substr($ven->tipo, 1) == '1')
@@ -161,6 +161,23 @@
                 </span> --}}
             </div>
         </header>
+        <span>Codigo: {{$ven->codigo}}</span>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <span>
+            @if(substr($ven->tipo, 0, 1) == '1')
+                Tipo pago: Contado
+            @else
+                Tipo pago: Crédito
+            @endif
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            @if(substr($ven->tipo, 1, 1) == '1')
+                Tipo entrega: Prepago
+            @else
+                Tipo entrega: Postpago
+            @endif
+        </span>
+        <br>
         <br>
         <section>
             <div>
@@ -181,7 +198,7 @@
                                     DNI: {{$ven->dni}}<br>
                                     </p>
                                 @elseif($ven->razon_social)
-                                    <p >Empresa: {{$ven->razon_social}}<br>
+                                    <p >{{$ven->razon_social}}<br>
                                     RUC: {{$ven->ruc}}<br>
                                     </p>
                                 @else
@@ -210,7 +227,7 @@
                 <table class="facarticulo">
                     <thead>
                         <tr class="fa">
-                            <th>Nombre</th>
+                            <th style="width: 20rem">Nombre</th>
                             <th>Fallidos</th>
                             <th>Cantidad</th>
                             <th style="padding-right: 35px; text-align: right;">P. unit.</th>
@@ -233,22 +250,22 @@
                         <tr>
                             <th></th>
                             <th></th>
-                            <th></th>
-                            <th style="padding-right: 35px; text-align: right;">TOTAL VENTA</th>
+                            {{-- <th></th> --}}
+                            <th colspan="2" style="padding-right: 35px; text-align: right;">TOTAL VENTA</th>
                             <td style="padding-right: 35px; text-align: right;">s/ {{$ven->total_venta}}</td>
                         </tr>
                         <tr>
                             <th></th>
                             <th></th>
-                            <th></th>
-                            <th style="padding-right: 35px; text-align: right;">TOTAL DESCUENTO</th>
+                            {{-- <th></th> --}}
+                            <th colspan="2" style="padding-right: 35px; text-align: right;">TOTAL DESCUENTO</th>
                             <td style="padding-right: 35px; text-align: right;">s/ {{$ven->total_descuento ? $ven->total_descuento : 0}}</td>
                         </tr>
                         <tr>
                             <th></th>
                             <th></th>
-                            <th></th>
-                            <th style="padding-right: 35px; text-align: right;">TOTAL</th>
+                            {{-- <th></th> --}}
+                            <th colspan="2" style="padding-right: 35px; text-align: right;">TOTAL</th>
                             <td style="padding-right: 35px; text-align: right;">s/ {{$ven->total}}</td>
                         </tr>
                         @endForeach
@@ -263,7 +280,7 @@
                 <p><b>Gracias por su compra!</b></p>
             </div>
         </footer>
-        {{-- @if($abasto[0]->tipo_abasto)
+        @if(substr($ven->tipo, 0, 1) == '2')
             Lista de pagos realizados
             <br><br>
             <section>
@@ -283,7 +300,7 @@
                                 <td style="padding-right: 20px; text-align: right;">
                                     @php
                                         $date = new DateTime($pag->created_at);
-                                        echo $date->format('d/m/Y h:i:s');
+                                        echo $date->format('d/m/Y h:i a');
                                     @endphp
                                 </td>
                                 <td style="padding-right: 23px; text-align: right;">{{$pag->monto}}</td>
@@ -291,27 +308,27 @@
                             @endForeach
                         </tbody>
                         <tfoot>
-                            @foreach($abasto as $aba)
+                            @foreach($venta as $ven)
                             <tr>
                                 <th></th>
                                 <th style="padding-right: 20px; text-align: right;">Monto pagado: </th>
-                                <td style="padding-right: 23px; text-align: right;">s/ {{ number_format($aba->total - $aba->total_faltante, 2, '.', '') }}</td>
+                                <td style="padding-right: 23px; text-align: right;">s/ {{ number_format($ven->total - $ven->total_faltante, 2, '.', '') }}</td>
                             </tr>
                             <tr>
                                 <th></th>
                                 <th style="padding-right: 20px; text-align: right;">Monto faltante: </th>
-                                <td style="padding-right: 23px; text-align: right;">s/ {{$aba->total_faltante}}</td>
+                                <td style="padding-right: 23px; text-align: right;">s/ {{$ven->total_faltante}}</td>
                             </tr>
                             <tr>
                                 <th></th>
                                 <th style="padding-right: 20px; text-align: right;">Costo total: </th>
-                                <td style="padding-right: 23px; text-align: right;">s/ {{$aba->total}}</td>
+                                <td style="padding-right: 23px; text-align: right;">s/ {{$ven->total}}</td>
                             </tr>
                             @endForeach
                         </tfoot>
                     </table>
                 </div>
             </section>
-        @endif --}}
+        @endif
     </body>
 </html>
