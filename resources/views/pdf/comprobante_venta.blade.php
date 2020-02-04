@@ -212,7 +212,7 @@
                             <td>
                                 @php
                                     $date = new DateTime($ven->created_at);
-                                    echo $date->format('d/m/Y h:i:s');
+                                    echo $date->format('d/m/Y h:i a');
                                 @endphp
                             </td>
                         </tr>
