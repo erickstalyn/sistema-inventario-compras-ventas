@@ -285,48 +285,59 @@
             <br><br>
             <section>
                 <div>
-                    <table class="pagos">
-                        <thead>
-                            <tr class="fa">
-                                <th style="padding-right: 10px; text-align: right;">#</th>
-                                <th style="padding-right: 20px; text-align: right;">Fecha de pago</th>
-                                <th style="padding-right: 23px; text-align: right;">Monto</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($pagos as $pag)
-                            <tr>
-                                <td style="padding-right: 10px; text-align: right;">{{$loop->index + 1}}</td>
-                                <td style="padding-right: 20px; text-align: right;">
-                                    @php
-                                        $date = new DateTime($pag->created_at);
-                                        echo $date->format('d/m/Y h:i a');
-                                    @endphp
-                                </td>
-                                <td style="padding-right: 23px; text-align: right;">{{$pag->monto}}</td>
-                            </tr>
-                            @endForeach
-                        </tbody>
-                        <tfoot>
-                            @foreach($venta as $ven)
-                            <tr>
-                                <th></th>
-                                <th style="padding-right: 20px; text-align: right;">Monto pagado: </th>
-                                <td style="padding-right: 23px; text-align: right;">s/ {{ number_format($ven->total - $ven->total_faltante, 2, '.', '') }}</td>
-                            </tr>
-                            <tr>
-                                <th></th>
-                                <th style="padding-right: 20px; text-align: right;">Monto faltante: </th>
-                                <td style="padding-right: 23px; text-align: right;">s/ {{$ven->total_faltante}}</td>
-                            </tr>
-                            <tr>
-                                <th></th>
-                                <th style="padding-right: 20px; text-align: right;">Costo total: </th>
-                                <td style="padding-right: 23px; text-align: right;">s/ {{$ven->total}}</td>
-                            </tr>
-                            @endForeach
-                        </tfoot>
-                    </table>
+                    @if(count($pagos))
+                        <table class="pagos">
+                            <thead>
+                                <tr class="fa">
+                                    <th style="padding-right: 10px; text-align: right;">#</th>
+                                    <th style="padding-right: 20px; text-align: right;">Fecha de pago</th>
+                                    <th style="padding-right: 23px; text-align: right;">Monto</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($pagos as $pag)
+                                    <tr>
+                                        <td style="padding-right: 10px; text-align: right;">{{$loop->index + 1}}</td>
+                                        <td style="padding-right: 20px; text-align: right;">
+                                            @php
+                                                $date = new DateTime($pag->created_at);
+                                                echo $date->format('d/m/Y h:i a');
+                                            @endphp
+                                        </td>
+                                        <td style="padding-right: 23px; text-align: right;">{{$pag->monto}}</td>
+                                    </tr>
+                                @endForeach
+                            </tbody>
+                            <tfoot>
+                                @foreach($venta as $ven)
+                                    @if($ven->total_faltante != 0)
+                                        <tr>
+                                            <th></th>
+                                            <th style="padding-right: 20px; text-align: right;">Monto pagado: </th>
+                                            <td style="padding-right: 23px; text-align: right;">s/ {{ number_format($ven->total - $ven->total_faltante, 2, '.', '') }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th></th>
+                                            <th style="padding-right: 20px; text-align: right;">Monto faltante: </th>
+                                            <td style="padding-right: 23px; text-align: right;">s/ {{$ven->total_faltante}}</td>
+                                        </tr>
+                                        <tr>
+                                            <th></th>
+                                            <th style="padding-right: 20px; text-align: right;">Costo total: </th>
+                                            <td style="padding-right: 23px; text-align: right;">s/ {{$ven->total}}</td>
+                                        </tr>
+                                    @else
+                                        <tr>
+                                            <td></td>
+                                            <td style="padding-right: 23px; text-align: center;" colspan="2">-- PAGADO COMPLETAMENTE --</td>
+                                        </tr>
+                                    @endif
+                                @endForeach
+                            </tfoot>
+                        </table>
+                    @else
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-- Ningún pago registrado --
+                    @endif
                 </div>
             </section>
         @endif
