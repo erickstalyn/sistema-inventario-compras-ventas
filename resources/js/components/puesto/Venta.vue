@@ -21,7 +21,7 @@
                         <option value="1">Contado</option>
                         <option value="2">Credito</option>
                     </select>
-                    <input type="search" class="col-md-8 form-control" v-model="Busqueda.text" placeholder="Busca por codigo, dni, ruc, razon social, nombres, apellidos" @keyup.enter="listar()">
+                    <input type="search" class="col-md-8 form-control" v-model="Busqueda.text" placeholder="Busca por codigo de venta" @keyup.enter="listar()">
                     <button type="button" class="col-md-2 btn btn-primary" @click="listar()">
                         <i class="fa fa-search"></i>&nbsp;Buscar
                     </button>
@@ -636,21 +636,19 @@
                                                 <label class="p-0 h5 mb-0 font-weight-bold">LISTA DE ITEMS</label>
                                             </div>
                                             <div class="col-md-5 input-group">
-                                                <label class="col-md-6 font-weight-bold p-0">Tipo de precio&nbsp;<span class="text-danger">*</span></label>
-                                                <select class="col-md-6 custom-select custom-select-sm text-gray-900" v-model="Venta.tipo_precio" @click="update('subtotal')">
-                                                    <option value="1">Al por menor</option>
-                                                    <option value="2">Al por mayor</option>
-                                                </select>
+                                                <label class="col-md-6 font-weight-bold p-0">Tipo de precio</label>
+                                                <label class="col-md-6 text-primary" v-text="fix('tipo_precio')"></label>
                                             </div>
                                         </div>
-                                        <div v-if="ListaDetalle.length" class="col-md-12 overflow-auto" style="height: 19rem;">
+                                        <div class="col-md-12 overflow-auto" style="height: 19rem;">
                                             <table class="table table-bordered table-striped table-sm text-gray-900 bg-white">
                                                 <thead>
                                                     <tr class="table-success">
                                                         <th class="text-center">Quitar</th>
                                                         <th class="text-center">Nombre</th>
                                                         <th class="text-center" style="width: 5rem;">Fallidos</th>
-                                                        <th class="text-center" style="width: 5rem;">Cantidad</th>
+                                                        <th class="text-center" style="width: 5rem;">Adicional</th>
+                                                        <th class="text-center">Cantidad</th>
                                                         <th class="text-center">Precio</th>
                                                         <th class="text-center">Subtotal</th>
                                                     </tr>
@@ -658,18 +656,20 @@
                                                 <tbody>
                                                     <tr v-for="(detalle, indice) in ListaDetalle" :key="indice">
                                                         <td class="text-center">
-                                                            <button type="button" class="btn btn-circle btn-outline-danger btn-sm" title="QUITAR" @click="remove(0, indice)" v-if="detalle.id==0">
+                                                            <button type="button" class="btn btn-circle btn-outline-danger btn-sm" title="QUITAR" @click="remove(0, indice)" v-if="detalle.removable==true">
                                                                 <i class="fas fa-minus"></i>
                                                             </button>
                                                         </td>
                                                         <td v-text="detalle.nombre_producto"></td>
-                                                        <td v-if="detalle.id!=0">
-                                                            <input type="number" v-model="detalle.fallidos" class="form-control form-control-sm text-right" :min="detalle.fallidos_inicial" :max="detalle.cantidad_inicial" @click="update('total_faltante')" @keyup="update('total_faltante')">
+                                                        <td v-if="detalle.id!=null">
+                                                            <input type="number" v-model="detalle.fallidos" class="form-control form-control-sm text-right" :min="detalle.fallidos_start" :max="detalle.cantidad_start" @click="update('cantidad_fallido', indice)" @keyup="update('cantidad_fallido', indice)">
                                                         </td>
-                                                        <td v-else class="text-center">-</td>
-                                                        <td>
-                                                            <input type="number" v-model="detalle.cantidad" class="form-control form-control-sm text-right p-0" :min="detalle.cantidad_inicial" :max="detalle.substock" @click="update('total_faltante')" @keyup="update('total_faltante')">
+                                                        <td v-else class="text-center">--</td>
+                                                        <td v-if="detalle.id!=null">
+                                                            <input type="number" v-model="detalle.cantidad_adicional" class="form-control form-control-sm text-right" min="0" :max="detalle.substock" @click="update('subtotal')" @keyup="update('subtotal')">
                                                         </td>
+                                                        <td v-else class="text-center">--</td>
+                                                        <td class="text-right" v-text="detalle.cantidad"></td>
                                                         <td class="text-right" v-text="Venta.tipo_precio=='1'?detalle.precio_menor:detalle.precio_mayor"></td>
                                                         <td class="text-right" v-text="Number.parseFloat(detalle.subtotal).toFixed(2)">
                                                         </td>
@@ -682,7 +682,7 @@
                                             </div>
                                             <div class="col-md-6 input-group">
                                                 <label class="col-md-6 text-right font-weight-bold h5 p-0">Monto de venta:</label>
-                                                <label class="col-md-6 text-right text-info h5 p-0" v-text="'S/. '+Number.parseFloat(Venta.total).toFixed(2)"></label>
+                                                <label class="col-md-6 text-right text-info h5 p-0" v-text="'S/. '+Number.parseFloat(Venta.total_venta).toFixed(2)"></label>
                                             </div>
                                         </div>
                                     </div>
@@ -1108,8 +1108,10 @@
                     codigo: null,
                     centro_id: null,
                     total: null,
+                    total_start: null,
                     total_faltante: null,
                     total_descuento: null,
+                    total_descuento_start: null,
                     total_venta: null,
                     tipo_pago: null, // 1: contado, 2: credito
                     tipo_entrega: null, // 1: prepago, 2: postpago
@@ -1129,6 +1131,7 @@
                     razon_social: null,
                     tipo: null,
                     search: null,
+                    required: null,
                     trash: null
                 },
 
@@ -1190,6 +1193,7 @@
                 ValeU: {
                     id: null,
                     monto: null,
+                    venta_usada_id: null,
                     created_at: null
                 },
                 ValeG: {
@@ -1272,13 +1276,16 @@
             agregar(){
                 if ( this.validar([0, 1, 2, 3]) ) return;
                 
+                this.Venta.total_descuento = this.Venta.total_descuento==0?null:this.Venta.total_descuento;
+                this.Venta.total_faltante = this.Venta.total_faltante==0?null:this.Venta.total_faltante;
+
                 var me = this;
                 var url = this.Ruta.venta+'/agregar';
 
                 axios.post(url, {
                     'dataVenta': this.Venta,
                     'dataPago': this.Pago,
-                    'dataVale': this.ValeU,
+                    'dataValeU': this.ValeU,
                     'dataCliente': this.Cliente,
                     'listDetalle': this.ListaDetalle
                 }).then(function(response){
@@ -1312,11 +1319,11 @@
                 var url = this.Ruta.venta+'/editar';
 
                 axios.put(url, {
-                    'centro_id': $('meta[name="idCentro"]').attr('content'),
                     'dataVenta': this.Venta,
                     'dataCliente': this.Cliente,
                     'dataPago': this.Pago,
-                    'dataVale': this.Vale,
+                    'dataValeU': this.ValeU,
+                    'dataValeG': this.ValeG,
                     'listDetalle': this.ListaDetalle
                 }).then(function(response){
                     me.cerrarModal();
@@ -1478,33 +1485,38 @@
                 this.ListaPago = [];
                 this.ListaDetalle = []; 
                 
-                this.list(1, 'Ver');
+                this.list('detalle_venta', 'Ver');
                 this.list('pago');
 
                 this.abrirModal(2, 'Ver Venta', 'modal-xl', '', 'Cerrar');
             },
             abrirModalEditar(data){
-                if ( this.fix(10, data.created_at) != this.fix(3) || this.fix(9, data.created_at) != this.fix(2) ) {
-                    Swal.fire({
-                        title: 'Esta venta ya no se puede editar',
-                        text: 'Esta venta fue realizada el mes pasado y por eso ya no se puede editar',
-                        type: 'info',
-                        showCancelButton: false,
-                        customClass: {
-                            confirmButton: 'btn btn-primary'
-                        },
-                        buttonsStyling: false
-                    });
-                    return;
-                }
+                // if ( this.fix(10, data.created_at) != this.fix(3) || this.fix(9, data.created_at) != this.fix(2) ) {
+                //     Swal.fire({
+                //         title: 'Esta venta ya no se puede editar',
+                //         text: 'Esta venta fue realizada el mes pasado y por eso ya no se puede editar',
+                //         type: 'info',
+                //         showCancelButton: false,
+                //         customClass: {
+                //             confirmButton: 'btn btn-primary'
+                //         },
+                //         buttonsStyling: false
+                //     });
+                //     return;
+                // }
 
                 this.Venta.id = data.id;
-                this.Venta.total = data.total;
-                this.Venta.total_minimo = data.total;
+                this.Venta.total_venta = Number.parseFloat(data.total_venta);
+                this.Venta.total_descuento = Number.parseFloat(data.total_descuento!=null?data.total_descuento:0);
+                this.Venta.total = Number.parseFloat(data.total);
+                this.Venta.total_start = Number.parseFloat(data.total);
+                this.Venta.total_faltante = Number.parseFloat(data.total_faltante!=null?data.total_faltante:0);
+                this.Venta.total_faltante_start = Number.parseFloat(data.total_faltante!=null?data.total_faltante:0);
                 this.Venta.tipo = data.tipo;
                 this.Venta.tipo_pago = data.tipo.charAt(0);
                 this.Venta.tipo_entrega = data.tipo.charAt(1);
                 this.Venta.tipo_precio = data.tipo.charAt(2);
+                this.Venta.centro_id = $('meta[name="idCentro"]').attr('content');
                 this.Venta.created_at = data.created_at;
                 
                 this.Cliente.id = data.cliente_id;
@@ -1519,16 +1531,18 @@
 
                 this.ValeU.id = data.vale_id;
                 this.ValeU.monto = data.vale_monto;
+                this.ValeU.venta_usada_id = data.id;
                 this.ValeU.created_at = data.vale_created_at;
 
                 this.ValeG.id = data.vale_id;
                 this.ValeG.monto = data.vale_monto;
                 this.ValeG.created_at = data.vale_created_at;
+                this.ValeG.monto_start = data.vale_monto;
 
                 this.ListaProducto = [];
                 this.ListaDetalle = [];
 
-                this.list(1, 'Editar');
+                this.list('detalle_venta', 'Editar');
 
                 this.abrirModal(3, 'Editar Venta', 'modal-xl', 'Editar', 'Cerrar');
             },
@@ -1582,13 +1596,15 @@
                 this.StartData = null;
 
                 this.Venta.id = null;
-                this.Venta.total = null;
-                this.Venta.total_faltante = null;
-                this.Venta.total_descuento = null;
                 this.Venta.total_venta = null;
-                // this.Venta.total_inicial = null;
+                this.Venta.total_venta_start = null;
+                this.Venta.total_descuento = null;
+                this.Venta.total = null;
+                this.Venta.total_start = null;
+                this.Venta.total_faltante = null;
+                this.Venta.total_faltante_start = null;
                 this.Venta.centro_id = null;
-                // this.Venta.tipo = null;
+                this.Venta.tipo = null;
                 this.Venta.tipo_pago = null;
                 this.Venta.tipo_entrega = null;
                 this.Venta.tipo_precio = null;
@@ -1627,7 +1643,7 @@
                     case 4: this.pagar(); break;
                 }
             },
-            validar(data = []){
+            validar(data = []) {
                 this.Error.estado = 0;
                 this.Error.mensaje = [];
 
@@ -1639,12 +1655,12 @@
                             }
                             break;
                         case 1: // tipo de venta
-                            if( this.Venta.tipo_pago == 2 || this.Venta.tipo_pago == 3 ){
-                                if ( Number.parseFloat(this.Pago.monto) < 0 || this.Pago.monto == '' ){
+                            if( this.Venta.tipo_pago == '2' ){
+                                if ( Number.parseFloat(this.Pago.monto) < 0 ){
                                     this.Error.mensaje.push('El pago inicial debe ser mayor o igual a 0')
-                                } else if (this.Pago.monto > this.Venta.total){
+                                } else if ( Number.parseFloat(this.Pago.monto) > Number.parseFloat(this.Venta.total) ){
                                     this.Error.mensaje.push('El pago inicial no debe ser mayor al monto total')
-                                } else if (this.Pago.monto == this.Venta.total){
+                                } else if ( Number.parseFloat(this.Pago.monto) == Number.parseFloat(this.Venta.total) ){
                                     this.Error.mensaje.push('El pago inicial es igual al monto total, se recomienda cambiarlo a una venta al contado')
                                 }
                             }
@@ -1655,9 +1671,9 @@
                             } else {
                                 let found_a = false, found_b = false;
                                 for (let i = 0; i < this.ListaDetalle.length; i++) {
-                                    if ( this.ListaDetalle[i].cantidad <= 0 && !found_a ){
+                                    if ( (Number.parseFloat(this.ListaDetalle[i].cantidad) < 0 || (Number.parseFloat(this.ListaDetalle[i].cantidad) == 0 && this.Modal.numero == 1)) && !found_a ){
                                         this.Error.mensaje.push('Las cantidades no pueden 0 o negativos'); found_a = true;
-                                    } 
+                                    }
                                     if ( this.ListaDetalle[i].cantidad > this.ListaDetalle[i].substock && !found_b ){
                                         this.Error.mensaje.push('Las cantidades no pueden superar al stock'); found_b = true;
                                     } 
@@ -1758,11 +1774,11 @@
 
                         me.Cliente.id = persona.id;
                         me.Cliente.documento = me.Service.document;
-                        me.Cliente.trash = true;
 
                         me.Service.document = '';
 
-                        me.get('vale', persona.id);
+                        me.update('cliente.removable');
+                        me.get('vale_usado', persona.id);
                     } else { //No esxiste la persona en la db
                         if ( me.Service.document.length == 8 ){
                             me.consultarDNI();
@@ -1799,7 +1815,8 @@
                             me.Cliente.documento = persona.dni;
                             me.Cliente.nombres = persona.nombres;
                             me.Cliente.apellidos = persona.apellidos;
-                            me.Cliente.trash = true;
+
+                            me.update('cliente.removable');
                         } else {
                             me.Service.msm = 'El DNI no existe';
                             me.Service.msmclass = 'badge badge-primary';
@@ -1833,7 +1850,8 @@
                             me.Cliente.tipo = 'E';
                             me.Cliente.documento = empresa.RUC;
                             me.Cliente.razon_social = empresa.RazonSocial;
-                            me.Cliente.trash = true;
+
+                            me.update('cliente.removable');
                         } else {
                             me.Service.msm = 'El RUC no existe';
                             me.Service.msmclass = 'badge badge-primary';
@@ -1868,13 +1886,13 @@
                             console.log(error);
                         });
                         break;
-                    case 1: //lista de detalles de venta para "VER" y "EDITAR"
+                    case 'detalle_venta': //lista de detalles de venta para "VER" y "EDITAR"
                         url = this.Ruta.detalle_venta+'/list'+data+'?'
                                         +'venta_id='+this.Venta.id;
 
                         axios.get(url).then(function(response){
                             me.ListaDetalle = response.data;
-                            if ( data == 'Editar' ) me.fix(6);
+                            if ( data == 'Editar' ) me.fix('detalle_venta');
                         }).catch(function(error){
                             console.log(error);
                         });
@@ -1904,21 +1922,22 @@
 
                         if ( !found ){
                             this.ListaDetalle.push({
-                                id: 0,
+                                id: null,
                                 detalle_producto_id: data.detalle.id,
                                 nombre_producto: data.nombre,
+                                cantidad_adicional: 0,
                                 cantidad: 1,
+                                cantidad_start: 0,
                                 fallidos: 0,
-                                cantidad_inicial: 0,
+                                fallidos_start: 0,
                                 substock: data.detalle.substock,
                                 precio_menor: data.detalle.precio_menor,
                                 precio_mayor: data.detalle.precio_mayor,
-                                subtotal: Number.parseFloat(this.Venta.tipo_precio=='1'?data.detalle.precio_menor:data.detalle.precio_mayor).toFixed(2)
+                                removable: true,
+                                subtotal: 0
                             });
-                        } else {
-                            this.update('subtotal');
-                        }
-                        this.update('total_venta');
+                        } 
+                        this.update('subtotal');
                         break;
                     case 'pago':
                         if ( this.validar([4]) ) return;
@@ -1934,18 +1953,22 @@
                         break;
                 }
             },
-            update(numero){
+            update(numero, data = ''){
                 var updated = '';
 
                 switch (numero) {
                     case 'subtotal':
+                        console.log('on update("subtotal")');
                         this.ListaDetalle.forEach(detalle => {
                             let precio = this.Venta.tipo_precio=='1'?detalle.precio_menor:(this.Venta.tipo_precio=='2'?detalle.precio_mayor:0);
-                            detalle.subtotal = Number.parseFloat(precio) * Number.parseFloat(detalle.cantidad!=''?detalle.cantidad:0);
+                            let cantidad = detalle.cantidad!=''? detalle.cantidad : 0;
+                            let cantidad_adicional = detalle.cantidad_adicional!=''? detalle.cantidad_adicional : 0;
+                            detalle.subtotal = Number.parseFloat(precio) * (Number.parseFloat(cantidad) + Number.parseFloat(cantidad_adicional));
                         });
                         this.update('total_venta');
                         break;
                     case 'total_venta':
+                        console.log('on update("total_venta")');
                         this.Venta.total_venta = 0;
                         this.ListaDetalle.forEach(detalle => {
                             this.Venta.total_venta += Number.parseFloat(detalle.subtotal);
@@ -1953,32 +1976,96 @@
                         this.update('total');
                         break;
                     case 'total_descuento':
+                        console.log('on update("total_descuento")');
                         this.Venta.total_descuento = this.ValeU.monto==null?0:Number.parseFloat(this.ValeU.monto);
                         this.update('total');
                         break;
                     case 'total':
+                        console.log('on update("total")');
                         this.Venta.total = this.Venta.total_venta - this.Venta.total_descuento;
+                        if ( this.Modal.numero == '3' ){ 
+                            if (this.Venta.total > this.Venta.total_start ) this.Venta.tipo_pago = '2';
+                        }
+                        this.update('venta.tipo_pago');
+                        this.update('total_faltante');
                         break;
                     case 'total_faltante':
-                        this.Venta.total_faltante = Number.parseFloat(this.Venta.total);
-                        this.ListaPago.forEach( pago => {
-                            this.Venta.total_faltante -= Number.parseFloat(pago.monto);
-                        });
+                        console.log('on update("total_faltante")');
+                        if ( this.Modal.numero == 4 ) {
+                            this.Venta.total_faltante = Number.parseFloat(this.Venta.total);
+                            this.ListaPago.forEach( pago => {
+                                this.Venta.total_faltante -= Number.parseFloat(pago.monto);
+                            });
+                        } else if ( this.Modal.numero == 3 && this.Venta.tipo_pago == '2' ) {
+                            if ( this.Venta.total_faltante_start == null ) this.Venta.total_faltante_start = 0;
+
+                            if ( this.Venta.total < this.Venta.total_start - this.Venta.total_faltante_start ) {
+                                this.Venta.total_faltante = null;
+                                this.ValeG.monto = (this.Venta.total_start - this.Venta.total_faltante_start) - this.Venta.total;
+                            } else if ( this.Venta.total = this.Venta.total_start - this.Venta.total_faltante_start ) {
+                                this.Venta.total_faltante = null;
+                                this.ValeG.monto = null;
+                            } else if ( this.Venta.total > this.Venta.total_start - this.Venta.total_faltante_start && this.Venta.total < this.Venta.total_start) {
+                                this.Venta.total_faltante = this.Venta.total - (this.Venta.total_start - this.Venta.total_faltante_start);
+                                this.ValeG.monto = null;
+                            } else if ( this.Venta.total > this.Venta.total_start ) {
+                                this.Venta.total_faltante = this.Venta.total - (this.Venta.total_start - this.Venta.total_faltante_start);
+                                this.ValeG.monto = null;
+                            }
+                        }
+                        break;
+                    case 'cantidad_fallido':
+                        console.log('on update("cantidad_fallido")');
+
+                        console.log('bitacora_begin: ListaDetalle['+data+'].cantidad='+this.ListaDetalle[data].cantidad);
+                        console.log('bitacora_begin: ListaDetalle['+data+'].cantidad_start='+this.ListaDetalle[data].cantidad_start);
+                        console.log('bitacora_begin: ListaDetalle['+data+'].fallidos='+this.ListaDetalle[data].fallidos);
+                        console.log('bitacora_begin: data'+data);
+
+                        // this.ListaDetalle.forEach(detalle => {
+                        //     detalle.cantidad = Number.parseFloat(detalle.cantidad_start) - Number.parseFloat(detalle.fallidos!=''?detalle.fallidos:0);
+                        //     if ( detalle.cantidad > detalle.cantidad_start ) {
+                        //         detalle.cantidad = detalle.cantidad_start;
+                        //     } else if ( detalle.cantidad < 0 ) {
+                        //         detalle.cantidad = 0;
+                        //     }
+                        // });
+                        this.ListaDetalle[data].cantidad = Number.parseFloat(this.ListaDetalle[data].cantidad_start) - Number.parseFloat(this.ListaDetalle[data].fallidos!=''?this.ListaDetalle[data].fallidos:0);
+                        if ( this.ListaDetalle[data].cantidad > this.ListaDetalle[data].cantidad_start ) {
+                            this.ListaDetalle[data].cantidad = this.ListaDetalle[data].cantidad_start;
+                        } else if ( this.ListaDetalle[data].cantidad < 0 ) {
+                            this.ListaDetalle[data].cantidad = 0;
+                        }
+
+                        console.log('bitacora_end: ListaDetalle['+data+'].cantidad='+this.ListaDetalle[data].cantidad);
+                        console.log('bitacora_end: ListaDetalle['+data+'].cantidad_start='+this.ListaDetalle[data].cantidad_start);
+                        console.log('bitacora_end: ListaDetalle['+data+'].fallidos='+this.ListaDetalle[data].fallidos);
+
+                        this.update('subtotal');
                         break;
                     case 3:
                         this.ListaDetalle.forEach(detalle => {
                             detalle.subtotal = (this.Venta.tipo_precio=='1'?detalle.precio_menor:detalle.precio_mayor) * (detalle.cantidad-detalle.fallidos);
                         })
                         this.update('total_venta');
-                        this.update(4);
                         break;
-                    case 4:
-                        if ( this.Venta.total > this.Venta.total_inicial && this.Venta.tipo_pago == '1') {
-                            this.Venta.tipo_pago = '2';
-                        } 
-                        if ( this.Venta.total <= this.Venta.total_inicial && this.Venta.tipo.charAt(0) == '1' ) {
-                            this.Venta.tipo_pago = '1';
+                    case 'venta.tipo_pago':
+                        console.log('on update("venta.tipo_pago")');
+                        // if ( this.Venta.total > this.Venta.total_inicial && this.Venta.tipo_pago == '1') {
+                        //     this.Venta.tipo_pago = '2';
+                        // } 
+                        // if ( this.Venta.total <= this.Venta.total_inicial && this.Venta.tipo.charAt(0) == '1' ) {
+                        //     this.Venta.tipo_pago = '1';
+                        // }
+                        if ( this.Modal.numero == 3 ) {
+                            if ( (this.Venta.total > this.Venta.total_start && this.Venta.tipo.charAt(0) == '1') || this.Venta.tipo.charAt(0) == '2' ) {
+                                this.Venta.tipo_pago = '2';
+                            } else {
+                                this.Venta.tipo_pago = '1';
+                            }
                         }
+                        console.log('bitacora_end: tipo_pago='+this.Venta.tipo_pago);
+                        this.update('cliente.removable');
                         break;
                     case 5: //actualizar el total de la venta
                         updated = Number.parseFloat(this.Venta.total);
@@ -1993,6 +2080,17 @@
                         }
                         this.Venta.tipo_entrega = '1';
                         break;
+                    case 'cliente.removable':
+                        console.log('on update("cliente.removable")');
+                        if ( this.Venta.tipo_pago == '1' && ( this.Cliente.dni != null || this.Cliente.ruc != null ) ) {
+                            this.Cliente.trash = true;
+                        } else {
+                            this.Cliente.trash = false;
+                        }
+                        console.log('bitacora_end: tipo_pago='+this.Venta.tipo_pago);
+                        console.log('bitacora_end: dni='+this.Cliente.dni);
+                        console.log('bitacora_end: ruc='+this.Cliente.ruc);
+                        break;
                 }
 
                 return updated;
@@ -2003,10 +2101,6 @@
                         this.ListaDetalle.splice(data, 1);
                         this.update('total_venta');
                         break;
-                    case 'vale':
-                        this.ValeU.id = null;
-                        this.ValeU.monto = null;
-                        this.ValeU.created_at = null;
                     case 'cliente':
                         this.Cliente.id = null;
                         this.Cliente.documento = '';
@@ -2017,6 +2111,10 @@
                         this.Cliente.ruc = null;
                         this.Cliente.tipo = null;
                         this.Cliente.trash = false;
+
+                        this.ValeU.id = null;
+                        this.ValeU.monto = null;
+                        this.ValeU.created_at = null;
                         break;
                 }
             },
@@ -2042,10 +2140,14 @@
                     case 3:
                         fixed = (new Date()).getFullYear();
                         break;
-                    case 6:
+                    case 'detalle_venta':
                         for (let i = 0; i < this.ListaDetalle.length; i++) {
                             if ( this.ListaDetalle[i].fallidos == null ) this.ListaDetalle[i].fallidos = 0;
-                            if ( this.ListaDetalle[i].fallidos_inicial == null ) this.ListaDetalle[i].fallidos_inicial = 0;
+                            
+                            this.ListaDetalle[i].fallidos_start = this.ListaDetalle[i].fallidos;
+                            this.ListaDetalle[i].cantidad_adicional = 0;
+                            this.ListaDetalle[i].cantidad_start = this.ListaDetalle[i].cantidad;
+                            this.ListaDetalle[i].removable = this.ListaDetalle[i].fallidos_start>0?false:true;
                         }
                         break;
                     case 7:
@@ -2099,11 +2201,11 @@
                         let seg = n.getSeconds().toString().padStart(2, 0);
                         got =  y + '-' + m + '-' + d + ' ' + h + ':' + minu + ':' + seg;
                         break;
-                    case 'vale':
-                        if ( this.Modal.numero == 3 ){
-                            if ( this.Venta.tipo_pago == '1' ) break;
-                            if ( this.Venta.tipo_pago == '2' && this.Venta.total_faltante > 0 ) break;
-                        }
+                    case 'vale_usado':
+                        // if ( this.Modal.numero == 3 ){
+                        //     if ( this.Venta.tipo_pago == '1' ) break;
+                        //     if ( this.Venta.tipo_pago == '2' && this.Venta.total_faltante > 0 ) break;
+                        // }
 
                         url = this.Ruta.vale+'/get';
 
@@ -2115,17 +2217,19 @@
                             if ( response.data.state == 'success' && response.data.vale != null ) {
                                 me.ValeU.id = response.data.vale.id;
                                 me.ValeU.monto = response.data.vale.monto;
+                                me.ValeU.venta_usada_id = null;
                                 me.ValeU.created_at = response.data.vale.created_at;
                             } else {
                                 me.ValeU.id = null;
                                 me.ValeU.monto = null;
+                                me.ValeU.venta_usada_id = null;
                                 me.ValeU.created_at = null;
                             }
                         }).catch(function (error) {
                             me.ValeU.id = null;
                             me.ValeU.monto = null;
+                            me.ValeU.venta_usada_id = null;
                             me.ValeU.created_at = null;
-
                             console.log(error);
                         });
                         break;

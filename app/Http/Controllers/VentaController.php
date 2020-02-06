@@ -29,9 +29,11 @@ class VentaController extends Controller {
 
         $ventas = Venta::select('venta.id', 'venta.codigo', 'venta.tipo', 'venta.total', 'venta.total_faltante', 'venta.total_descuento', 'venta.total_venta', 'venta.created_at', 
                                 'persona.id as cliente_id', 'persona.dni', 'persona.ruc', 'persona.nombres', 'persona.apellidos', 'persona.razon_social', 'persona.tipo as cliente_tipo',
-                                'vale.id as vale_id', 'vale.monto as vale_monto', 'vale.created_at as vale_created_at')
+                                'vg.id as vale_generada_id', 'vg.monto as vale_generada_monto', 'vg.created_at as vale_generada_created_at',
+                                'vu.id as vale_usada_id', 'vu.monto as vale_usada_monto', 'vu.created_at as vale_usada_created_at')
                     ->leftJoin('persona', 'persona.id', '=', 'venta.cliente_id')
-                    ->leftJoin('vale', 'vale.venta_generada_id', '=', 'venta.id')
+                    ->leftJoin('vale as vg', 'vg.venta_generada_id', '=', 'venta.id')
+                    ->leftJoin('vale as vu', 'vu.venta_usada_id', '=', 'venta.id')
                     ->where(function ($query) use ($text, $dia, $mes, $year) {
                         if ( strlen($text) == 15 && is_numeric($text) ) {
                             $query->where('codigo', '=', $text);
@@ -80,7 +82,7 @@ class VentaController extends Controller {
         
         $now = Carbon::now('America/Lima')->toDateTimeString();
         $dataVenta = $request->dataVenta;
-        $dataVale = $request->dataVale;
+        $dataValeU = $request->dataValeU;
         $dataCliente = $request->dataCliente;
         $dataPago = $request->dataPago;
         $listDetalle = $request->listDetalle;
@@ -130,14 +132,8 @@ class VentaController extends Controller {
             $venta->tipo = $dataVenta['tipo_pago'].$dataVenta['tipo_entrega'].$dataVenta['tipo_precio'];    // tipo
             $venta->total = $dataVenta['total'];    // total
             $venta->total_venta = $dataVenta['total_venta'];    //total_venta
-            if ( $dataVale['monto'] != null && $dataVenta['total_descuento'] != null ) {    // total_descuento
-                if ( $dataVale['monto'] > 0 && $dataVenta['total_descuento'] > 0 ) {
-                    $venta->total_descuento = $dataVenta['total_descuento'];
-                }
-            }
-            if ( $dataVenta['tipo_pago'] == '2' ) { // total_faltante
-                $venta->total_faltante = $dataVenta['total'];
-            }
+            $venta->total_descuento = $dataVenta['total_descuento'];    // total_descuento
+            $venta->total_faltante = $dataVenta['total_faltante'];  // total_faltante
             $venta->cliente_id = $dataCliente['id'];    // cliente_id
             $venta->codigo = $codigo;   // codigo
             $venta->created_at = $now;  // created_at
@@ -145,9 +141,9 @@ class VentaController extends Controller {
             $venta->save();
 
             //vale
-            if ( $dataVale['id'] != null ) {
-                if ( $dataVale['id'] > 0 ) {
-                    $vale = Vale::findOrFail($dataVale['id']);
+            if ( $dataValeU['id'] != null ) {
+                if ( $dataValeU['id'] > 0 ) {
+                    $vale = Vale::findOrFail($dataValeU['id']);
                     $vale->venta_usada_id = $venta->id; // venta_usada_id
                     $vale->updated_at = $now;   // updated_at
                     $vale->save();
@@ -206,7 +202,7 @@ class VentaController extends Controller {
         return [
             'state' => $state,
             'exception' => $exception,
-            // 'arreglo de datos' => $arregloDatos,
+            'arreglo de datos' => $arregloDatos,
         ];
     }
 
@@ -214,82 +210,77 @@ class VentaController extends Controller {
         if ( !$request->ajax() ) return redirect('/');
         
         $now = Carbon::now('America/Lima')->toDateTimeString();
-        $centro_id = $request->centro_id;
         $dataCliente = $request->dataCliente;
         $dataVenta = $request->dataVenta;
         $dataPago = $request->dataPago;
-        $dataVale = $request->dataVale;
+        $dataValeU = $request->dataValeU;
+        $dataValeG = $request->dataValeG;
         $listDetalle = $request->listDetalle;
 
-        $error = NULL;
+        $state = 'error';
         $vale = NULL;
+        $exception = NULL;
 
         try {
             DB::beginTransaction();
             
             //cliente
-            if ( $dataCliente['id'] != NULL ) {
-                if ( $dataCliente['id'] > 0 ) {
+            if ( $dataCliente['id'] != null ) {
+                if ( $dataCliente['id'] > 0 ) { //existe
                     $persona = Persona::findOrFail($dataCliente['id']);
                     $persona->cliente = 1;
                     $persona->save();
-                } else if ( $dataCliente['id'] == 0 ){
-
-                    $persona = new Persona();
-                    $persona->cliente = 1;
-                    if ( strlen($dataCliente['documento']) == 8 ){
-                        $persona->dni = $dataCliente['documento'];
-                        $persona->nombres = mb_convert_case($dataCliente['nombres'], MB_CASE_TITLE, "UTF-8");
-                        $persona->apellidos = mb_convert_case($dataCliente['apellidos'], MB_CASE_TITLE, "UTF-8");
-                        $persona->tipo = 'P';
-                    }else{
-                        $persona->ruc = $dataCliente['documento'];
-                        $persona->razon_social = $dataCliente['razon_social'];
-                        $persona->tipo = 'E';
-                    }
-                    $persona->save();
+                } else { //excepciones
+                    $dataCliente['id'] = NULL;
                 }
+            } else if ( $dataCliente['documento'] != NULL ) { //nuevo
+                $persona = new Persona();
+                $persona->cliente = 1;
+                if ( strlen($dataCliente['documento']) == 8 ){
+                    $persona->dni = $dataCliente['documento'];
+                    $persona->nombres = mb_convert_case($dataCliente['nombres'], MB_CASE_TITLE, "UTF-8");
+                    $persona->apellidos = mb_convert_case($dataCliente['apellidos'], MB_CASE_TITLE, "UTF-8");
+                    $persona->tipo = 'P';
+                } else {
+                    $persona->ruc = $dataCliente['documento'];
+                    $persona->razon_social = $dataCliente['razon_social'];
+                    $persona->tipo = 'E';
+                }
+                $persona->save();
+                $dataCliente['id'] = $persona->id;
             }
 
             //venta
             $venta = Venta::findOrFail($dataVenta['id']);
             $venta->tipo = $dataVenta['tipo_pago'].$dataVenta['tipo_precio'];
+            $venta->total_venta = $dataVenta['total_venta'];
+            $venta->total_descuento = $dataVenta['total_descuento'];
             $venta->total = $dataVenta['total'];
-            if ( $dataVenta['tipo']{0} == '1' && $dataVenta['tipo_pago'] == '2' ) $venta->total_faltante = $dataVenta['total'];
-            $venta->cliente_id = ($dataCliente['id']!=NULL&&$dataCliente['id']!=-1)?$persona->id:NULL;
+            $venta->total_faltante = $dataVenta['total_faltante'];
+            $venta->cliente_id = $dataCliente['id'];
             $venta->updated_at = $now;
             $venta->save();
 
-            //vale o pago
+            //vale usado
+            if ( $dataValeU['id'] != NULL ){
+                if ( $dataValeU['venta_usada_id'] == NULL ) {
+                    $vale = Vale::findOrFail($dataValeU['id']);
+                    $vale->venta_usada_id = $venta->id;
+                    $vale->updated_at = $now;
+                    $vale->save();
+                }
+            }
 
-            if ( $dataVenta['total'] < $dataVenta['total_minimo'] ){
-                if ( $dataVale['id'] == null ) {
+            // vale generado
+            if ( $dataValeG['monto'] != NULL ){
+                if ( $dataValeG['monto'] > 0 ) {
                     $vale = new Vale();
                     $vale->persona_id = $persona->id;
                     $vale->venta_generada_id = $venta->id;
-                    $vale->monto = $dataVenta['total_minimo'] - $dataVenta['total'];
-                } else {
-                    $vale = Vale::findOrFail($dataVale['id']);
-                    $vale->monto = $dataVale['monto'] + ($dataVenta['total_minimo'] - $dataVenta['total']);
-                }
-                $vale->created_at = $now;
-                $vale->updated_at = NULL;
-                $vale->save();
-            } else if ( $dataVenta['total'] > $dataVenta['total_minimo'] )  {
-                if ( $dataVenta['tipo']{0} == '1' ) {
-                    echo('Crea el pago anterior');
-                    $pago = new Pago();
-                    $pago->monto = $dataVenta['total_minimo'];
-                    $pago->venta_id = $venta->id;
-                    $pago->created_at = $dataVenta['created_at'];
-                    $pago->save();
-                }
-                if ( $dataPago['monto'] > 0 ) {
-                    $pago = new Pago();
-                    $pago->monto = $dataPago['monto'];
-                    $pago->venta_id = $venta->id;
-                    $pago->created_at = $now;
-                    $pago->save();    
+                    $vale->monto = $dataValeG['monto'];
+                    $vale->created_at = $now;
+                    $vale->updated_at = NULL;
+                    $vale->save();
                 }
             }
 
@@ -309,14 +300,17 @@ class VentaController extends Controller {
             }
 
             DB::commit();
+            $state = 'success';
         } catch (Exception $e) {
             DB::rollback();
-            $error = $e;
+            $state = 'exception';
+            $exception = $e;
         }
 
         return [
             'vale' => $vale,
-            'error' => $error
+            'error' => $state,
+            'exception' => $exepcion
         ];
     }
     
