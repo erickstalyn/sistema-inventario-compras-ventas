@@ -220,11 +220,12 @@ class VentaController extends Controller {
         $state = 'error';
         $vale = NULL;
         $exception = NULL;
-
+        $step = 'before transaction';
         try {
             DB::beginTransaction();
             
             //cliente
+            $step = 'cliente';
             if ( $dataCliente['id'] != null ) {
                 if ( $dataCliente['id'] > 0 ) { //existe
                     $persona = Persona::findOrFail($dataCliente['id']);
@@ -251,6 +252,7 @@ class VentaController extends Controller {
             }
 
             //venta
+            $step = 'vemta';
             $venta = Venta::findOrFail($dataVenta['id']);
             $venta->tipo = $dataVenta['tipo_pago'].$dataVenta['tipo_precio'];
             $venta->total_venta = $dataVenta['total_venta'];
@@ -262,6 +264,7 @@ class VentaController extends Controller {
             $venta->save();
 
             //vale usado
+            $step = 'vale usado';
             if ( $dataValeU['id'] != NULL ){
                 if ( $dataValeU['venta_usada_id'] == NULL ) {
                     $vale = Vale::findOrFail($dataValeU['id']);
@@ -272,6 +275,7 @@ class VentaController extends Controller {
             }
 
             // vale generado
+            $step = 'vale generado';
             if ( $dataValeG['monto'] != NULL ){
                 if ( $dataValeG['monto'] > 0 ) {
                     $vale = new Vale();
@@ -285,6 +289,7 @@ class VentaController extends Controller {
             }
 
             //lista de detalles
+            $step = 'detalles de venta';
             foreach($listDetalle as $ep => $det){
                 if ( $det['id'] <= 0 ) $detalle = new Detalle_venta();
                 else $detalle = Detalle_venta::findOrFail($det['id']);
@@ -292,7 +297,7 @@ class VentaController extends Controller {
                 $detalle->detalle_producto_id = $det['detalle_producto_id']; //AQUI ESTA EL PROBLEMA
                 $detalle->venta_id = $venta->id;
                 $detalle->nombre_producto = $det['nombre_producto'];
-                $detalle->cantidad = $det['cantidad'];
+                $detalle->cantidad = $det['cantidad']+$det['cantidad_adicional'];
                 $detalle->fallidos = $det['fallidos'];
                 $detalle->precio = $dataVenta['tipo_precio']==1?$det['precio_menor']:$det['precio_mayor'];
                 $detalle->subtotal = $det['subtotal'];
@@ -300,6 +305,7 @@ class VentaController extends Controller {
             }
 
             DB::commit();
+            $step = 'later transaction';
             $state = 'success';
         } catch (Exception $e) {
             DB::rollback();
@@ -309,8 +315,9 @@ class VentaController extends Controller {
 
         return [
             'vale' => $vale,
-            'error' => $state,
-            'exception' => $exepcion
+            'state' => $state,
+            'exception' => $exception,
+            'step' => $step
         ];
     }
     

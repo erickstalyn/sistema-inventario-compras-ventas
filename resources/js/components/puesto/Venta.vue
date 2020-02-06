@@ -666,7 +666,7 @@
                                                         </td>
                                                         <td v-else class="text-center">--</td>
                                                         <td v-if="detalle.id!=null">
-                                                            <input type="number" v-model="detalle.cantidad_adicional" class="form-control form-control-sm text-right" min="0" :max="detalle.substock" @click="update('subtotal')" @keyup="update('subtotal')">
+                                                            <input type="number" v-model="detalle.cantidad_add" class="form-control form-control-sm text-right" min="0" :max="detalle.substock" @click="update('subtotal')" @keyup="update('subtotal')">
                                                         </td>
                                                         <td v-else class="text-center">--</td>
                                                         <td class="text-right" v-text="detalle.cantidad"></td>
@@ -809,7 +809,7 @@
                                         <div class="col-md-12 input-group form-group">
                                             <label class="col-md-7 p-0 font-weight-bold">Monto de venta</label>
                                             <label class="col-md-1 p-0 text-white text-right p-0">S/.</label>
-                                            <label class="col-md-4 p-0 text-white text-right" v-text="Number.parseFloat(Venta.total).toFixed(2)"></label>
+                                            <label class="col-md-4 p-0 text-white text-right" v-text="Number.parseFloat(Venta.total_venta).toFixed(2)"></label>
                                         </div>
                                         <div class="col-md-12 input-group form-group" v-if="ValeU.id!=null">
                                             <label class="col-md-7 p-0 font-weight-bold">Monto de vale</label>
@@ -819,7 +819,7 @@
                                         <div class="col-md-10 bg-white m-4"><hr></div>
                                         <div class="col-md-12 input-group form-group">
                                             <label class="col-md-6 p-0 font-weight-bold h5">Monto total</label>
-                                            <label class="col-md-6 p-0 text-white text-right h5" v-text="'S/. '+Number.parseFloat(update(5)).toFixed(2)"></label>
+                                            <label class="col-md-6 p-0 text-white text-right h5" v-text="'S/. '+Number.parseFloat(Venta.total).toFixed(2)"></label>
                                         </div>
                                     </div>
                                 </div>
@@ -1529,15 +1529,15 @@
                 this.Cliente.search = data.cliente_id==null?true:false;
                 this.Cliente.trash = false;
 
-                this.ValeU.id = data.vale_id;
-                this.ValeU.monto = data.vale_monto;
+                this.ValeU.id = data.vale_usada_id;
+                this.ValeU.monto = data.vale_usada_monto;
                 this.ValeU.venta_usada_id = data.id;
-                this.ValeU.created_at = data.vale_created_at;
+                this.ValeU.created_at = data.vale_usada_created_at;
 
-                this.ValeG.id = data.vale_id;
-                this.ValeG.monto = data.vale_monto;
-                this.ValeG.created_at = data.vale_created_at;
-                this.ValeG.monto_start = data.vale_monto;
+                this.ValeG.id = data.vale_generada_id;
+                this.ValeG.monto = data.vale_generada_monto;
+                this.ValeG.created_at = data.vale_generada_created_at;
+                this.ValeG.monto_start = data.vale_generada_monto;
 
                 this.ListaProducto = [];
                 this.ListaDetalle = [];
@@ -1925,9 +1925,9 @@
                                 id: null,
                                 detalle_producto_id: data.detalle.id,
                                 nombre_producto: data.nombre,
-                                cantidad_adicional: 0,
                                 cantidad: 1,
                                 cantidad_start: 0,
+                                cantidad_add: 0,
                                 fallidos: 0,
                                 fallidos_start: 0,
                                 substock: data.detalle.substock,
@@ -1958,12 +1958,12 @@
 
                 switch (numero) {
                     case 'subtotal':
-                        console.log('on update("subtotal")');
+                        console.log('on update("subtotal") binnacle{()}');
                         this.ListaDetalle.forEach(detalle => {
                             let precio = this.Venta.tipo_precio=='1'?detalle.precio_menor:(this.Venta.tipo_precio=='2'?detalle.precio_mayor:0);
                             let cantidad = detalle.cantidad!=''? detalle.cantidad : 0;
-                            let cantidad_adicional = detalle.cantidad_adicional!=''? detalle.cantidad_adicional : 0;
-                            detalle.subtotal = Number.parseFloat(precio) * (Number.parseFloat(cantidad) + Number.parseFloat(cantidad_adicional));
+                            let cantidad_add = detalle.cantidad_add!=''? detalle.cantidad_add : 0;
+                            detalle.subtotal = Number.parseFloat(precio) * (Number.parseFloat(cantidad) + Number.parseFloat(cantidad_add));
                         });
                         this.update('total_venta');
                         break;
@@ -2017,10 +2017,11 @@
                     case 'cantidad_fallido':
                         console.log('on update("cantidad_fallido")');
 
-                        console.log('bitacora_begin: ListaDetalle['+data+'].cantidad='+this.ListaDetalle[data].cantidad);
-                        console.log('bitacora_begin: ListaDetalle['+data+'].cantidad_start='+this.ListaDetalle[data].cantidad_start);
-                        console.log('bitacora_begin: ListaDetalle['+data+'].fallidos='+this.ListaDetalle[data].fallidos);
-                        console.log('bitacora_begin: data'+data);
+                        console.log('binnacle_begin:{'+
+                                    'ListaDetalle['+data+'].cantidad='+this.ListaDetalle[data].cantidad+
+                                    'ListaDetalle['+data+'].cantidad_start='+this.ListaDetalle[data].cantidad_start+
+                                    'ListaDetalle['+data+'].fallidos='+this.ListaDetalle[data].fallidos+
+                                    'data'+data +'}');
 
                         // this.ListaDetalle.forEach(detalle => {
                         //     detalle.cantidad = Number.parseFloat(detalle.cantidad_start) - Number.parseFloat(detalle.fallidos!=''?detalle.fallidos:0);
@@ -2037,9 +2038,11 @@
                             this.ListaDetalle[data].cantidad = 0;
                         }
 
-                        console.log('bitacora_end: ListaDetalle['+data+'].cantidad='+this.ListaDetalle[data].cantidad);
-                        console.log('bitacora_end: ListaDetalle['+data+'].cantidad_start='+this.ListaDetalle[data].cantidad_start);
-                        console.log('bitacora_end: ListaDetalle['+data+'].fallidos='+this.ListaDetalle[data].fallidos);
+                        console.log('binnacle_end:{'+
+                                    'ListaDetalle['+data+'].cantidad='+this.ListaDetalle[data].cantidad+
+                                    'ListaDetalle['+data+'].cantidad_start='+this.ListaDetalle[data].cantidad_start+
+                                    'ListaDetalle['+data+'].fallidos='+this.ListaDetalle[data].fallidos+
+                                    'data'+data +'}');
 
                         this.update('subtotal');
                         break;
@@ -2067,16 +2070,11 @@
                         console.log('bitacora_end: tipo_pago='+this.Venta.tipo_pago);
                         this.update('cliente.removable');
                         break;
-                    case 5: //actualizar el total de la venta
-                        updated = Number.parseFloat(this.Venta.total);
-                        if ( this.ValeU.id != null ) updated -= Number.parseFloat(this.ValeU.monto);
-                        if ( updated < 0 ) updated = 0;
-                        break;
                     case 6:
                         if ( this.Venta.tipo_pago == '1' ) {
                             this.Pago.monto = null;
                         } else if ( this.Pago.monto == null ) {
-                            this.Pago.monto = 0;
+                            this.Pago.monto = '';
                         }
                         this.Venta.tipo_entrega = '1';
                         break;
@@ -2145,7 +2143,7 @@
                             if ( this.ListaDetalle[i].fallidos == null ) this.ListaDetalle[i].fallidos = 0;
                             
                             this.ListaDetalle[i].fallidos_start = this.ListaDetalle[i].fallidos;
-                            this.ListaDetalle[i].cantidad_adicional = 0;
+                            this.ListaDetalle[i].cantidad_add = 0;
                             this.ListaDetalle[i].cantidad_start = this.ListaDetalle[i].cantidad;
                             this.ListaDetalle[i].removable = this.ListaDetalle[i].fallidos_start>0?false:true;
                         }
