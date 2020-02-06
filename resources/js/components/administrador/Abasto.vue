@@ -614,7 +614,12 @@
                     <div class="modal-footer" v-if="permisoModalFooter">
                         <div class="row form-group col-md-12 d-flex justify-content-around">
                             <div v-if="Modal.accion">
-                                <button type="button" @click="accionar(Modal.accion)" class="btn btn-success" v-text="Modal.accion"></button>
+                                <button type="button" @click="accionar(Modal.accion)" :class="[Modal.accion == 'Generar comprobante' ? 'btn btn-danger' : 'btn btn-success']">
+                                    <div v-if="Modal.accion == 'Generar comprobante'">
+                                        <i class="far fa-file-pdf"></i>&nbsp; {{Modal.accion}}
+                                    </div>
+                                    <div v-else>{{Modal.accion}}</div>
+                                </button>
                             </div>
                             <button type="button" @click="cerrarModal()" class="btn btn-secondary" v-text="Modal.cancelar"></button>
                         </div>
@@ -995,6 +1000,7 @@
                     this.DatosProveedor.documento = abasto['ruc'];
                     this.DatosProveedor.razon_social = abasto['proveedor_empresa'];
                 }
+                this.Abasto.id = abasto['id'];
                 this.Abasto.nombre_centro = abasto['nombre_centro'];
                 this.Abasto.estado_envio = abasto['estado_envio'];
                 this.Abasto.tipo_abasto = abasto['tipo_abasto'];
@@ -1002,7 +1008,7 @@
 
                 this.listarPagos(abasto['id']);
                 this.listarDetallesAbasto(abasto['id']);
-                this.abrirModal(2, 'Ver Abasto', '', 'Cerrar', 'modal-xl modal-dialog-scrollable');
+                this.abrirModal(2, 'Ver Abasto', 'Generar comprobante', 'Cerrar', 'modal-xl modal-dialog-scrollable');
             },
             abrirModal(numero, titulo, accion, cancelar, size){
                 this.Modal.estado = 1;
@@ -1014,14 +1020,15 @@
             },
             accionar(accion){
                 switch( accion ){
-                    case 'Agregar': {
+                    case 'Agregar': 
                         this.agregar();
                         break;
-                    }
-                    case 'Guardar': {
+                    case 'Guardar': 
                         this.agregarPago();
                         break;
-                    }
+                    case 'Generar comprobante': 
+                        this.generatePdfSpecific();
+                        break;
                 }
             },
             validar(){
@@ -1361,6 +1368,9 @@
             },
             generatePdf(){
                 window.open(this.Ruta.serverPhp + '/abasto/generatePdf','_blank');
+            },
+            generatePdfSpecific(){
+                window.open(this.Ruta.serverPhp + '/abasto/generatePdfSpecific?code=' + this.Abasto.id,'_blank');
             }
         },
         mounted() {

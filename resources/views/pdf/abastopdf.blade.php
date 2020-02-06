@@ -82,7 +82,7 @@
     </head>
     <body>
         <div>
-        <h3>Lista de Abastecimientos <span class="derecha" id="fecha">{{date("d/m/Y h:i:s")}}</span></h3>
+        <h3>Lista de Abastecimientos <span class="derecha" id="fecha">{{date("d/m/Y")}}</span></h3>
         </div>
         <div>
             <table class="table table-bordered table-striped table-sm">
