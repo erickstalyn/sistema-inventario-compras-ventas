@@ -9,6 +9,16 @@ use App\Detalle_venta;
 
 class DetalleVentaController extends Controller {
     
+    public function list(Request $request) {
+        if ( !$request->ajax() ) return redirect('/');
+
+        $venta_id = $request->venta_id;
+
+        $list = Venta::findOrFail($venta_id)->getDetalleVenta;
+
+        return $list;
+    }
+
     public function listVer(Request $request) {
         if ( !$request->ajax() ) return redirect('/');
 
@@ -24,7 +34,7 @@ class DetalleVentaController extends Controller {
 
         $venta_id = $request->venta_id;
 
-        $list = Detalle_venta::select('detalle_venta.id', 'detalle_venta.detalle_producto_id', 'detalle_venta.nombre_producto', 'detalle_venta.cantidad', 'detalle_venta.subtotal', 'detalle_venta.fallidos',
+        $list = Detalle_venta::select('detalle_venta.id', 'detalle_venta.detalle_producto_id', 'detalle_venta.nombre_producto', 'detalle_venta.cantidad', 'detalle_venta.subtotal', 'detalle_venta.cantidad_fallido',
                                         'dp.precio_menor', 'dp.precio_mayor', 'dp.substock')
                             ->leftJoin('detalle_producto as dp', 'detalle_venta.detalle_producto_id', '=', 'dp.id')
                             ->where('detalle_venta.venta_id', '=', $venta_id)

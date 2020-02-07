@@ -38,6 +38,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::put('/venta/editar', 'VentaController@editar');
 
     //RUTAS PARA DETALLES DE VENTAS
+    Route::get('/detalle_venta/list', 'DetalleVentaController@list');
     Route::get('/detalle_venta/listVer', 'DetalleVentaController@listVer');
     Route::get('/detalle_venta/listEditar', 'DetalleVentaController@listEditar');
 

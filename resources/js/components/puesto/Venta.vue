@@ -138,8 +138,8 @@
                                             <label class="h5 mb-0 font-weight-bold">LISTA DE PRODUCTOS</label>
                                         </div>
                                         <div class="col-md-12 input-group form-group">
-                                            <input type="search" class="form-control form-control-sm" v-model="Service.text" @keyup.enter="list(0)" id="filtroProducto" placeholder="Producto,marca,modelo,tamaño,color">
-                                            <button type="button" class="btn btn-sm btn-primary" @click="list(0)">
+                                            <input type="search" class="form-control form-control-sm" v-model="Service.text" @keyup.enter="list('detalle_producto')" id="filtroProducto" placeholder="Producto,marca,modelo,tamaño,color">
+                                            <button type="button" class="btn btn-sm btn-primary" @click="list('detalle_producto')">
                                                 <i class="fa fa-search"></i>&nbsp; Buscar
                                             </button>
                                         </div>
@@ -178,7 +178,7 @@
                                             </div>
                                             <div class="col-md-5 input-group">
                                                 <label class="col-md-6 font-weight-bold p-0">Tipo de precio&nbsp;<span class="text-danger">*</span></label>
-                                                <select class="col-md-6 custom-select custom-select-sm text-gray-900" v-model="Venta.tipo_precio" @click="update('subtotal')">
+                                                <select class="col-md-6 custom-select custom-select-sm text-gray-900" v-model="Venta.tipo_precio" @click="update('venta.tipo_precio')">
                                                     <option value="1">Al por menor</option>
                                                     <option value="2">Al por mayor</option>
                                                 </select>
@@ -198,13 +198,13 @@
                                                 <tbody>
                                                     <tr v-for="(detalle, indice) in ListaDetalle" :key="indice">
                                                         <td class="text-center">
-                                                            <button type="button" class="btn btn-circle btn-outline-danger btn-sm" title="QUITAR" @click="remove(0, indice)">
+                                                            <button type="button" class="btn btn-circle btn-outline-danger btn-sm" title="QUITAR" @click="remove('detalle_venta', indice)">
                                                                 <i class="fas fa-minus"></i>
                                                             </button>
                                                         </td>
                                                         <td v-text="detalle.nombre_producto"></td>
                                                         <td>
-                                                            <input type="number" v-model="detalle.cantidad" class="form-control form-control-sm text-right" min="1" :max="detalle.substock" @click="update('subtotal')" @keyup="update('subtotal')">
+                                                            <input type="number" v-model="detalle.cantidad" class="form-control form-control-sm text-right" min="1" :max="detalle.substock" @click="update('detalle_venta.cantidad')" @keyup="update('detalle_venta.cantidad')">
                                                         </td>
                                                         <td class="text-right" v-text="Venta.tipo_precio=='1'?detalle.precio_menor:detalle.precio_mayor"></td>
                                                         <td class="text-right" v-text="Number.parseFloat(detalle.subtotal).toFixed(2)">
@@ -229,9 +229,11 @@
                             </div>
                             <div class="col-md-12 p-0 m-0 input-group" v-if="Step.number==1" style="height: 26rem;">
                                 <div class="container-small col-md-12 form-group" style="height: 7rem;">
-                                    <div class="shadow rounded pt-2 bg-success" style="border: 1px solid; height: 7rem;">
-                                        <div class="col-md-12 form-group input-group">
+                                    <div class="shadow rounded pt-2 bg-success input-group" style="border: 1px solid; height: 7rem;">
+                                        <div class="col-md-2 form-group input-group">
                                             <label class="col-md-2 font-weight-bold">CLIENTE</label>
+                                        </div>
+                                        <div class="col-md-10 form-group input-group">
                                             <label class="col-md-1 font-weight-bold">RUC/DNI&nbsp;<span class="text-danger" v-if="Venta.tipo_pago=='2'">*</span></label>
                                             <div class="col-md-2 input-group">
                                                 <input type="text" class="form-control form-control-sm" v-model="Service.document" @keyup.enter="consultar()" maxlength="11">
@@ -246,8 +248,8 @@
                                                 </h5>
                                             </div>
                                         </div>
-                                        <div class="col-md-12 form-group input-group" v-if="Cliente.tipo=='P'">
-                                            <div class="col-md-3 input-group">
+                                        <div class="col-md-11 form-group input-group" v-if="Cliente.tipo=='P'">
+                                            <div class="col-md-4 input-group">
                                                 <label class="col-md-3">DNI</label>
                                                 <input type="text" class="col-md-9 form-control form-control-sm" readonly v-model="Cliente.dni">
                                             </div>
@@ -259,14 +261,9 @@
                                                 <label class="col-md-4">Apellidos</label>
                                                 <input type="text" class="col-md-8 form-control form-control-sm" readonly v-model="Cliente.apellidos">
                                             </div>
-                                            <div class="col-md-1 d-flex justify-content-center" v-if="Venta.tipo_pago=='1'">
-                                                <button type="button" class="btn btn-circle btn-sm btn-outline-danger" @click="remove('cliente')" title="ELIMINAR"> 
-                                                    <i class="fas fa-trash-alt"></i>
-                                                </button>
-                                            </div>
                                         </div>
-                                        <div class="col-md-12 form-group input-group" v-else-if="Cliente.tipo=='E'">
-                                            <div class="col-md-3 input-group">
+                                        <div class="col-md-11 form-group input-group" v-else-if="Cliente.tipo=='E'">
+                                            <div class="col-md-4 input-group">
                                                 <label class="col-md-3">RUC</label>
                                                 <input type="text" class="col-md-9 form-control form-control-sm" readonly v-model="Cliente.ruc">
                                             </div>
@@ -274,11 +271,11 @@
                                                 <label class="col-md-3">Razón social</label>&nbsp;
                                                 <input type="text" class="col-md-9 form-control form-control-sm" readonly v-model="Cliente.razon_social">
                                             </div>
-                                            <div class="col-md-1 d-flex justify-content-center" v-if="Venta.tipo_pago=='1'">
-                                                <button type="button" class="btn btn-circle btn-sm btn-outline-danger" @click="remove('cliente')" title="ELIMINAR"> 
-                                                    <i class="fas fa-trash-alt"></i>
-                                                </button>
-                                            </div>
+                                        </div>
+                                        <div class="col-md-1 d-flex justify-content-center" v-if="Venta.tipo_pago=='1'">
+                                            <button type="button" class="btn btn-circle btn-sm btn-outline-danger" @click="remove('cliente')" title="ELIMINAR"> 
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -289,7 +286,7 @@
                                         </div>
                                         <div class="col-md-12 input-group form-group">
                                             <label class="col-md-6 font-weight-bold">Tipo de pago&nbsp;<span class="text-danger">*</span></label>
-                                            <select class="col-md-6 custom-select custom-select-sm" v-model="Venta.tipo_pago" @click="update(6)">
+                                            <select class="col-md-6 custom-select custom-select-sm" v-model="Venta.tipo_pago" @click="update('venta.tipo_pago')">
                                                 <option class="text-gray-900" value="1">Contado</option>
                                                 <option class="text-gray-900" value="2">Credito</option>
                                             </select>
@@ -314,15 +311,15 @@
                                         </div>
                                         <div class="col-md-12 input-group form-group">
                                             <label class="col-md-6 font-weight-bold">Monto</label>
-                                            <label class="col-md-6 text-white" v-text="'S/. '+ValeU.monto"></label>
+                                            <label class="col-md-6 text-white" v-text="'S/. '+Vale.usado.monto"></label>
                                         </div>
                                         <div class="col-md-12 input-group form-group">
                                             <label class="col-md-6 font-weight-bold">Fecha</label>
-                                            <label class="col-md-6 text-white" v-text="fix(7, ValeU.created_at)"></label>
+                                            <label class="col-md-6 text-white" v-text="fix('fecha', Vale.usado.created_at)"></label>
                                         </div>
                                         <div class="col-md-12 input-group form-group">
                                             <label class="col-md-6 font-weight-bold">Hora</label>
-                                            <label class="col-md-6 text-white" v-text="fix(8, ValeU.created_at)"></label>
+                                            <label class="col-md-6 text-white" v-text="fix('hora', Vale.usado.created_at)"></label>
                                         </div>
                                     </div>
                                 </div>
@@ -336,10 +333,10 @@
                                             <label class="col-md-1 text-white text-right p-0">S/.</label>
                                             <label class="col-md-4 text-white text-right" v-text="Number.parseFloat(Venta.total_venta).toFixed(2)"></label>
                                         </div>
-                                        <div class="col-md-12 input-group form-group" v-if="ValeU.id!=null">
+                                        <div class="col-md-12 input-group form-group" v-if="Vale.usado.id!=null">
                                             <label class="col-md-6 font-weight-bold">Monto de descuento</label>
                                             <label class="col-md-1 text-white text-right p-0">S/.</label>
-                                            <label class="col-md-4 text-white text-right" v-text="'-'+Number.parseFloat(ValeU.monto).toFixed(2)"></label>
+                                            <label class="col-md-4 text-white text-right" v-text="'-'+Number.parseFloat(Venta.total_descuento).toFixed(2)"></label>
                                         </div>
                                         <div class="col-md-10 bg-white m-4"><hr></div>
                                         <div class="col-md-12 input-group form-group">
@@ -662,11 +659,11 @@
                                                         </td>
                                                         <td v-text="detalle.nombre_producto"></td>
                                                         <td v-if="detalle.id!=null">
-                                                            <input type="number" v-model="detalle.fallidos" class="form-control form-control-sm text-right" :min="detalle.fallidos_start" :max="detalle.cantidad_start" @click="update('cantidad_fallido', indice)" @keyup="update('cantidad_fallido', indice)">
+                                                            <input type="number" v-model="detalle.fallidos" class="form-control form-control-sm text-right" :min="detalle.fallidos_start" :max="detalle.cantidad_start" @click="update('detalle_venta.cantidad_fallido', indice)" @keyup="update('detalle_venta.cantidad_fallido', indice)">
                                                         </td>
                                                         <td v-else class="text-center">--</td>
                                                         <td v-if="detalle.id!=null">
-                                                            <input type="number" v-model="detalle.cantidad_add" class="form-control form-control-sm text-right" min="0" :max="detalle.substock" @click="update('subtotal')" @keyup="update('subtotal')">
+                                                            <input type="number" v-model="detalle.cantidad_add" class="form-cont-rol form-control-sm text-right" min="0" :max="detalle.substock" @click="update('detalle_venta.subtotal')" @keyup="update('detalle_venta.subtotal')">
                                                         </td>
                                                         <td v-else class="text-center">--</td>
                                                         <td class="text-right" v-text="detalle.cantidad"></td>
@@ -825,203 +822,6 @@
                                 </div>
                             </div>
                         </div>
-
-                        <!-- <div v-if="Modal.numero==3" class="container-small input-group">
-                            <div v-if="Error.estado" class="col-md-12 d-flex justify-content-center">
-                                <div class="col-md-6 alert alert-danger pb-0">
-                                    <button type="button" @click="Error.estado=0" class="close text-primary" data-dismiss="alert">×</button>
-                                    <strong>Corregir los siguentes errores:</strong>
-                                    <ul> 
-                                        <li v-for="error in Error.mensaje" :key="error" v-text="error"></li> 
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="container-small col-md-10 mt-1">
-                                <div class="shadow bg-white rounded pt-2 input-group form-group" style="border: 1px solid; height: 6.5rem;">
-                                    <div class="col-md-2 form-group">
-                                        <label class="font-weight-bold">CLIENTE</label>
-                                    </div>
-                                    <div class="col-md-10 input-group form-group" v-if="ValeU.id==null">
-                                        <label class="col-md-2 font-weight-bold">RUC/DNI&nbsp;
-                                            <span class="text-danger" v-if="Venta.tipo_pago=='2'||Venta.tipo_pago=='3'||(Venta.total<Number.parseFloat(Venta.total_minimo))">*</span>
-                                        </label>
-                                        <div class="col-md-3 input-group">
-                                            <input type="text" class="form-control form-control-sm" v-model="Service.document" @keyup.enter="consultar()" maxlength="11">
-                                            <button type="button" class="btn btn-sm btn-primary" @click="consultar()">
-                                                <i class="fas fa-sync-alt"></i>
-                                            </button>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <h5>
-                                                <span role="status" :class="Service.loadclass"></span>&nbsp;
-                                                <span v-text="Service.msm" :class="Service.msmclass"></span>
-                                            </h5>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12 input-group form-group" v-if="Cliente.tipo=='P'">
-                                        <div class="col-md-3 input-group">
-                                            <label class="col-md-3">DNI</label>
-                                            <input type="text" class="col-md-9 form-control form-control-sm" readonly v-model="Cliente.dni">
-                                        </div>
-                                        <div class="col-md-4 input-group">
-                                            <label class="col-md-4">Nombres</label>
-                                            <input type="text" class="col-md-8 form-control form-control-sm" readonly v-model="Cliente.nombres">
-                                        </div>
-                                        <div class="col-md-4 input-group">
-                                            <label class="col-md-4">Apellidos</label>
-                                            <input type="text" class="col-md-8 form-control form-control-sm" readonly v-model="Cliente.apellidos">
-                                        </div>
-                                        <div class="col-md-1 d-flex justify-content-center" v-if="Venta.tipo_pago=='1'&&ValeU.id==null&&Venta.total==Venta.total_minimo">
-                                            <button type="button" class="btn btn-circle btn-sm btn-outline-danger" @click="remove('cliente')" title="ELIMINAR"> 
-                                                <i class="fas fa-trash-alt"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12 input-group form-group" v-if="Cliente.tipo=='E'">
-                                        <div class="col-md-3 input-group">
-                                            <label class="col-md-3">RUC</label>
-                                            <input type="text" class="col-md-9 form-control form-control-sm" readonly v-model="Cliente.ruc">
-                                        </div>
-                                        <div class="col-md-8 input-group">
-                                            <label class="col-md-3">Razón social</label>&nbsp;
-                                            <input type="text" class="col-md-9 form-control form-control-sm" readonly v-model="Cliente.razon_social">
-                                        </div>
-                                        <div class="col-md-1 d-flex justify-content-center" v-if="Venta.tipo_pago=='1'&&ValeU.id==null&&Venta.total==Venta.total_minimo">
-                                            <button type="button" class="btn btn-circle btn-sm btn-outline-danger" @click="remove('cliente')" title="ELIMINAR"> 
-                                                <i class="fas fa-trash-alt"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="container-small col-md-2 mt-1 pl-0" v-if="ValeG.id!=null">
-                                <div class="shadow bg-white rounded pt-2 form-group" style="border: 1px solid; height: 6.5rem;">
-                                    <div class="col-md-12 form-group input-group">
-                                        <label class="col-md-12 font-weight-bold pl-0 mb-0">VALE</label>
-                                        <ul class="col-md-12 pr-0 pl-0">
-                                            <li class="input-group">
-                                                <label class="col-md-4 p-0 mb-0">Monto:</label>
-                                                <label class="col-md-8 p-0 mb-0 text-right text-primary" v-text="'S/.  '+ValeU.monto"></label>
-                                            </li>
-                                            <li class="input-group">
-                                                <label class="col-md-4 p-0 mb-0">Fecha:</label>
-                                                <label class="col-md-8 p-0 mb-0 text-right text-primary" v-text="fix(7, ValeU.created_at)"></label>
-                                            </li>
-                                            <li class="input-group">
-                                                <label class="col-md-4 p-0 mb-0">Hora:</label>
-                                                <label class="col-md-8 p-0 mb-0 text-right text-primary" v-text="fix(8, ValeU.created_at)"></label>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="container-small col-md-4">
-                                <div class="shadow bg-white rounded pt-2" style="border: 1px solid; height: 23rem;">
-                                    <label class="col-md-12 form-group font-weight-bold">PRODUCTOS</label>
-                                    <div class="col-md-12 input-group form-group">
-                                        <input type="search" class="form-control form-control-sm" v-model="Service.text" @keyup.enter="list(0)" id="filtroProducto" placeholder="Producto,marca,modelo,tamaño,color">
-                                        <button type="button" class="btn btn-sm btn-primary" @click="list(0)">
-                                            <i class="fa fa-search"></i>&nbsp; Buscar
-                                        </button>
-                                    </div>
-                                    <div v-if="ListaProducto.length" class="col-md-12 overflow-auto" style="height: 16rem;">
-                                        <table class="table table-bordered table-striped table-sm text-gray-900">
-                                            <thead>
-                                                <tr class="table-danger">
-                                                    <th class="text-center" style="width: 10%;">Agregar</th>
-                                                    <th class="text-center">Nombre</th>
-                                                    <th class="text-center">Stock</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr v-for="producto in ListaProducto" :key="producto.id">
-                                                    <td class="text-center">
-                                                        <button type="button" v-if="producto.detalle.substock>0" title="AGREGAR" class="btn btn-circle btn-sm btn-outline-success" @click="add('detalle_venta', producto)">
-                                                            <i class="fas fa-plus"></i>
-                                                        </button>
-                                                    </td>
-                                                    <td v-text="producto.nombre"></td>
-                                                    <td v-text="producto.detalle.substock" class="text-right"></td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <div v-else>
-                                        <label class="col-md-12 text-danger">No se han encontrado resultados</label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="container-small col-md-8">
-                                <div class="shadow bg-white rounded pt-2" style="border: 1px solid; height: 23rem;">
-                                    <div class="col-md-12 input-group">
-                                        <label class="col-md-4 font-weight-bold">LISTA DE ITEMS</label>
-                                        <label class="col-md-4 font-weight-bold">Pago:&nbsp;<label class="text-info font-weight-normal" v-text="fix(4, Venta.tipo_pago)"></label></label>
-                                        <label class="col-md-4 font-weight-bold">Precio:&nbsp;<label class="text-info font-weight-normal" v-text="fix(5, Venta.tipo_precio)"></label></label>
-                                    </div>
-                                    <div v-if="ListaDetalle.length" class="col-md-12 overflow-auto" style="height: 15rem;">
-                                        <table class="table table-bordered table-striped table-sm text-gray-900">
-                                            <thead>
-                                                <tr class="table-success">
-                                                    <th class="text-center">Quitar</th>
-                                                    <th class="text-center">Nombre</th>
-                                                    <th class="text-center" style="width: 5rem;">Fallidos</th>
-                                                    <th class="text-center" style="width: 5rem;">Cantidad</th>
-                                                    <th class="text-center">Precio</th>
-                                                    <th class="text-center">Subtotal</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr v-for="(detalle, indice) in ListaDetalle" :key="indice">
-                                                    <td class="text-center">
-                                                        <button type="button" class="btn btn-circle btn-outline-danger btn-sm" title="QUITAR" @click="remove(0, indice)" v-if="detalle.id==0">
-                                                            <i class="fas fa-minus"></i>
-                                                        </button>
-                                                    </td>
-                                                    <td v-text="detalle.nombre_producto"></td>
-                                                    <td v-if="detalle.id!=0">
-                                                        <input type="number" v-model="detalle.fallidos" class="form-control form-control-sm text-right" :min="detalle.fallidos_inicial" :max="detalle.cantidad_inicial" @click="update('total_faltante')" @keyup="update('total_faltante')">
-                                                    </td>
-                                                    <td v-else class="text-center">-</td>
-                                                    <td>
-                                                        <input type="number" v-model="detalle.cantidad" class="form-control form-control-sm text-right p-0" :min="detalle.cantidad_inicial" :max="detalle.substock" @click="update('total_faltante')" @keyup="update('total_faltante')">
-                                                    </td>
-                                                    <td class="text-right" v-text="Venta.tipo_precio=='1'?detalle.precio_menor:detalle.precio_mayor"></td>
-                                                    <td class="text-right" v-text="Number.parseFloat(detalle.subtotal).toFixed(2)">
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <div v-else class="col-md-12" style="height: 15rem;">
-                                        <label class="col-md-12 text-danger">Sin detalles de venta</label>
-                                    </div>
-                                    <div class="col-md-12 input-group pt-2">
-                                        <div class="col-md-7">
-                                            <div class="col-md-8 input-group p-0" v-if="Venta.total > Venta.total_minimo"> 
-                                                <label class="col-md-6 font-weight-bold p-0" for="pago_inicial">Pago extra&nbsp;<span class="text-danger">*</span></label>
-                                                <input type="number" class="col-md-6 form-control form-control-sm text-right" v-model="Pago.monto" min="0" :max="Venta.total-Venta.total_minimo" id="pago_inicial">
-                                            </div>
-                                            <div class="col-md-8 input-group p-0" v-if="Venta.total < Venta.total_minimo"> 
-                                                <label class="col-md-12 font-weight-bold">
-                                                    <span v-if="ValeU.id==null">Se generara un vale de venta por:&nbsp;&nbsp;&nbsp;</span>
-                                                    <span v-else>El vale de venta se incrementara en:&nbsp;&nbsp;&nbsp;</span>
-                                                    <span class="font-weight-normal text-success" v-text="'S/. '+Number.parseFloat(Venta.total_minimo-Venta.total).toFixed(2)"></span>
-                                                </label>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-5 input-group">
-                                            <label class="col-md-6 font-weight-bold">Monto total:</label>
-                                            <label class="col-md-1 text-info p-0" v-text="'S/.'"></label>
-                                            <label class="col-md-5 text-right text-info" v-text="Number.parseFloat(Venta.total).toFixed(2)"></label>
-                                            <label class="col-md-6 font-weight-bold">Minimo:</label>
-                                            <label class="col-md-1 text-danger p-0" v-text="'S/.'"></label>
-                                            <label class="col-md-5 text-right text-danger" v-text="Number.parseFloat(Venta.total_minimo).toFixed(2)"></label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div> -->
-
                         <!-- Modal Numero 4 de PAGAR-->
                         <div v-if="Modal.numero==4" class="container-small input-group d-flex justify-content-center">
                             <div v-if="Error.estado" class="row d-flex justify-content-center">
@@ -1110,9 +910,12 @@
                     total: null,
                     total_start: null,
                     total_faltante: null,
+                    total_faltante_start: null,
                     total_descuento: null,
                     total_descuento_start: null,
                     total_venta: null,
+                    total_venta_start: null,
+                    tipo: null, // 1: contado, 2: credito
                     tipo_pago: null, // 1: contado, 2: credito
                     tipo_entrega: null, // 1: prepago, 2: postpago
                     tipo_precio: null, // 1: al por menor, 2: al por mayor
@@ -1130,9 +933,8 @@
                     apellidos: null,
                     razon_social: null,
                     tipo: null,
-                    search: null,
-                    required: null,
-                    trash: null
+                    searchable: null,
+                    removable: null
                 },
 
                 //datos de busqueda y filtracion general
@@ -1190,16 +992,19 @@
                 Pago:{
                     monto: null
                 },
-                ValeU: {
-                    id: null,
-                    monto: null,
-                    venta_usada_id: null,
-                    created_at: null
-                },
-                ValeG: {
-                    id: null,
-                    monto: null,
-                    created_at: null
+                // datos de vales
+                Vale: {
+                    usado: {
+                        id: null,
+                        monto: null,
+                        venta_usada_id: null,
+                        created_at: null
+                    },
+                    generado: {
+                        id: null,
+                        monto: null,
+                        created_at: null
+                    }
                 },
 
                 //datos de Rutas
@@ -1432,10 +1237,10 @@
                 });
             },
             abrirModalAgregar(){
-                this.Venta.total_faltante = 0;
-                this.Venta.total_descuento = 0;
                 this.Venta.total_venta = 0;
+                this.Venta.total_descuento = 0;
                 this.Venta.total = 0;
+                this.Venta.total_faltante = 0;
                 this.Venta.tipo_pago = '1';
                 this.Venta.tipo_entrega = '1';
                 this.Venta.tipo_precio = '1';
@@ -1866,7 +1671,7 @@
                 var url;
 
                 switch (numero) {
-                    case 0: 
+                    case 'detalle_producto': 
                         if ( this.Service.text == '' ) break;
 
                         url = this.Ruta.detalle_producto+'/listProductos?'
@@ -1887,12 +1692,11 @@
                         });
                         break;
                     case 'detalle_venta': //lista de detalles de venta para "VER" y "EDITAR"
-                        url = this.Ruta.detalle_venta+'/list'+data+'?'
+                        url = this.Ruta.detalle_venta+'/list?'
                                         +'venta_id='+this.Venta.id;
 
                         axios.get(url).then(function(response){
-                            me.ListaDetalle = response.data;
-                            if ( data == 'Editar' ) me.fix('detalle_venta');
+                            me.fix('detalle_venta', response.data);
                         }).catch(function(error){
                             console.log(error);
                         });
@@ -1929,6 +1733,7 @@
                                 cantidad_start: 0,
                                 cantidad_add: 0,
                                 fallidos: 0,
+                                fallidos_add: 0,
                                 fallidos_start: 0,
                                 substock: data.detalle.substock,
                                 precio_menor: data.detalle.precio_menor,
@@ -1937,7 +1742,7 @@
                                 subtotal: 0
                             });
                         } 
-                        this.update('subtotal');
+                        this.update('detalle_venta.subtotal');
                         break;
                     case 'pago':
                         if ( this.validar([4]) ) return;
@@ -1949,7 +1754,7 @@
                             estado: 1 // 1: nuevo
                         });
                         this.Pago.monto = '';
-                        this.update('total_faltante');
+                        this.update('venta.total_faltante');
                         break;
                 }
             },
@@ -1957,118 +1762,158 @@
                 var updated = '';
 
                 switch (numero) {
-                    case 'subtotal':
-                        console.log('on update("subtotal") binnacle{()}');
-                        this.ListaDetalle.forEach(detalle => {
-                            let precio = this.Venta.tipo_precio=='1'?detalle.precio_menor:(this.Venta.tipo_precio=='2'?detalle.precio_mayor:0);
-                            let cantidad = detalle.cantidad!=''? detalle.cantidad : 0;
-                            let cantidad_add = detalle.cantidad_add!=''? detalle.cantidad_add : 0;
-                            detalle.subtotal = Number.parseFloat(precio) * (Number.parseFloat(cantidad) + Number.parseFloat(cantidad_add));
-                        });
-                        this.update('total_venta');
-                        break;
-                    case 'total_venta':
+                    case 'venta.total_venta':
                         console.log('on update("total_venta")');
-                        this.Venta.total_venta = 0;
-                        this.ListaDetalle.forEach(detalle => {
-                            this.Venta.total_venta += Number.parseFloat(detalle.subtotal);
-                        });
-                        this.update('total');
-                        break;
-                    case 'total_descuento':
-                        console.log('on update("total_descuento")');
-                        this.Venta.total_descuento = this.ValeU.monto==null?0:Number.parseFloat(this.ValeU.monto);
-                        this.update('total');
-                        break;
-                    case 'total':
-                        console.log('on update("total")');
-                        this.Venta.total = this.Venta.total_venta - this.Venta.total_descuento;
-                        if ( this.Modal.numero == '3' ){ 
-                            if (this.Venta.total > this.Venta.total_start ) this.Venta.tipo_pago = '2';
+
+                        if ( this.Modal.numero == 1 || this.Modal.numero == 3 ) {
+                            this.Venta.total_venta = 0;
+                            this.ListaDetalle.forEach(detalle => {
+                                this.Venta.total_venta += Number.parseFloat(detalle.subtotal);
+                            });
                         }
-                        this.update('venta.tipo_pago');
-                        this.update('total_faltante');
+
+                        this.update('venta.total');
                         break;
-                    case 'total_faltante':
-                        console.log('on update("total_faltante")');
+                    case 'venta.total_descuento':
+                        console.log('on update("venta.total_descuento")');
+
+                        this.Venta.total_descuento = this.Vale.usado.monto == null? 0 : Number.parseFloat(this.Vale.usado.monto);
+
+                        this.update('venta.total');
+                        break;
+                    case 'venta.total':
+                        console.log('on update("venta.total")');
+
+                        if ( this.Modal.numero == 1 ) {
+                            this.Venta.total = this.Venta.total_venta - this.Venta.total_descuento;
+
+                            this.update('venta.total_faltante');
+                        }
+                        if ( this.Modal.numero == 3 ){ 
+                            this.Venta.total = this.Venta.total_venta - this.Venta.total_descuento;
+                            if ( this.Venta.total > this.Venta.total_start ) this.Venta.tipo_pago = '2';
+
+                            this.update('venta.tipo_pago');
+                            this.update('venta.total_faltante');
+                        }
+                        
+                        break;
+                    case 'venta.total_faltante':
+                        console.log('on update("venta.total_faltante")');
+
+                        if ( this.Modal.numero == 1 ) {
+                            if ( this.Venta.tipo_pago == '2' ) {
+                                this.Venta.total_faltante = this.Venta.total;
+                            } else if ( this.Venta.tipo_pago == '1' ) {
+                                this.Venta.total_faltante = null;
+                            }
+                        }
+                        if ( this.Modal.numero == 3 ) {
+                            if ( this.Venta.tipo_pago == '2' ) {
+                                if ( this.Venta.total_faltante_start == null ) this.Venta.total_faltante_start = 0;
+
+                                if ( this.Venta.total < this.Venta.total_start - this.Venta.total_faltante_start ) {
+                                    this.Venta.total_faltante = null;
+                                    this.ValeG.monto = (this.Venta.total_start - this.Venta.total_faltante_start) - this.Venta.total;
+                                } else if ( this.Venta.total = this.Venta.total_start - this.Venta.total_faltante_start ) {
+                                    this.Venta.total_faltante = null;
+                                    this.ValeG.monto = null;
+                                } else if ( this.Venta.total > this.Venta.total_start - this.Venta.total_faltante_start && this.Venta.total < this.Venta.total_start) {
+                                    this.Venta.total_faltante = this.Venta.total - (this.Venta.total_start - this.Venta.total_faltante_start);
+                                    this.ValeG.monto = null;
+                                } else if ( this.Venta.total > this.Venta.total_start ) {
+                                    this.Venta.total_faltante = this.Venta.total - (this.Venta.total_start - this.Venta.total_faltante_start);
+                                    this.ValeG.monto = null;
+                                }
+                            }
+                        }
                         if ( this.Modal.numero == 4 ) {
                             this.Venta.total_faltante = Number.parseFloat(this.Venta.total);
                             this.ListaPago.forEach( pago => {
                                 this.Venta.total_faltante -= Number.parseFloat(pago.monto);
                             });
-                        } else if ( this.Modal.numero == 3 && this.Venta.tipo_pago == '2' ) {
-                            if ( this.Venta.total_faltante_start == null ) this.Venta.total_faltante_start = 0;
-
-                            if ( this.Venta.total < this.Venta.total_start - this.Venta.total_faltante_start ) {
-                                this.Venta.total_faltante = null;
-                                this.ValeG.monto = (this.Venta.total_start - this.Venta.total_faltante_start) - this.Venta.total;
-                            } else if ( this.Venta.total = this.Venta.total_start - this.Venta.total_faltante_start ) {
-                                this.Venta.total_faltante = null;
-                                this.ValeG.monto = null;
-                            } else if ( this.Venta.total > this.Venta.total_start - this.Venta.total_faltante_start && this.Venta.total < this.Venta.total_start) {
-                                this.Venta.total_faltante = this.Venta.total - (this.Venta.total_start - this.Venta.total_faltante_start);
-                                this.ValeG.monto = null;
-                            } else if ( this.Venta.total > this.Venta.total_start ) {
-                                this.Venta.total_faltante = this.Venta.total - (this.Venta.total_start - this.Venta.total_faltante_start);
-                                this.ValeG.monto = null;
-                            }
-                        }
-                        break;
-                    case 'cantidad_fallido':
-                        console.log('on update("cantidad_fallido")');
-
-                        console.log('binnacle_begin:{'+
-                                    'ListaDetalle['+data+'].cantidad='+this.ListaDetalle[data].cantidad+
-                                    'ListaDetalle['+data+'].cantidad_start='+this.ListaDetalle[data].cantidad_start+
-                                    'ListaDetalle['+data+'].fallidos='+this.ListaDetalle[data].fallidos+
-                                    'data'+data +'}');
-
-                        // this.ListaDetalle.forEach(detalle => {
-                        //     detalle.cantidad = Number.parseFloat(detalle.cantidad_start) - Number.parseFloat(detalle.fallidos!=''?detalle.fallidos:0);
-                        //     if ( detalle.cantidad > detalle.cantidad_start ) {
-                        //         detalle.cantidad = detalle.cantidad_start;
-                        //     } else if ( detalle.cantidad < 0 ) {
-                        //         detalle.cantidad = 0;
-                        //     }
-                        // });
-                        this.ListaDetalle[data].cantidad = Number.parseFloat(this.ListaDetalle[data].cantidad_start) - Number.parseFloat(this.ListaDetalle[data].fallidos!=''?this.ListaDetalle[data].fallidos:0);
-                        if ( this.ListaDetalle[data].cantidad > this.ListaDetalle[data].cantidad_start ) {
-                            this.ListaDetalle[data].cantidad = this.ListaDetalle[data].cantidad_start;
-                        } else if ( this.ListaDetalle[data].cantidad < 0 ) {
-                            this.ListaDetalle[data].cantidad = 0;
-                        }
-
-                        console.log('binnacle_end:{'+
-                                    'ListaDetalle['+data+'].cantidad='+this.ListaDetalle[data].cantidad+
-                                    'ListaDetalle['+data+'].cantidad_start='+this.ListaDetalle[data].cantidad_start+
-                                    'ListaDetalle['+data+'].fallidos='+this.ListaDetalle[data].fallidos+
-                                    'data'+data +'}');
-
-                        this.update('subtotal');
-                        break;
-                    case 3:
-                        this.ListaDetalle.forEach(detalle => {
-                            detalle.subtotal = (this.Venta.tipo_precio=='1'?detalle.precio_menor:detalle.precio_mayor) * (detalle.cantidad-detalle.fallidos);
-                        })
-                        this.update('total_venta');
+                        } 
                         break;
                     case 'venta.tipo_pago':
                         console.log('on update("venta.tipo_pago")');
-                        // if ( this.Venta.total > this.Venta.total_inicial && this.Venta.tipo_pago == '1') {
-                        //     this.Venta.tipo_pago = '2';
-                        // } 
-                        // if ( this.Venta.total <= this.Venta.total_inicial && this.Venta.tipo.charAt(0) == '1' ) {
-                        //     this.Venta.tipo_pago = '1';
-                        // }
+
                         if ( this.Modal.numero == 3 ) {
                             if ( (this.Venta.total > this.Venta.total_start && this.Venta.tipo.charAt(0) == '1') || this.Venta.tipo.charAt(0) == '2' ) {
                                 this.Venta.tipo_pago = '2';
                             } else {
                                 this.Venta.tipo_pago = '1';
                             }
+
+                            this.update('cliente.removable');
                         }
-                        console.log('bitacora_end: tipo_pago='+this.Venta.tipo_pago);
-                        this.update('cliente.removable');
+
+                        break;
+                    case 'venta.tipo_precio':
+                        console.log('on update("venta.tipo_precio")');
+
+                        if ( this.Modal.numero == 1 || this.Modal.numero == 3 ) {
+                            this.update('detalle_venta.subtotal');
+                        }
+                        break;
+                    
+                    case 'detalle_venta.cantidad_fallido':
+                        console.log('on update("detalle_venta.cantidad_fallido")');
+
+                        if (this.Modal.numero == 3 ) {
+                            this.ListaDetalle[data].cantidad = Number.parseFloat(this.ListaDetalle[data].cantidad_start) - Number.parseFloat(this.ListaDetalle[data].fallidos!=''?this.ListaDetalle[data].fallidos:0);
+                            if ( this.ListaDetalle[data].cantidad > this.ListaDetalle[data].cantidad_start ) {
+                                this.ListaDetalle[data].cantidad = this.ListaDetalle[data].cantidad_start;
+                            } else if ( this.ListaDetalle[data].cantidad < 0 ) {
+                                this.ListaDetalle[data].cantidad = 0;
+                            }
+                        }
+
+                        this.update('detalle_venta.subtotal');
+                        break;
+                    case 'detalle_venta.cantidad':
+                        console.log('on update("detalle_venta.cantidad")');
+
+                        if (this.Modal.numero == 1 ) {
+                            this.update('detalle_venta.subtotal');
+                        }
+                        if (this.Modal.numero == 3 ) {
+                            this.ListaDetalle[data].cantidad = Number.parseFloat(this.ListaDetalle[data].cantidad_start) - Number.parseFloat(this.ListaDetalle[data].cantidad_fallido_add!=''?this.ListaDetalle[data].cantidad_fallido_start:0);
+                            if ( this.ListaDetalle[data].cantidad > this.ListaDetalle[data].cantidad_start ) {
+                                this.ListaDetalle[data].cantidad = this.ListaDetalle[data].cantidad_start;
+                            } else if ( this.ListaDetalle[data].cantidad < 0 ) {
+                                this.ListaDetalle[data].cantidad = 0;
+                            }
+
+                            this.update('detalle_venta.subtotal');
+                        }
+                        
+                        break;
+                    case 'detalle_venta.subtotal':
+                        console.log('on update("detalle_venta.subtotal")');
+
+                        if ( this.Modal.numero == 1 ) {
+                            this.ListaDetalle.forEach(detalle => {
+                                let precio = this.Venta.tipo_precio=='1'?detalle.precio_menor:(this.Venta.tipo_precio=='2'?detalle.precio_mayor:0);
+                                let cantidad = detalle.cantidad != ''? detalle.cantidad : 0;
+                                detalle.subtotal = Number.parseFloat(precio) * Number.parseFloat(cantidad);
+                            });
+                        }
+                        if ( this.Modal.numero == 3 ) {
+                            this.ListaDetalle.forEach(detalle => {
+                                let precio = this.Venta.tipo_precio=='1'?detalle.precio_menor:(this.Venta.tipo_precio=='2'?detalle.precio_mayor:0);
+                                let cantidad = detalle.cantidad!=''? detalle.cantidad : 0;
+                                let cantidad_add = detalle.cantidad_add!=''? detalle.cantidad_add : 0;
+                                detalle.subtotal = Number.parseFloat(precio) * (Number.parseFloat(cantidad) + Number.parseFloat(cantidad_add));
+                            });
+                        }
+
+                        this.update('venta.total_venta');
+                        break;
+                    case 3:
+                        this.ListaDetalle.forEach(detalle => {
+                            detalle.subtotal = (this.Venta.tipo_precio=='1'?detalle.precio_menor:detalle.precio_mayor) * (detalle.cantidad-detalle.fallidos);
+                        })
+                        this.update('venta.total_venta');
                         break;
                     case 6:
                         if ( this.Venta.tipo_pago == '1' ) {
@@ -2085,9 +1930,6 @@
                         } else {
                             this.Cliente.trash = false;
                         }
-                        console.log('bitacora_end: tipo_pago='+this.Venta.tipo_pago);
-                        console.log('bitacora_end: dni='+this.Cliente.dni);
-                        console.log('bitacora_end: ruc='+this.Cliente.ruc);
                         break;
                 }
 
@@ -2095,24 +1937,35 @@
             },
             remove(numero, data = ''){
                 switch (numero) {
-                    case 0:
-                        this.ListaDetalle.splice(data, 1);
-                        this.update('total_venta');
+                    case 'venta.detalle_venta':
+                        console.log("on remove('detalle_venta')");
+
+                        if ( this.Modal.numero == 1 ) {
+                            this.ListaDetalle.splice(data, 1);
+                            this.update('venta.total_venta');
+                        }
+                        
                         break;
                     case 'cliente':
-                        this.Cliente.id = null;
-                        this.Cliente.documento = '';
-                        this.Cliente.nombres = null;
-                        this.Cliente.apellidos = null;
-                        this.Cliente.dni = null;
-                        this.Cliente.razon_social = null;
-                        this.Cliente.ruc = null;
-                        this.Cliente.tipo = null;
-                        this.Cliente.trash = false;
+                        console.log("on remove('detalle_venta')");
 
-                        this.ValeU.id = null;
-                        this.ValeU.monto = null;
-                        this.ValeU.created_at = null;
+                        if ( this.Modal.numero == 1 ) {
+                            this.Cliente.id = null;
+                            this.Cliente.documento = '';
+                            this.Cliente.nombres = null;
+                            this.Cliente.apellidos = null;
+                            this.Cliente.dni = null;
+                            this.Cliente.razon_social = null;
+                            this.Cliente.ruc = null;
+                            this.Cliente.tipo = null;
+                            this.Cliente.removable = false;
+                            this.Cliente.searchable = false;
+
+                            this.Vale.usado.id = null;
+                            this.Vale.usado.monto = null;
+                            this.Vale.usado.created_at = null;
+                        }
+                        
                         break;
                 }
             },
@@ -2139,21 +1992,70 @@
                         fixed = (new Date()).getFullYear();
                         break;
                     case 'detalle_venta':
-                        for (let i = 0; i < this.ListaDetalle.length; i++) {
-                            if ( this.ListaDetalle[i].fallidos == null ) this.ListaDetalle[i].fallidos = 0;
-                            
-                            this.ListaDetalle[i].fallidos_start = this.ListaDetalle[i].fallidos;
-                            this.ListaDetalle[i].cantidad_add = 0;
-                            this.ListaDetalle[i].cantidad_start = this.ListaDetalle[i].cantidad;
-                            this.ListaDetalle[i].removable = this.ListaDetalle[i].fallidos_start>0?false:true;
+                        console.log('on fix(detalle_venta)');
+
+                        if ( this.Modal.numero == 1 ) {
+                            for (let i = 0; i < data.length; i++) {
+                                this.ListaDetalle.push({
+                                    id: null,
+                                    detalle_producto_id: data[i].detalle.id,
+                                    nombre_producto: data[i].detalle.nombre_producto,
+                                    cantidad: 1,
+                                    substock: data[i].substock,
+                                    precio_menor: data[i].precio_menor,
+                                    precio_mayor: data[i].precio_mayor,
+                                    subtotal: 0
+                                });
+                            }
+
+                            this.update('detalle_venta.subtotal');
                         }
+                        if ( this.Modal.numero == 2 ) {
+                            for (let i = 0; i < data.length; i++) {
+                                this.ListaDetalle.push({
+                                    id: null,
+                                    detalle_producto_id: data[i].detalle.id,
+                                    nombre_producto: data[i].detalle.nombre_producto,
+                                    cantidad: 1,
+                                    substock: data[i].substock,
+                                    precio_menor: data[i].precio_menor,
+                                    precio_mayor: data[i].precio_mayor,
+                                    subtotal: 0
+                                });
+                            }
+                        }
+                        if ( this.Modal.numero == 3 ) {
+                            for (let i = 0; i < data.length; i++) {
+                                if ( data[i].cantidad_fallido == null ) data[i].cantidad_fallido = 0;
+                                this.ListaDetalle.push({
+                                    id: data[i].detalle.id,
+                                    detalle_producto_id: data[i].detalle.detalle_producto_id,
+                                    nombre_producto: data[i].nombre_producto,
+                                    cantidad: data[i].detalle.cantidad,
+                                    cantidad_start: data[i].detalle.cantidad,
+                                    cantidad_add: 0,
+                                    cantidad_fallido: data[i].detalle.cantidad_fallido==null?0:data[i].detalle.cantidad_fallido,
+                                    cantidad_fallido_start: data[i].detalle.cantidad_fallido==null?0:data[i].detalle.cantidad_fallido,
+                                    cantidad_fallido_add: 0,
+                                    substock: data[i].substock,
+                                    precio_menor: data[i].precio_menor,
+                                    precio_mayor: data[i].precio_mayor,
+                                    removable: data[i].detalle.cantidad_fallido!=null?true:false,
+                                    subtotal: data[i].detalle.subtotal,
+                                    removed: false
+                                });
+                            }
+
+                            this.update('detalle_venta.subtotal');
+                        }
+
                         break;
-                    case 7:
+                    case 'fecha':
                         fecha = data.split(' ')[0].split('-');
                         fecha_fixed = fecha[2]+'-'+fecha[1]+'-'+fecha[0];
                         fixed = fecha_fixed;
                         break;
-                    case 8:
+                    case 'hora':
                         hora = data.split(' ')[1].split(':');
                         hora_fixed = (hora[0]>12?(hora[0]-12).toString().padStart(2, '0'):hora[0])+':'+hora[1]+' '+(hora[0]>12?'pm':'am') ;
                         fixed = hora_fixed;
