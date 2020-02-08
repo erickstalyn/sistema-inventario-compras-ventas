@@ -47,6 +47,7 @@ Route::group(['middleware' => ['auth']], function () {
 
     //RUTAS PARA VALES
     Route::get('/vale/get', 'ValeController@get');
+    Route::get('/vale', 'ValeController@listar');
 
     //RUTAS PARA PRODUCCIONES
     Route::get('/produccion', 'ProduccionController@listar'); //métodos generales

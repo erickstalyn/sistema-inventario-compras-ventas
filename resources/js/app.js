@@ -30,6 +30,7 @@ Vue.component('adm_estadistica', require('./components/administrador/Estadistica
 
 Vue.component('pue_producto', require('./components/puesto/Producto.vue').default);
 Vue.component('pue_venta', require('./components/puesto/Venta.vue').default);
+Vue.component('pue_vale', require('./components/puesto/Vale.vue').default);
 
 Vue.component('alm_produccion', require('./components/almacen/Produccion.vue').default);
 Vue.component('alm_producto', require('./components/almacen/Producto.vue').default);
@@ -52,7 +53,7 @@ Vue.component('noti_venta_alm', require('./components/Notificacion/Notification_
 const app = new Vue({
     el: '#app',
     data:{
-        menu: 3,
+        menu: 2,
         notifications:[],
     },
     created(){

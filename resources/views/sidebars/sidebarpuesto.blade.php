@@ -43,6 +43,13 @@
             <span >Ventas</span>
         </a>
     </li>
+    <!-- Elemento de navegación - MENÚ VALES -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#vales" aria-expanded="true" aria-controls="vales" @click="menu=2">
+            <i class="far fa-credit-card"></i>
+            <span >Vales</span>
+        </a>
+    </li>
     <!-- Elemento de navegación - MENÚ ENVIOS -->
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#envios" aria-expanded="true" aria-controls="envios">
@@ -51,8 +58,8 @@
         </a>
         <div id="envios" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item font-weight-bold" href="#" @click="menu=2">Envíos Realizados</a>
-                <a class="collapse-item font-weight-bold" href="#" @click="menu=3">Envíos Recibidos</a>
+                <a class="collapse-item font-weight-bold" href="#" @click="menu=3">Envíos Realizados</a>
+                <a class="collapse-item font-weight-bold" href="#" @click="menu=4">Envíos Recibidos</a>
             </div>
         </div>
     </li>

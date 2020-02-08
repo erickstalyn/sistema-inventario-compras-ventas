@@ -27,4 +27,51 @@ class ValeController extends Controller {
         ];
     }
 
+    public function listar(Request $request){
+
+        if ( !$request->ajax() ) return redirect('/');
+
+        $estado = $request->estado;
+        $texto = $request->texto;
+        $filas = $request->filas;
+        $centro_id = $request->centro_id;
+
+        $vales = Vale::select('vale.id', 'vale.monto', 'vale.created_at', 'vale.updated_at', 'vale.venta_generada_id', 'persona.razon_social', 'persona.nombres', 'persona.apellidos')
+                    ->join('persona','vale.persona_id', '=', 'persona.id')
+                    ->join('venta', 'venta.id', '=', 'vale.venta_generada_id')
+                    ->where('venta.centro_id', '=', $centro_id)
+                    ->where(function ($query) use ($texto) {
+                        if ( $texto != '' ) {
+                            if(!is_nan($texto)){
+                                $query->where('persona.dni', '=', $texto)
+                                ->orWhere('persona.ruc', '=', $texto);
+                            }else{
+                                $query->where('persona.razon_social', 'like', '%'.$texto.'%')
+                                ->orWhere('persona.nombres', 'like', '%'. $texto . '%')
+                                ->orWhere('persona.apellidos', 'like', '%'. $texto . '%');
+                            }
+                        }
+                    })
+                    ->where(function ($query) use ($estado) {
+                        if ( $estado != 3 ) {
+                            if($estado == 1) $query->whereNotNull('vale.venta_usada_id'); //USADA
+                            if($estado == 2) $query->whereNull('vale.venta_usada_id'); //SIN USAR
+                        }
+                    })
+                    // ->orderBy('vale.id', 'desc')->get();
+                    ->orderBy('vale.id', 'desc')->paginate($filas);
+        
+        return [
+            'paginacion' => [
+                'total' => $vales->total(),
+                'currentPage' => $vales->currentPage(),
+                'perPage' => $vales->perPage(),
+                'lastPage' => $vales->lastPage(),
+                'firstItem' => $vales->firstItem(),
+                'lastItem' => $vales->lastItem()
+            ],
+            'vales' => $vales
+        ];
+
+    }
 }
