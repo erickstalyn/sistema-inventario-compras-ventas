@@ -761,18 +761,18 @@
                                         <div class="col-md-12 form-group">
                                             <label class="font-weight-bold h5">BENEFICIOS</label>
                                         </div>
-                                        <div class="col-md-12" v-if="ValeU.id!=null">
+                                        <div class="col-md-12" v-if="Vale.generado.id!=null">
                                             <div class="col-md-12 input-group form-group">
                                                 <label class="col-md-6 font-weight-bold">Monto</label>
-                                                <label class="col-md-6 text-white" v-text="'S/. '+ValeU.monto"></label>
+                                                <label class="col-md-6 text-white" v-text="'S/. '+Vale.generado.monto"></label>
                                             </div>
                                             <div class="col-md-12 input-group form-group">
                                                 <label class="col-md-6 font-weight-bold">Fecha</label>
-                                                <label class="col-md-6 text-white" v-text="fix(7, ValeU.created_at)"></label>
+                                                <label class="col-md-6 text-white" v-text="fix(7, Vale.generado.created_at)"></label>
                                             </div>
                                             <div class="col-md-12 input-group form-group">
                                                 <label class="col-md-6 font-weight-bold">Hora</label>
-                                                <label class="col-md-6 text-white" v-text="fix(8, ValeU.created_at)"></label>
+                                                <label class="col-md-6 text-white" v-text="fix(8, Vale.generado.created_at)"></label>
                                             </div>
                                         </div>
                                     </div>
@@ -782,18 +782,18 @@
                                         <div class="col-md-12 form-group">
                                             <label class="font-weight-bold h5">DESCUENTOS</label>
                                         </div>
-                                        <div class="col-md-12" v-if="ValeU.id!=null">
+                                        <div class="col-md-12" v-if="Vale.generado.id!=null">
                                             <div class="col-md-12 input-group form-group">
                                                 <label class="col-md-6 font-weight-bold">Monto</label>
-                                                <label class="col-md-6 text-white" v-text="'S/. '+ValeU.monto"></label>
+                                                <label class="col-md-6 text-white" v-text="'S/. '+Vale.generado.monto"></label>
                                             </div>
                                             <div class="col-md-12 input-group form-group">
                                                 <label class="col-md-6 font-weight-bold">Fecha</label>
-                                                <label class="col-md-6 text-white" v-text="fix(7, ValeU.created_at)"></label>
+                                                <label class="col-md-6 text-white" v-text="fix(7, Vale.generado.created_at)"></label>
                                             </div>
                                             <div class="col-md-12 input-group form-group">
                                                 <label class="col-md-6 font-weight-bold">Hora</label>
-                                                <label class="col-md-6 text-white" v-text="fix(8, ValeU.created_at)"></label>
+                                                <label class="col-md-6 text-white" v-text="fix(8, Vale.generado.created_at)"></label>
                                             </div>
                                         </div>
                                     </div>
@@ -1937,7 +1937,7 @@
             },
             remove(numero, data = ''){
                 switch (numero) {
-                    case 'venta.detalle_venta':
+                    case 'detalle_venta':
                         console.log("on remove('detalle_venta')");
 
                         if ( this.Modal.numero == 1 ) {
