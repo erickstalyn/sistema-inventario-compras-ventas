@@ -293,8 +293,7 @@ class VentaController extends Controller {
                     $detalle->venta_id = $venta->id;
                     $detalle->nombre_producto = $det['nombre_producto'];
                     $detalle->cantidad = $det['cantidad']+$det['cantidad_add'];
-                    // $detalle->cantidad_fallido = $det['cantidad_fallido'] + $det['cantidad_fallido_add'];
-                    $detalle->cantidad_fallido += $det['cantidad_fallido_add'];
+                    $detalle->cantidad_fallido = $det['cantidad_fallido'] + $det['cantidad_fallido_add'];
                     $detalle->precio = $dataVenta['tipo_precio']==1?$det['precio_menor']:$det['precio_mayor'];
                     $detalle->subtotal = $det['subtotal'];
                     $detalle->save();
