@@ -82,7 +82,7 @@ class VentaController extends Controller {
         
         $now = Carbon::now('America/Lima')->toDateTimeString();
         $dataVenta = $request->dataVenta;
-        $dataValeU = $request->dataValeU;
+        $dataVale = $request->dataVale;
         $dataCliente = $request->dataCliente;
         $dataPago = $request->dataPago;
         $listDetalle = $request->listDetalle;
@@ -141,9 +141,9 @@ class VentaController extends Controller {
             $venta->save();
 
             //vale
-            if ( $dataValeU['id'] != null ) {
-                if ( $dataValeU['id'] > 0 ) {
-                    $vale = Vale::findOrFail($dataValeU['id']);
+            if ( $dataVale['usado']['id'] != null ) {
+                if ( $dataVale['usado']['id'] > 0 ) {
+                    $vale = Vale::findOrFail($dataVale['usado']['id']);
                     $vale->venta_usada_id = $venta->id; // venta_usada_id
                     $vale->updated_at = $now;   // updated_at
                     $vale->save();

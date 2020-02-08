@@ -230,7 +230,7 @@
                             <div class="col-md-12 p-0 m-0 input-group" v-if="Step.number==1" style="height: 26rem;">
                                 <div class="container-small col-md-12 form-group" style="height: 7rem;">
                                     <div class="shadow rounded pt-2 bg-success input-group" style="border: 1px solid; height: 7rem;">
-                                        <div class="col-md-2 form-group input-group">
+                                        <!-- <div class="col-md-2 form-group input-group">
                                             <label class="col-md-2 font-weight-bold">CLIENTE</label>
                                         </div>
                                         <div class="col-md-10 form-group input-group">
@@ -276,6 +276,55 @@
                                             <button type="button" class="btn btn-circle btn-sm btn-outline-danger" @click="remove('cliente')" title="ELIMINAR"> 
                                                 <i class="fas fa-trash-alt"></i>
                                             </button>
+                                        </div> -->
+                                        <div class="col-md-2 form-group">
+                                            <label class="h5 font-weight-bold">CLIENTE</label>
+                                        </div>
+                                        <div class="col-md-10 input-group form-group">
+                                            <label class="col-md-1 p-0 font-weight-bold">RUC/DNI&nbsp;<span class="text-danger" v-if="Venta.tipo_pago=='2'">*</span></label>
+                                            <div class="col-md-3">
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control form-control-sm" v-model="Service.document" @keyup.enter="consultar()" maxlength="11">
+                                                    <button type="button" class="btn btn-sm btn-primary" @click="consultar()">
+                                                        <i class="fas fa-sync-alt"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <h5>
+                                                    <span role="status" :class="Service.loadclass"></span>&nbsp;
+                                                    <span v-text="Service.msm" :class="Service.msmclass"></span>
+                                                </h5>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-11 form-group input-group" v-if="Cliente.tipo=='P'">
+                                            <div class="col-md-4 input-group">
+                                                <label class="col-md-3">DNI</label>
+                                                <input type="text" class="col-md-6 form-control form-control-sm" readonly v-model="Cliente.dni">
+                                            </div>
+                                            <div class="col-md-4 input-group">
+                                                <label class="col-md-4 p-0">Nombres</label>
+                                                <input type="text" class="col-md-8 form-control form-control-sm" readonly v-model="Cliente.nombres">
+                                            </div>
+                                            <div class="col-md-4 input-group">
+                                                <label class="col-md-4 p-0">Apellidos</label>
+                                                <input type="text" class="col-md-8 form-control form-control-sm" readonly v-model="Cliente.apellidos">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-11 form-group input-group" v-else-if="Cliente.tipo=='E'">
+                                            <div class="col-md-4 input-group">
+                                                <label class="col-md-3">RUC</label>
+                                                <input type="text" class="col-md-6 form-control form-control-sm" readonly v-model="Cliente.ruc">
+                                            </div>
+                                            <div class="col-md-8 input-group">
+                                                <label class="col-md-3">Razón social</label>&nbsp;
+                                                <input type="text" class="col-md-9 form-control form-control-sm" readonly v-model="Cliente.razon_social">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-1 form-group d-flex justify-content-center" v-if="Cliente.removable==true">
+                                            <button type="button" class="btn btn-circle btn-sm btn-outline-danger" @click="remove('cliente')" title="ELIMINAR"> 
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -305,7 +354,7 @@
                                     </div>
                                 </div>
                                 <div class="container-small col-md-4">
-                                    <div class="shadow rounded pt-2 bg-success" style="border: 1px solid; height: 18rem;" v-if="ValeU.id!=null">
+                                    <div class="shadow rounded pt-2 bg-success" style="border: 1px solid; height: 18rem;" v-if="Vale.usado.id!=null">
                                         <div class="col-md-12 form-group">
                                             <label class="font-weight-bold h5">VALE</label>
                                         </div>
@@ -501,21 +550,21 @@
                                         <div class="col-md-12 form-group">
                                             <label class="font-weight-bold h5">BENEFICIOS</label>
                                         </div>
-                                        <div v-if="ValeU.monto!=null" class="col-md-12 form-group p-0">
+                                        <div v-if="Vale.generado.monto!=null" class="col-md-12 form-group p-0">
                                             <div class="col-md-12 input-group form-group">
                                                 <label class="col-md-12 d-flex justify-content-center">-- VALE GENERADO --</label>
                                             </div>
                                             <div class="col-md-12 input-group form-group">
                                                 <label class="col-md-6 font-weight-bold">Monto</label>
-                                                <label class="col-md-6 text-white" v-text="'S/. '+ValeU.monto"></label>
+                                                <label class="col-md-6 text-white" v-text="'S/. '+Vale.generado.monto"></label>
                                             </div>
                                             <div class="col-md-12 input-group form-group">
                                                 <label class="col-md-6 font-weight-bold">Fecha</label>
-                                                <label class="col-md-6 text-white" v-text="fix(7, ValeU.created_at)"></label>
+                                                <label class="col-md-6 text-white" v-text="fix(7, Vale.generado.created_at)"></label>
                                             </div>
                                             <div class="col-md-12 input-group form-group">
                                                 <label class="col-md-6 font-weight-bold">Hora</label>
-                                                <label class="col-md-6 text-white" v-text="fix(8, ValeU.created_at)"></label>
+                                                <label class="col-md-6 text-white" v-text="fix(8, Vale.generado.created_at)"></label>
                                             </div>
                                         </div>
                                     </div>
@@ -525,21 +574,21 @@
                                         <div class="col-md-12 form-group">
                                             <label class="font-weight-bold h5">DESCUENTOS</label>
                                         </div>
-                                        <div v-if="ValeU.monto!=null" class="col-md-12 form-group p-0">
+                                        <div v-if="Vale.usado.monto!=null" class="col-md-12 form-group p-0">
                                             <div class="col-md-12 input-group form-group">
                                                 <label class="col-md-12 d-flex justify-content-center">-- VALE USADO --</label>
                                             </div>
                                             <div class="col-md-12 input-group form-group">
                                                 <label class="col-md-6 font-weight-bold">Monto</label>
-                                                <label class="col-md-6 text-white" v-text="'S/. '+ValeU.monto"></label>
+                                                <label class="col-md-6 text-white" v-text="'S/. '+Vale.usado.monto"></label>
                                             </div>
                                             <div class="col-md-12 input-group form-group">
                                                 <label class="col-md-6 font-weight-bold">Fecha</label>
-                                                <label class="col-md-6 text-white" v-text="fix(7, ValeU.created_at)"></label>
+                                                <label class="col-md-6 text-white" v-text="fix(7, Vale.usado.created_at)"></label>
                                             </div>
                                             <div class="col-md-12 input-group form-group">
                                                 <label class="col-md-6 font-weight-bold">Hora</label>
-                                                <label class="col-md-6 text-white" v-text="fix(8, ValeU.created_at)"></label>
+                                                <label class="col-md-6 text-white" v-text="fix(8, Vale.usado.created_at)"></label>
                                             </div>
                                         </div>
                                     </div>
@@ -594,8 +643,8 @@
                                             <label class="h5 mb-0 font-weight-bold">LISTA DE PRODUCTOS</label>
                                         </div>
                                         <div class="col-md-12 input-group form-group">
-                                            <input type="search" class="form-control form-control-sm" v-model="Service.text" @keyup.enter="list(0)" id="filtroProducto" placeholder="Producto,marca,modelo,tamaño,color">
-                                            <button type="button" class="btn btn-sm btn-primary" @click="list(0)">
+                                            <input type="search" class="form-control form-control-sm" v-model="Service.text" @keyup.enter="list('detalle_producto')" id="filtroProducto" placeholder="Producto,marca,modelo,tamaño,color">
+                                            <button type="button" class="btn btn-sm btn-primary" @click="list('detalle_producto')">
                                                 <i class="fa fa-search"></i>&nbsp; Buscar
                                             </button>
                                         </div>
@@ -643,9 +692,8 @@
                                                     <tr class="table-success">
                                                         <th class="text-center">Quitar</th>
                                                         <th class="text-center">Nombre</th>
-                                                        <th class="text-center" style="width: 5rem;">Fallidos</th>
-                                                        <th class="text-center" style="width: 5rem;">Adicional</th>
-                                                        <th class="text-center">Cantidad</th>
+                                                        <th class="text-center" style="width: 8rem;">Fallidos</th>
+                                                        <th class="text-center" style="width: 8rem;">Cantidad</th>
                                                         <th class="text-center">Precio</th>
                                                         <th class="text-center">Subtotal</th>
                                                     </tr>
@@ -658,15 +706,19 @@
                                                             </button>
                                                         </td>
                                                         <td v-text="detalle.nombre_producto"></td>
-                                                        <td v-if="detalle.id!=null">
-                                                            <input type="number" v-model="detalle.fallidos" class="form-control form-control-sm text-right" :min="detalle.fallidos_start" :max="detalle.cantidad_start" @click="update('detalle_venta.cantidad_fallido', indice)" @keyup="update('detalle_venta.cantidad_fallido', indice)">
+                                                        <td v-if="detalle.id!=null" class="text-right">
+                                                            <div class="input-group p-0 m-0">
+                                                                <input type="number" v-model="detalle.fallidos_add" class="form-control form-control-sm text-right" style="width: 4rem;" :min="detalle.fallidos_start" :max="detalle.cantidad_start" @click="update('detalle_venta.cantidad_fallido', indice)" @keyup="update('detalle_venta.cantidad_fallido', indice)">
+                                                                &nbsp;&nbsp;<label v-text="'+ '+detalle.cantidad_fallido"></label>
+                                                            </div>
                                                         </td>
                                                         <td v-else class="text-center">--</td>
-                                                        <td v-if="detalle.id!=null">
-                                                            <input type="number" v-model="detalle.cantidad_add" class="form-cont-rol form-control-sm text-right" min="0" :max="detalle.substock" @click="update('detalle_venta.subtotal')" @keyup="update('detalle_venta.subtotal')">
+                                                        <td class="text-right">
+                                                            <div class="input-group p-0 m-0">
+                                                                <input type="number" v-model="detalle.cantidad_add" class="form-control form-control-sm text-right" style="width: 4rem;" min="0" :max="detalle.substock" @click="update('detalle_venta.subtotal')" @keyup="update('detalle_venta.subtotal')">
+                                                                &nbsp;&nbsp;<label v-text="'+ '+detalle.cantidad" v-if="detalle.id!=null"></label>
+                                                            </div>
                                                         </td>
-                                                        <td v-else class="text-center">--</td>
-                                                        <td class="text-right" v-text="detalle.cantidad"></td>
                                                         <td class="text-right" v-text="Venta.tipo_precio=='1'?detalle.precio_menor:detalle.precio_mayor"></td>
                                                         <td class="text-right" v-text="Number.parseFloat(detalle.subtotal).toFixed(2)">
                                                         </td>
@@ -734,7 +786,7 @@
                                                 <input type="text" class="col-md-9 form-control form-control-sm" readonly v-model="Cliente.razon_social">
                                             </div>
                                         </div>
-                                        <div class="col-md-1 form-group d-flex justify-content-center" v-if="Cliente.trash==true">
+                                        <div class="col-md-1 form-group d-flex justify-content-center" v-if="Cliente.removable==true">
                                             <button type="button" class="btn btn-circle btn-sm btn-outline-danger" @click="remove('cliente')" title="ELIMINAR"> 
                                                 <i class="fas fa-trash-alt"></i>
                                             </button>
@@ -808,10 +860,10 @@
                                             <label class="col-md-1 p-0 text-white text-right p-0">S/.</label>
                                             <label class="col-md-4 p-0 text-white text-right" v-text="Number.parseFloat(Venta.total_venta).toFixed(2)"></label>
                                         </div>
-                                        <div class="col-md-12 input-group form-group" v-if="ValeU.id!=null">
+                                        <div class="col-md-12 input-group form-group" v-if="Vale.usado.id!=null">
                                             <label class="col-md-7 p-0 font-weight-bold">Monto de vale</label>
                                             <label class="col-md-1 p-0 text-white text-right p-0">S/.</label>
-                                            <label class="col-md-4 p-0 text-white text-right" v-text="'- '+Number.parseFloat(ValeU.monto).toFixed(2)"></label>
+                                            <label class="col-md-4 p-0 text-white text-right" v-text="'- '+Number.parseFloat(Vale.usado.monto).toFixed(2)"></label>
                                         </div>
                                         <div class="col-md-10 bg-white m-4"><hr></div>
                                         <div class="col-md-12 input-group form-group">
@@ -1090,7 +1142,7 @@
                 axios.post(url, {
                     'dataVenta': this.Venta,
                     'dataPago': this.Pago,
-                    'dataValeU': this.ValeU,
+                    'dataVale': this.Vale,
                     'dataCliente': this.Cliente,
                     'listDetalle': this.ListaDetalle
                 }).then(function(response){
@@ -1127,8 +1179,7 @@
                     'dataVenta': this.Venta,
                     'dataCliente': this.Cliente,
                     'dataPago': this.Pago,
-                    'dataValeU': this.ValeU,
-                    'dataValeG': this.ValeG,
+                    'dataVale': this.Vale,
                     'listDetalle': this.ListaDetalle
                 }).then(function(response){
                     me.cerrarModal();
@@ -1238,9 +1289,9 @@
             },
             abrirModalAgregar(){
                 this.Venta.total_venta = 0;
-                this.Venta.total_descuento = 0;
+                this.Venta.total_descuento = null;
                 this.Venta.total = 0;
-                this.Venta.total_faltante = 0;
+                this.Venta.total_faltante = null;
                 this.Venta.tipo_pago = '1';
                 this.Venta.tipo_entrega = '1';
                 this.Venta.tipo_precio = '1';
@@ -1259,6 +1310,7 @@
                 this.Cliente.razon_social = null;
                 this.Cliente.ruc = null;
                 this.Cliente.tipo = null;
+                this.Cliente.removable = false;
                 
                 this.Service.document = '';
                 this.Service.msm = '';
@@ -1334,15 +1386,15 @@
                 this.Cliente.search = data.cliente_id==null?true:false;
                 this.Cliente.trash = false;
 
-                this.ValeU.id = data.vale_usada_id;
-                this.ValeU.monto = data.vale_usada_monto;
-                this.ValeU.venta_usada_id = data.id;
-                this.ValeU.created_at = data.vale_usada_created_at;
+                this.Vale.id = data.vale_usada_id;
+                this.Vale.monto = data.vale_usada_monto;
+                this.Vale.venta_usada_id = data.id;
+                this.Vale.created_at = data.vale_usada_created_at;
 
-                this.ValeG.id = data.vale_generada_id;
-                this.ValeG.monto = data.vale_generada_monto;
-                this.ValeG.created_at = data.vale_generada_created_at;
-                this.ValeG.monto_start = data.vale_generada_monto;
+                this.Vale.generado.id = data.vale_generada_id;
+                this.Vale.generado.monto = data.vale_generada_monto;
+                this.Vale.generado.created_at = data.vale_generada_created_at;
+                this.Vale.generado.monto_start = data.vale_generada_monto;
 
                 this.ListaProducto = [];
                 this.ListaDetalle = [];
@@ -1429,13 +1481,13 @@
                 this.ListaPago = null;
                 this.Pago.monto = null;
 
-                this.ValeU.id = null;
-                this.ValeU.monto = null;
-                this.ValeU.created_at = null;
+                this.Vale.usado.id = null;
+                this.Vale.usado.monto = null;
+                this.Vale.usado.created_at = null;
 
-                this.ValeG.id = null;
-                this.ValeG.monto = null;
-                this.ValeG.created_at = null;
+                this.Vale.generado.id = null;
+                this.Vale.generado.monto = null;
+                this.Vale.generado.created_at = null;
 
                 this.ListaProducto = null;
 
@@ -1459,14 +1511,20 @@
                                 this.Error.mensaje.push('Debe ingresar datos del cliente');
                             }
                             break;
-                        case 1: // tipo de venta
-                            if( this.Venta.tipo_pago == '2' ){
-                                if ( Number.parseFloat(this.Pago.monto) < 0 ){
-                                    this.Error.mensaje.push('El pago inicial debe ser mayor o igual a 0')
-                                } else if ( Number.parseFloat(this.Pago.monto) > Number.parseFloat(this.Venta.total) ){
-                                    this.Error.mensaje.push('El pago inicial no debe ser mayor al monto total')
-                                } else if ( Number.parseFloat(this.Pago.monto) == Number.parseFloat(this.Venta.total) ){
-                                    this.Error.mensaje.push('El pago inicial es igual al monto total, se recomienda cambiarlo a una venta al contado')
+                        case 1: // pago
+                            if ( this.Modal.numero == 1 ) {
+                                if( this.Venta.tipo_pago == '2' ){
+                                    if ( this.Pago.monto == '' ) {
+                                        this.Error.mensaje.push('Debe ingresar un pago inicial')
+                                    } else {
+                                        if ( Number.parseFloat(this.Pago.monto) < 0 ){
+                                            this.Error.mensaje.push('El pago inicial debe ser mayor o igual a 0')
+                                        } else if ( Number.parseFloat(this.Pago.monto) > Number.parseFloat(this.Venta.total) ){
+                                            this.Error.mensaje.push('El pago inicial no debe ser mayor al monto total')
+                                        } else if ( Number.parseFloat(this.Pago.monto) == Number.parseFloat(this.Venta.total) ){
+                                            this.Error.mensaje.push('El pago inicial es igual al monto total, se recomienda cambiarlo a una venta al contado')
+                                        }
+                                    }
                                 }
                             }
                             break;
@@ -1583,7 +1641,7 @@
                         me.Service.document = '';
 
                         me.update('cliente.removable');
-                        me.get('vale_usado', persona.id);
+                        me.get('vale.usado', persona.id);
                     } else { //No esxiste la persona en la db
                         if ( me.Service.document.length == 8 ){
                             me.consultarDNI();
@@ -1719,29 +1777,50 @@
                         let found = false;
                         for (let i = 0; i < this.ListaDetalle.length; i++) {
                             if ( this.ListaDetalle[i].detalle_producto_id == data.detalle.id ){
-                                if ( this.ListaDetalle[i].cantidad < this.ListaDetalle[i].substock ) this.ListaDetalle[i].cantidad++;
+                                if ( this.Modal.numero == 1 ) {
+                                    if ( this.ListaDetalle[i].cantidad < this.ListaDetalle[i].substock ) this.ListaDetalle[i].cantidad++;
+                                }
+                                if ( this.Modal.numero == 3 ) {
+                                    if ( this.ListaDetalle[i].cantidad_add < this.ListaDetalle[i].substock ) this.ListaDetalle[i].cantidad_add++;
+                                }
                                 found = true; break;
                             }
                         }
 
                         if ( !found ){
-                            this.ListaDetalle.push({
-                                id: null,
-                                detalle_producto_id: data.detalle.id,
-                                nombre_producto: data.nombre,
-                                cantidad: 1,
-                                cantidad_start: 0,
-                                cantidad_add: 0,
-                                fallidos: 0,
-                                fallidos_add: 0,
-                                fallidos_start: 0,
-                                substock: data.detalle.substock,
-                                precio_menor: data.detalle.precio_menor,
-                                precio_mayor: data.detalle.precio_mayor,
-                                removable: true,
-                                subtotal: 0
-                            });
+                            if ( this.Modal.numero == 1 ) {
+                                this.ListaDetalle.push({
+                                    id: null,
+                                    detalle_producto_id: data.detalle.id,
+                                    nombre_producto: data.nombre,
+                                    cantidad: 1,
+                                    substock: data.detalle.substock,
+                                    precio_menor: data.detalle.precio_menor,
+                                    precio_mayor: data.detalle.precio_mayor,
+                                    subtotal: 0
+                                });
+                            }
+                            if ( this.Modal.numero == 3 ) {
+                                this.ListaDetalle.push({
+                                    id: null,
+                                    detalle_producto_id: data.detalle.id,
+                                    nombre_producto: data.nombre,
+                                    cantidad: 0,
+                                    cantidad_start: 0,
+                                    cantidad_add: 1,
+                                    cantidad_fallido: 0,
+                                    cantidad_fallido_start: 0,
+                                    cantidad_fallido_add: 0,
+                                    substock: data.detalle.substock,
+                                    precio_menor: data.detalle.precio_menor,
+                                    precio_mayor: data.detalle.precio_mayor,
+                                    removable: true,
+                                    subtotal: 0,
+                                    removed: false
+                                });
+                            }
                         } 
+
                         this.update('detalle_venta.subtotal');
                         break;
                     case 'pago':
@@ -1777,7 +1856,13 @@
                     case 'venta.total_descuento':
                         console.log('on update("venta.total_descuento")');
 
-                        this.Venta.total_descuento = this.Vale.usado.monto == null? 0 : Number.parseFloat(this.Vale.usado.monto);
+                        if ( this.Modal.numero == 1 ) {
+                            if ( this.Vale.usado.monto != null ) {
+                                if ( this.Vale.usado.monto > 0 ) {
+                                    this.Venta.total_descuento = this.Vale.usado.monto;
+                                }
+                            }
+                        }
 
                         this.update('venta.total');
                         break;
@@ -1802,9 +1887,9 @@
                         console.log('on update("venta.total_faltante")');
 
                         if ( this.Modal.numero == 1 ) {
-                            if ( this.Venta.tipo_pago == '2' ) {
+                            if ( this.Venta.tipo_pago == '2' && this.Venta.total > 0 ) {
                                 this.Venta.total_faltante = this.Venta.total;
-                            } else if ( this.Venta.tipo_pago == '1' ) {
+                            } else {
                                 this.Venta.total_faltante = null;
                             }
                         }
@@ -1814,16 +1899,16 @@
 
                                 if ( this.Venta.total < this.Venta.total_start - this.Venta.total_faltante_start ) {
                                     this.Venta.total_faltante = null;
-                                    this.ValeG.monto = (this.Venta.total_start - this.Venta.total_faltante_start) - this.Venta.total;
+                                    this.Vale.generado.monto = (this.Venta.total_start - this.Venta.total_faltante_start) - this.Venta.total;
                                 } else if ( this.Venta.total = this.Venta.total_start - this.Venta.total_faltante_start ) {
                                     this.Venta.total_faltante = null;
-                                    this.ValeG.monto = null;
+                                    this.Vale.generado.monto = null;
                                 } else if ( this.Venta.total > this.Venta.total_start - this.Venta.total_faltante_start && this.Venta.total < this.Venta.total_start) {
                                     this.Venta.total_faltante = this.Venta.total - (this.Venta.total_start - this.Venta.total_faltante_start);
-                                    this.ValeG.monto = null;
+                                    this.Vale.generado.monto = null;
                                 } else if ( this.Venta.total > this.Venta.total_start ) {
                                     this.Venta.total_faltante = this.Venta.total - (this.Venta.total_start - this.Venta.total_faltante_start);
-                                    this.ValeG.monto = null;
+                                    this.Vale.generado.monto = null;
                                 }
                             }
                         }
@@ -1836,6 +1921,11 @@
                         break;
                     case 'venta.tipo_pago':
                         console.log('on update("venta.tipo_pago")');
+
+                        if ( this.Modal.numero == 1 ) {
+                            this.update('venta.total_faltante');
+                            this.update('cliente.removable');
+                        }
 
                         if ( this.Modal.numero == 3 ) {
                             if ( (this.Venta.total > this.Venta.total_start && this.Venta.tipo.charAt(0) == '1') || this.Venta.tipo.charAt(0) == '2' ) {
@@ -1860,7 +1950,7 @@
                         console.log('on update("detalle_venta.cantidad_fallido")');
 
                         if (this.Modal.numero == 3 ) {
-                            this.ListaDetalle[data].cantidad = Number.parseFloat(this.ListaDetalle[data].cantidad_start) - Number.parseFloat(this.ListaDetalle[data].fallidos!=''?this.ListaDetalle[data].fallidos:0);
+                            this.ListaDetalle[data].cantidad = Number.parseFloat(this.ListaDetalle[data].cantidad_start) - Number.parseFloat(this.ListaDetalle[data].cantidad_fallido_add!=''?this.ListaDetalle[data].cantidad_fallido:0);
                             if ( this.ListaDetalle[data].cantidad > this.ListaDetalle[data].cantidad_start ) {
                                 this.ListaDetalle[data].cantidad = this.ListaDetalle[data].cantidad_start;
                             } else if ( this.ListaDetalle[data].cantidad < 0 ) {
@@ -1925,11 +2015,22 @@
                         break;
                     case 'cliente.removable':
                         console.log('on update("cliente.removable")');
-                        if ( this.Venta.tipo_pago == '1' && ( this.Cliente.dni != null || this.Cliente.ruc != null ) ) {
-                            this.Cliente.trash = true;
-                        } else {
-                            this.Cliente.trash = false;
+
+                        if ( this.Modal.numero == 1 ) {
+                            if ( this.Venta.tipo_pago == '1' && ( this.Cliente.dni != null || this.Cliente.ruc != null ) ) {
+                                this.Cliente.removable = true;
+                            } else {
+                                this.Cliente.removable = false;
+                            }
                         }
+                        if ( this.Modal.numero == 3 ) {
+                            if ( this.Venta.tipo_pago == '1' && ( this.Cliente.dni != null || this.Cliente.ruc != null ) ) {
+                                this.Cliente.removable = true;
+                            } else {
+                                this.Cliente.removable = false;
+                            }
+                        }
+
                         break;
                 }
 
@@ -1944,10 +2045,18 @@
                             this.ListaDetalle.splice(data, 1);
                             this.update('venta.total_venta');
                         }
+                        if ( this.Modal.numero == 3 ) {
+                            if ( this.ListaDetalle[data].id != null ) {
+                                this.ListaDetalle[data].removed = true;
+                            } else {
+                                this.ListaDetalle.splice(data, 1);
+                            }
+                            this.update('venta.total_venta');
+                        }
                         
                         break;
                     case 'cliente':
-                        console.log("on remove('detalle_venta')");
+                        console.log("on remove('cliente')");
 
                         if ( this.Modal.numero == 1 ) {
                             this.Cliente.id = null;
@@ -1959,13 +2068,23 @@
                             this.Cliente.ruc = null;
                             this.Cliente.tipo = null;
                             this.Cliente.removable = false;
-                            this.Cliente.searchable = false;
 
                             this.Vale.usado.id = null;
                             this.Vale.usado.monto = null;
                             this.Vale.usado.created_at = null;
                         }
                         
+                        break;
+                    case 'vale.usado':
+                        console.log('on remove("vale.usado")');
+
+                        if ( this.Modal.numero == 1 ) {
+                            this.Vale.id = null;
+                            this.Vale.monto = null;
+                            this.Vale.venta_usada_id = null;
+                            this.Vale.created_at = null;
+                        }
+
                         break;
                 }
             },
@@ -2013,14 +2132,11 @@
                         if ( this.Modal.numero == 2 ) {
                             for (let i = 0; i < data.length; i++) {
                                 this.ListaDetalle.push({
-                                    id: null,
                                     detalle_producto_id: data[i].detalle.id,
                                     nombre_producto: data[i].detalle.nombre_producto,
-                                    cantidad: 1,
-                                    substock: data[i].substock,
-                                    precio_menor: data[i].precio_menor,
-                                    precio_mayor: data[i].precio_mayor,
-                                    subtotal: 0
+                                    cantidad: data[i].detalle.cantidad,
+                                    precio: data[i].detalle.precio,
+                                    subtotal: data[i].detalle.subtotal
                                 });
                             }
                         }
@@ -2030,7 +2146,7 @@
                                 this.ListaDetalle.push({
                                     id: data[i].detalle.id,
                                     detalle_producto_id: data[i].detalle.detalle_producto_id,
-                                    nombre_producto: data[i].nombre_producto,
+                                    nombre_producto: data[i].detalle.nombre_producto,
                                     cantidad: data[i].detalle.cantidad,
                                     cantidad_start: data[i].detalle.cantidad,
                                     cantidad_add: 0,
@@ -2040,7 +2156,7 @@
                                     substock: data[i].substock,
                                     precio_menor: data[i].precio_menor,
                                     precio_mayor: data[i].precio_mayor,
-                                    removable: data[i].detalle.cantidad_fallido!=null?true:false,
+                                    removable: data[i].detalle.cantidad_fallido>0?false:true,
                                     subtotal: data[i].detalle.subtotal,
                                     removed: false
                                 });
@@ -2101,37 +2217,30 @@
                         let seg = n.getSeconds().toString().padStart(2, 0);
                         got =  y + '-' + m + '-' + d + ' ' + h + ':' + minu + ':' + seg;
                         break;
-                    case 'vale_usado':
-                        // if ( this.Modal.numero == 3 ){
-                        //     if ( this.Venta.tipo_pago == '1' ) break;
-                        //     if ( this.Venta.tipo_pago == '2' && this.Venta.total_faltante > 0 ) break;
-                        // }
+                    case 'vale.usado':
+                        console.log('on get("vale.usado")');
 
-                        url = this.Ruta.vale+'/get';
+                        if ( this.Modal.numero == 1 ) {
+                            url = this.Ruta.vale+'/get';
 
-                        axios.get(url, {
-                            params: {
-                                'id': data
-                            }
-                        }).then(function (response) {
-                            if ( response.data.state == 'success' && response.data.vale != null ) {
-                                me.ValeU.id = response.data.vale.id;
-                                me.ValeU.monto = response.data.vale.monto;
-                                me.ValeU.venta_usada_id = null;
-                                me.ValeU.created_at = response.data.vale.created_at;
-                            } else {
-                                me.ValeU.id = null;
-                                me.ValeU.monto = null;
-                                me.ValeU.venta_usada_id = null;
-                                me.ValeU.created_at = null;
-                            }
-                        }).catch(function (error) {
-                            me.ValeU.id = null;
-                            me.ValeU.monto = null;
-                            me.ValeU.venta_usada_id = null;
-                            me.ValeU.created_at = null;
-                            console.log(error);
-                        });
+                            axios.get(url, {
+                                params: {
+                                    'id': data 
+                                }
+                            }).then(function (response) {
+                                if ( response.data.state == 'success' && response.data.vale != null ) {
+                                    me.Vale.id = response.data.vale.id;
+                                    me.Vale.monto = response.data.vale.monto;
+                                    me.Vale.venta_usada_id = null;
+                                    me.Vale.created_at = response.data.vale.created_at;
+                                } else {
+                                    me.remove('vale.usado');
+                                }
+                            }).catch(function (error) {
+                                me.remove('vale.usado');
+                                console.log(error);
+                            });
+                        }
                         break;
                 }
                 

@@ -11,7 +11,7 @@ class Venta extends Model
     
     public function getDetalleVenta(){
         return $this->belongsToMany('App\Detalle_producto', 'App\Detalle_venta')->select('substock', 'precio_menor', 'precio_mayor')
-                    ->withPivot('id', 'nombre_producto', 'cantidad', 'subtotal', 'cantidad_fallido')->as('detalle');
+                    ->withPivot('id', 'nombre_producto', 'cantidad', 'subtotal', 'cantidad_fallido', 'precio')->as('detalle');
     }
 
     public function getPago(){
