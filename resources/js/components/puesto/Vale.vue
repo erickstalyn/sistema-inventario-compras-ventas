@@ -7,13 +7,13 @@
             <!-- Encabezado principal -->
             <div class="row form-group">
                 <i class="fas fa-map-signs"></i>&nbsp;&nbsp;
-                <span class="h3 mb-0 text-gray-900">Vale&nbsp;</span>
+                <span class="h3 mb-0 text-gray-900">Vales&nbsp;</span>
                 <!-- <button type="button" class="btn btn-success" @click="abrirModalAgregar()">
                     <i class="fas fa-hammer"></i>&nbsp; Nuevo
                 </button>&nbsp; -->
-                <button type="button" class="btn btn-danger" @click="generatePdf()">
+                <!-- <button type="button" class="btn btn-danger" @click="generatePdf()">
                     <i class="far fa-file-pdf"></i>&nbsp; PDF
-                </button>
+                </button> -->
             </div>
 
             <!-- Inputs de busqueda -->
@@ -25,7 +25,7 @@
                             <option value="1">Usado</option>
                             <option value="2">Sin usar</option>
                         </select>
-                        <input type="search" class="form-control" v-model="Busqueda.texto" @keyup.enter="listar()">
+                        <input type="search" class="form-control" v-model="Busqueda.texto" @keyup.enter="listar()" placeholder="Buscar por dni, ruc, nombres , razón social">
                         <button type="button" class="btn btn-primary" @click="listar()">
                             <i class="fa fa-search"></i>&nbsp; Buscar
                         </button>
