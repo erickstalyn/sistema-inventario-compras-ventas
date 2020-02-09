@@ -2329,15 +2329,10 @@
                     ListaVenta: this.ListaVenta,
                     Cliente: this.Cliente
                 };
-<<<<<<< HEAD
-                console.log('binnacle');
                 console.log(data);
-=======
-                console.log('binnacle: '+data);
             },
             generatePdfSpecific(){
                 window.open(this.Ruta.serverPhp + '/venta/generatePdfSpecific?id=' + this.Venta.id,'_blank');
->>>>>>> dd68d52ae53720ee9474d19d679d724991ba158b
             }
         },
         mounted() {
