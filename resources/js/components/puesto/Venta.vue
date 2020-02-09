@@ -699,9 +699,9 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr v-for="(detalle, indice) in ListaDetalle" :key="indice">
+                                                    <tr v-for="(detalle, indice) in Lista" :key="indice">
                                                         <td class="text-center">
-                                                            <button type="button" class="btn btn-circle btn-outline-danger btn-sm" title="QUITAR" @click="remove(0, indice)" v-if="detalle.removable==true">
+                                                            <button type="button" class="btn btn-circle btn-outline-danger btn-sm" title="QUITAR" @click="remove('detalle_venta', indice)" v-if="detalle.removable==true">
                                                                 <i class="fas fa-minus"></i>
                                                             </button>
                                                         </td>
@@ -1107,6 +1107,19 @@
 
                 return filas;
             },
+            Lista: function(){
+                var list = [];
+                
+                switch ( this.Modal.numero ) {
+                    case 3:
+                        this.ListaDetalle.forEach(detalle => {
+                            if ( detalle.removed == false ) list.push(detalle);
+                        });
+                        break;
+                }
+
+                return list;
+            }
         },
         methods: {
             listar(page = 1){
@@ -2029,6 +2042,7 @@
                                 this.Cliente.removable = true;
                             } else {
                                 this.Cliente.removable = false;
+                                this.remove('cliente');
                             }
                         }
                         break;
@@ -2037,10 +2051,10 @@
                 return updated;
             },
             remove(numero, data = ''){
+                console.log("on remove('"+numero+"')");
+
                 switch (numero) {
                     case 'detalle_venta':
-                        console.log("on remove('detalle_venta')");
-
                         if ( this.Modal.numero == 1 ) {
                             this.ListaDetalle.splice(data, 1);
                             this.update('venta.total_venta');
@@ -2053,11 +2067,8 @@
                             }
                             this.update('venta.total_venta');
                         }
-                        
                         break;
                     case 'cliente':
-                        console.log("on remove('cliente')");
-
                         if ( this.Modal.numero == 1 ) {
                             this.Cliente.id = null;
                             this.Cliente.documento = '';
@@ -2069,22 +2080,35 @@
                             this.Cliente.tipo = null;
                             this.Cliente.removable = false;
 
-                            this.Vale.usado.id = null;
-                            this.Vale.usado.monto = null;
-                            this.Vale.usado.created_at = null;
+                            this.remove('vale.usado');
                         }
-                        
+                        if ( this.Modal.numero == 3 ) {
+                            this.Cliente.id = null;
+                            this.Cliente.documento = '';
+                            this.Cliente.nombres = null;
+                            this.Cliente.apellidos = null;
+                            this.Cliente.dni = null;
+                            this.Cliente.razon_social = null;
+                            this.Cliente.ruc = null;
+                            this.Cliente.tipo = null;
+                            this.Cliente.removable = false;
+
+                            this.remove('vale.usado');
+                        }
                         break;
                     case 'vale.usado':
-                        console.log('on remove("vale.usado")');
-
                         if ( this.Modal.numero == 1 ) {
                             this.Vale.id = null;
                             this.Vale.monto = null;
                             this.Vale.venta_usada_id = null;
                             this.Vale.created_at = null;
                         }
-
+                        if ( this.Modal.numero == 3 ) {
+                            this.Vale.id = null;
+                            this.Vale.monto = null;
+                            this.Vale.venta_usada_id = null;
+                            this.Vale.created_at = null;
+                        }
                         break;
                 }
             },
@@ -2135,6 +2159,7 @@
                                     detalle_producto_id: data[i].detalle.id,
                                     nombre_producto: data[i].detalle.nombre_producto,
                                     cantidad: data[i].detalle.cantidad,
+                                    cantidad_fallido: data[i].detalle.cantidad_fallido,
                                     precio: data[i].detalle.precio,
                                     subtotal: data[i].detalle.subtotal
                                 });
