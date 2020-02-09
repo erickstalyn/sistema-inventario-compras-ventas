@@ -73,7 +73,7 @@
                                 </td>
                                 <td class="text-center">
                                     <template>
-                                        <button type="button" @click="abrirModalVerVenta(vale.venta_generada_id)" title="VER VENTA ORIGEN" class="btn btn-outline-primary btn-sm">
+                                        <button type="button" @click="abrirModalVerVenta(vale.venta_generada_id, vale)" title="VER VENTA ORIGEN" class="btn btn-outline-primary btn-sm">
                                             <i class="far fa-eye"></i>
                                         </button>
                                     </template>
@@ -537,12 +537,11 @@
                     console.log(error)
                 });
             },
-            abrirModalVerVenta(venta_id){
+            abrirModalVerVenta(venta_id, data){
                 let url = this.Ruta.ventaWithDetalle + '?venta_id='+venta_id;
                 let me = this;
                 axios.get(url).then(function (response) {
                     let venta = response.data.venta;
-                    
                     me.Venta.id = venta.id;
                     me.Venta.total = venta.total;
                     me.Venta.total_venta = venta.total_venta;
@@ -553,16 +552,16 @@
                     me.Venta.tipo_precio = venta.tipo.charAt(2);
                     me.Venta.created_at = venta.created_at;
 
-                    me.Cliente.id = venta.cliente_id;
-                    me.Cliente.dni = venta.dni;
-                    me.Cliente.nombres = venta.nombres;
-                    me.Cliente.apellidos = venta.apellidos;
-                    me.Cliente.ruc = venta.ruc;
-                    me.Cliente.razon_social = venta.razon_social;
-                    me.Cliente.tipo = venta.cliente_tipo;
+                    // me.Cliente.id = data[cliente_id];
+                    me.Cliente.dni = data['dni'];
+                    me.Cliente.nombres = data['nombres'];
+                    me.Cliente.apellidos = data['apellidos'];
+                    me.Cliente.ruc = data['ruc'];
+                    me.Cliente.razon_social = data['razon_social'];
+                    me.Cliente.tipo = data['tipo'];
 
                     // me.ListaPago = [];
-                    // me.ListaDetalle = []; 
+                    // me.ListaDetalle = [];
                     me.ListaDetalle = venta.get_detalle_venta; 
                     // me.list('detalle_venta', 'Ver');
 

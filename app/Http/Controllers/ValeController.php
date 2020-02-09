@@ -36,7 +36,7 @@ class ValeController extends Controller {
         $filas = $request->filas;
         $centro_id = $request->centro_id;
 
-        $vales = Vale::select('vale.id', 'vale.monto', 'vale.created_at', 'vale.updated_at', 'vale.venta_generada_id', 'persona.razon_social', 'persona.nombres', 'persona.apellidos')
+        $vales = Vale::select('vale.id', 'vale.monto', 'vale.created_at', 'vale.updated_at', 'vale.venta_generada_id', 'persona.tipo', 'persona.dni', 'persona.ruc', 'persona.razon_social', 'persona.nombres', 'persona.apellidos')
                     ->join('persona','vale.persona_id', '=', 'persona.id')
                     ->join('venta', 'venta.id', '=', 'vale.venta_generada_id')
                     ->where('venta.centro_id', '=', $centro_id)
