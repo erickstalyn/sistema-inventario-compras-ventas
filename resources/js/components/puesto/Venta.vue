@@ -1396,8 +1396,8 @@
                 this.Cliente.ruc = data.ruc;
                 this.Cliente.razon_social = data.razon_social;
                 this.Cliente.tipo = data.cliente_tipo;
-                this.Cliente.search = data.cliente_id==null?true:false;
-                this.Cliente.trash = false;
+                this.Cliente.searchable = data.cliente_id==null?true:false;
+                this.Cliente.removable = false;
 
                 this.Vale.usado.id = data.vale_usada_id;
                 this.Vale.usado.monto = data.vale_usada_monto;
@@ -1406,8 +1406,8 @@
 
                 this.Vale.generado.id = data.vale_generada_id;
                 this.Vale.generado.monto = data.vale_generada_monto;
+                this.Vale.generado.monto_start = data.vale_generada_monto==null?0:data.vale_generada_monto;
                 this.Vale.generado.created_at = data.vale_generada_created_at;
-                this.Vale.generado.monto_start = data.vale_generada_monto;
 
                 this.ListaProducto = [];
                 this.ListaDetalle = [];
@@ -2042,7 +2042,25 @@
                                 this.Cliente.removable = true;
                             } else {
                                 this.Cliente.removable = false;
-                                this.remove('cliente');
+                            }
+                        }
+                        break;
+                    case 'vale.generado.venta_id':
+                        if ( this.Modal.numero == 3 ) {
+                            if ( this.Vale.generado.monto_start == 0 ) {
+                                if ( this.Venta.total < this.Venta.total_start ) {
+                                    this.Vale.generado.monto = this.Venta.total - this.Venta.total_start;
+                                } else {
+                                    this.Vale.generado.monto = null;
+                                } 
+                            } else {
+                                if ( this.Venta.total > this.Venta.total_start && this.Venta.total-this.Venta.total_start >= this.Vale.generado.monto_start ) {
+                                    this.Vale.generado.monto = null;
+                                } else if ( this.Venta.total > this.Venta.total_start && this.Venta.total-this.Venta.total_start < this.Vale.generado.monto_start ) {
+                                    this.Vale.generado.monto = this.Vale.generado.monto_start - (this.Venta.total-this.Venta.total_start);
+                                } else {
+                                    this.Vale.generado.monto = null;
+                                } 
                             }
                         }
                         break;
@@ -2287,11 +2305,20 @@
                 }
             },
             log(){
-                console.log('binnacle: {');
-                this.ListaDetalle.forEach(detalle => {
-                    console.log('   detalle_venta.subtotal='+detalle.subtotal);
-                });
-                console.log('}');
+                var data = {
+                    Venta: this.Venta,
+                    Vale: this.Vale,
+                    ListaVenta: this.ListaVenta,
+                    ListaPago: this.ListaPago,
+                    ListaDetalle: this.ListaDetalle,
+                    Pago: this.Pago,
+                    ListaProducto: this.ListaProducto,
+                    Pago: this.Pago,
+                    ListaVenta: this.ListaVenta,
+                    ListaVenta: this.ListaVenta,
+                    Cliente: this.Cliente
+                };
+                console.log('binnacle: '+data);
             }
         },
         mounted() {
