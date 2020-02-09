@@ -316,4 +316,13 @@ class VentaController extends Controller {
         ];
     }
     
+    public function getVentaWithDetalle(Request $request){
+        $venta = Venta::findOrFail($request->venta_id);
+        $detalle = $venta->getDetalleVenta;
+
+        return [
+            'venta' => $venta,
+            'detalle' => $detalle
+        ];
+    }
 }
