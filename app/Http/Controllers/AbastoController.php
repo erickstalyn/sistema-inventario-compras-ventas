@@ -23,6 +23,7 @@ class AbastoController extends Controller
         $ordenarPor = $request->ordenarPor;
         $orden = $request->orden;
         $hoy = Carbon::now('America/Lima')->toDateString();
+        
         //Fechas
         $dia = $request->dia;
         $mes = $request->mes;

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Vale;
+use Carbon\Carbon;
 
 class ValeController extends Controller {
     
@@ -36,13 +37,16 @@ class ValeController extends Controller {
         $filas = $request->filas;
         $centro_id = $request->centro_id;
 
+        $mes = date('m');
+
         $vales = Vale::select('vale.id', 'vale.monto', 'vale.created_at', 'vale.updated_at', 'vale.venta_generada_id', 'persona.tipo', 'persona.dni', 'persona.ruc', 'persona.razon_social', 'persona.nombres', 'persona.apellidos')
                     ->join('persona','vale.persona_id', '=', 'persona.id')
                     ->join('venta', 'venta.id', '=', 'vale.venta_generada_id')
                     ->where('venta.centro_id', '=', $centro_id)
+                    ->whereMonth('vale.created_at', $mes)
                     ->where(function ($query) use ($texto) {
                         if ( $texto != '' ) {
-                            if(!is_nan($texto)){
+                            if(is_numeric($texto)){
                                 $query->where('persona.dni', '=', $texto)
                                 ->orWhere('persona.ruc', '=', $texto);
                             }else{
