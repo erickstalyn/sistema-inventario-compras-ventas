@@ -947,7 +947,12 @@
 
                     <div class="modal-footer">
                         <div class="row col-md-12 d-flex justify-content-around">
-                            <button type="button" v-if="Modal.btnA" @click="accionar()" class="btn btn-success" v-text="Modal.btnA"></button>
+                            <button type="button" v-if="Modal.btnA" @click="accionar()" :class="[Modal.numero == 2 ? 'btn btn-danger' : 'btn btn-success']">
+                                <div v-if="Modal.numero == 2">
+                                    <i class="far fa-file-pdf"></i>&nbsp; {{Modal.btnA}}
+                                </div>
+                                <div v-else>{{Modal.btnA}}</div>
+                            </button>
                             <button type="button" v-if="Modal.btnC" @click="cerrarModal()" class="btn btn-secondary" v-text="Modal.btnC"></button>
                         </div>
                     </div>
@@ -1076,7 +1081,9 @@
                     detalle_producto: '/detalle_producto',
                     detalle_venta: '/detalle_venta',
                     pago: '/pago',
-                    vale: '/vale'
+                    vale: '/vale',
+                    serverApache: 'http://127.0.0.1:80',
+                    serverPhp: 'http://127.0.0.1:8000'
                 }
             }
         },
@@ -1364,7 +1371,7 @@
                 this.ListaPago = [];
                 this.ListaDetalle = []; 
                 
-                this.abrirModal(2, 'Ver Venta', 'modal-xl', '', 'Cerrar');
+                this.abrirModal(2, 'Ver Venta', 'modal-xl', 'Generar comprobante', 'Cerrar');
 
                 this.list('detalle_venta', 'Ver');
                 this.list('pago');
@@ -1516,6 +1523,7 @@
             accionar(){
                 switch ( this.Modal.numero ){
                     case 1: this.agregar(); break;
+                    case 2: this.generatePdfSpecific(); break;
                     case 3: this.editar(); break;
                     case 4: this.pagar(); break;
                 }
@@ -1688,7 +1696,7 @@
 
                 $.ajax({
                     type: 'GET',
-                    url: "http://localhost:80/Reniec/demo.php",
+                    url: me.Ruta.serverApache + '/Reniec/demo.php',
                     data: "dni="+dni,
                     beforeSend(){
                         me.Service.msm = 'Consultado...';
@@ -1724,7 +1732,7 @@
 
                 $.ajax({
                     type: 'GET',
-                    url: "http://localhost:80/SunatPHP/demo.php",
+                    url: me.Ruta.serverApache + '/SunatPHP/demo.php',
                     data: "ruc="+ruc,
                     beforeSend(){
                         me.Service.msm = 'Consultado...';
@@ -2321,8 +2329,15 @@
                     ListaVenta: this.ListaVenta,
                     Cliente: this.Cliente
                 };
+<<<<<<< HEAD
                 console.log('binnacle');
                 console.log(data);
+=======
+                console.log('binnacle: '+data);
+            },
+            generatePdfSpecific(){
+                window.open(this.Ruta.serverPhp + '/venta/generatePdfSpecific?id=' + this.Venta.id,'_blank');
+>>>>>>> dd68d52ae53720ee9474d19d679d724991ba158b
             }
         },
         mounted() {
