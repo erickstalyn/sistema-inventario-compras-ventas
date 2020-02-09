@@ -270,7 +270,7 @@ class VentaController extends Controller {
             }
 
             // vale generado
-            if ( $dataVale['generado']['monto'] != NULL ){
+            if ( $dataVale['generado']['monto'] != NULL || $dataVale['generado']['monto_start'] > 0 ){
                 if ( $dataVale['generado']['monto'] > 0 ) {
                     $vale = new Vale();
                     $vale->persona_id = $persona->id;

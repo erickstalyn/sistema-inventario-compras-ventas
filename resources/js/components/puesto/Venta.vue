@@ -489,6 +489,7 @@
                                         </div>
                                         <div class="col-md-12 input-group mt-2">
                                             <div class="col-md-6">
+                                                
                                             </div>
                                             <div class="col-md-6 input-group">
                                                 <label class="col-md-6 text-right font-weight-bold h5 p-0">Monto de venta:</label>
@@ -744,8 +745,8 @@
                                             <div class="col-md-2 form-group">
                                                 <label class="h5 font-weight-bold">CLIENTE</label>
                                             </div>
-                                            <div class="col-md-10 input-group form-group" v-if="Cliente.search==true">
-                                                <label class="col-md-1 p-0 font-weight-bold">RUC/DNI&nbsp;<span class="text-danger" v-if="Venta.tipo_pago=='2'">*</span></label>
+                                            <div class="col-md-10 input-group form-group" v-if="Cliente.searchable==true">
+                                                <label class="col-md-1 p-0 font-weight-bold">RUC/DNI&nbsp;<span class="text-danger" v-if="Venta.tipo_pago=='2'||Vale.generado.monto!=null">*</span></label>
                                                 <div class="col-md-3">
                                                     <div class="input-group">
                                                         <input type="text" class="form-control form-control-sm" v-model="Service.document" @keyup.enter="consultar()" maxlength="11">
@@ -813,18 +814,27 @@
                                         <div class="col-md-12 form-group">
                                             <label class="font-weight-bold h5">BENEFICIOS</label>
                                         </div>
-                                        <div class="col-md-12" v-if="Vale.generado.id!=null">
-                                            <div class="col-md-12 input-group form-group">
-                                                <label class="col-md-6 font-weight-bold">Monto</label>
-                                                <label class="col-md-6 text-white" v-text="'S/. '+Vale.generado.monto"></label>
+                                        <div class="col-md-12" v-if="Vale.generado.monto!=null">
+                                            <div v-if="Vale.generado.id==null" class="col-md-12 form-group p-0">
+                                                <div class="col-md-12 form-group">
+                                                    <label class="col-md-12 p-0 text-center font-weight-bold">--- Se generará un vale ---</label>
+                                                </div>
+                                                <div class="col-md-12 input-group form-group">
+                                                    <label class="col-md-5 font-weight-bold">Monto</label>
+                                                    <label class="col-md-7 text-white text-right" v-text="'S/. '+Number.parseFloat(Vale.generado.monto).toFixed(2)"></label>
+                                                </div>
                                             </div>
-                                            <div class="col-md-12 input-group form-group">
-                                                <label class="col-md-6 font-weight-bold">Fecha</label>
-                                                <label class="col-md-6 text-white" v-text="fix(7, Vale.generado.created_at)"></label>
+                                            <div v-else class="col-md-12 form-group p-0">
+                                                <div class="col-md-12 form-group">
+                                                    <label class="col-md-12 text-center font-weight-bold">El vale generado se actualizara a </label>
+                                                </div>
+                                                <div class="col-md-12 input-group form-group">
+                                                    <label class="col-md-6 font-weight-bold">Monto</label>
+                                                    <label class="col-md-6 text-white" v-text="'S/. '+Vale.generado.monto"></label>
+                                                </div>
                                             </div>
-                                            <div class="col-md-12 input-group form-group">
-                                                <label class="col-md-6 font-weight-bold">Hora</label>
-                                                <label class="col-md-6 text-white" v-text="fix(8, Vale.generado.created_at)"></label>
+                                            <div class="col-md-12 form-group p-0">
+                                                <label class="col-md-12 text-center font-weight-bold">Este vale se puede utilizar en la siguiente compra que el cliente realize</label>
                                             </div>
                                         </div>
                                     </div>
@@ -1030,7 +1040,6 @@
                 },
 
                 //datos de servicios necesarios
-                StartData: null,
                 Service: {
                     document: '',
                     msm: '',
@@ -1355,10 +1364,10 @@
                 this.ListaPago = [];
                 this.ListaDetalle = []; 
                 
+                this.abrirModal(2, 'Ver Venta', 'modal-xl', '', 'Cerrar');
+
                 this.list('detalle_venta', 'Ver');
                 this.list('pago');
-
-                this.abrirModal(2, 'Ver Venta', 'modal-xl', '', 'Cerrar');
             },
             abrirModalEditar(data){
                 // if ( this.fix(10, data.created_at) != this.fix(3) || this.fix(9, data.created_at) != this.fix(2) ) {
@@ -1411,10 +1420,10 @@
 
                 this.ListaProducto = [];
                 this.ListaDetalle = [];
+                
+                this.abrirModal(3, 'Editar Venta', 'modal-xl', 'Editar', 'Cerrar');
 
                 this.list('detalle_venta', 'Editar');
-
-                this.abrirModal(3, 'Editar Venta', 'modal-xl', 'Editar', 'Cerrar');
             },
             abrirModalPagar(venta = []){
                 this.Venta.id = venta.id;
@@ -1463,8 +1472,6 @@
                 this.Service.loadclass = '';
                 this.Service.text = '';
 
-                this.StartData = null;
-
                 this.Venta.id = null;
                 this.Venta.total_venta = null;
                 this.Venta.total_venta_start = null;
@@ -1488,8 +1495,8 @@
                 this.Cliente.ruc = null;
                 this.Cliente.razon_social = null;
                 this.Cliente.tipo = null;
-                this.Cliente.search = null;
-                this.Cliente.trash = null;
+                this.Cliente.searchable = null;
+                this.Cliente.removable = null;
 
                 this.ListaPago = null;
                 this.Pago.monto = null;
@@ -1526,8 +1533,10 @@
                                 }
                             }
                             if ( this.Modal.numero == 3 ) {
-                                if ( (this.Venta.tipo_pago == 2 && this.Cliente.dni == null && this.Cliente.ruc == null) || (this.Venta.tipo == 1 && this.Venta.total < this.Venta.total_start) ) {
-                                    this.Error.mensaje.push('Debe ingresar datos del cliente');
+                                if ( this.Cliente.dni == null && this.Cliente.ruc == null ) {
+                                    if ( this.Venta.tipo_pago == 2 || (this.Venta.tipo_pago == 1 && this.Vale.generado.monto != null ) ) {
+                                        this.Error.mensaje.push('Debe ingresar datos del cliente');
+                                    }
                                 }
                             }
                             break;
@@ -1899,10 +1908,10 @@
                             this.Venta.total = this.Venta.total_venta - total_descuento;
                             if ( this.Venta.total > this.Venta.total_start ) this.Venta.tipo_pago = '2';
 
-                            this.log('end');
                             this.update('venta.tipo_pago');
                             this.update('venta.total_faltante');
                             this.update('cliente.removable');
+                            this.update('vale.generado');
                         }
                         break;
                     case 'venta.total_faltante':
@@ -2001,15 +2010,9 @@
                         if ( this.Modal.numero == 3 ) {
                             this.ListaDetalle.forEach(detalle => {
                                 let precio = this.Venta.tipo_precio=='1'?detalle.precio_menor:(this.Venta.tipo_precio=='2'?detalle.precio_mayor:0);
-                                console.log('precio='+precio);
                                 let cantidad = Number.parseFloat(detalle.cantidad);
-                                console.log('cantidad='+cantidad);
                                 let cantidad_add = Number.parseFloat(detalle.cantidad_add!=''? detalle.cantidad_add : 0);
-                                console.log('cantidad_add='+cantidad_add);
                                 detalle.subtotal = Number.parseFloat(precio) * (cantidad + cantidad_add);
-                                
-                                
-                                
                             });
                         }
 
@@ -2045,11 +2048,11 @@
                             }
                         }
                         break;
-                    case 'vale.generado.venta_id':
+                    case 'vale.generado':
                         if ( this.Modal.numero == 3 ) {
                             if ( this.Vale.generado.monto_start == 0 ) {
                                 if ( this.Venta.total < this.Venta.total_start ) {
-                                    this.Vale.generado.monto = this.Venta.total - this.Venta.total_start;
+                                    this.Vale.generado.monto = this.Venta.total_start - this.Venta.total;
                                 } else {
                                     this.Vale.generado.monto = null;
                                 } 
@@ -2318,7 +2321,8 @@
                     ListaVenta: this.ListaVenta,
                     Cliente: this.Cliente
                 };
-                console.log('binnacle: '+data);
+                console.log('binnacle');
+                console.log(data);
             }
         },
         mounted() {
