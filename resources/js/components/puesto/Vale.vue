@@ -560,10 +560,8 @@
                     me.Cliente.razon_social = data['razon_social'];
                     me.Cliente.tipo = data['tipo'];
 
-                    // me.ListaPago = [];
-                    // me.ListaDetalle = [];
+                    me.ListaPago = [];
                     me.ListaDetalle = venta.get_detalle_venta; 
-                    // me.list('detalle_venta', 'Ver');
 
                     me.list('pago');
                     me.abrirModal(2, 'Ver Venta', 'modal-xl', '', 'Cerrar');
