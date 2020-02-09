@@ -395,7 +395,6 @@
                 },
                 ListaDetalle: null,
                 ListaPago: null,
-                YaIngrese: 0,
                 //datos de busqueda y filtracion
                 Busqueda: {
                     texto: '',
@@ -492,31 +491,6 @@
                 }
 
                 return filas;
-            },
-            permisoModalFooter: function(){
-                if ( this.Modal.numero == 1 ) return true;
-                if ( this.Modal.numero == 2 ) return true;
-
-                return false;
-            },
-            selectUnidadFiltrado: function(){
-                // console.log('Soy el computado selectUnidadFiltrado');
-                let selectUnidadFiltrado = [];
-                // console.log('tamaño de SelectUnidad: ' + this.SelectUnidad.length);
-                if(this.SelectUnidad.length){
-                    this.SelectUnidad.forEach(unidad => {
-                        if(unidad.subtipo == this.Vale.subtipo){
-                            selectUnidadFiltrado.push(unidad);
-                        }
-                    });
-
-                    if(this.Modal.numero == 1  || this.YaIngrese) {//Es moda nuevo o ya ingrese
-                        this.Vale.unidad = '';
-                    }else{
-                        this.YaIngrese = 1;
-                    }
-                    return selectUnidadFiltrado;
-                }
             }
         },
         methods: {
@@ -627,58 +601,6 @@
                 // this.Pago.monto = null;
 
                 this.ListaDetalle = null;
-            },
-            accionar(accion){
-                switch( accion ){
-                    case 'Agregar': {
-                        this.agregar();
-                        break;
-                    }
-                }
-            },
-            getTitulo(titulo){
-                var seleccionada = 0;
-
-                for (let i = 0; i < this.Headers.length; i++) {
-                    if ( titulo == this.Headers[i].titulo && this.Navegacion.ordenarPor == this.Headers[i].nombre ) {
-                        seleccionada = 1;
-                        break;
-                    }
-                }
-
-                if ( seleccionada == 1 ) {
-                    if ( this.Navegacion.orden == 'asc' ) {
-                        titulo = titulo + ' ^';
-                    } else {
-                        titulo = titulo + ' v';
-                    }
-                }
-
-                return titulo;
-            },
-            validar(){
-                this.Error.estado = 0;
-                this.Error.mensaje = [];
-
-                //Recorrere la lista de Vale
-                if(this.Modal.numero == 1){
-                    //Modal agregar
-                    if ( !this.Vale.nombre ) this.Error.mensaje.push("Debe ingresar un nombre");
-                    if ( !this.Vale.unidad ) this.Error.mensaje.push("Debe seleccionar una Unid. Medida");
-                    if ( this.Vale.costo == 0 || this.Vale.costo < 0) this.Error.mensaje.push("Debe ingresar un costo válido");
-                }else{
-                    //Modal editar
-                    if(this.Vale.nombre == this.ValeOrigen.nombre && this.Vale.subtipo == this.ValeOrigen.subtipo && this.Vale.unidad == this.ValeOrigen.unidad && this.Vale.costo == this.ValeOrigen.costo){
-                        this.Error.mensaje.push("Ningun cambio realizado");
-                    }else{ 
-                        if ( !this.Vale.nombre ) this.Error.mensaje.push("Debe ingresar un nombre");
-                        if ( !this.Vale.unidad ) this.Error.mensaje.push("Debe seleccionar una Unid. Medida");
-                        if ( this.Vale.costo == 0 || this.Vale.costo < 0) this.Error.mensaje.push("Debe ingresar un costo válido");
-                    }
-                }
-
-                if ( this.Error.mensaje.length ) this.Error.estado = 1;
-                return this.Error.estado;
             },
             cambiarPagina(page){
                 if ( page >= 1 && page <= this.Paginacion.lastPage) {
