@@ -708,7 +708,7 @@
                                                         <td v-text="detalle.nombre_producto"></td>
                                                         <td v-if="detalle.id!=null" class="text-right">
                                                             <div class="input-group p-0 m-0">
-                                                                <input type="number" v-model="detalle.cantidad_fallido_add" class="form-control form-control-sm text-right" style="width: 4rem;" :min="detalle.cantidad_fallido_start" :max="detalle.cantidad_start" @click="update('detalle_venta.cantidad_fallido', indice)" @keyup="update('detalle_venta.cantidad_fallido', indice)">
+                                                                <input type="number" v-model="detalle.cantidad_fallido_add" class="form-control form-control-sm text-right" style="width: 4rem;" min="0" :max="detalle.cantidad_start" @click="update('detalle_venta.cantidad_fallido', indice)" @keyup="update('detalle_venta.cantidad_fallido', indice)">
                                                                 &nbsp;&nbsp;<label v-text="'+ '+detalle.cantidad_fallido"></label>
                                                             </div>
                                                         </td>
@@ -1386,10 +1386,10 @@
                 this.Cliente.search = data.cliente_id==null?true:false;
                 this.Cliente.trash = false;
 
-                this.Vale.id = data.vale_usada_id;
-                this.Vale.monto = data.vale_usada_monto;
-                this.Vale.venta_usada_id = data.id;
-                this.Vale.created_at = data.vale_usada_created_at;
+                this.Vale.usado.id = data.vale_usada_id;
+                this.Vale.usado.monto = data.vale_usada_monto;
+                this.Vale.usado.venta_usada_id = data.id;
+                this.Vale.usado.created_at = data.vale_usada_created_at;
 
                 this.Vale.generado.id = data.vale_generada_id;
                 this.Vale.generado.monto = data.vale_generada_monto;
@@ -1507,8 +1507,15 @@
                 for (let i = 0; i < data.length; i++) {
                     switch ( data[i] ) {
                         case 0: // cliente
-                            if ( this.Venta.tipo_pago == 2 && this.Cliente.dni == null && this.Cliente.ruc == null ) {
-                                this.Error.mensaje.push('Debe ingresar datos del cliente');
+                            if ( this.Modal.numero == 1 ) {
+                                if ( this.Venta.tipo_pago == 2 && this.Cliente.dni == null && this.Cliente.ruc == null ) {
+                                    this.Error.mensaje.push('Debe ingresar datos del cliente');
+                                }
+                            }
+                            if ( this.Modal.numero == 3 ) {
+                                if ( (this.Venta.tipo_pago == 2 && this.Cliente.dni == null && this.Cliente.ruc == null) || (this.Venta.tipo == 1 && this.Venta.total < this.Venta.total_start) ) {
+                                    this.Error.mensaje.push('Debe ingresar datos del cliente');
+                                }
                             }
                             break;
                         case 1: // pago
@@ -1539,7 +1546,7 @@
                                     }
                                     if ( this.ListaDetalle[i].cantidad > this.ListaDetalle[i].substock && !found_b ){
                                         this.Error.mensaje.push('Las cantidades no pueden superar al stock'); found_b = true;
-                                    } 
+                                    }
                                     if ( found_a && found_b ) break;
                                 }
                             }
@@ -1841,12 +1848,13 @@
                 }
             },
             update(numero, data = ''){
+                console.log('on update("'+numero+'")');
+                this.log();
+
                 var updated = '';
 
                 switch (numero) {
                     case 'venta.total_venta':
-                        console.log('on update("total_venta")');
-
                         if ( this.Modal.numero == 1 || this.Modal.numero == 3 ) {
                             this.Venta.total_venta = 0;
                             this.ListaDetalle.forEach(detalle => {
@@ -1857,8 +1865,6 @@
                         this.update('venta.total');
                         break;
                     case 'venta.total_descuento':
-                        console.log('on update("venta.total_descuento")');
-
                         if ( this.Modal.numero == 1 ) {
                             if ( this.Vale.usado.monto != null ) {
                                 if ( this.Vale.usado.monto > 0 ) {
@@ -1870,8 +1876,6 @@
                         this.update('venta.total');
                         break;
                     case 'venta.total':
-                        console.log('on update("venta.total")');
-
                         if ( this.Modal.numero == 1 ) {
                             this.Venta.total = this.Venta.total_venta - this.Venta.total_descuento;
 
@@ -1882,15 +1886,13 @@
                             this.Venta.total = this.Venta.total_venta - total_descuento;
                             if ( this.Venta.total > this.Venta.total_start ) this.Venta.tipo_pago = '2';
 
+                            this.log('end');
                             this.update('venta.tipo_pago');
                             this.update('venta.total_faltante');
                             this.update('cliente.removable');
                         }
-                        
                         break;
                     case 'venta.total_faltante':
-                        console.log('on update("venta.total_faltante")');
-
                         if ( this.Modal.numero == 1 ) {
                             if ( this.Venta.tipo_pago == '2' && this.Venta.total > 0 ) {
                                 this.Venta.total_faltante = this.Venta.total;
@@ -1925,13 +1927,10 @@
                         } 
                         break;
                     case 'venta.tipo_pago':
-                        console.log('on update("venta.tipo_pago")');
-
                         if ( this.Modal.numero == 1 ) {
                             this.update('venta.total_faltante');
                             this.update('cliente.removable');
                         }
-
                         if ( this.Modal.numero == 3 ) {
                             if ( (this.Venta.total > this.Venta.total_start && this.Venta.tipo.charAt(0) == '1') || this.Venta.tipo.charAt(0) == '2' ) {
                                 this.Venta.tipo_pago = '2';
@@ -1939,19 +1938,13 @@
                                 this.Venta.tipo_pago = '1';
                             }
                         }
-
                         break;
                     case 'venta.tipo_precio':
-                        console.log('on update("venta.tipo_precio")');
-
                         if ( this.Modal.numero == 1 || this.Modal.numero == 3 ) {
                             this.update('detalle_venta.subtotal');
                         }
                         break;
-                    
                     case 'detalle_venta.cantidad_fallido':
-                        console.log('on update("detalle_venta.cantidad_fallido")');
-
                         if (this.Modal.numero == 3 ) {
                             
                         }
@@ -1959,20 +1952,20 @@
                         this.update('detalle_venta.cantidad', data);
                         break;
                     case 'detalle_venta.cantidad':
-                        console.log('on update("detalle_venta.cantidad")');
-
                         if (this.Modal.numero == 1 ) {
                             this.update('detalle_venta.subtotal');
                         }
                         if (this.Modal.numero == 3 ) {
-                            let cantidad_fallido_add = Number.parseFloat(this.ListaDetalle[data].cantidad_fallido_add!=''?this.ListaDetalle[data].cantidad_fallido_add:0);
+                            let cantidad_fallido_add = Number.parseInt(this.ListaDetalle[data].cantidad_fallido_add!=''?this.ListaDetalle[data].cantidad_fallido_add:0);
                             let cantidad = Number.parseFloat(this.ListaDetalle[data].cantidad_start) - cantidad_fallido_add;
+
                             if ( cantidad_fallido_add > 0 ) {
                                 this.ListaDetalle[data].cantidad_usable = true;
                             } else {
                                 this.ListaDetalle[data].cantidad_usable = false;
                                 this.ListaDetalle[data].cantidad_add = 0;
                             }
+
                             if ( cantidad > this.ListaDetalle[data].cantidad_start ) {
                                 this.ListaDetalle[data].cantidad = this.ListaDetalle[data].cantidad_start;
                             } else if ( cantidad < 0 ) {
@@ -1983,11 +1976,8 @@
 
                             this.update('detalle_venta.subtotal');
                         }
-                        
                         break;
                     case 'detalle_venta.subtotal':
-                        console.log('on update("detalle_venta.subtotal")');
-
                         if ( this.Modal.numero == 1 ) {
                             this.ListaDetalle.forEach(detalle => {
                                 let precio = this.Venta.tipo_precio=='1'?detalle.precio_menor:(this.Venta.tipo_precio=='2'?detalle.precio_mayor:0);
@@ -1998,9 +1988,15 @@
                         if ( this.Modal.numero == 3 ) {
                             this.ListaDetalle.forEach(detalle => {
                                 let precio = this.Venta.tipo_precio=='1'?detalle.precio_menor:(this.Venta.tipo_precio=='2'?detalle.precio_mayor:0);
-                                let cantidad = detalle.cantidad!=''? detalle.cantidad : 0;
-                                let cantidad_add = detalle.cantidad_add!=''? detalle.cantidad_add : 0;
-                                detalle.subtotal = Number.parseFloat(precio) * (Number.parseFloat(cantidad) + Number.parseFloat(cantidad_add));
+                                console.log('precio='+precio);
+                                let cantidad = Number.parseFloat(detalle.cantidad);
+                                console.log('cantidad='+cantidad);
+                                let cantidad_add = Number.parseFloat(detalle.cantidad_add!=''? detalle.cantidad_add : 0);
+                                console.log('cantidad_add='+cantidad_add);
+                                detalle.subtotal = Number.parseFloat(precio) * (cantidad + cantidad_add);
+                                
+                                
+                                
                             });
                         }
 
@@ -2021,8 +2017,6 @@
                         this.Venta.tipo_entrega = '1';
                         break;
                     case 'cliente.removable':
-                        console.log('on update("cliente.removable")');
-
                         if ( this.Modal.numero == 1 ) {
                             if ( this.Venta.tipo_pago == '1' && ( this.Cliente.dni != null || this.Cliente.ruc != null ) ) {
                                 this.Cliente.removable = true;
@@ -2037,7 +2031,6 @@
                                 this.Cliente.removable = false;
                             }
                         }
-
                         break;
                 }
 
@@ -2267,6 +2260,13 @@
                 if ( page >= 1 && page <= this.Paginacion.lastPage) {
                     this.listar(page);
                 }
+            },
+            log(){
+                console.log('binnacle: {');
+                this.ListaDetalle.forEach(detalle => {
+                    console.log('   detalle_venta.subtotal='+detalle.subtotal);
+                });
+                console.log('}');
             }
         },
         mounted() {

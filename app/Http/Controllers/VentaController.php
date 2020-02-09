@@ -57,8 +57,7 @@ class VentaController extends Controller {
                         if ( $type == 1) {
                             $query->where(DB::raw('substring(venta.tipo, 1, 1)'), '=', 1);
                         } else if ( $type == 2 ) {
-                            $query->where(DB::raw('substring(venta.tipo, 1, 1)'), '=', 2)
-                                ->orWhere(DB::raw('substring(venta.tipo, 1, 1)'), '=', 3);
+                            $query->where(DB::raw('substring(venta.tipo, 1, 1)'), '=', 2);
                         }
                     })
                     ->where('centro_id', '=', $centro_id)
@@ -251,7 +250,7 @@ class VentaController extends Controller {
 
             //venta
             $venta = Venta::findOrFail($dataVenta['id']);
-            $venta->tipo = $dataVenta['tipo_pago'].$dataVenta['tipo_precio'];
+            $venta->tipo = $dataVenta['tipo_pago'].$dataVenta['tipo_entrega'].$dataVenta['tipo_precio'];
             $venta->total_venta = $dataVenta['total_venta'];
             $venta->total_descuento = $dataVenta['total_descuento'];
             $venta->total = $dataVenta['total'];
@@ -289,7 +288,7 @@ class VentaController extends Controller {
                 else $detalle = Detalle_venta::findOrFail($det['id']);
                 
                 if ( $det['removed'] == false ) {
-                    $detalle->detalle_producto_id = $det['detalle_producto_id']; //AQUI ESTA EL PROBLEMA
+                    $detalle->detalle_producto_id = $det['detalle_producto_id'];
                     $detalle->venta_id = $venta->id;
                     $detalle->nombre_producto = $det['nombre_producto'];
                     $detalle->cantidad = $det['cantidad']+$det['cantidad_add'];

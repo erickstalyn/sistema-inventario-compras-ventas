@@ -22,12 +22,12 @@ class CreateDetalleVentaBUTrigger extends Migration
             IF ( NEW.cantidad_fallido IS NOT NULL ) THEN 
                 IF ( OLD.cantidad_fallido IS NULL ) THEN 
                     UPDATE detalle_producto	
-                    SET cantidad_fallido = cantidad_fallido + NEW.cantidad_fallido 
+                    SET fallidos = fallidos + NEW.cantidad_fallido 
                     WHERE id = OLD.detalle_producto_id; 
                 ELSE 
                     IF ( NEW.cantidad_fallido > OLD.cantidad_fallido ) THEN 
                         UPDATE detalle_producto	
-                        SET cantidad_fallido = cantidad_fallido + NEW.cantidad_fallido - OLD.cantidad_fallido 
+                        SET fallidos = fallidos + NEW.cantidad_fallido - OLD.cantidad_fallido 
                         WHERE id = OLD.detalle_producto_id; 
                     END IF;
                 END IF;
