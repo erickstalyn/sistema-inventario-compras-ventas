@@ -535,10 +535,12 @@
                     me.Cliente.tipo = data['tipo'];
 
                     me.ListaPago = [];
-                    me.ListaDetalle = venta.get_detalle_venta; 
+                    me.ListaDetalle = []; 
 
-                    me.list('pago');
                     me.abrirModal(2, 'Ver Venta', 'modal-xl', '', 'Cerrar');
+
+                    me.fix('detalle_venta', venta.get_detalle_venta); 
+                    me.list('pago');
                 }).catch(function (error) {
                     console.log(error);
                 });
@@ -632,6 +634,20 @@
                         if ( this.Venta.tipo_entrega == '2' ) fixed = "Postpago";
                         break;
                     case 'tipo_precio': //para conseguir el nombre del tipo de precio
+                        break;
+                    case 'detalle_venta':
+                        if ( this.Modal.numero == 2 ) {
+                            for (let i = 0; i < data.length; i++) {
+                                this.ListaDetalle.push({
+                                    detalle_producto_id: data[i].detalle.id,
+                                    nombre_producto: data[i].detalle.nombre_producto,
+                                    cantidad: data[i].detalle.cantidad,
+                                    cantidad_fallido: data[i].detalle.cantidad_fallido,
+                                    precio: data[i].detalle.precio,
+                                    subtotal: data[i].detalle.subtotal
+                                });
+                            }
+                        }
                     default:
                         fixed = '';
                         break;
