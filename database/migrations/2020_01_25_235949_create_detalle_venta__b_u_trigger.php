@@ -19,6 +19,7 @@ class CreateDetalleVentaBUTrigger extends Migration
         ON detalle_venta 
         FOR EACH ROW 
         BEGIN
+            DECLARE cantidad_add INTEGER;
             IF ( NEW.cantidad_fallido IS NOT NULL ) THEN 
                 IF ( OLD.cantidad_fallido IS NULL ) THEN 
                     UPDATE detalle_producto	
@@ -32,9 +33,16 @@ class CreateDetalleVentaBUTrigger extends Migration
                     END IF;
                 END IF;
             END IF;
-            IF ( NEW.cantidad > OLD.cantidad ) THEN
+            SET cantidad_add = NEW.cantidad - OLD.cantidad;
+            IF ( NEW.cantidad_fallido IS NOT NULL ) THEN
+                SET cantidad_add = cantidad_add + NEW.cantidad_fallido;
+            END IF;
+            IF ( OLD.cantidad_fallido IS NOT NULL ) THEN
+                SET cantidad_add = cantidad_add - OLD.cantidad_fallido;
+            END IF;
+            IF ( cantidad_add > 0 ) THEN
                 UPDATE detalle_producto
-                SET substock = substock - (NEW.cantidad - OLD.cantidad)
+                SET substock = substock - cantidad_add
                 WHERE id = OLD.detalle_producto_id;
             END IF;
         END
