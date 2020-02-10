@@ -259,6 +259,18 @@ class VentaController extends Controller {
             $venta->updated_at = $now;
             $venta->save();
 
+            // pago
+            if ( substr($dataVenta['tipo'], 0, 1) == '1' && $dataVenta['tipo_pago'] == '2' ) {
+                if ( $dataVenta['total_start'] > 0 ){
+                    $pago = new Pago();
+                    $pago->monto = $dataVenta['total_start'];
+                    $pago->venta_id = $venta->id;
+                    $pago->created_at = $now;
+                    $pago->updated_at = NULL;
+                    $pago->save();
+                }
+            }
+
             //vale usado
             if ( $dataVale['usado']['id'] != NULL ){
                 if ( $dataVale['usado']['venta_usada_id'] == NULL ) {
@@ -270,8 +282,20 @@ class VentaController extends Controller {
             }
 
             // vale generado
-            if ( $dataVale['generado']['monto'] != NULL || $dataVale['generado']['monto_start'] > 0 ){
-                if ( $dataVale['generado']['monto'] > 0 ) {
+            if ( $dataVale['generado']['monto'] == NULL ){
+                if ( $dataVale['generado']['id'] != NULL ) {
+                    $vale = Vale::findOrFail($dataVale['generado']['id']);
+                    $vale->delete();
+                }
+            } else {
+                if ( $dataVale['generado']['id'] != NULL ) {
+                    if ( $dataVale['generado']['monto'] != $dataVale['generado']['monto_start'] ) {
+                        $vale = Vale::findOrFail($dataVale['generado']['id']);
+                        $vale->monto = $dataVale['generado']['monto'];
+                        $vale->updated_at = $now;
+                        $vale->save();
+                    }
+                } else {
                     $vale = new Vale();
                     $vale->persona_id = $persona->id;
                     $vale->venta_generada_id = $venta->id;

@@ -803,18 +803,18 @@
                                         <div class="col-md-12 form-group">
                                             <label class="font-weight-bold h5">DESCUENTOS</label>
                                         </div>
-                                        <div class="col-md-12" v-if="Vale.generado.id!=null">
+                                        <div class="col-md-12" v-if="Vale.usado.id!=null">
                                             <div class="col-md-12 input-group form-group">
                                                 <label class="col-md-6 font-weight-bold">Monto</label>
-                                                <label class="col-md-6 text-white" v-text="'S/. '+Vale.generado.monto"></label>
+                                                <label class="col-md-6 text-white" v-text="'S/. '+Vale.usado.monto"></label>
                                             </div>
                                             <div class="col-md-12 input-group form-group">
                                                 <label class="col-md-6 font-weight-bold">Fecha</label>
-                                                <label class="col-md-6 text-white" v-text="fix(7, Vale.generado.created_at)"></label>
+                                                <label class="col-md-6 text-white" v-text="fix('fecha', Vale.usado.created_at)"></label>
                                             </div>
                                             <div class="col-md-12 input-group form-group">
                                                 <label class="col-md-6 font-weight-bold">Hora</label>
-                                                <label class="col-md-6 text-white" v-text="fix(8, Vale.generado.created_at)"></label>
+                                                <label class="col-md-6 text-white" v-text="fix('hora', Vale.usado.created_at)"></label>
                                             </div>
                                         </div>
                                     </div>
@@ -1313,7 +1313,7 @@
                 this.Venta.total = data.total;
                 this.Venta.total_venta = data.total_venta;
                 this.Venta.total_descuento = data.total_descuento;
-                this.Venta.total_faltante = data.total_faltante==null?0:data.total_faltante;
+                this.Venta.total_faltante = data.total_faltante;
                 this.Venta.tipo_pago = data.tipo.charAt(0);
                 this.Venta.tipo_entrega = data.tipo.charAt(1);
                 this.Venta.tipo_precio = data.tipo.charAt(2);
@@ -1361,11 +1361,11 @@
 
                 this.Venta.id = data.id;
                 this.Venta.total_venta = Number.parseFloat(data.total_venta);
-                this.Venta.total_descuento = data.total_descuento;
+                this.Venta.total_descuento = data.total_descuento==null?null:Number.parseFloat(data.total_descuento);
                 this.Venta.total = Number.parseFloat(data.total);
                 this.Venta.total_start = Number.parseFloat(data.total);
-                this.Venta.total_faltante = data.total_faltante;
-                this.Venta.total_faltante_start = data.total_faltante!=null?data.total_faltante:0;
+                this.Venta.total_faltante = data.total_faltante==null?null:Number.parseFloat(data.total_faltante);
+                this.Venta.total_faltante_start = Number.parseFloat(data.total_faltante!=null?data.total_faltante:0);
                 this.Venta.tipo = data.tipo;
                 this.Venta.tipo_pago = data.tipo.charAt(0);
                 this.Venta.tipo_entrega = data.tipo.charAt(1);
@@ -1385,12 +1385,11 @@
 
                 this.Vale.usado.id = data.vale_usada_id;
                 this.Vale.usado.monto = data.vale_usada_monto;
-                this.Vale.usado.venta_usada_id = data.id;
                 this.Vale.usado.created_at = data.vale_usada_created_at;
 
                 this.Vale.generado.id = data.vale_generada_id;
-                this.Vale.generado.monto = data.vale_generada_monto;
-                this.Vale.generado.monto_start = data.vale_generada_monto==null?0:data.vale_generada_monto;
+                this.Vale.generado.monto = data.vale_generada_monto==null?null:Number.parseFloat(data.vale_generada_monto);
+                this.Vale.generado.monto_start = Number.parseFloat(data.vale_generada_monto==null?0:data.vale_generada_monto);
                 this.Vale.generado.created_at = data.vale_generada_created_at;
 
                 this.ListaProducto = [];
@@ -1853,14 +1852,22 @@
 
                 switch (numero) {
                     case 'venta.total_venta':
-                        if ( this.Modal.numero == 1 || this.Modal.numero == 3 ) {
+                        if ( this.Modal.numero == 1 ) {
                             this.Venta.total_venta = 0;
                             this.ListaDetalle.forEach(detalle => {
                                 this.Venta.total_venta += Number.parseFloat(detalle.subtotal);
                             });
-                        }
 
-                        this.update('venta.total');
+                            this.update('venta.total');
+                        }
+                        if ( this.Modal.numero == 3 ) {
+                            this.Venta.total_venta = 0;
+                            this.ListaDetalle.forEach(detalle => {
+                                this.Venta.total_venta += Number.parseFloat(detalle.subtotal);
+                            });
+
+                            this.update('venta.total');
+                        }
                         break;
                     case 'venta.total_descuento':
                         if ( this.Modal.numero == 1 ) {
@@ -1869,9 +1876,18 @@
                             } else {
                                 this.Venta.total_descuento = null;
                             }
-                        }
 
-                        this.update('venta.total');
+                            this.update('venta.total');
+                        }
+                        if ( this.Modal.numero == 3 ) {
+                            if ( this.Vale.usado.monto != null ) {
+                                this.Venta.total_descuento = this.Vale.usado.monto;
+                            } else {
+                                this.Venta.total_descuento = null;
+                            }
+
+                            this.update('venta.total');
+                        }
                         break;
                     case 'venta.total':
                         if ( this.Modal.numero == 1 ) {
@@ -1904,22 +1920,10 @@
                             }
                         }
                         if ( this.Modal.numero == 3 ) {
-                            if ( this.Venta.tipo_pago == '2' ) {
-                                if ( this.Venta.total_faltante_start == null ) this.Venta.total_faltante_start = 0;
-
-                                if ( this.Venta.total < this.Venta.total_start - this.Venta.total_faltante_start ) {
-                                    this.Venta.total_faltante = null;
-                                    this.Vale.generado.monto = (this.Venta.total_start - this.Venta.total_faltante_start) - this.Venta.total;
-                                } else if ( this.Venta.total == this.Venta.total_start - this.Venta.total_faltante_start ) {
-                                    this.Venta.total_faltante = null;
-                                    this.Vale.generado.monto = null;
-                                } else if ( this.Venta.total > this.Venta.total_start - this.Venta.total_faltante_start && this.Venta.total < this.Venta.total_start) {
-                                    this.Venta.total_faltante = this.Venta.total - (this.Venta.total_start - this.Venta.total_faltante_start);
-                                    this.Vale.generado.monto = null;
-                                } else if ( this.Venta.total > this.Venta.total_start ) {
-                                    this.Venta.total_faltante = this.Venta.total - (this.Venta.total_start - this.Venta.total_faltante_start);
-                                    this.Vale.generado.monto = null;
-                                }
+                            if ( this.Venta.total_faltante_start + (this.Venta.total - this.Venta.total_start) > 0 ) {
+                                this.Venta.total_faltante = this.Venta.total_faltante_start + (this.Venta.total - this.Venta.total_start);
+                            } else {
+                                this.Venta.total_faltante = null;
                             }
                         }
                         if ( this.Modal.numero == 4 ) {
@@ -1943,16 +1947,17 @@
                         }
                         break;
                     case 'venta.tipo_precio':
-                        if ( this.Modal.numero == 1 || this.Modal.numero == 3 ) {
+                        if ( this.Modal.numero == 1 ) {
+                            this.update('detalle_venta.subtotal');
+                        }
+                        if ( this.Modal.numero == 3 ) {
                             this.update('detalle_venta.subtotal');
                         }
                         break;
                     case 'detalle_venta.cantidad_fallido':
                         if (this.Modal.numero == 3 ) {
-                            
+                            this.update('detalle_venta.cantidad', data);                           
                         }
-
-                        this.update('detalle_venta.cantidad', data);
                         break;
                     case 'detalle_venta.cantidad':
                         if (this.Modal.numero == 1 ) {
@@ -1987,6 +1992,8 @@
                                 let cantidad = detalle.cantidad != ''? detalle.cantidad : 0;
                                 detalle.subtotal = Number.parseFloat(precio) * Number.parseFloat(cantidad);
                             });
+
+                            this.update('venta.total_venta');
                         }
                         if ( this.Modal.numero == 3 ) {
                             this.ListaDetalle.forEach(detalle => {
@@ -1995,9 +2002,9 @@
                                 let cantidad_add = Number.parseFloat(detalle.cantidad_add!=''? detalle.cantidad_add : 0);
                                 detalle.subtotal = Number.parseFloat(precio) * (cantidad + cantidad_add);
                             });
-                        }
 
-                        this.update('venta.total_venta');
+                            this.update('venta.total_venta');
+                        }
                         break;
                     case 'cliente.removable':
                         if ( this.Modal.numero == 1 ) {
@@ -2024,13 +2031,11 @@
                                     this.Vale.generado.monto = null;
                                 } 
                             } else {
-                                if ( this.Venta.total > this.Venta.total_start && this.Venta.total-this.Venta.total_start >= this.Vale.generado.monto_start ) {
+                                if ( (this.Venta.total - this.Venta.total_start) >= this.Vale.generado.monto_start ) {
                                     this.Vale.generado.monto = null;
-                                } else if ( this.Venta.total > this.Venta.total_start && this.Venta.total-this.Venta.total_start < this.Vale.generado.monto_start ) {
-                                    this.Vale.generado.monto = this.Vale.generado.monto_start - (this.Venta.total-this.Venta.total_start);
                                 } else {
-                                    this.Vale.generado.monto = null;
-                                } 
+                                    this.Vale.generado.monto = this.Vale.generado.monto_start - (this.Venta.total - this.Venta.total_start);
+                                }
                             }
                         }
                         break;
