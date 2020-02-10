@@ -1852,14 +1852,22 @@
 
                 switch (numero) {
                     case 'venta.total_venta':
-                        if ( this.Modal.numero == 1 || this.Modal.numero == 3 ) {
+                        if ( this.Modal.numero == 1 ) {
                             this.Venta.total_venta = 0;
                             this.ListaDetalle.forEach(detalle => {
                                 this.Venta.total_venta += Number.parseFloat(detalle.subtotal);
                             });
-                        }
 
-                        this.update('venta.total');
+                            this.update('venta.total');
+                        }
+                        if ( this.Modal.numero == 3 ) {
+                            this.Venta.total_venta = 0;
+                            this.ListaDetalle.forEach(detalle => {
+                                this.Venta.total_venta += Number.parseFloat(detalle.subtotal);
+                            });
+
+                            this.update('venta.total');
+                        }
                         break;
                     case 'venta.total_descuento':
                         if ( this.Modal.numero == 1 ) {
@@ -1868,9 +1876,18 @@
                             } else {
                                 this.Venta.total_descuento = null;
                             }
-                        }
 
-                        this.update('venta.total');
+                            this.update('venta.total');
+                        }
+                        if ( this.Modal.numero == 3 ) {
+                            if ( this.Vale.usado.monto != null ) {
+                                this.Venta.total_descuento = this.Vale.usado.monto;
+                            } else {
+                                this.Venta.total_descuento = null;
+                            }
+
+                            this.update('venta.total');
+                        }
                         break;
                     case 'venta.total':
                         if ( this.Modal.numero == 1 ) {
@@ -1903,32 +1920,10 @@
                             }
                         }
                         if ( this.Modal.numero == 3 ) {
-                            // if ( this.Venta.tipo_pago == '2' ) {
-                            //     if ( this.Venta.total_faltante_start == null ) this.Venta.total_faltante_start = 0;
-
-                            //     if ( this.Venta.total < this.Venta.total_start - this.Venta.total_faltante_start ) {
-                            //         this.Venta.total_faltante = null;
-                            //     } else if ( this.Venta.total == this.Venta.total_start - this.Venta.total_faltante_start ) {
-                            //         this.Venta.total_faltante = null;
-                            //     } else if ( this.Venta.total > this.Venta.total_start - this.Venta.total_faltante_start && this.Venta.total < this.Venta.total_start) {
-                            //         this.Venta.total_faltante = this.Venta.total - (this.Venta.total_start - this.Venta.total_faltante_start);
-                            //     } else if ( this.Venta.total > this.Venta.total_start ) {
-                            //         this.Venta.total_faltante = this.Venta.total - (this.Venta.total_start - this.Venta.total_faltante_start);
-                            //     }
-                            // }
-                            if ( this.Venta.tipo.charAt(0) == '1' ) {
-                                if ( this.Venta.total > this.Venta.total_start ) {
-                                    this.Venta.total_faltante = this.Venta.total - this.Venta.total_start;
-                                } else {
-                                    this.Venta.total_faltante = null;
-                                }
-                            } else if ( this.Venta.tipo.charAt(0) == '2' ) {
-                                let total_faltante = this.Venta.total_faltante_start + (this.Venta.total - this.Venta.total_start)
-                                if ( total_faltante > 0 ) {
-                                    this.Venta.total_faltante = total_faltante;
-                                } else {
-                                    this.Venta.total_faltante = null;
-                                }
+                            if ( this.Venta.total_faltante_start + (this.Venta.total - this.Venta.total_start) > 0 ) {
+                                this.Venta.total_faltante = this.Venta.total_faltante_start + (this.Venta.total - this.Venta.total_start);
+                            } else {
+                                this.Venta.total_faltante = null;
                             }
                         }
                         if ( this.Modal.numero == 4 ) {
@@ -1952,16 +1947,17 @@
                         }
                         break;
                     case 'venta.tipo_precio':
-                        if ( this.Modal.numero == 1 || this.Modal.numero == 3 ) {
+                        if ( this.Modal.numero == 1 ) {
+                            this.update('detalle_venta.subtotal');
+                        }
+                        if ( this.Modal.numero == 3 ) {
                             this.update('detalle_venta.subtotal');
                         }
                         break;
                     case 'detalle_venta.cantidad_fallido':
                         if (this.Modal.numero == 3 ) {
-                            
+                            this.update('detalle_venta.cantidad', data);                           
                         }
-
-                        this.update('detalle_venta.cantidad', data);
                         break;
                     case 'detalle_venta.cantidad':
                         if (this.Modal.numero == 1 ) {
@@ -1996,6 +1992,8 @@
                                 let cantidad = detalle.cantidad != ''? detalle.cantidad : 0;
                                 detalle.subtotal = Number.parseFloat(precio) * Number.parseFloat(cantidad);
                             });
+
+                            this.update('venta.total_venta');
                         }
                         if ( this.Modal.numero == 3 ) {
                             this.ListaDetalle.forEach(detalle => {
@@ -2004,9 +2002,9 @@
                                 let cantidad_add = Number.parseFloat(detalle.cantidad_add!=''? detalle.cantidad_add : 0);
                                 detalle.subtotal = Number.parseFloat(precio) * (cantidad + cantidad_add);
                             });
-                        }
 
-                        this.update('venta.total_venta');
+                            this.update('venta.total_venta');
+                        }
                         break;
                     case 'cliente.removable':
                         if ( this.Modal.numero == 1 ) {
