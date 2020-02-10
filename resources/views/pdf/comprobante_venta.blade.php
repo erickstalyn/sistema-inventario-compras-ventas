@@ -3,7 +3,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Reporte de venta</title>
+    <title>Comprobante de venta</title>
     <style>
         body {
         /*position: relative;*/
@@ -205,9 +205,25 @@
                                     ------
                                 @endif
                             </td>
-                            <td>
+                            <td style="font-size:13px;">
+                                -- Vale Generado -- <br>
+                                @php
+                                    $date = new DateTime($ven->vale_generada_created_at);
+                                @endphp
+                                Monto: s/. {{$ven->vale_generada_monto}} <br>
+                                Fecha: {{$date->format('d/m/Y')}} <br>
+                                Hora: {{$date->format('h:i a')}}
                             </td>
                             <td>
+                                @if($ven->vale_usada_created_at)
+                                    -- Vale Usado -- <br>
+                                    @php
+                                        $date = new DateTime($ven->vale_usada_created_at);
+                                    @endphp
+                                    Monto: s/. {{$ven->vale_usada_monto}} <br>
+                                    Fecha: {{$date->format('d/m/Y')}} <br>
+                                    Hora: {{$date->format('h:i a')}}
+                                @endif
                             </td>
                             <td>
                                 @php
@@ -236,12 +252,15 @@
                     </thead>
                     <tbody>
                         @foreach($detalles as $det)
+                        @php
+                            $element = $det->detalle
+                        @endphp
                         <tr>
-                            <td >{{$det->nombre_producto}}</td>
-                            <td >{{$det->fallidos == null ? '---': $det->fallidos}}</td>
-                            <td >{{$det->cantidad}}</td>
-                            <td style="padding-right: 35px; text-align: right;">{{$det->precio}}</td>
-                            <td style="padding-right: 35px; text-align: right;">{{$det->subtotal}}</td>
+                            <td >{{$element->nombre_producto}}</td>
+                            <td >{{$element->cantidad_fallido == null ? '---': $element->cantidad_fallido}}</td>
+                            <td >{{$element->cantidad}}</td>
+                            <td style="padding-right: 35px; text-align: right;">{{$element->precio}}</td>
+                            <td style="padding-right: 35px; text-align: right;">{{$element->subtotal}}</td>
                         </tr>
                         @endForeach
                     </tbody>
