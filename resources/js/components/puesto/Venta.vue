@@ -530,7 +530,7 @@
                                                 <label class="col-md-7 m-0 text-white" v-text="fix('hora', Vale.generado.created_at)"></label>
                                             </div>
                                             <div class="col-md-12 text-center mt-3">
-                                                <button class="btn btn-danger">Generar vale</button>
+                                                <button class="btn btn-danger">Imprimir vale</button>
                                             </div>
                                         </div>
                                     </div>
@@ -545,16 +545,16 @@
                                                 <label class="col-md-12 d-flex justify-content-center">-- VALE USADO --</label>
                                             </div>
                                             <div class="col-md-12 input-group form-group">
-                                                <label class="col-md-6 font-weight-bold">Monto</label>
-                                                <label class="col-md-6 text-white" v-text="'S/. '+Vale.usado.monto"></label>
+                                                <label class="col-md-4 font-weight-bold">Monto</label>
+                                                <label class="col-md-8 text-white" v-text="'S/. '+Vale.usado.monto"></label>
                                             </div>
                                             <div class="col-md-12 input-group form-group">
-                                                <label class="col-md-6 font-weight-bold">Fecha</label>
-                                                <label class="col-md-6 text-white" v-text="fix(7, Vale.usado.created_at)"></label>
+                                                <label class="col-md-4 font-weight-bold">Fecha</label>
+                                                <label class="col-md-8 text-white" v-text="fix('fecha', Vale.usado.created_at)"></label>
                                             </div>
                                             <div class="col-md-12 input-group form-group">
-                                                <label class="col-md-6 font-weight-bold">Hora</label>
-                                                <label class="col-md-6 text-white" v-text="fix(8, Vale.usado.created_at)"></label>
+                                                <label class="col-md-4 font-weight-bold">Hora</label>
+                                                <label class="col-md-8 text-white" v-text="fix('hora', Vale.usado.created_at)"></label>
                                             </div>
                                         </div>
                                     </div>
@@ -780,22 +780,16 @@
                                             <label class="font-weight-bold h5">BENEFICIOS</label>
                                         </div>
                                         <div class="col-md-12" v-if="Vale.generado.monto!=null">
-                                            <div v-if="Vale.generado.id==null" class="col-md-12 form-group p-0">
-                                                <div class="col-md-12 form-group">
+                                            <div class="col-md-12 form-group p-0">
+                                                <div v-if="Vale.generado.id==null" class="col-md-12 form-group">
                                                     <label class="col-md-12 p-0 text-center font-weight-bold">--- Se generará un vale ---</label>
+                                                </div>
+                                                <div v-else class="col-md-12 form-group">
+                                                    <label class="col-md-12 text-center font-weight-bold">El vale generado se actualizara a </label>
                                                 </div>
                                                 <div class="col-md-12 input-group form-group">
                                                     <label class="col-md-5 font-weight-bold">Monto</label>
                                                     <label class="col-md-7 text-white text-right" v-text="'S/. '+Number.parseFloat(Vale.generado.monto).toFixed(2)"></label>
-                                                </div>
-                                            </div>
-                                            <div v-else class="col-md-12 form-group p-0">
-                                                <div class="col-md-12 form-group">
-                                                    <label class="col-md-12 text-center font-weight-bold">El vale generado se actualizara a </label>
-                                                </div>
-                                                <div class="col-md-12 input-group form-group">
-                                                    <label class="col-md-6 font-weight-bold">Monto</label>
-                                                    <label class="col-md-6 text-white" v-text="'S/. '+Vale.generado.monto"></label>
                                                 </div>
                                             </div>
                                             <div class="col-md-12 form-group p-0">
@@ -836,7 +830,7 @@
                                             <label class="col-md-4 p-0 text-white text-right" v-text="Number.parseFloat(Venta.total_venta).toFixed(2)"></label>
                                         </div>
                                         <div class="col-md-12 input-group form-group" v-if="Venta.total_descuento!=null">
-                                            <label class="col-md-7 p-0 font-weight-bold">Monto de vale</label>
+                                            <label class="col-md-7 p-0 font-weight-bold">Monto de descuento</label>
                                             <label class="col-md-1 p-0 text-white text-right p-0">S/.</label>
                                             <label class="col-md-4 p-0 text-white text-right" v-text="'- '+Number.parseFloat(Venta.total_descuento).toFixed(2)"></label>
                                         </div>
@@ -1351,7 +1345,7 @@
                 this.list('pago');
             },
             abrirModalEditar(data){
-                // if ( this.fix(10, data.created_at) != this.fix(3) || this.fix(9, data.created_at) != this.fix(2) ) {
+                // if ( this.fix('year', data.created_at) != this.fix(3) || this.fix('year', data.created_at) != this.fix(2) ) {
                 //     Swal.fire({
                 //         title: 'Esta venta ya no se puede editar',
                 //         text: 'Esta venta fue realizada el mes pasado y por eso ya no se puede editar',
@@ -1404,7 +1398,7 @@
                 
                 this.abrirModal(3, 'Editar Venta', 'modal-xl', 'Editar', 'Cerrar');
 
-                this.list('detalle_venta', 'Editar');
+                this.list('detalle_venta');
             },
             abrirModalPagar(venta = []){
                 this.Venta.id = venta.id;
@@ -2004,20 +1998,6 @@
                         }
 
                         this.update('venta.total_venta');
-                        break;
-                    case 3:
-                        this.ListaDetalle.forEach(detalle => {
-                            detalle.subtotal = (this.Venta.tipo_precio=='1'?detalle.precio_menor:detalle.precio_mayor) * (detalle.cantidad-detalle.cantidad_fallido);
-                        })
-                        this.update('venta.total_venta');
-                        break;
-                    case 6:
-                        if ( this.Venta.tipo_pago == '1' ) {
-                            this.Pago.monto = null;
-                        } else if ( this.Pago.monto == null ) {
-                            this.Pago.monto = '';
-                        }
-                        this.Venta.tipo_entrega = '1';
                         break;
                     case 'cliente.removable':
                         if ( this.Modal.numero == 1 ) {
