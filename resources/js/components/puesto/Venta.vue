@@ -803,18 +803,18 @@
                                         <div class="col-md-12 form-group">
                                             <label class="font-weight-bold h5">DESCUENTOS</label>
                                         </div>
-                                        <div class="col-md-12" v-if="Vale.generado.id!=null">
+                                        <div class="col-md-12" v-if="Vale.usado.id!=null">
                                             <div class="col-md-12 input-group form-group">
                                                 <label class="col-md-6 font-weight-bold">Monto</label>
-                                                <label class="col-md-6 text-white" v-text="'S/. '+Vale.generado.monto"></label>
+                                                <label class="col-md-6 text-white" v-text="'S/. '+Vale.usado.monto"></label>
                                             </div>
                                             <div class="col-md-12 input-group form-group">
                                                 <label class="col-md-6 font-weight-bold">Fecha</label>
-                                                <label class="col-md-6 text-white" v-text="fix(7, Vale.generado.created_at)"></label>
+                                                <label class="col-md-6 text-white" v-text="fix('fecha', Vale.usado.created_at)"></label>
                                             </div>
                                             <div class="col-md-12 input-group form-group">
                                                 <label class="col-md-6 font-weight-bold">Hora</label>
-                                                <label class="col-md-6 text-white" v-text="fix(8, Vale.generado.created_at)"></label>
+                                                <label class="col-md-6 text-white" v-text="fix('hora', Vale.usado.created_at)"></label>
                                             </div>
                                         </div>
                                     </div>
@@ -1313,7 +1313,7 @@
                 this.Venta.total = data.total;
                 this.Venta.total_venta = data.total_venta;
                 this.Venta.total_descuento = data.total_descuento;
-                this.Venta.total_faltante = data.total_faltante==null?0:data.total_faltante;
+                this.Venta.total_faltante = data.total_faltante;
                 this.Venta.tipo_pago = data.tipo.charAt(0);
                 this.Venta.tipo_entrega = data.tipo.charAt(1);
                 this.Venta.tipo_precio = data.tipo.charAt(2);
@@ -1361,11 +1361,11 @@
 
                 this.Venta.id = data.id;
                 this.Venta.total_venta = Number.parseFloat(data.total_venta);
-                this.Venta.total_descuento = data.total_descuento;
+                this.Venta.total_descuento = data.total_descuento==null?null:Number.parseFloat(data.total_descuento);
                 this.Venta.total = Number.parseFloat(data.total);
                 this.Venta.total_start = Number.parseFloat(data.total);
-                this.Venta.total_faltante = data.total_faltante;
-                this.Venta.total_faltante_start = data.total_faltante!=null?data.total_faltante:0;
+                this.Venta.total_faltante = data.total_faltante==null?null:Number.parseFloat(data.total_faltante);
+                this.Venta.total_faltante_start = Number.parseFloat(data.total_faltante!=null?data.total_faltante:0);
                 this.Venta.tipo = data.tipo;
                 this.Venta.tipo_pago = data.tipo.charAt(0);
                 this.Venta.tipo_entrega = data.tipo.charAt(1);
@@ -1385,12 +1385,11 @@
 
                 this.Vale.usado.id = data.vale_usada_id;
                 this.Vale.usado.monto = data.vale_usada_monto;
-                this.Vale.usado.venta_usada_id = data.id;
                 this.Vale.usado.created_at = data.vale_usada_created_at;
 
                 this.Vale.generado.id = data.vale_generada_id;
-                this.Vale.generado.monto = data.vale_generada_monto;
-                this.Vale.generado.monto_start = data.vale_generada_monto==null?0:data.vale_generada_monto;
+                this.Vale.generado.monto = data.vale_generada_monto==null?null:Number.parseFloat(data.vale_generada_monto);
+                this.Vale.generado.monto_start = Number.parseFloat(data.vale_generada_monto==null?0:data.vale_generada_monto);
                 this.Vale.generado.created_at = data.vale_generada_created_at;
 
                 this.ListaProducto = [];
@@ -1904,21 +1903,31 @@
                             }
                         }
                         if ( this.Modal.numero == 3 ) {
-                            if ( this.Venta.tipo_pago == '2' ) {
-                                if ( this.Venta.total_faltante_start == null ) this.Venta.total_faltante_start = 0;
+                            // if ( this.Venta.tipo_pago == '2' ) {
+                            //     if ( this.Venta.total_faltante_start == null ) this.Venta.total_faltante_start = 0;
 
-                                if ( this.Venta.total < this.Venta.total_start - this.Venta.total_faltante_start ) {
+                            //     if ( this.Venta.total < this.Venta.total_start - this.Venta.total_faltante_start ) {
+                            //         this.Venta.total_faltante = null;
+                            //     } else if ( this.Venta.total == this.Venta.total_start - this.Venta.total_faltante_start ) {
+                            //         this.Venta.total_faltante = null;
+                            //     } else if ( this.Venta.total > this.Venta.total_start - this.Venta.total_faltante_start && this.Venta.total < this.Venta.total_start) {
+                            //         this.Venta.total_faltante = this.Venta.total - (this.Venta.total_start - this.Venta.total_faltante_start);
+                            //     } else if ( this.Venta.total > this.Venta.total_start ) {
+                            //         this.Venta.total_faltante = this.Venta.total - (this.Venta.total_start - this.Venta.total_faltante_start);
+                            //     }
+                            // }
+                            if ( this.Venta.tipo.charAt(0) == '1' ) {
+                                if ( this.Venta.total > this.Venta.total_start ) {
+                                    this.Venta.total_faltante = this.Venta.total - this.Venta.total_start;
+                                } else {
                                     this.Venta.total_faltante = null;
-                                    this.Vale.generado.monto = (this.Venta.total_start - this.Venta.total_faltante_start) - this.Venta.total;
-                                } else if ( this.Venta.total == this.Venta.total_start - this.Venta.total_faltante_start ) {
+                                }
+                            } else if ( this.Venta.tipo.charAt(0) == '2' ) {
+                                let total_faltante = this.Venta.total_faltante_start + (this.Venta.total - this.Venta.total_start)
+                                if ( total_faltante > 0 ) {
+                                    this.Venta.total_faltante = total_faltante;
+                                } else {
                                     this.Venta.total_faltante = null;
-                                    this.Vale.generado.monto = null;
-                                } else if ( this.Venta.total > this.Venta.total_start - this.Venta.total_faltante_start && this.Venta.total < this.Venta.total_start) {
-                                    this.Venta.total_faltante = this.Venta.total - (this.Venta.total_start - this.Venta.total_faltante_start);
-                                    this.Vale.generado.monto = null;
-                                } else if ( this.Venta.total > this.Venta.total_start ) {
-                                    this.Venta.total_faltante = this.Venta.total - (this.Venta.total_start - this.Venta.total_faltante_start);
-                                    this.Vale.generado.monto = null;
                                 }
                             }
                         }
@@ -2024,13 +2033,11 @@
                                     this.Vale.generado.monto = null;
                                 } 
                             } else {
-                                if ( this.Venta.total > this.Venta.total_start && this.Venta.total-this.Venta.total_start >= this.Vale.generado.monto_start ) {
+                                if ( (this.Venta.total - this.Venta.total_start) >= this.Vale.generado.monto_start ) {
                                     this.Vale.generado.monto = null;
-                                } else if ( this.Venta.total > this.Venta.total_start && this.Venta.total-this.Venta.total_start < this.Vale.generado.monto_start ) {
-                                    this.Vale.generado.monto = this.Vale.generado.monto_start - (this.Venta.total-this.Venta.total_start);
                                 } else {
-                                    this.Vale.generado.monto = null;
-                                } 
+                                    this.Vale.generado.monto = this.Vale.generado.monto_start - (this.Venta.total - this.Venta.total_start);
+                                }
                             }
                         }
                         break;
