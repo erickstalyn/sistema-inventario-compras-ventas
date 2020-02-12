@@ -19,6 +19,7 @@
                     <div class="input-group">
                         <select class="custom-select text-gray-900" v-model="Puesto.quieroVer">
                             <option value="1">Ventas</option>
+                            <option value="5">Vales</option>
                             <option value="2">Inventario</option>
                             <option value="3">Envios Realizados</option>
                             <option value="4">Envios Recibidos</option>
@@ -448,6 +449,19 @@
                     <h5>No se han encontrado resultados</h5>
                 </div>
             </div>
+            <div v-else-if="Puesto.mostrar == 5">
+                <div class="row form-group">
+                    
+                </div>
+                <h5>
+                </h5>
+                <div >
+
+                </div>
+                <div >
+
+                </div>
+            </div>
 
             <!-- Modales -->
             <div class="modal text-gray-900" :class="{'mostrar': Modal.estado}">
@@ -822,7 +836,7 @@
                 Puesto: {
                     id: 1,
                     nombre: '',
-                    quieroVer: 1, // 1: Ventas, 2: Inventario 3: Envios Realizados, 4: Envios Recibidos
+                    quieroVer: 1, // 1: Ventas, 2: Inventario 3: Envios Realizados, 4: Envios Recibidos, 5: Vales
                     titulo: '',
                     mostrar: 0 // 1:Inventario, 2: Ventas, 3: Envios Realizados, 4: Envios Recibidos
                 },
@@ -842,6 +856,7 @@
                 ListaDetalleEnvio: [],
                 ListaDetalle: null, //aqui van los detalles de venta
                 ListaEnvio: [],
+                ListaVale: [],
                 Producto: {
                     nombre: '',
                     codigo: '',
@@ -939,6 +954,7 @@
                     detalle_producto: '/detalle_producto',
                     centro: '/centro',
                     venta: '/venta',
+                    vale: '/vale',
                     envioRealizado: '/envioRealizado',
                     envioRecibido: '/envioRecibido',
                     detalle_venta: '/detalle_venta',
@@ -1052,7 +1068,7 @@
                             console.log(error)
                         });
                         break;
-                    case 3:
+                    case 3: //Listar envios realizados
                         url = this.Ruta.envioRealizado + '?'
                                 +'page='+this.Paginacion.currentPage
                                 +'&estado='+this.Busqueda.estadoEnviado
@@ -1078,7 +1094,7 @@
                             console.log(error)
                         });
                         break;
-                    case 4:
+                    case 4://Listar envios recibidos
                         url = this.Ruta.envioRecibido + '?'
                             +'page='+this.Paginacion.currentPage
                             +'&estado='+this.Busqueda.estadoRecibido
@@ -1104,6 +1120,27 @@
                             console.log(error)
                         });
                         break;
+                    case 5://Listar vales
+                        url = this.Ruta.vale + '?page='+this.Paginacion.currentPage
+                        +'&estado='+this.Busqueda.estado
+                        +'&texto='+this.Busqueda.texto
+                        +'&centro_id='+ this.Puesto.id
+                        +'&filas='+this.Busqueda.filas;
+                
+                        axios.get(url).then(function (response) {
+                            me.ListaVale = response.data.vales.data;
+                            console.log(me.ListaVale);
+                            me.Paginacion = response.data.paginacion;
+                            me.Puesto.titulo = 'Vales'
+                            me.Puesto.mostrar = 5;
+
+                            me.Carga.mostrar = 0;
+                            me.Carga.clase = '';
+                            me.Carga.mensaje = '';
+                            me.Carga.alert = '';
+                        }).catch(function (error) {
+                            console.log(error)
+                        });
                 }
                 for (let i = 0; i < this.SelectPuesto.length; i++) { //Busco el nombre
                     if(this.SelectPuesto[i].id == this.Puesto.id) this.Puesto.nombre = this.SelectPuesto[i].nombre;
