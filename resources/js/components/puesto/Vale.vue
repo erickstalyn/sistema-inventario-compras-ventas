@@ -539,7 +539,8 @@
 
                     me.abrirModal(2, 'Ver Venta', 'modal-xl', '', 'Cerrar');
 
-                    me.fix('detalle_venta', venta.get_detalle_venta); 
+                    // me.fix('detalle_venta', venta.get_detalle_venta);
+                    me.fix('detalle_venta', response.data.detalle);
                     me.list('pago');
                 }).catch(function (error) {
                     console.log(error);

@@ -360,9 +360,10 @@ class VentaController extends Controller {
     
     public function getVentaWithDetalle(Request $request){
         $venta = Venta::findOrFail($request->venta_id);
-
+        $detalle = Venta::findOrFail($request->venta_id)->getDetalleVenta;
         return [
-            'venta' => $venta
+            'venta' => $venta,
+            'detalle' => $detalle
         ];
     }
 }

@@ -36,14 +36,16 @@ class ValeController extends Controller {
         $texto = $request->texto;
         $filas = $request->filas;
         $centro_id = $request->centro_id;
-
-        $mes = date('m');
+        $allMonth = $request->allMonth;
 
         $vales = Vale::select('vale.id', 'vale.monto', 'vale.created_at', 'vale.updated_at', 'vale.venta_generada_id', 'persona.tipo', 'persona.dni', 'persona.ruc', 'persona.razon_social', 'persona.nombres', 'persona.apellidos')
                     ->join('persona','vale.persona_id', '=', 'persona.id')
                     ->join('venta', 'venta.id', '=', 'vale.venta_generada_id')
                     ->where('venta.centro_id', '=', $centro_id)
-                    ->whereMonth('vale.created_at', $mes)
+                    ->where(function ($query) use ($allMonth) {
+                        $mes = date('m');
+                        if($allMonth != 1) $query->whereMonth('vale.created_at', $mes);
+                    })
                     ->where(function ($query) use ($texto) {
                         if ( $texto != '' ) {
                             if(is_numeric($texto)){

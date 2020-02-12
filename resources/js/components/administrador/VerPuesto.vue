@@ -35,7 +35,7 @@
                 <i class="fas fa-warehouse"></i>&nbsp;&nbsp;
                 <span class="h5 mb-0 text-gray-900" v-text="Puesto.titulo"></span>&nbsp;&nbsp;
             </div>
-            <div v-if="Puesto.mostrar == 1">
+            <div v-if="Puesto.mostrar == 1"> <!-- Lista de ventas-->
                 <div class="row form-group">
                     <div class="col-md-5">
                         <div class="row">
@@ -125,7 +125,7 @@
                                     <td class="text-center" v-text="fix(0, venta.created_at)"></td>
                                     <td class="text-center">
                                         <template>
-                                            <button type="button" title="VER" class="btn btn-primary btn-sm" @click="abrirModalVerVenta(venta)">
+                                            <button type="button" title="VER" class="btn btn-primary btn-sm" @click="abrirModalVerVenta(1, venta)">
                                                 <i class="far fa-eye"></i>
                                             </button>
                                         </template>
@@ -153,7 +153,7 @@
                     <h5>No se han encontrado resultados</h5>
                 </div>
             </div>
-            <div v-else-if="Puesto.mostrar == 2">
+            <div v-else-if="Puesto.mostrar == 2"> <!-- Lista de inventario-->
                 <div class="row form-group">
                     <div class="col-md-5">
                         <div class="input-group">
@@ -225,7 +225,7 @@
                     <h5>No se han encontrado resultados</h5>
                 </div>
             </div>
-            <div v-else-if="Puesto.mostrar == 3">
+            <div v-else-if="Puesto.mostrar == 3"><!-- Lista de Envios realizados-->
                 <div class="row form-group">
                     <div style="width: 8rem;" class="mr-1">
                         <div class="input-group"> 
@@ -296,8 +296,8 @@
                             <tbody>
                                 <tr v-for="envio in ListaEnvio" :key="envio.id" >
                                     <td v-text="envio.centro_destino"></td>
-                                    <td v-text="formatearFecha(envio.fecha_envio)" class="text-center"></td>
-                                    <td v-text="envio.fecha_cambio ? formatearFecha(envio.fecha_cambio) : '-------------'" class="text-center"></td>
+                                    <td v-text="fix(1, envio.fecha_envio)" class="text-center"></td>
+                                    <td v-text="envio.fecha_cambio ? fix(1, envio.fecha_cambio) : '-------------'" class="text-center"></td>
                                     <td>
                                         <div v-if="envio.estado == 0">
                                             <span class="badge badge-primary">En espera</span>
@@ -337,7 +337,7 @@
                     <h5>No se han encontrado resultados</h5>
                 </div>
             </div>
-            <div v-else-if="Puesto.mostrar == 4">
+            <div v-else-if="Puesto.mostrar == 4"> <!-- Lista de Envios recibidos-->
                 <div class="row form-group">
                     <div style="width: 8rem;" class="mr-1">
                         <div class="input-group"> 
@@ -408,8 +408,8 @@
                             <tbody>
                                 <tr v-for="envio in ListaEnvio" :key="envio.id" >
                                     <td v-text="!envio.abasto_id? envio.centro_origen : 'Administración'"></td>
-                                    <td v-text="formatearFecha(envio.fecha_envio)" class="text-center"></td>
-                                    <td v-text="envio.fecha_cambio ? formatearFecha(envio.fecha_cambio) : '-------------'" class="text-center"></td>
+                                    <td v-text="fix(1, envio.fecha_envio)" class="text-center"></td>
+                                    <td v-text="envio.fecha_cambio ? fix(1, envio.fecha_cambio) : '-------------'" class="text-center"></td>
                                     <td>
                                         <div v-if="envio.estado == 0">
                                             <span class="badge badge-primary">En espera</span>
@@ -449,17 +449,90 @@
                     <h5>No se han encontrado resultados</h5>
                 </div>
             </div>
-            <div v-else-if="Puesto.mostrar == 5">
+            <div v-else-if="Puesto.mostrar == 5"> <!-- Lista de vales-->
                 <div class="row form-group">
-                    
+                    <div class="col-md-8">
+                        <div class="input-group"> 
+                            <select class="col-md-3 custom-select text-gray-900" v-model="Busqueda.estadoVale">
+                                <option value="3">Todos</option>
+                                <option value="1">Usado</option>
+                                <option value="2">Sin usar</option>
+                            </select>
+                            <input type="search" class="form-control" v-model="Busqueda.texto" @keyup.enter="listar()" placeholder="Buscar por dni, ruc, nombres , razón social">
+                            <button type="button" class="btn btn-primary" @click="listar()">
+                                <i class="fa fa-search"></i>&nbsp; Buscar
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-2"></div>
+                    <div class="col-md-1" align="right">
+                        <label>N° filas:</label>
+                    </div>
+                    <div class="col-md-1">
+                        <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.filas">
+                            <option v-for="item in Filas" :key="item" :value="item" v-text="item"></option>
+                        </select>
+                    </div>
                 </div>
-                <h5>
+                <h5 v-if="Carga.mostrar">
+                    <span role="status" :class="Carga.clase"></span>&nbsp;
+                    <span v-text="Carga.mensaje" :class="Carga.alert"></span>
                 </h5>
-                <div >
-
+                <div v-if="ListaVale.length">
+                    <div class="ec-table overflow-auto">
+                        <table class="table table-borderless table-sm text-gray-900">
+                            <thead>
+                                <tr class="table-info">
+                                    <th>Cliente</th>
+                                    <th>Monto</th>
+                                    <th class="text-center">Generado</th>
+                                    <th class="text-center">Usado</th>
+                                    <th class="text-center">Estado</th>
+                                    <th class="text-center">Opciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="vale in ListaVale" :key="vale.id" >
+                                    <td v-text="vale.razon_social ? vale.razon_social: (vale.nombres ? vale.nombres + ' ' + vale.apellidos : '---')"></td>
+                                    <td v-text="vale.monto"></td>
+                                    <td class="text-center" v-text="fix(0, vale.created_at)"></td>
+                                    <td class="text-center" v-text="vale.updated_at ? fix(0, vale.updated_at) : '---'"></td>
+                                    <td class="text-center">
+                                        <div v-if="vale.updated_at">
+                                            <span class="badge badge-primary">Usado</span>
+                                        </div>
+                                        <div v-else>
+                                            <span class="badge badge-success">Sin usar</span>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <template>
+                                            <button type="button" @click="abrirModalVerVenta(2, vale.venta_generada_id, vale)" title="VER VENTA ORIGEN" class="btn btn-outline-primary btn-sm">
+                                                <i class="far fa-eye"></i>
+                                            </button>
+                                        </template>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- Barra de navegacion -->
+                    <nav class="d-flex justify-content-center">
+                        <ul class="pagination">
+                            <li class="page-item">
+                                <a href="#" @click="cambiarPagina(Paginacion.currentPage-1)" class="page-link">Anterior</a>
+                            </li>
+                            <li class="page-item" v-for="page in Paginas" :key="page" :class="[page==Paginacion.currentPage?'active':'']">
+                                <a href="#" @click="cambiarPagina(page)" v-text="page" class="page-link"></a>
+                            </li>
+                            <li class="page-item">
+                                <a href="#" @click="cambiarPagina(Paginacion.currentPage+1)" class="page-link">Siguiente</a>
+                            </li>
+                        </ul>
+                    </nav>
                 </div>
-                <div >
-
+                <div v-else-if="!Carga.mostrar">
+                    <h5>No se han encontrado resultados</h5>
                 </div>
             </div>
 
@@ -917,7 +990,8 @@
                     mes: this.getMesActual(),
                     year: this.getYearActual(),
                     estadoEnviado: 3,
-                    estadoRecibido: 3
+                    estadoRecibido: 3,
+                    estadoVale: 3
                 },
                 Error: {
                     estado: 0,
@@ -959,6 +1033,7 @@
                     envioRecibido: '/envioRecibido',
                     detalle_venta: '/detalle_venta',
                     pago: '/pago',
+                    ventaWithDetalle: '/venta/getVentaWithDetalle',
                     serverPhp: 'http://127.0.0.1:8000'
                 }
             }
@@ -1015,6 +1090,7 @@
                 me.ListaVenta = [];
                 me.ListaProducto = [];
                 me.ListaEnvio = [];
+                me.ListaVale = [];
                 me.Carga.mostrar = 1;
                 me.Carga.clase = 'spinner-border spinner-border-sm text-primary';
                 me.Carga.mensaje = 'Cargando...';
@@ -1122,14 +1198,14 @@
                         break;
                     case 5://Listar vales
                         url = this.Ruta.vale + '?page='+this.Paginacion.currentPage
-                        +'&estado='+this.Busqueda.estado
+                        +'&estado='+this.Busqueda.estadoVale
+                        +'&allMonth='+ 1
                         +'&texto='+this.Busqueda.texto
                         +'&centro_id='+ this.Puesto.id
                         +'&filas='+this.Busqueda.filas;
                 
                         axios.get(url).then(function (response) {
                             me.ListaVale = response.data.vales.data;
-                            console.log(me.ListaVale);
                             me.Paginacion = response.data.paginacion;
                             me.Puesto.titulo = 'Vales'
                             me.Puesto.mostrar = 5;
@@ -1236,45 +1312,87 @@
                 this.EnvioRecibido.abasto_id ? this.listarDetalles(2) : this.listarDetalles(1);
                 this.abrirModal(3, 'Ver Envio', '', 'Cerrar', '')
             },
-            abrirModalVerVenta(data){
-                this.Venta.id = data.id;
-                this.Venta.total = data.total;
-                this.Venta.total_venta = data.total_venta;
-                this.Venta.total_descuento = data.total_descuento;
-                this.Venta.total_faltante = data.total_faltante;
-                this.Venta.tipo_pago = data.tipo.charAt(0);
-                this.Venta.tipo_entrega = data.tipo.charAt(1);
-                this.Venta.tipo_precio = data.tipo.charAt(2);
-                this.Venta.created_at = data.created_at;
-                this.Venta.codigo = data.codigo;
-                
-                this.Cliente.id = data.cliente_id;
-                this.Cliente.dni = data.dni;
-                this.Cliente.nombres = data.nombres;
-                this.Cliente.apellidos = data.apellidos;
-                this.Cliente.ruc = data.ruc;
-                this.Cliente.razon_social = data.razon_social;
-                this.Cliente.tipo = data.cliente_tipo;
+            abrirModalVerVenta(numero, data1, data2){
 
-                this.Vale.generado.id = data.vale_generada_id;
-                this.Vale.generado.monto = data.vale_generada_monto;
-                this.Vale.generado.created_at = data.vale_generada_created_at;
-                
-                this.Vale.usado.id = data.vale_usada_id;
-                this.Vale.usado.monto = data.vale_usada_monto;
-                this.Vale.usado.created_at = data.vale_usada_created_at;
+                switch (numero) {
+                    case 1:
+                        console.log('ingrese al case 1');
+                        this.Venta.id = data1.id;
+                        this.Venta.total = data1.total;
+                        this.Venta.total_venta = data1.total_venta;
+                        this.Venta.total_descuento = data1.total_descuento;
+                        this.Venta.total_faltante = data1.total_faltante;
+                        this.Venta.tipo_pago = data1.tipo.charAt(0);
+                        this.Venta.tipo_entrega = data1.tipo.charAt(1);
+                        this.Venta.tipo_precio = data1.tipo.charAt(2);
+                        this.Venta.created_at = data1.created_at;
+                        this.Venta.codigo = data1.codigo;
+                        
+                        this.Cliente.id = data1.cliente_id;
+                        this.Cliente.dni = data1.dni;
+                        this.Cliente.nombres = data1.nombres;
+                        this.Cliente.apellidos = data1.apellidos;
+                        this.Cliente.ruc = data1.ruc;
+                        this.Cliente.razon_social = data1.razon_social;
+                        this.Cliente.tipo = data1.cliente_tipo;
 
-                this.ListaPago = [];
-                this.ListaDetalle = [];
-                
-                this.abrirModal(4, 'Ver Venta', 'Generar Comprobante', 'Cerrar', 'modal-xl');
+                        this.Vale.generado.id = data1.vale_generada_id;
+                        this.Vale.generado.monto = data1.vale_generada_monto;
+                        this.Vale.generado.created_at = data1.vale_generada_created_at;
+                        
+                        this.Vale.usado.id = data1.vale_usada_id;
+                        this.Vale.usado.monto = data1.vale_usada_monto;
+                        this.Vale.usado.created_at = data1.vale_usada_created_at;
 
-                // this.list('detalle_venta');
-                // this.list('pago');
+                        this.ListaPago = [];
+                        this.ListaDetalle = [];
+                        
+                        this.abrirModal(4, 'Ver Venta', 'Generar Comprobante', 'Cerrar', 'modal-xl');
+                        
+                        this.listarDetalles(3, 'Ver');
+                        this.listarDetalles(4);
+                        break;
+                    case 2:
+                        console.log('Ingrese al case 2');
+                        let url = this.Ruta.ventaWithDetalle + '?venta_id='+data1;
+                        let me = this;
+                        axios.get(url).then(function (response) {
+                            let venta = response.data.venta;
+                            me.Venta.id = venta.id;
+                            me.Venta.total = venta.total;
+                            me.Venta.total_venta = venta.total_venta;
+                            me.Venta.total_descuento = venta.total_descuento;
+                            me.Venta.total_faltante = venta.total_faltante==null?0:venta.total_faltante;
+                            me.Venta.tipo_pago = venta.tipo.charAt(0);
+                            me.Venta.tipo_entrega = venta.tipo.charAt(1);
+                            me.Venta.tipo_precio = venta.tipo.charAt(2);
+                            me.Venta.created_at = venta.created_at;
+
+                            // me.Cliente.id = data[cliente_id];
+                            me.Cliente.dni = data2['dni'];
+                            me.Cliente.nombres = data2['nombres'];
+                            me.Cliente.apellidos = data2['apellidos'];
+                            me.Cliente.ruc = data2['ruc'];
+                            me.Cliente.razon_social = data2['razon_social'];
+                            me.Cliente.tipo = data2['tipo'];
+
+                            me.ListaPago = [];
+                            me.ListaDetalle = []; 
+
+                            me.abrirModal(4, 'Ver Venta', 'Generar Comprobante', 'Cerrar', 'modal-xl');
+
+                            // me.fix('detalle_venta', venta.get_detalle_venta);
+                            me.fix('detalle_venta', response.data.detalle);//listar los detalles de venta
+                            // me.list('pago');
+                            me.listarDetalles(4);//listar los pagos
+                        }).catch(function (error) {
+                            console.log(error);
+                        });
+                        break;
+                    default:
+                        break;
+                }
                 
-                this.listarDetalles(3, 'Ver');
-                this.listarDetalles(4);
-                // this.abrirModal(4, 'Ver Venta', '', 'Cerrar', 'modal-xl');
             },
             abrirModal(numero, titulo, accion, cancelar, size){
                 this.Modal.estado = 1;
@@ -1365,19 +1483,23 @@
             },
             fix(numero, data = ''){
                 var fixed;
-
+                let fecha, hora, fecha_fixed, hora_fixed;
                 switch (numero) {
-                    case 0:
-                        let fecha = data.split(' ')[0].split('-');
-                        let hora = data.split(' ')[1].split(':');
-                        let fecha_fixed = fecha[2]+'-'+fecha[1]+'-'+fecha[0];
-                        let hora_fixed = (hora[0]>12?(hora[0]-12).toString().padStart(2, '0'):hora[0])+':'+hora[1]+':'+hora[2];
+                    case 0://Formatear fecha y hora
+                        fecha = data.split(' ')[0].split('-');
+                        hora = data.split(' ')[1].split(':');
+                        fecha_fixed = fecha[2]+'/'+fecha[1]+'/'+fecha[0];
+                        hora_fixed = (hora[0]>12?(hora[0]-12).toString().padStart(2, '0'):hora[0])+':'+hora[1]+' '+(hora[0]>12?'pm':'am') ;
                         fixed = fecha_fixed+' '+hora_fixed;
+                        break;
+                    case 1://Formatear solo Fecha
+                        fecha = data.split('-');
+                        fixed = fecha[2] + '/' + fecha[1] + '/' + fecha[0];
                         break;
                     case 'detalle_venta':
                         console.log('on fix(detalle_venta)');
 
-                        if ( this.Modal.numero == 4 ) {
+                        // if ( this.Modal.numero == 4 ) {
                             for (let i = 0; i < data.length; i++) {
                                 this.ListaDetalle.push({
                                     detalle_producto_id: data[i].detalle.id,
@@ -1388,7 +1510,7 @@
                                     subtotal: data[i].detalle.subtotal
                                 });
                             }
-                        }
+                        // }
 
                         break;
                 }
@@ -1447,11 +1569,11 @@
                 let year = n.getFullYear();
                 return year;
             },
-            formatearFecha(fecha){
-                let arrayFecha = fecha.split('-');
-                let newFecha = arrayFecha[2] + '-' + arrayFecha[1] + '-' + arrayFecha[0];
-                return newFecha;
-            },
+            // formatearFecha(fecha){
+            //     let arrayFecha = fecha.split('-');
+            //     let newFecha = arrayFecha[2] + '-' + arrayFecha[1] + '-' + arrayFecha[0];
+            //     return newFecha;
+            // },
             generatePdfSpecific(){
                 window.open(this.Ruta.serverPhp + '/venta/generatePdfSpecific?id=' + this.Venta.id,'_blank');
             }
