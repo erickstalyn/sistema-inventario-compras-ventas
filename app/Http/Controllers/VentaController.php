@@ -358,11 +358,23 @@ class VentaController extends Controller {
         return $pdf->download('comprobante_venta_silmar_' . $venta[0]->codigo . '.pdf');
     }
     
-    public function getVentaWithDetalle(Request $request){
-        $venta = Venta::findOrFail($request->venta_id);
-
+    public function getVentaWithAll(Request $request){
+        // $venta = Venta::findOrFail($request->venta_id);
+        $venta = Venta::select('venta.id', 'venta.codigo', 'venta.tipo', 'venta.total', 'venta.total_faltante', 'venta.total_descuento',
+                        'venta.total_venta', 'venta.created_at', 
+                        'persona.id as cliente_id', 'persona.dni', 'persona.ruc', 'persona.nombres', 'persona.apellidos', 'persona.razon_social', 'persona.tipo as cliente_tipo',
+                        'vg.id as vale_generada_id', 'vg.monto as vale_generada_monto', 'vg.created_at as vale_generada_created_at',
+                        'vu.id as vale_usada_id', 'vu.monto as vale_usada_monto', 'vu.created_at as vale_usada_created_at')
+                    ->leftJoin('persona', 'persona.id', '=', 'venta.cliente_id')
+                    ->leftJoin('vale as vg', 'vg.venta_generada_id', '=', 'venta.id')
+                    ->leftJoin('vale as vu', 'vu.venta_usada_id', '=', 'venta.id')
+                    ->where('venta.id', '=', $request->venta_id)->take(1)->get();
+        $detalles = Venta::findOrFail($request->venta_id)->getDetalleVenta;
+        $pagos = Venta::findOrFail($request->venta_id)->getPago;
         return [
-            'venta' => $venta
+            'venta' => $venta,
+            'detalles' => $detalles,
+            'pagos' => $pagos
         ];
     }
 }

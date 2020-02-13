@@ -24,7 +24,7 @@ class ProductoController extends Controller {
                                         ->orWhere('codigo', 'like', '%'.$texto.'%');
                                 }
                             })
-                            ->orderBy('id', 'desc')->paginate($request->filas);
+                            ->orderBy('stock', 'asc')->paginate($request->filas);
 
         return [
             'paginacion' => [

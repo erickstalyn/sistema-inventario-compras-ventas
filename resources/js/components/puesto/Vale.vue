@@ -73,7 +73,7 @@
                                 </td>
                                 <td class="text-center">
                                     <template>
-                                        <button type="button" @click="abrirModalVerVenta(vale.venta_generada_id, vale)" title="VER VENTA ORIGEN" class="btn btn-outline-primary btn-sm">
+                                        <button type="button" @click="abrirModalVerVenta(vale.venta_generada_id)" title="VER VENTA ORIGEN" class="btn btn-outline-primary btn-sm">
                                             <i class="far fa-eye"></i>
                                         </button>
                                     </template>
@@ -197,7 +197,7 @@
                                                     <tr v-for="(detalle, indice) in ListaDetalle" :key="indice">
                                                         <td class="text-right">{{indice+1}}</td>
                                                         <td v-text="detalle.nombre_producto"></td>
-                                                        <td class="text-right" v-text="detalle.fallidos==null?'---':detalle.fallidos"></td>
+                                                        <td class="text-right" v-text="detalle.cantidad_fallido==null?'---':detalle.cantidad_fallido"></td>
                                                         <td class="text-right" v-text="detalle.cantidad"></td>
                                                         <td class="text-right" v-text="detalle.precio"></td>
                                                         <td class="text-right" v-text="detalle.subtotal"></td>
@@ -206,7 +206,9 @@
                                             </table>
                                         </div>
                                         <div class="col-md-12 input-group mt-2">
-                                            <div class="col-md-6">
+                                            <div class="col-md-6 input-group">
+                                                <label class="col-md-4 font-weight-bold p-0">Registrado:</label>
+                                                <label class="col-md-8 text-primary p-0" v-text="fix(0, Venta.created_at)"></label>
                                             </div>
                                             <div class="col-md-6 input-group">
                                                 <label class="col-md-6 text-right font-weight-bold h5 p-0">Monto de venta:</label>
@@ -218,7 +220,7 @@
                             </div>
                             <div class="col-md-12 p-0 m-0 input-group" v-if="Step.number==1" style="height: 26rem;">
                                 <div class="container-small col-md-12 form-group" style="height: 7rem;">
-                                    <div class="shadow rounded pt-2 bg-success" style="border: 1px solid; height: 7rem;">
+                                    <div class="shadow rounded pt-3 bg-success" style="border: 1px solid; height: 7rem;">
                                         <div class="col-md-12 form-group input-group">
                                             <label class="col-md-2 font-weight-bold h5">CLIENTE</label>
                                         </div>
@@ -261,6 +263,10 @@
                                             <label class="col-md-7 p-0 font-weight-bold">Tipo de entrega</label>
                                             <label class="col-md-5 p-0 text-white" v-text="fix('tipo_entrega')"></label>
                                         </div>
+                                        <div class="col-md-12 pt-6 form-group">
+                                            <label class="col-md-12 p-0 text-center font-weight-bold">-- Codigo de venta --</label>
+                                            <label class="col-md-12 p-0 text-center text-white" v-text="Venta.codigo"></label>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="container-small col-md-3">
@@ -268,21 +274,24 @@
                                         <div class="col-md-12 form-group">
                                             <label class="font-weight-bold h5">BENEFICIOS</label>
                                         </div>
-                                        <div v-if="ValeU.monto!=null" class="col-md-12 form-group p-0">
-                                            <div class="col-md-12 input-group form-group">
-                                                <label class="col-md-12 d-flex justify-content-center">-- VALE GENERADO --</label>
+                                        <div v-if="Vale.generado.monto!=null" class="col-md-12 form-group p-0">
+                                            <div class="col-md-12 text-center">
+                                                <label class="font-weight-bold">-- VALE GENERADO --</label>
+                                            </div>
+                                            <div class="col-md-12 input-group">
+                                                <label class="col-md-5 m-0 font-weight-bold">Monto</label>
+                                                <label class="col-md-7 m-0 text-white" v-text="'S/. '+Vale.generado.monto"></label>
+                                            </div>
+                                            <div class="col-md-12 input-group">
+                                                <label class="col-md-5 m-0 font-weight-bold">Fecha</label>
+                                                <label class="col-md-7 m-0 text-white" v-text="fix('fecha', Vale.generado.created_at)"></label>
                                             </div>
                                             <div class="col-md-12 input-group form-group">
-                                                <label class="col-md-6 font-weight-bold">Monto</label>
-                                                <label class="col-md-6 text-white" v-text="'S/. '+ValeU.monto"></label>
+                                                <label class="col-md-5 m-0 font-weight-bold">Hora</label>
+                                                <label class="col-md-7 m-0 text-white" v-text="fix('hora', Vale.generado.created_at)"></label>
                                             </div>
-                                            <div class="col-md-12 input-group form-group">
-                                                <label class="col-md-6 font-weight-bold">Fecha</label>
-                                                <label class="col-md-6 text-white" v-text="fix(7, ValeU.created_at)"></label>
-                                            </div>
-                                            <div class="col-md-12 input-group form-group">
-                                                <label class="col-md-6 font-weight-bold">Hora</label>
-                                                <label class="col-md-6 text-white" v-text="fix(8, ValeU.created_at)"></label>
+                                            <div class="col-md-12 text-center mt-3">
+                                                <button class="btn btn-danger">Imprimir vale</button>
                                             </div>
                                         </div>
                                     </div>
@@ -292,21 +301,21 @@
                                         <div class="col-md-12 form-group">
                                             <label class="font-weight-bold h5">DESCUENTOS</label>
                                         </div>
-                                        <div v-if="ValeU.monto!=null" class="col-md-12 form-group p-0">
+                                        <div v-if="Vale.usado.monto!=null" class="col-md-12 form-group p-0">
                                             <div class="col-md-12 input-group form-group">
                                                 <label class="col-md-12 d-flex justify-content-center">-- VALE USADO --</label>
                                             </div>
                                             <div class="col-md-12 input-group form-group">
-                                                <label class="col-md-6 font-weight-bold">Monto</label>
-                                                <label class="col-md-6 text-white" v-text="'S/. '+ValeU.monto"></label>
+                                                <label class="col-md-4 font-weight-bold">Monto</label>
+                                                <label class="col-md-8 text-white" v-text="'S/. '+Vale.usado.monto"></label>
                                             </div>
                                             <div class="col-md-12 input-group form-group">
-                                                <label class="col-md-6 font-weight-bold">Fecha</label>
-                                                <label class="col-md-6 text-white" v-text="fix(7, ValeU.created_at)"></label>
+                                                <label class="col-md-4 font-weight-bold">Fecha</label>
+                                                <label class="col-md-8 text-white" v-text="fix('fecha', Vale.usado.created_at)"></label>
                                             </div>
                                             <div class="col-md-12 input-group form-group">
-                                                <label class="col-md-6 font-weight-bold">Hora</label>
-                                                <label class="col-md-6 text-white" v-text="fix(8, ValeU.created_at)"></label>
+                                                <label class="col-md-4 font-weight-bold">Hora</label>
+                                                <label class="col-md-8 text-white" v-text="fix('hora', Vale.usado.created_at)"></label>
                                             </div>
                                         </div>
                                     </div>
@@ -358,12 +367,17 @@
                 //datos generales
                 ListaVale: [],
                 Vale: {
-                    id: null,
-                    monto: null,
-                    cliente: null,
-                    created_at: null,
-                    updated_at: null,
-                    venta_codigo: null
+                    usado: {
+                        id: null,
+                        monto: null,
+                        venta_usada_id: null,
+                        created_at: null
+                    },
+                    generado: {
+                        id: null,
+                        monto: null,
+                        created_at: null
+                    }
                 },
                 Venta: {
                     id: null,
@@ -449,7 +463,7 @@
                 },
                 Ruta: {
                     vale: '/vale',
-                    ventaWithDetalle: '/venta/getVentaWithDetalle',
+                    ventaWithAll: '/venta/getVentaWithAll',
                     serverPhp: 'http://127.0.0.1:8000',
                     detalle_venta: '/detalle_venta',
                     pago: '/pago',
@@ -511,11 +525,12 @@
                     console.log(error)
                 });
             },
-            abrirModalVerVenta(venta_id, data){
-                let url = this.Ruta.ventaWithDetalle + '?venta_id='+venta_id;
+            abrirModalVerVenta(venta_id){
+                let url = this.Ruta.ventaWithAll + '?venta_id='+venta_id;
                 let me = this;
                 axios.get(url).then(function (response) {
-                    let venta = response.data.venta;
+                    let venta = response.data.venta[0];
+                    console.log(response.data);
                     me.Venta.id = venta.id;
                     me.Venta.total = venta.total;
                     me.Venta.total_venta = venta.total_venta;
@@ -526,21 +541,29 @@
                     me.Venta.tipo_precio = venta.tipo.charAt(2);
                     me.Venta.created_at = venta.created_at;
 
-                    // me.Cliente.id = data[cliente_id];
-                    me.Cliente.dni = data['dni'];
-                    me.Cliente.nombres = data['nombres'];
-                    me.Cliente.apellidos = data['apellidos'];
-                    me.Cliente.ruc = data['ruc'];
-                    me.Cliente.razon_social = data['razon_social'];
-                    me.Cliente.tipo = data['tipo'];
+                    me.Cliente.id = venta.cliente_id;
+                    me.Cliente.dni = venta.dni;
+                    me.Cliente.nombres = venta.nombres;
+                    me.Cliente.apellidos = venta.apellidos;
+                    me.Cliente.ruc = venta.ruc;
+                    me.Cliente.razon_social = venta.razon_social;
+                    me.Cliente.tipo = venta.cliente_tipo;
+
+                    me.Vale.generado.id = venta.vale_generada_id;
+                    me.Vale.generado.monto = venta.vale_generada_monto;
+                    me.Vale.generado.created_at = venta.vale_generada_created_at;
+                    
+                    me.Vale.usado.id = venta.vale_usada_id;
+                    me.Vale.usado.monto = venta.vale_usada_monto;
+                    me.Vale.usado.created_at = venta.vale_usada_created_at;
 
                     me.ListaPago = [];
                     me.ListaDetalle = []; 
 
                     me.abrirModal(2, 'Ver Venta', 'modal-xl', '', 'Cerrar');
 
-                    me.fix('detalle_venta', venta.get_detalle_venta); 
-                    me.list('pago');
+                    me.fix('detalle_venta', response.data.detalles);
+                    me.ListaPago = response.data.pagos;
                 }).catch(function (error) {
                     console.log(error);
                 });
@@ -655,21 +678,21 @@
 
                 return fixed;
             },
-            list(numero, data = ''){
-                var me = this;
-                var url;
+            // list(numero, data = ''){
+            //     var me = this;
+            //     var url;
 
-                switch (numero) {
-                    case 'pago':
-                        url = me.Ruta.pago+'/listVenta?'+'venta_id='+me.Venta.id;
-                        axios.get(url).then(function(response){
-                            me.ListaPago = response.data;
-                        }).catch(function(error){
-                            console.log(error);
-                        });
-                        break;
-                }
-            },
+            //     switch (numero) {
+            //         case 'pago':
+            //             url = me.Ruta.pago+'/listVenta?'+'venta_id='+me.Venta.id;
+            //             axios.get(url).then(function(response){
+            //                 me.ListaPago = response.data;
+            //             }).catch(function(error){
+            //                 console.log(error);
+            //             });
+            //             break;
+            //     }
+            // },
         },
         mounted() {
             this.listar();
