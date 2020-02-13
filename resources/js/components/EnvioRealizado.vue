@@ -23,8 +23,8 @@
                         <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.estado">
                             <option value="3">Todos</option>
                             <option value="0">En espera</option>
-                            <option value="1">Aceptados</option>
-                            <option value="2">Rechazados</option>
+                            <option value="1">Recibidos</option>
+                            <!-- <option value="2">Rechazados</option> -->
                         </select>
                     </div>
                 </div>
@@ -77,7 +77,7 @@
                             <tr class="table-info">
                                 <th>Centro de destino</th>
                                 <th class="text-center">Fecha de envio</th>
-                                <th class="text-center">Fecha Aceptado/Rechazado</th>
+                                <th class="text-center">Fecha de recepción</th>
                                 <th>Estado</th>
                                 <th class="text-center">Opciones</th>
                             </tr>
@@ -92,23 +92,23 @@
                                         <span class="badge badge-primary">En espera</span>
                                     </div>
                                     <div v-else-if="envio.estado == 1">
-                                        <span class="badge badge-success">Aceptado</span>
+                                        <span class="badge badge-success">Recibido</span>
                                     </div>
-                                    <div v-else="">
+                                    <!-- <div v-else="">
                                         <span class="badge badge-danger">Rechazado</span>
-                                    </div>
+                                    </div> -->
                                 </td>
                                 <td class="text-center">
                                     <button type="button" title="Ver" class="btn btn-sm btn-primary" @click="abrirModalVer(envio)">
                                         <i class="far fa-eye"></i>
                                     </button>
-                                    <template v-if="envio.estado == 2">
+                                    <!-- <template v-if="envio.estado == 2">
                                         <button type="button"  title="Reenviar" class="btn btn-info btn-sm" @click="abrirModalReenviar(envio)">
                                             <i class="fas fa-plane"></i>
                                         </button>
-                                    </template>
-                                    <template v-if="envio.estado != 1">
-                                        <button type="button"  title="Anular" class="btn btn-danger btn-sm" @click="anularAbasto(envio.id)">
+                                    </template> -->
+                                    <template v-if="envio.estado == 0">
+                                        <button type="button"  title="Anular" class="btn btn-danger btn-sm" @click="anularEnvio(envio.id)">
                                                 <i class="fas fa-trash-alt"></i>
                                         </button>
                                     </template>
@@ -690,10 +690,6 @@
                         this.agregar();
                         break;
                     }
-                    case 'Editar': {
-                        this.editar();
-                        break;
-                    }
                     case 'Reenviar': {
                         this.reenviar();
                         break;
@@ -723,7 +719,7 @@
                         break;
                 }
             },
-            anularAbasto(id){
+            anularEnvio(id){
                 Swal.fire({
                     title: '¿Está seguro que desea ANULAR el Envío?',
                     type: 'error',

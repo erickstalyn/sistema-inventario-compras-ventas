@@ -74,7 +74,7 @@
                             <tr class="table-info">
                                 <th>Origen</th>
                                 <th class="text-center">Fecha en que se envió</th>
-                                <th class="text-center">Fecha Aceptado/Rechazado</th>
+                                <th class="text-center">Fecha en que se recibó</th>
                                 <th>Estado</th>
                                 <th class="text-center">Opciones</th>
                             </tr>
@@ -83,24 +83,24 @@
                             <tr v-for="envio in ListaEnvioRecibido" :key="envio.id" >
                                 <td v-text="!envio.abasto_id? envio.centro_origen : 'Administración'"></td>
                                 <td v-text="formatearFecha(envio.fecha_envio)" class="text-center"></td>
-                                <td v-text="envio.fecha_cambio ? formatearFecha(envio.fecha_cambio) : '-------------'" class="text-center"></td>
+                                <td v-text="envio.fecha_cambio ? formatearFecha(envio.fecha_cambio) : '---'" class="text-center"></td>
                                 <td>
                                     <div v-if="envio.estado == 0">
                                         <span class="badge badge-primary">En espera</span>
                                     </div>
                                     <div v-else-if="envio.estado == 1">
-                                        <span class="badge badge-success">Aceptado</span>
+                                        <span class="badge badge-success">Recibido</span>
                                     </div>
-                                    <div v-else="">
+                                    <!-- <div v-else="">
                                         <span class="badge badge-danger">Rechazado</span>
-                                    </div>
+                                    </div> -->
                                 </td>
                                 <td class="text-center">
                                     <button type="button" title="Ver" class="btn btn-sm btn-primary" @click="abrirModalVer(envio)">
                                         <i class="far fa-eye"></i>
                                     </button>
                                     <template v-if="envio.estado == 0">
-                                        <button type="button"  title="Aceptar/Rechazar" class="btn btn-sm btn-outline-warning" @click="accion(envio)">
+                                        <button type="button"  title="Recibir" class="btn btn-sm btn-outline-warning" @click="accion(envio)">
                                             <i class="fas fa-sort-amount-down-alt"></i>
                                         </button>
                                     </template>
@@ -357,12 +357,12 @@
                     buttonsStyling: false
                 })
                 swalWithBootstrapButtons.fire({
-                title: '¿Qué ACCIÓN desea realizar?',
-                text: "Por favor elija con cuidado, que son acciones irreversibles",
+                title: '¿La mercadería LLEGÓ al centro?',
+                text: "Por favor, revise que toda la mercadería haya llegado completa",
                 type: 'warning',
                 showCancelButton: true,
-                confirmButtonText: 'Aceptar envío',
-                cancelButtonText: 'Rechazar envío',
+                confirmButtonText: 'SI, la mercadería llegó',
+                cancelButtonText: 'Cancelar',
                 }).then((result) => {
                 if (result.value) {
                     var me = this;
@@ -381,24 +381,22 @@
                         console.log('Soy el error: ' + error);
                     });
                     
-                } else if (
-                    result.dismiss === Swal.DismissReason.cancel
-                ) {
-                    var me = this;
-                    axios.put('/envioRecibido/setEstado', {
-                        'id' : me.EnvioRecibido.id,
-                        'estado' : 2
-                    }).then(function(response){
-                        me.cerrarModal();
-                        me.listar();
-                        swalWithBootstrapButtons.fire(
-                        'Rechazado!',
-                        'El envío ha sido rechazado, por favor infórmeselo al administrador',
-                        'danger'
-                        )
-                    }).catch(function(error){
-                        console.log('Soy el error: ' + error);
-                    });
+                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                    // var me = this;
+                    // axios.put('/envioRecibido/setEstado', {
+                    //     'id' : me.EnvioRecibido.id,
+                    //     'estado' : 2
+                    // }).then(function(response){
+                    //     me.cerrarModal();
+                    //     me.listar();
+                    //     swalWithBootstrapButtons.fire(
+                    //     'Rechazado!',
+                    //     'El envío ha sido rechazado, por favor infórmeselo al administrador',
+                    //     'danger'
+                    //     )
+                    // }).catch(function(error){
+                    //     console.log('Soy el error: ' + error);
+                    // });
                 }
                 })
             },
