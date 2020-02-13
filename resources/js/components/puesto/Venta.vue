@@ -293,33 +293,49 @@
                                                 <option class="text-gray-900" value="2">Credito</option>
                                             </select>
                                         </div>
-                                        <div class="col-md-12 input-group form-group" v-if="Venta.tipo_pago=='2'">
-                                            <label class="col-md-6 font-weight-bold">Tipo de entrega&nbsp;<span class="text-danger">*</span></label>
-                                            <select class="col-md-6 custom-select custom-select-sm" v-model="Venta.tipo_entrega">
-                                                <option class="text-gray-900" value="1">Pre pago</option>
-                                                <option class="text-gray-900" value="2">Post pago</option>
-                                            </select>
+                                        <div class="col-md-12 input-group m-0 p-0" v-if="Venta.tipo_pago=='2'">
+                                            <div class="col-md-12 input-group form-group">
+                                                <label class="col-md-6 font-weight-bold">Tipo de entrega&nbsp;<span class="text-danger">*</span></label>
+                                                <select class="col-md-6 custom-select custom-select-sm" v-model="Venta.tipo_entrega">
+                                                    <option class="text-gray-900" value="1">Pre pago</option>
+                                                    <option class="text-gray-900" value="2">Post pago</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-12 input-group"> 
+                                                <label class="col-md-6 font-weight-bold" for="pago_inicial">Pago inicial&nbsp;<span class="text-danger">*</span></label>
+                                                <input type="number" class="col-md-6 form-control form-control-sm text-right" v-model="Pago.monto" min="0" :max="Venta.total" id="pago_inicial" @click="update('pago.monto')" @keyup="update('pago.monto')">
+                                            </div>
                                         </div>
-                                        <div class="col-md-12 input-group" v-if="Venta.tipo_pago=='2'"> 
-                                            <label class="col-md-6 font-weight-bold" for="pago_inicial">Pago inicial&nbsp;<span class="text-danger">*</span></label>
-                                            <input type="number" class="col-md-6 form-control form-control-sm text-right" v-model="Pago.monto" min="0" :max="Venta.total" id="pago_inicial">
+                                        <hr class="col-md-8 text-center">
+                                        <div class="col-md-12 input-group m-0 p-0">
+                                            <div class="col-md-12 input-group form-group">
+                                                <label class="col-md-6 font-weight-bold" for="total_pagado">Monto pagado</label>
+                                                <input type="number" class="col-md-6 form-control form-control-sm text-right" v-model="Venta.total_pagado" min="0" id="total_pagado" @click="update('venta.total_pagado')" @keyup="update('venta.total_pagado')">
+                                            </div>
+                                            <div class="col-md-12 input-group">
+                                                <label class="col-md-6 font-weight-bold">Monto vuelto</label>
+                                                <label class="col-md-6 text-right text-white" v-text="Number.parseFloat(Venta.total_vuelto).toFixed(2)"></label>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="container-small col-md-4">
-                                    <div class="shadow rounded pt-2 bg-success" style="border: 1px solid; height: 18rem;" v-if="Vale.usado.id!=null">
+                                    <div class="shadow rounded pt-3 bg-success" style="border: 1px solid; height: 18rem;" v-if="Vale.usado.id!=null">
                                         <div class="col-md-12 form-group">
-                                            <label class="font-weight-bold h5">VALE</label>
+                                            <label class="font-weight-bold h5">DESCUENTO</label>
                                         </div>
-                                        <div class="col-md-12 input-group form-group">
+                                        <div class="col-md-12 text-center">
+                                            <label class="font-weight-bold">-- Vale de descuento --</label>
+                                        </div>
+                                        <div class="col-md-12 input-group">
                                             <label class="col-md-6 font-weight-bold">Monto</label>
                                             <label class="col-md-6 text-white" v-text="'S/. '+Vale.usado.monto"></label>
                                         </div>
-                                        <div class="col-md-12 input-group form-group">
+                                        <div class="col-md-12 input-group">
                                             <label class="col-md-6 font-weight-bold">Fecha</label>
                                             <label class="col-md-6 text-white" v-text="fix('fecha', Vale.usado.created_at)"></label>
                                         </div>
-                                        <div class="col-md-12 input-group form-group">
+                                        <div class="col-md-12 input-group">
                                             <label class="col-md-6 font-weight-bold">Hora</label>
                                             <label class="col-md-6 text-white" v-text="fix('hora', Vale.usado.created_at)"></label>
                                         </div>
@@ -330,22 +346,22 @@
                                         <div class="col-md-12 form-group">
                                             <label class="font-weight-bold h5">TOTALES</label>
                                         </div>
-                                        <div class="col-md-12 input-group form-group">
-                                            <label class="col-md-6 font-weight-bold">Monto de venta</label>
+                                        <div class="col-md-12 input-group">
+                                            <label class="col-md-7 font-weight-bold">Monto de venta</label>
                                             <label class="col-md-1 text-white text-right p-0">S/.</label>
                                             <label class="col-md-4 text-white text-right" v-text="Number.parseFloat(Venta.total_venta).toFixed(2)"></label>
                                         </div>
-                                        <div class="col-md-12 input-group form-group" v-if="Vale.usado.id!=null">
-                                            <label class="col-md-6 font-weight-bold">Monto de descuento</label>
+                                        <div class="col-md-12 input-group" v-if="Vale.usado.id!=null">
+                                            <label class="col-md-7 font-weight-bold">Monto de descuento</label>
                                             <label class="col-md-1 text-white text-right p-0">S/.</label>
-                                            <label class="col-md-4 text-white text-right" v-text="'-'+Number.parseFloat(Venta.total_descuento).toFixed(2)"></label>
+                                            <label class="col-md-4 text-white text-right" v-text="'- '+Number.parseFloat(Venta.total_descuento).toFixed(2)"></label>
                                         </div>
                                         <div class="col-md-10 bg-white m-4"><hr></div>
-                                        <div class="col-md-12 input-group form-group">
+                                        <div class="col-md-12 input-group">
                                             <label class="col-md-6 font-weight-bold h5">Total</label>
                                             <label class="col-md-5 text-white text-right h5" v-text="'S/. '+Number.parseFloat(Venta.total).toFixed(2)"></label>
                                         </div>
-                                        <div class="col-md-12 input-group form-group" v-if="Venta.total_faltante!=null && Venta.tipo_pago=='2'">
+                                        <div class="col-md-12 input-group" v-if="Venta.total_faltante!=null && Venta.tipo_pago=='2'">
                                             <label class="col-md-6 font-weight-bold h5">Faltante</label>
                                             <label class="col-md-5 text-white text-right h5" v-text="'S/. '+(Number.parseFloat(Venta.total_faltante)-Number.parseFloat(Pago.monto!=''?(Pago.monto>=0&&Pago.monto<=Venta.total_faltante?Pago.monto:0):0)).toFixed(2)"></label>
                                         </div>
@@ -667,7 +683,7 @@
                                                 <tbody>
                                                     <tr v-for="(detalle, indice) in Lista" :key="indice">
                                                         <td class="text-center">
-                                                            <button type="button" class="btn btn-circle btn-outline-danger btn-sm" title="QUITAR" @click="remove('detalle_venta', indice)" v-if="detalle.removable==true">
+                                                            <button type="button" class="btn btn-circle btn-outline-danger btn-sm" title="QUITAR" @click="remove('detalle_venta', detalle.detalle_producto_id)" v-if="detalle.removable==true">
                                                                 <i class="fas fa-minus"></i>
                                                             </button>
                                                         </td>
@@ -923,6 +939,8 @@
 
     </main>
 </template>
+
+
 <script>
     export default {
         data(){
@@ -946,6 +964,8 @@
                     tipo_entrega: null, // 1: prepago, 2: postpago
                     tipo_precio: null, // 1: al por menor, 2: al por mayor
                     created_at : null,
+                    total_pagado: null,
+                    total_vuelto: null
                 },
                 ListaProducto: null,
                 ListaDetalle: null,
@@ -1284,6 +1304,8 @@
                 this.Venta.tipo_entrega = '1';
                 this.Venta.tipo_precio = '1';
                 this.Venta.centro_id = $('meta[name="idCentro"]').attr('content');
+                this.Venta.total_pagado = '';
+                this.Venta.total_vuelto = 0;
                 
                 this.ListaProducto = [];
                 this.ListaDetalle = [];
@@ -1729,6 +1751,8 @@
                 });
             },
             list(numero, data = ''){
+                this.log('on list("'+numero+'")');
+
                 var me = this;
                 var url;
 
@@ -1776,6 +1800,8 @@
                 }
             },
             add(numero, data = ''){
+                this.log('on add("'+numero+'")');
+
                 switch (numero) {
                     case 'detalle_venta':
                         let found = false;
@@ -1786,7 +1812,20 @@
                                 }
                                 if ( this.Modal.numero == 3 ) {
                                     if ( this.ListaDetalle[i].cantidad_usable == true ) {
-                                        if ( this.ListaDetalle[i].cantidad_add < this.ListaDetalle[i].substock ) this.ListaDetalle[i].cantidad_add++;
+                                        console.log('entro aqui');
+                                        if ( this.ListaDetalle[i].cantidad_add < this.ListaDetalle[i].substock ){
+                                            if ( this.ListaDetalle[i].removed == true ) {
+                                                this.ListaDetalle[i].cantidad_add = 0;
+                                                this.ListaDetalle[i].removed = false;
+                                            } else {
+                                                this.ListaDetalle[i].cantidad_add++;
+                                            }
+                                        }
+                                    } else {
+                                        if ( this.ListaDetalle[i].removed == true ) {
+                                            this.ListaDetalle[i].cantidad_add = 0;
+                                            this.ListaDetalle[i].removed = false;
+                                        }
                                     }
                                 }
                                 found = true; break;
@@ -1845,8 +1884,7 @@
                 }
             },
             update(numero, data = ''){
-                console.log('on update("'+numero+'")');
-                this.log();
+                this.log('on update("'+numero+'")');
 
                 var updated = '';
 
@@ -1896,6 +1934,7 @@
                             this.Venta.total = total>=0?total:0;
 
                             this.update('venta.total_faltante');
+                            this.update('venta.total_vuelto');
                         }
                         if ( this.Modal.numero == 3 ){ 
                             let total_descuento = Number.parseFloat(this.Venta.total_descuento==null?0:this.Venta.total_descuento);
@@ -1937,6 +1976,7 @@
                         if ( this.Modal.numero == 1 ) {
                             this.update('venta.total_faltante');
                             this.update('cliente.removable');
+                            this.update('venta.total_pagado');
                         }
                         if ( this.Modal.numero == 3 ) {
                             if ( (this.Venta.total > this.Venta.total_start && this.Venta.tipo.charAt(0) == '1') || this.Venta.tipo.charAt(0) == '2' ) {
@@ -2022,6 +2062,11 @@
                             }
                         }
                         break;
+                    case 'pago.monto':
+                        if ( this.Modal.numero == 1 ) {
+                            this.update('venta.total_vuelto');
+                        }
+                        break;
                     case 'vale.generado':
                         if ( this.Modal.numero == 3 ) {
                             if ( this.Vale.generado.monto_start == 0 ) {
@@ -2039,25 +2084,55 @@
                             }
                         }
                         break;
+                    case 'venta.total_pagado':
+                        if ( this.Modal.numero == 1 ) {
+                            this.update('venta.total_vuelto');
+                        }
+                        break;
+                    case 'venta.total_vuelto':
+                        if ( this.Modal.numero == 1 ) {
+                            let total_pagado = Number.parseFloat(this.Venta.total_pagado!=''?this.Venta.total_pagado:0);
+                            if ( this.Venta.tipo_pago == '1' ) {
+                                if ( total_pagado < this.Venta.total ) {
+                                    this.Venta.total_vuelto = 0;
+                                } else {
+                                    this.Venta.total_vuelto = total_pagado - this.Venta.total;
+                                }
+                            } else if ( this.Venta.tipo_pago == '2' ) {
+                                this.Venta.total_vuelto = total_pagado - this.Pago.monto;
+                            } else {
+                                this.error();
+                            }
+                        }
+                        break;
                 }
 
                 return updated;
             },
             remove(numero, data = ''){
-                console.log("on remove('"+numero+"')");
+                this.log('on remove("'+numero+'")');
 
                 switch (numero) {
                     case 'detalle_venta':
                         if ( this.Modal.numero == 1 ) {
                             this.ListaDetalle.splice(data, 1);
+
                             this.update('venta.total_venta');
                         }
                         if ( this.Modal.numero == 3 ) {
-                            if ( this.ListaDetalle[data].id != null ) {
-                                this.ListaDetalle[data].removed = true;
-                            } else {
-                                this.ListaDetalle.splice(data, 1);
+                            let found = false;
+                            for (let i = 0; i < this.ListaDetalle.length; i++) {
+                                if ( data == this.ListaDetalle[i].detalle_producto_id ) {
+                                    if ( this.ListaDetalle[i].id == null ) {
+                                        this.ListaDetalle.splice(i, 1);
+                                    } else {
+                                        this.ListaDetalle[i].removed = true;
+                                        found = true; break;
+                                    }
+                                }
                             }
+                            if ( found == false) this.error();
+
                             this.update('venta.total_venta');
                         }
                         break;
@@ -2106,8 +2181,9 @@
                 }
             },
             fix(numero, data = ''){
-                var fixed;
+                this.log('on fix("'+numero+'")');
 
+                var fixed;
                 let fecha, hora, fecha_fixed, hora_fixed;
 
                 switch (numero) {
@@ -2221,6 +2297,8 @@
                 return fixed;
             },
             get(numero, data = ''){
+                this.log('on get("'+numero+'")');
+
                 var me = this;
                 var url = '';
                 var got = '';
@@ -2281,7 +2359,7 @@
                     this.listar(page);
                 }
             },
-            log(){
+            log(message = ''){
                 var data = {
                     Venta: this.Venta,
                     Vale: this.Vale,
@@ -2290,12 +2368,15 @@
                     ListaDetalle: this.ListaDetalle,
                     Pago: this.Pago,
                     ListaProducto: this.ListaProducto,
-                    Pago: this.Pago,
                     ListaVenta: this.ListaVenta,
                     ListaVenta: this.ListaVenta,
                     Cliente: this.Cliente
                 };
-                console.log(data);
+                // if ( message != '' ) console.log(message);
+                // console.log(data);
+            },
+            error(){
+
             },
             generatePdfSpecific(){
                 window.open(this.Ruta.serverPhp + '/venta/generatePdfSpecific?id=' + this.Venta.id,'_blank');
@@ -2307,6 +2388,7 @@
     }
 
 </script>
+
 
 <style>
     .mostrar{
