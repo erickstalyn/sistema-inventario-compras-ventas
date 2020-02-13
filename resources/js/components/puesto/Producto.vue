@@ -40,9 +40,10 @@
                                 <th class="text-center">Codigo</th>
                                 <th class="text-center">Precio al por menor</th>
                                 <th class="text-center">Precio al por mayor</th>
-                                <th class="text-center">Stock</th>
+                                <th class="text-center">Disponible</th>
                                 <th class="text-center">Reservados</th>
                                 <th class="text-center">Fallidos</th>
+                                <th class="text-center">Total</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -54,6 +55,7 @@
                                 <td v-text="producto.detalle.substock" class="text-right"></td>
                                 <td v-text="producto.detalle.reservados==0?'---':producto.detalle.reservados" class="text-right"></td>
                                 <td v-text="producto.detalle.fallidos==0?'---':producto.detalle.fallidos" class="text-right"></td>
+                                <td v-text="producto.detalle.substock + producto.detalle.reservados + producto.detalle.fallidos" class="text-right"></td>
                             </tr>
                         </tbody>
                     </table>
