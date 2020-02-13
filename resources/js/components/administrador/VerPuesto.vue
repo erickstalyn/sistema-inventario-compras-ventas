@@ -507,7 +507,7 @@
                                     </td>
                                     <td class="text-center">
                                         <template>
-                                            <button type="button" @click="abrirModalVerVenta(2, vale.venta_generada_id, vale)" title="VER VENTA ORIGEN" class="btn btn-outline-primary btn-sm">
+                                            <button type="button" @click="abrirModalVerVenta(2, vale.venta_generada_id)" title="VER VENTA ORIGEN" class="btn btn-outline-primary btn-sm">
                                                 <i class="far fa-eye"></i>
                                             </button>
                                         </template>
@@ -1033,7 +1033,7 @@
                     envioRecibido: '/envioRecibido',
                     detalle_venta: '/detalle_venta',
                     pago: '/pago',
-                    ventaWithDetalle: '/venta/getVentaWithDetalle',
+                    ventaWithAll: '/venta/getVentaWithAll',
                     serverPhp: 'http://127.0.0.1:8000'
                 }
             }
@@ -1217,6 +1217,7 @@
                         }).catch(function (error) {
                             console.log(error)
                         });
+                        break;
                 }
                 for (let i = 0; i < this.SelectPuesto.length; i++) { //Busco el nombre
                     if(this.SelectPuesto[i].id == this.Puesto.id) this.Puesto.nombre = this.SelectPuesto[i].nombre;
@@ -1312,37 +1313,37 @@
                 this.EnvioRecibido.abasto_id ? this.listarDetalles(2) : this.listarDetalles(1);
                 this.abrirModal(3, 'Ver Envio', '', 'Cerrar', '')
             },
-            abrirModalVerVenta(numero, data1, data2){
+            abrirModalVerVenta(numero, data){
 
                 switch (numero) {
                     case 1:
                         console.log('ingrese al case 1');
-                        this.Venta.id = data1.id;
-                        this.Venta.total = data1.total;
-                        this.Venta.total_venta = data1.total_venta;
-                        this.Venta.total_descuento = data1.total_descuento;
-                        this.Venta.total_faltante = data1.total_faltante;
-                        this.Venta.tipo_pago = data1.tipo.charAt(0);
-                        this.Venta.tipo_entrega = data1.tipo.charAt(1);
-                        this.Venta.tipo_precio = data1.tipo.charAt(2);
-                        this.Venta.created_at = data1.created_at;
-                        this.Venta.codigo = data1.codigo;
+                        this.Venta.id = data.id;
+                        this.Venta.total = data.total;
+                        this.Venta.total_venta = data.total_venta;
+                        this.Venta.total_descuento = data.total_descuento;
+                        this.Venta.total_faltante = data.total_faltante;
+                        this.Venta.tipo_pago = data.tipo.charAt(0);
+                        this.Venta.tipo_entrega = data.tipo.charAt(1);
+                        this.Venta.tipo_precio = data.tipo.charAt(2);
+                        this.Venta.created_at = data.created_at;
+                        this.Venta.codigo = data.codigo;
                         
-                        this.Cliente.id = data1.cliente_id;
-                        this.Cliente.dni = data1.dni;
-                        this.Cliente.nombres = data1.nombres;
-                        this.Cliente.apellidos = data1.apellidos;
-                        this.Cliente.ruc = data1.ruc;
-                        this.Cliente.razon_social = data1.razon_social;
-                        this.Cliente.tipo = data1.cliente_tipo;
+                        this.Cliente.id = data.cliente_id;
+                        this.Cliente.dni = data.dni;
+                        this.Cliente.nombres = data.nombres;
+                        this.Cliente.apellidos = data.apellidos;
+                        this.Cliente.ruc = data.ruc;
+                        this.Cliente.razon_social = data.razon_social;
+                        this.Cliente.tipo = data.cliente_tipo;
 
-                        this.Vale.generado.id = data1.vale_generada_id;
-                        this.Vale.generado.monto = data1.vale_generada_monto;
-                        this.Vale.generado.created_at = data1.vale_generada_created_at;
+                        this.Vale.generado.id = data.vale_generada_id;
+                        this.Vale.generado.monto = data.vale_generada_monto;
+                        this.Vale.generado.created_at = data.vale_generada_created_at;
                         
-                        this.Vale.usado.id = data1.vale_usada_id;
-                        this.Vale.usado.monto = data1.vale_usada_monto;
-                        this.Vale.usado.created_at = data1.vale_usada_created_at;
+                        this.Vale.usado.id = data.vale_usada_id;
+                        this.Vale.usado.monto = data.vale_usada_monto;
+                        this.Vale.usado.created_at = data.vale_usada_created_at;
 
                         this.ListaPago = [];
                         this.ListaDetalle = [];
@@ -1354,10 +1355,10 @@
                         break;
                     case 2:
                         console.log('Ingrese al case 2');
-                        let url = this.Ruta.ventaWithDetalle + '?venta_id='+data1;
+                        let url = this.Ruta.ventaWithAll + '?venta_id='+data;
                         let me = this;
                         axios.get(url).then(function (response) {
-                            let venta = response.data.venta;
+                            let venta = response.data.venta[0];
                             me.Venta.id = venta.id;
                             me.Venta.total = venta.total;
                             me.Venta.total_venta = venta.total_venta;
@@ -1368,33 +1369,42 @@
                             me.Venta.tipo_precio = venta.tipo.charAt(2);
                             me.Venta.created_at = venta.created_at;
 
-                            // me.Cliente.id = data[cliente_id];
-                            me.Cliente.dni = data2['dni'];
-                            me.Cliente.nombres = data2['nombres'];
-                            me.Cliente.apellidos = data2['apellidos'];
-                            me.Cliente.ruc = data2['ruc'];
-                            me.Cliente.razon_social = data2['razon_social'];
-                            me.Cliente.tipo = data2['tipo'];
+                            me.Cliente.id = venta.cliente_id;
+                            me.Cliente.dni = venta.dni;
+                            me.Cliente.nombres = venta.nombres;
+                            me.Cliente.apellidos = venta.apellidos;
+                            me.Cliente.ruc = venta.ruc;
+                            me.Cliente.razon_social = venta.razon_social;
+                            me.Cliente.tipo = venta.cliente_tipo;
+
+                            me.Vale.generado.id = venta.vale_generada_id;
+                            me.Vale.generado.monto = venta.vale_generada_monto;
+                            me.Vale.generado.created_at = venta.vale_generada_created_at;
+                            
+                            me.Vale.usado.id = venta.vale_usada_id;
+                            me.Vale.usado.monto = venta.vale_usada_monto;
+                            me.Vale.usado.created_at = venta.vale_usada_created_at;
 
                             me.ListaPago = [];
                             me.ListaDetalle = []; 
 
                             me.abrirModal(4, 'Ver Venta', 'Generar Comprobante', 'Cerrar', 'modal-xl');
 
-                            // me.fix('detalle_venta', venta.get_detalle_venta);
-                            me.fix('detalle_venta', response.data.detalle);//listar los detalles de venta
-                            // me.list('pago');
-                            me.listarDetalles(4);//listar los pagos
+                            me.fix('detalle_venta', response.data.detalles);//listar los detalles de venta
+                            me.ListaPago = response.data.pagos;//listar los pagos
                         }).catch(function (error) {
                             console.log(error);
                         });
                         break;
                     default:
+                        console.log('No ingresé a ningun case del modal de ver venta');
                         break;
                 }
                 
             },
             abrirModal(numero, titulo, accion, cancelar, size){
+                this.Step.number = 0;
+
                 this.Modal.estado = 1;
                 this.Modal.numero = numero;
                 this.Modal.titulo = titulo;
@@ -1413,7 +1423,7 @@
             accionar(){
                 switch( this.Modal.numero ){
                     case 1 : this.editarProducto(); break; //Editar el precio del producto en este lugar
-                    case 4 : this.generatePdfSpecific(); //Generar comprobante de venta
+                    case 4 : this.generatePdfSpecificVenta(); //Generar comprobante de venta
                 }
             },
             editarProducto(){
@@ -1569,12 +1579,7 @@
                 let year = n.getFullYear();
                 return year;
             },
-            // formatearFecha(fecha){
-            //     let arrayFecha = fecha.split('-');
-            //     let newFecha = arrayFecha[2] + '-' + arrayFecha[1] + '-' + arrayFecha[0];
-            //     return newFecha;
-            // },
-            generatePdfSpecific(){
+            generatePdfSpecificVenta(){
                 window.open(this.Ruta.serverPhp + '/venta/generatePdfSpecific?id=' + this.Venta.id,'_blank');
             }
         },
