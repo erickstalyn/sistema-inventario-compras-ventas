@@ -309,12 +309,12 @@
                                         <div class="col-md-12">
                                             <div class="col-md-12 input-group" style="border: 1px solid; border-color: white;">
                                                 <div class="col-md-6 p-0 mb-1 input-group d-flex justify-content-center">
-                                                    <label class="col-md-12 p-0 text-center font-weight-bold" for="total_recibido">Monto efectivo</label>
+                                                    <label class="col-md-12 p-0 text-center font-weight-bold" for="total_recibido">EFECTIVO</label>
                                                     <input type="number" class="col-md-9 form-control form-control-sm text-right" v-model="Venta.total_recibido" min="0" id="total_recibido" @click="update('venta.total_recibido')" @keyup="update('venta.total_recibido')">
                                                 </div>
                                                 <div class="col-md-6 p-0 input-group d-flex justify-content-center">
-                                                    <label class="col-md-12 p-0 text-center font-weight-bold">Monto de cambio</label>
-                                                    <label class="col-md-12 text-center text-white" v-text="'S/. '+Number.parseFloat(Venta.total_vuelto).toFixed(2)"></label>
+                                                    <label class="col-md-12 p-0 text-center font-weight-bold">CAMBIO</label>
+                                                    <label class="col-md-12 h5 text-center text-white" v-text="'S/. '+Number.parseFloat(Venta.total_vuelto).toFixed(2)"></label>
                                                 </div>
                                             </div>
                                         </div>
@@ -669,7 +669,7 @@
                                                 <label class="col-md-6 text-primary" v-text="fix('tipo_precio')"></label>
                                             </div>
                                         </div>
-                                        <div class="col-md-12 overflow-auto" style="height: 19rem;">
+                                        <div v-if="Lista.length" class="col-md-12 overflow-auto" style="height: 19rem;">
                                             <table class="table table-bordered table-striped table-sm text-gray-900 bg-white">
                                                 <thead>
                                                     <tr class="table-success">
@@ -708,6 +708,9 @@
                                                     </tr>
                                                 </tbody>
                                             </table>
+                                        </div>
+                                        <div v-else class="col-md-12" style="height: 19rem;">
+                                            <label class="h5 text-danger ">Sin detalles de venta</label>
                                         </div>
                                         <div class="col-md-12 input-group mt-2">
                                             <div class="col-md-6">
@@ -1861,8 +1864,7 @@
                                     cantidad_fallido_start: 0,
                                     cantidad_fallido_add: 0,
                                     substock: data.detalle.substock,
-                                    precio_menor: data.detalle.precio_menor,
-                                    precio_mayor: data.detalle.precio_mayor,
+                                    precio: this.Venta.tipo_pago=='1'?data.detalle.precio_menor:(this.Venta.tipo_pago=='2'?data.detalle.precio_mayor:0),
                                     removable: true,
                                     subtotal: 0,
                                     removed: false
@@ -1904,7 +1906,10 @@
                         if ( this.Modal.numero == 3 ) {
                             this.Venta.total_venta = 0;
                             this.ListaDetalle.forEach(detalle => {
-                                this.Venta.total_venta += Number.parseFloat(detalle.subtotal);
+                                if ( detalle.removed == false ) {
+                                    this.Venta.total_venta += Number.parseFloat(detalle.subtotal);
+                                }
+                                
                             });
 
                             this.update('venta.total');
@@ -2040,7 +2045,7 @@
                         }
                         if ( this.Modal.numero == 3 ) {
                             this.ListaDetalle.forEach(detalle => {
-                                let precio = this.Venta.tipo_precio=='1'?detalle.precio_menor:(this.Venta.tipo_precio=='2'?detalle.precio_mayor:0);
+                                let precio = Number.parseFloat(detalle.precio);
                                 let cantidad = Number.parseFloat(detalle.cantidad);
                                 let cantidad_add = Number.parseFloat(detalle.cantidad_add!=''? detalle.cantidad_add : 0);
                                 detalle.subtotal = Number.parseFloat(precio) * (cantidad + cantidad_add);
@@ -2105,7 +2110,6 @@
                                 if ( total_recibido < Number.parseFloat(this.Pago.monto!=''?this.Pago.monto:0) ) {
                                     this.Venta.total_vuelto = 0;
                                 } else {
-                                    console.log('almenos se esta calculando');
                                     this.Venta.total_vuelto = total_recibido - Number.parseFloat(this.Pago.monto!=''?this.Pago.monto:0);
                                 }
                             } else {
@@ -2257,8 +2261,7 @@
                                     cantidad_fallido_start: data[i].detalle.cantidad_fallido==null?0:data[i].detalle.cantidad_fallido,
                                     cantidad_fallido_add: 0,
                                     substock: data[i].substock,
-                                    precio_menor: data[i].precio_menor,
-                                    precio_mayor: data[i].precio_mayor,
+                                    precio: data[i].detalle.precio,
                                     removable: data[i].detalle.cantidad_fallido>0?false:true,
                                     subtotal: data[i].detalle.subtotal,
                                     removed: false,
