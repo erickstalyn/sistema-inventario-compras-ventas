@@ -301,20 +301,21 @@
                                                     <option class="text-gray-900" value="2">Post pago</option>
                                                 </select>
                                             </div>
-                                            <div class="col-md-12 input-group"> 
+                                            <div class="col-md-12 input-group form-group"> 
                                                 <label class="col-md-6 font-weight-bold" for="pago_inicial">Pago inicial&nbsp;<span class="text-danger">*</span></label>
                                                 <input type="number" class="col-md-6 form-control form-control-sm text-right" v-model="Pago.monto" min="0" :max="Venta.total" id="pago_inicial" @click="update('pago.monto')" @keyup="update('pago.monto')">
                                             </div>
                                         </div>
-                                        <hr class="col-md-8 text-center">
-                                        <div class="col-md-12 input-group m-0 p-0">
-                                            <div class="col-md-12 input-group form-group">
-                                                <label class="col-md-6 font-weight-bold" for="total_pagado">Monto pagado</label>
-                                                <input type="number" class="col-md-6 form-control form-control-sm text-right" v-model="Venta.total_pagado" min="0" id="total_pagado" @click="update('venta.total_pagado')" @keyup="update('venta.total_pagado')">
-                                            </div>
-                                            <div class="col-md-12 input-group">
-                                                <label class="col-md-6 font-weight-bold">Monto vuelto</label>
-                                                <label class="col-md-6 text-right text-white" v-text="Number.parseFloat(Venta.total_vuelto).toFixed(2)"></label>
+                                        <div class="col-md-12">
+                                            <div class="col-md-12 input-group" style="border: 1px solid; border-color: white;">
+                                                <div class="col-md-6 p-0 mb-1 input-group d-flex justify-content-center">
+                                                    <label class="col-md-12 p-0 text-center font-weight-bold" for="total_recibido">Monto efectivo</label>
+                                                    <input type="number" class="col-md-9 form-control form-control-sm text-right" v-model="Venta.total_recibido" min="0" id="total_recibido" @click="update('venta.total_recibido')" @keyup="update('venta.total_recibido')">
+                                                </div>
+                                                <div class="col-md-6 p-0 input-group d-flex justify-content-center">
+                                                    <label class="col-md-12 p-0 text-center font-weight-bold">Monto de cambio</label>
+                                                    <label class="col-md-12 text-center text-white" v-text="'S/. '+Number.parseFloat(Venta.total_vuelto).toFixed(2)"></label>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -964,7 +965,7 @@
                     tipo_entrega: null, // 1: prepago, 2: postpago
                     tipo_precio: null, // 1: al por menor, 2: al por mayor
                     created_at : null,
-                    total_pagado: null,
+                    total_recibido: null,
                     total_vuelto: null
                 },
                 ListaProducto: null,
@@ -1304,7 +1305,7 @@
                 this.Venta.tipo_entrega = '1';
                 this.Venta.tipo_precio = '1';
                 this.Venta.centro_id = $('meta[name="idCentro"]').attr('content');
-                this.Venta.total_pagado = '';
+                this.Venta.total_recibido = '';
                 this.Venta.total_vuelto = 0;
                 
                 this.ListaProducto = [];
@@ -1702,6 +1703,7 @@
                             me.Cliente.id = 0;
                             me.Cliente.tipo = 'P';
                             me.Cliente.documento = persona.dni;
+                            me.Cliente.dni = persona.dni;
                             me.Cliente.nombres = persona.nombres;
                             me.Cliente.apellidos = persona.apellidos;
 
@@ -1738,6 +1740,7 @@
                             me.Cliente.id = 0;
                             me.Cliente.tipo = 'E';
                             me.Cliente.documento = empresa.RUC;
+                            me.Cliente.ruc = empresa.RUC;
                             me.Cliente.razon_social = empresa.RazonSocial;
 
                             me.update('cliente.removable');
@@ -1976,7 +1979,7 @@
                         if ( this.Modal.numero == 1 ) {
                             this.update('venta.total_faltante');
                             this.update('cliente.removable');
-                            this.update('venta.total_pagado');
+                            this.update('venta.total_redcibido');
                         }
                         if ( this.Modal.numero == 3 ) {
                             if ( (this.Venta.total > this.Venta.total_start && this.Venta.tipo.charAt(0) == '1') || this.Venta.tipo.charAt(0) == '2' ) {
@@ -2084,22 +2087,27 @@
                             }
                         }
                         break;
-                    case 'venta.total_pagado':
+                    case 'venta.total_recibido':
                         if ( this.Modal.numero == 1 ) {
                             this.update('venta.total_vuelto');
                         }
                         break;
                     case 'venta.total_vuelto':
                         if ( this.Modal.numero == 1 ) {
-                            let total_pagado = Number.parseFloat(this.Venta.total_pagado!=''?this.Venta.total_pagado:0);
+                            let total_recibido = Number.parseFloat(this.Venta.total_recibido!=''?this.Venta.total_recibido:0);
                             if ( this.Venta.tipo_pago == '1' ) {
-                                if ( total_pagado < this.Venta.total ) {
+                                if ( total_recibido < this.Venta.total ) {
                                     this.Venta.total_vuelto = 0;
                                 } else {
-                                    this.Venta.total_vuelto = total_pagado - this.Venta.total;
+                                    this.Venta.total_vuelto = total_recibido - this.Venta.total;
                                 }
                             } else if ( this.Venta.tipo_pago == '2' ) {
-                                this.Venta.total_vuelto = total_pagado - this.Pago.monto;
+                                if ( total_recibido < Number.parseFloat(this.Pago.monto!=''?this.Pago.monto:0) ) {
+                                    this.Venta.total_vuelto = 0;
+                                } else {
+                                    console.log('almenos se esta calculando');
+                                    this.Venta.total_vuelto = total_recibido - Number.parseFloat(this.Pago.monto!=''?this.Pago.monto:0);
+                                }
                             } else {
                                 this.error();
                             }
