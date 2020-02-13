@@ -651,7 +651,7 @@
             <!-- Modales -->
             <div class="modal text-gray-900" :class="{'mostrar': Modal.estado}">
                 <div class="modal-dialog modal-dialog-centered animated bounceIn fast" :class="Modal.size">
-                    <div class="modal-content modal-lg">
+                    <div class="modal-content">
                         <div class="modal-header">
                             <h3 v-text="Modal.titulo" class="modal-title" ></h3>
                             <button type="button" @click="cerrarModal()" class="close">X</button>
@@ -1670,6 +1670,7 @@
             },
             abrirModal(numero, titulo, accion, cancelar, size){
                 this.Step.number = 0;
+
                 this.Modal.estado = 1;
                 this.Modal.numero = numero;
                 this.Modal.titulo = titulo;
