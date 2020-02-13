@@ -77,7 +77,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="producto in ListaProducto" :key="producto.id" >
+                                <tr v-for="producto in ListaProducto" :key="producto.id" :class="{'table-danger': producto.detalle.substock === 1, 'table-warning': producto.detalle.substock===2}">
                                     <td v-text="producto.nombre"></td>
                                     <!-- <td v-text="producto.codigo" class="text-center"></td> -->
                                     <td v-text="producto.detalle.precio_menor" class="text-right"></td>

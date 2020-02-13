@@ -41,7 +41,7 @@ class CentroController extends Controller {
                                                             $query->where('nombre', 'like', $texto.'%')
                                                                 ->orWhere('codigo', 'like', '%'.$texto.'%');
                                                         }
-                                                    })->orderBy('id', 'desc')->paginate($request->rows);
+                                                    })->orderBy('substock', 'asc')->paginate($request->rows);
 
         return [
             'paginate' => [

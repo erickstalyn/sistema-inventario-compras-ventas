@@ -53,7 +53,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="producto in ListaProducto" :key="producto.id" >
+                            <tr v-for="producto in ListaProducto" :key="producto.id" :class="{'table-danger': producto.stock <= 40, 'table-warning': producto.stock > 40 && producto.stock <= 60 }">
                                 <td v-text="producto.nombre"></td>
                                 <td v-text="producto.costo_produccion" class="text-right"></td>
                                 <td v-text="producto.precio_menor" class="text-right"></td>
