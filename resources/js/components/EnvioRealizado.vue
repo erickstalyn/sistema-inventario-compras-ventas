@@ -611,36 +611,36 @@
                     }
                 }
             },
-            reenviar(){
-                if ( this.validar(2) ) return;
-                var me = this;
-                //Selecciono el nombre del centro
-                let nombreCentro;
-                me.SelectCentro.forEach(element => {
-                    if(element.id == me.EnvioRealizado.centro_to_id) nombreCentro = element.nombre;
-                });
-                axios.put('/envioRealizado/reenviar', {
-                    'id' : me.EnvioRealizado.id,
-                    'centro_to_id': me.EnvioRealizado.centro_to_id,
-                }).then(function(response){
-                    me.cerrarModal();
-                    me.listar();
-                    Swal.fire({
-                        position: 'top-end',
-                        toast: true,
-                        type: 'success',
-                        title: 'Se REENVIÓ satisfactoriamente a ' + nombreCentro,
-                        showConfirmButton: false,
-                        timer: 4500,
-                        animation:false,
-                        customClass:{
-                            popup: 'animated bounceIn fast'
-                        }
-                    });
-                }).catch(function(error){
-                    console.log(error);
-                });
-            },
+            // reenviar(){
+            //     if ( this.validar(2) ) return;
+            //     var me = this;
+            //     //Selecciono el nombre del centro
+            //     let nombreCentro;
+            //     me.SelectCentro.forEach(element => {
+            //         if(element.id == me.EnvioRealizado.centro_to_id) nombreCentro = element.nombre;
+            //     });
+            //     axios.put('/envioRealizado/reenviar', {
+            //         'id' : me.EnvioRealizado.id,
+            //         'centro_to_id': me.EnvioRealizado.centro_to_id,
+            //     }).then(function(response){
+            //         me.cerrarModal();
+            //         me.listar();
+            //         Swal.fire({
+            //             position: 'top-end',
+            //             toast: true,
+            //             type: 'success',
+            //             title: 'Se REENVIÓ satisfactoriamente a ' + nombreCentro,
+            //             showConfirmButton: false,
+            //             timer: 4500,
+            //             animation:false,
+            //             customClass:{
+            //                 popup: 'animated bounceIn fast'
+            //             }
+            //         });
+            //     }).catch(function(error){
+            //         console.log(error);
+            //     });
+            // },
             abrirModalAgregar(){
                 this.abrirModal(1, 'Registrar Envío', 'Agregar', 'Cancelar', 'modal-xl modal-dialog-scrollable');
                 if(!this.SelectCentro.length) this.selectCentro();
@@ -690,10 +690,10 @@
                         this.agregar();
                         break;
                     }
-                    case 'Reenviar': {
-                        this.reenviar();
-                        break;
-                    }
+                    // case 'Reenviar': {
+                    //     this.reenviar();
+                    //     break;
+                    // }
                 }
             },
             cambiarPagina(page){
