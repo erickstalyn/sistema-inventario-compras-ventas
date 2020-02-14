@@ -14,6 +14,6 @@ class Centro extends Model
 
     public function getProductos(){
         return $this->belongsToMany('App\Producto', 'detalle_producto')->select('nombre', 'codigo')
-                    ->withPivot('id', 'substock', 'reservados', 'fallidos', 'precio_menor', 'precio_mayor')->as('detalle');
+                    ->withPivot('id', 'substock', 'reservados', 'fallidos', 'traslado', 'precio_menor', 'precio_mayor')->as('detalle');
     }
 }

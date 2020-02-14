@@ -18,6 +18,7 @@ class CreateDetalleProductoTable extends Migration
             $table->smallInteger('substock')->default(0); // usa 2 bytes - máximo 32767 datos
             $table->smallInteger('reservados')->default(0);// usa 2 bytes - máximo 32767 datos
             $table->smallInteger('fallidos')->default(0);// usa 2 bytes - máximo 32767 datos
+            $table->smallInteger('traslado')->default(0);// usa 2 bytes - máximo 32767 datos
             $table->decimal('precio_menor', 10,2);
             $table->decimal('precio_mayor', 10,2);
 
