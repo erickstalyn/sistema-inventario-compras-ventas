@@ -526,7 +526,8 @@
                     if(this.ListaDetalleEnvio[i].id == producto.id){
                         incluido = true;
                         //adiciono uno más a la cantidad de este producto en la tabla de detalles
-                        this.ListaDetalleEnvio[i].cantidad ++;
+                        // this.ListaDetalleEnvio[i].cantidad ++;
+                        if ( this.ListaDetalleEnvio[i].cantidad < this.ListaDetalleEnvio[i].stock ) this.ListaDetalleEnvio[i].cantidad++;
                         break;
                     }
                 }
