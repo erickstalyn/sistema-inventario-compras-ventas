@@ -222,7 +222,7 @@
                                                     <thead>
                                                         <tr class="table-success">
                                                             <th class="text-center">Quitar</th>
-                                                            <th class="text-center">Nombre</th>
+                                                            <th style="width: 23rem;" class="text-center">Nombre</th>
                                                             <th style="width: 6rem;" class="text-left">Cantidad</th>
                                                         </tr>
                                                     </thead>
@@ -234,8 +234,11 @@
                                                                 </button>
                                                             </td>
                                                             <td v-text="detalle.nombre"></td>
-                                                            <td class="text-right pr-4">
+                                                            <!-- <td class="text-right pr-4">
                                                                 <input type="number" v-model="detalle.cantidad" class="form-control form-control-sm" min="1">
+                                                            </td> -->
+                                                            <td >
+                                                                <input type="number" v-model="detalle.cantidad" class="form-control form-control-sm text-right" min="1" :max="EnvioRealizado.tipo==1?detalle.stock:detalle.fallidos">
                                                             </td>
                                                         </tr>
                                                     </tbody>
@@ -589,6 +592,7 @@
                     //Datos de la produccion
                     'idCentro': me.EnvioRealizado.idCentro,
                     'centro_to_id': me.EnvioRealizado.centro_to_id,
+                    'tipo': me.EnvioRealizado.tipo,
                     //Datos del detalle del envio
                     'listaDetalleEnvio' : this.ListaDetalleEnvio
                 }).then(function(response){
