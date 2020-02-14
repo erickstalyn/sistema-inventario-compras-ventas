@@ -18,8 +18,8 @@ class CreateDetalleVentaAITrigger extends Migration
         ON detalle_venta
         FOR EACH ROW
         BEGIN
-            DECLARE modo TINYINT(2);
-            SELECT SUBSTRING(tipo, 1, 1) INTO modo FROM venta WHERE id = new.venta_id;
+            DECLARE modo CHAR(1);
+            SELECT SUBSTRING(tipo, 2, 1) INTO modo FROM venta WHERE id = new.venta_id;
             IF ( modo = '2' ) THEN
                 UPDATE detalle_producto dproducto
                 SET dproducto.reservados = dproducto.reservados + new.cantidad

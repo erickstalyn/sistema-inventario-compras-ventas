@@ -26,6 +26,7 @@ class VentaController extends Controller {
         $dia = $request->dia;
         $mes = $request->mes;
         $year = $request->year;
+        $rol = $request->rol;
 
         $ventas = Venta::select('venta.id', 'venta.codigo', 'venta.tipo', 'venta.total', 'venta.total_faltante', 'venta.total_descuento', 'venta.total_venta', 'venta.created_at', 
                                 'persona.id as cliente_id', 'persona.dni', 'persona.ruc', 'persona.nombres', 'persona.apellidos', 'persona.razon_social', 'persona.tipo as cliente_tipo',
@@ -34,12 +35,12 @@ class VentaController extends Controller {
                     ->leftJoin('persona', 'persona.id', '=', 'venta.cliente_id')
                     ->leftJoin('vale as vg', 'vg.venta_generada_id', '=', 'venta.id')
                     ->leftJoin('vale as vu', 'vu.venta_usada_id', '=', 'venta.id')
-                    ->where(function ($query) use ($text, $dia, $mes, $year) {
+                    ->where(function ($query) use ($text, $rol, $dia, $mes, $year) {
                         if ( strlen($text) == 15 && is_numeric($text) ) {
                             $query->where('codigo', '=', $text);
                         } else {
-                            $query->where(function ($subquery) use ($text, $dia, $mes, $year) {
-                                    if ( $text != '' ) {
+                            $query->where(function ($subquery) use ($text, $rol, $dia, $mes, $year) {
+                                    if ( $text != '' && $rol == 'M' ) {
                                         $subquery->where('nombres', 'like', '%'.$text.'%')
                                                 ->orWhere('apellidos', 'like', '%'.$text.'%')
                                                 ->orWhere('razon_social', 'like', '%'.$text.'%')
@@ -250,7 +251,6 @@ class VentaController extends Controller {
 
             //venta
             $venta = Venta::findOrFail($dataVenta['id']);
-            $venta->tipo = $dataVenta['tipo_pago'].$dataVenta['tipo_entrega'].$dataVenta['tipo_precio'];
             $venta->total_venta = $dataVenta['total_venta'];
             $venta->total_descuento = $dataVenta['total_descuento'];
             $venta->total = $dataVenta['total'];
@@ -259,20 +259,8 @@ class VentaController extends Controller {
             $venta->updated_at = $now;
             $venta->save();
 
-            // pago
-            if ( substr($dataVenta['tipo'], 0, 1) == '1' && $dataVenta['tipo_pago'] == '2' ) {
-                if ( $dataVenta['total_start'] > 0 ){
-                    $pago = new Pago();
-                    $pago->monto = $dataVenta['total_start'];
-                    $pago->venta_id = $venta->id;
-                    $pago->created_at = $now;
-                    $pago->updated_at = NULL;
-                    $pago->save();
-                }
-            }
-
             //vale usado
-            if ( $dataVale['usado']['id'] != NULL ){
+            if ( $dataVale['usado']['id'] != NULL ) {
                 if ( $dataVale['usado']['venta_usada_id'] == NULL ) {
                     $vale = Vale::findOrFail($dataVale['usado']['id']);
                     $vale->venta_usada_id = $venta->id;
@@ -282,47 +270,21 @@ class VentaController extends Controller {
             }
 
             // vale generado
-            if ( $dataVale['generado']['monto'] == NULL ){
-                if ( $dataVale['generado']['id'] != NULL ) {
-                    $vale = Vale::findOrFail($dataVale['generado']['id']);
-                    $vale->delete();
-                }
-            } else {
-                if ( $dataVale['generado']['id'] != NULL ) {
-                    if ( $dataVale['generado']['monto'] != $dataVale['generado']['monto_start'] ) {
-                        $vale = Vale::findOrFail($dataVale['generado']['id']);
-                        $vale->monto = $dataVale['generado']['monto'];
-                        $vale->updated_at = $now;
-                        $vale->save();
-                    }
-                } else {
-                    $vale = new Vale();
-                    $vale->persona_id = $persona->id;
-                    $vale->venta_generada_id = $venta->id;
-                    $vale->monto = $dataVale['generado']['monto'];
-                    $vale->created_at = $now;
-                    $vale->updated_at = NULL;
-                    $vale->save();
-                }
-            }
+            $vale = new Vale();
+            $vale->persona_id = $persona->id;
+            $vale->venta_generada_id = $venta->id;
+            $vale->monto = $dataVale['generado']['monto'];
+            $vale->created_at = $now;
+            $vale->updated_at = NULL;
+            $vale->save();
 
             //lista de detalles
             foreach($listDetalle as $ep => $det){
-                if ( $det['id'] <= 0 ) $detalle = new Detalle_venta();
-                else $detalle = Detalle_venta::findOrFail($det['id']);
-                
-                if ( $det['removed'] == false ) {
-                    $detalle->detalle_producto_id = $det['detalle_producto_id'];
-                    $detalle->venta_id = $venta->id;
-                    $detalle->nombre_producto = $det['nombre_producto'];
-                    $detalle->cantidad = $det['cantidad']+$det['cantidad_add'];
-                    $detalle->cantidad_fallido = $det['cantidad_fallido'] + $det['cantidad_fallido_add'];
-                    $detalle->precio = $dataVenta['tipo_precio']==1?$det['precio_menor']:$det['precio_mayor'];
-                    $detalle->subtotal = $det['subtotal'];
-                    $detalle->save();
-                } else {
-                    $detalle->delete();
-                }
+                $detalle = Detalle_venta::findOrFail($det['id']);
+                $detalle->cantidad = $det['cantidad'];
+                $detalle->cantidad_fallido = $det['cantidad_fallido'];
+                $detalle->subtotal = $det['subtotal'];
+                $detalle->save();
             }
 
             DB::commit();

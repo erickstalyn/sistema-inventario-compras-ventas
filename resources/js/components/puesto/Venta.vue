@@ -620,7 +620,7 @@
                                 </button>
                             </div>
                             <div class="col-md-12 p-0 m-0 input-group" v-if="Step.number==0" style="height: 26rem;">
-                                <div class="container-small col-md-4">
+                                <!-- <div class="container-small col-md-4">
                                     <div class="shadow rounded pt-2 bg-warning" style="border: 1px solid; height: 26rem;">
                                         <div class="col-md-12 form-group">
                                             <label class="h5 mb-0 font-weight-bold">LISTA DE PRODUCTOS</label>
@@ -657,8 +657,8 @@
                                             <label class="h5 text-danger">No se han encontrado resultados</label>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="container-small col-md-8">
+                                </div> -->
+                                <div class="container-small col-md-12">
                                     <div class="shadow rounded pt-2 bg-warning" style="border: 1px solid; height: 26rem;">
                                         <div class="col-md-12 form-group input-group">
                                             <div class="col-md-7 p-0">
@@ -669,48 +669,34 @@
                                                 <label class="col-md-6 text-primary" v-text="fix('tipo_precio')"></label>
                                             </div>
                                         </div>
-                                        <div v-if="Lista.length" class="col-md-12 overflow-auto" style="height: 19rem;">
+                                        <div class="col-md-12 overflow-auto" style="height: 19rem;">
                                             <table class="table table-bordered table-striped table-sm text-gray-900 bg-white">
                                                 <thead>
                                                     <tr class="table-success">
-                                                        <th class="text-center">Quitar</th>
                                                         <th class="text-center">Nombre</th>
-                                                        <th class="text-center" style="width: 8rem;">Fallidos</th>
-                                                        <th class="text-center" style="width: 8rem;">Cantidad</th>
+                                                        <th class="text-center" style="width: 6rem;">Devueltos</th>
+                                                        <th class="text-center" style="width: 6rem;">Fallidos</th>
+                                                        <th class="text-center">Cantidad</th>
                                                         <th class="text-center">Precio</th>
                                                         <th class="text-center">Subtotal</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr v-for="(detalle, indice) in Lista" :key="indice">
-                                                        <td class="text-center">
-                                                            <button type="button" class="btn btn-circle btn-outline-danger btn-sm" title="QUITAR" @click="remove('detalle_venta', detalle.detalle_producto_id)" v-if="detalle.removable==true">
-                                                                <i class="fas fa-minus"></i>
-                                                            </button>
-                                                        </td>
+                                                    <tr v-for="(detalle, indice) in ListaDetalle" :key="indice">
                                                         <td v-text="detalle.nombre_producto"></td>
-                                                        <td v-if="detalle.id!=null" class="text-right">
-                                                            <div class="input-group p-0 m-0">
-                                                                <input type="number" v-model="detalle.cantidad_fallido_add" class="form-control form-control-sm text-right" style="width: 4rem;" min="0" :max="detalle.cantidad_start" @click="update('detalle_venta.cantidad_fallido', indice)" @keyup="update('detalle_venta.cantidad_fallido', indice)">
-                                                                &nbsp;&nbsp;<label v-text="'+ '+detalle.cantidad_fallido"></label>
-                                                            </div>
-                                                        </td>
-                                                        <td v-else class="text-center">--</td>
                                                         <td class="text-right">
-                                                            <div class="input-group p-0 m-0">
-                                                                <input type="number" v-model="detalle.cantidad_add" class="form-control form-control-sm text-right" style="width: 4rem;" min="0" :max="detalle.substock" @click="update('detalle_venta.subtotal')" @keyup="update('detalle_venta.subtotal')" :disabled="detalle.cantidad_usable==false">
-                                                                &nbsp;&nbsp;<label v-text="'+ '+detalle.cantidad" v-if="detalle.id!=null"></label>
-                                                            </div>
+                                                            <input type="number" v-model="detalle.devuelto" class="form-control form-control-sm text-right" min="0" :max="detalle.cantidad_start" @click="update('detalle_venta.devuelto', indice)" @keyup="update('detalle_venta.devuelto', indice)">
                                                         </td>
-                                                        <td class="text-right" v-text="Venta.tipo_precio=='1'?detalle.precio_menor:detalle.precio_mayor"></td>
+                                                        <td class="text-right">
+                                                            <input type="number" v-model="detalle.cantidad_fallido" class="form-control form-control-sm text-right" min="0" :max="detalle.cantidad_start" @click="update('detalle_venta.cantidad_fallido', indice)" @keyup="update('detalle_venta.cantidad_fallido', indice)">
+                                                        </td>
+                                                        <td class="text-right" v-text="detalle.cantidad"></td>
+                                                        <td class="text-right" v-text="detalle.precio"></td>
                                                         <td class="text-right" v-text="Number.parseFloat(detalle.subtotal).toFixed(2)">
                                                         </td>
                                                     </tr>
                                                 </tbody>
                                             </table>
-                                        </div>
-                                        <div v-else class="col-md-12" style="height: 19rem;">
-                                            <label class="h5 text-danger ">Sin detalles de venta</label>
                                         </div>
                                         <div class="col-md-12 input-group mt-2">
                                             <div class="col-md-6">
@@ -803,9 +789,6 @@
                                             <div class="col-md-12 form-group p-0">
                                                 <div v-if="Vale.generado.id==null" class="col-md-12 form-group">
                                                     <label class="col-md-12 p-0 text-center font-weight-bold">--- Se generará un vale ---</label>
-                                                </div>
-                                                <div v-else class="col-md-12 form-group">
-                                                    <label class="col-md-12 text-center font-weight-bold">El vale generado se actualizara a </label>
                                                 </div>
                                                 <div class="col-md-12 input-group form-group">
                                                     <label class="col-md-5 font-weight-bold">Monto</label>
@@ -1105,19 +1088,6 @@
                 }
 
                 return filas;
-            },
-            Lista: function(){
-                var list = [];
-                
-                switch ( this.Modal.numero ) {
-                    case 3:
-                        this.ListaDetalle.forEach(detalle => {
-                            if ( detalle.removed == false ) list.push(detalle);
-                        });
-                        break;
-                }
-
-                return list;
             }
         },
         methods: {
@@ -1131,6 +1101,7 @@
                         +'&text='+this.Busqueda.text
                         +'&rows='+this.Busqueda.rows
                         +'&centro_id='+$('meta[name="idCentro"]').attr('content')
+                        +'&rol='+$('meta[name="rol"]').attr('content')
                         +'&dia='+this.fix(1)
                         +'&mes='+this.fix(2)
                         +'&year='+this.fix(3);
@@ -1575,15 +1546,40 @@
                             }
                             break;
                         case 3: // cantidad_fallido de detalle de venta
-                            let found_a = false, found_b = false;
+                            let found_a = false, found_b = false, found_c = false, found_d = false, found_e = false, found_f = false, found_g = false;
+                            let total = 0;
                             for (let i = 0; i < this.ListaDetalle.length; i++) {
-                                if ( this.ListaDetalle[i].cantidad_fallido < this.ListaDetalle[i].cantidad_fallido_start && !found_a ){
-                                    this.Error.mensaje.push('Los fallidos no pueden 0 o negativos'); found_a = true;
-                                } 
-                                if ( this.ListaDetalle[i].cantidad_fallido > this.ListaDetalle[i].cantidad_inicial && !found_b ){
-                                    this.Error.mensaje.push('Los fallidos no pueden superar la cantidad inicial'); found_b = true;
-                                } 
-                                if ( found_a && found_b ) break;
+                                if ( this.ListaDetalle[i].cantidad_fallido == '' && !found_a) {
+                                    this.Error.mensaje.push('Los fallidos no pueden estar vacios'); found_a = true;
+                                } else {
+                                    if ( Number.parseInt(this.ListaDetalle[i].cantidad_fallido) < 0 && !found_b ){
+                                        this.Error.mensaje.push('Los fallidos no pueden ser negativos'); found_b = true;
+                                    } 
+                                    if ( this.ListaDetalle[i].cantidad_fallido > this.ListaDetalle[i].cantidad_start && !found_c ){
+                                        this.Error.mensaje.push('Los fallidos no pueden superar la cantidad inicial'); found_c = true;
+                                    } 
+                                }
+                                if ( this.ListaDetalle[i].devuelto == '' && !found_d) {
+                                    this.Error.mensaje.push('Los devueltos no pueden estar vacios'); found_d = true;
+                                } else {
+                                    if ( Number.parseInt(this.ListaDetalle[i].devuelto) < 0 && !found_e ){
+                                        this.Error.mensaje.push('Los devueltos no pueden ser negativos'); found_e = true;
+                                    } 
+                                    if ( this.ListaDetalle[i].devuelto > this.ListaDetalle[i].cantidad_start && !found_f ){
+                                        this.Error.mensaje.push('Los devueltos no pueden superar la cantidad inicial'); found_f = true;
+                                    } 
+                                }
+                                if ( this.ListaDetalle[i].cantidad_fallido != '' && this.ListaDetalle[i].devuelto != '' ) {
+                                    let suma = Number.parseInt(this.ListaDetalle[i].cantidad_fallido) + Number.parseInt(this.ListaDetalle[i].devuelto);
+                                    if ( suma > this.ListaDetalle[i].cantidad_start && !found_g) {
+                                        this.Error.mensaje.push('La suma de devueltos y fallidos nos puede ser mayor a la cantidad inicial'); found_g = true;
+                                    }
+                                    total += suma;
+                                }
+                                if ( found_a && found_b && found_c && found_d && found_e && found_f && found_g ) break;
+                            }
+                            if ( total == 0 ) {
+                                this.Error.mensaje.push('Debe indicar almenos un devuelto o fallido en los detalle de venta');
                             }
                             break;
                         case 4: // monto de pago
@@ -1816,24 +1812,6 @@
                                 if ( this.Modal.numero == 1 ) {
                                     if ( this.ListaDetalle[i].cantidad < this.ListaDetalle[i].substock ) this.ListaDetalle[i].cantidad++;
                                 }
-                                if ( this.Modal.numero == 3 ) {
-                                    if ( this.ListaDetalle[i].cantidad_usable == true ) {
-                                        console.log('entro aqui');
-                                        if ( this.ListaDetalle[i].cantidad_add < this.ListaDetalle[i].substock ){
-                                            if ( this.ListaDetalle[i].removed == true ) {
-                                                this.ListaDetalle[i].cantidad_add = 0;
-                                                this.ListaDetalle[i].removed = false;
-                                            } else {
-                                                this.ListaDetalle[i].cantidad_add++;
-                                            }
-                                        }
-                                    } else {
-                                        if ( this.ListaDetalle[i].removed == true ) {
-                                            this.ListaDetalle[i].cantidad_add = 0;
-                                            this.ListaDetalle[i].removed = false;
-                                        }
-                                    }
-                                }
                                 found = true; break;
                             }
                         }
@@ -1849,25 +1827,6 @@
                                     precio_menor: data.detalle.precio_menor,
                                     precio_mayor: data.detalle.precio_mayor,
                                     subtotal: 0
-                                });
-                            }
-                            if ( this.Modal.numero == 3 ) {
-                                this.ListaDetalle.push({
-                                    id: null,
-                                    detalle_producto_id: data.detalle.id,
-                                    nombre_producto: data.nombre,
-                                    cantidad: 0,
-                                    cantidad_start: 0,
-                                    cantidad_add: 1,
-                                    cantidad_usable: true,
-                                    cantidad_fallido: 0,
-                                    cantidad_fallido_start: 0,
-                                    cantidad_fallido_add: 0,
-                                    substock: data.detalle.substock,
-                                    precio: this.Venta.tipo_pago=='1'?data.detalle.precio_menor:(this.Venta.tipo_pago=='2'?data.detalle.precio_mayor:0),
-                                    removable: true,
-                                    subtotal: 0,
-                                    removed: false
                                 });
                             }
                         } 
@@ -1906,10 +1865,7 @@
                         if ( this.Modal.numero == 3 ) {
                             this.Venta.total_venta = 0;
                             this.ListaDetalle.forEach(detalle => {
-                                if ( detalle.removed == false ) {
-                                    this.Venta.total_venta += Number.parseFloat(detalle.subtotal);
-                                }
-                                
+                                this.Venta.total_venta += Number.parseFloat(detalle.subtotal);
                             });
 
                             this.update('venta.total');
@@ -2012,16 +1968,10 @@
                             this.update('detalle_venta.subtotal');
                         }
                         if (this.Modal.numero == 3 ) {
-                            let cantidad_fallido_add = Number.parseInt(this.ListaDetalle[data].cantidad_fallido_add!=''?this.ListaDetalle[data].cantidad_fallido_add:0);
-                            let cantidad = Number.parseFloat(this.ListaDetalle[data].cantidad_start) - cantidad_fallido_add;
-
-                            if ( cantidad_fallido_add > 0 ) {
-                                this.ListaDetalle[data].cantidad_usable = true;
-                            } else {
-                                this.ListaDetalle[data].cantidad_usable = false;
-                                this.ListaDetalle[data].cantidad_add = 0;
-                            }
-
+                            let cantidad_fallido = Number.parseInt(this.ListaDetalle[data].cantidad_fallido!=''?this.ListaDetalle[data].cantidad_fallido:0);
+                            let devuelto = Number.parseInt(this.ListaDetalle[data].devuelto);
+                            let cantidad = this.ListaDetalle[data].cantidad_start - (cantidad_fallido + devuelto);
+                            
                             if ( cantidad > this.ListaDetalle[data].cantidad_start ) {
                                 this.ListaDetalle[data].cantidad = this.ListaDetalle[data].cantidad_start;
                             } else if ( cantidad < 0 ) {
@@ -2038,7 +1988,7 @@
                             this.ListaDetalle.forEach(detalle => {
                                 let precio = this.Venta.tipo_precio=='1'?detalle.precio_menor:(this.Venta.tipo_precio=='2'?detalle.precio_mayor:0);
                                 let cantidad = detalle.cantidad != ''? detalle.cantidad : 0;
-                                detalle.subtotal = Number.parseFloat(precio) * Number.parseFloat(cantidad);
+                                detalle.subtotal = Number.parseFloat(precio) * Number.parseInt(cantidad);
                             });
 
                             this.update('venta.total_venta');
@@ -2046,12 +1996,16 @@
                         if ( this.Modal.numero == 3 ) {
                             this.ListaDetalle.forEach(detalle => {
                                 let precio = Number.parseFloat(detalle.precio);
-                                let cantidad = Number.parseFloat(detalle.cantidad);
-                                let cantidad_add = Number.parseFloat(detalle.cantidad_add!=''? detalle.cantidad_add : 0);
-                                detalle.subtotal = Number.parseFloat(precio) * (cantidad + cantidad_add);
+                                let cantidad = Number.parseInt(detalle.cantidad);
+                                detalle.subtotal = precio * cantidad;
                             });
 
                             this.update('venta.total_venta');
+                        }
+                        break;
+                    case 'detalle_venta.devuelto':
+                        if ( this.Modal.numero == 3 ) {
+                            this.update('detalle_venta.cantidad', data);
                         }
                         break;
                     case 'cliente.removable':
@@ -2131,22 +2085,6 @@
 
                             this.update('venta.total_venta');
                         }
-                        if ( this.Modal.numero == 3 ) {
-                            let found = false;
-                            for (let i = 0; i < this.ListaDetalle.length; i++) {
-                                if ( data == this.ListaDetalle[i].detalle_producto_id ) {
-                                    if ( this.ListaDetalle[i].id == null ) {
-                                        this.ListaDetalle.splice(i, 1);
-                                    } else {
-                                        this.ListaDetalle[i].removed = true;
-                                        found = true; break;
-                                    }
-                                }
-                            }
-                            if ( found == false) this.error();
-
-                            this.update('venta.total_venta');
-                        }
                         break;
                     case 'cliente':
                         if ( this.Modal.numero == 1 ) {
@@ -2182,12 +2120,16 @@
                             this.Vale.usado.monto = null;
                             this.Vale.usado.venta_usada_id = null;
                             this.Vale.usado.created_at = null;
+
+                            this.update('venta.total_descuento');
                         }
                         if ( this.Modal.numero == 3 ) {
                             this.Vale.usado.id = null;
                             this.Vale.usado.monto = null;
                             this.Vale.usado.venta_usada_id = null;
                             this.Vale.usado.created_at = null;
+
+                            this.update('venta.total_descuento');
                         }
                         break;
                 }
@@ -2216,8 +2158,6 @@
                         fixed = (new Date()).getFullYear();
                         break;
                     case 'detalle_venta':
-                        console.log('on fix(detalle_venta)');
-
                         if ( this.Modal.numero == 1 ) {
                             for (let i = 0; i < data.length; i++) {
                                 this.ListaDetalle.push({
@@ -2248,23 +2188,17 @@
                         }
                         if ( this.Modal.numero == 3 ) {
                             for (let i = 0; i < data.length; i++) {
-                                if ( data[i].cantidad_fallido == null ) data[i].cantidad_fallido = 0;
                                 this.ListaDetalle.push({
                                     id: data[i].detalle.id,
                                     detalle_producto_id: data[i].detalle.detalle_producto_id,
                                     nombre_producto: data[i].detalle.nombre_producto,
                                     cantidad: data[i].detalle.cantidad,
                                     cantidad_start: data[i].detalle.cantidad,
-                                    cantidad_add: 0,
-                                    cantidad_usable: false,
-                                    cantidad_fallido: data[i].detalle.cantidad_fallido==null?0:data[i].detalle.cantidad_fallido,
-                                    cantidad_fallido_start: data[i].detalle.cantidad_fallido==null?0:data[i].detalle.cantidad_fallido,
-                                    cantidad_fallido_add: 0,
+                                    devuelto: 0,
+                                    cantidad_fallido: 0,
                                     substock: data[i].substock,
                                     precio: data[i].detalle.precio,
-                                    removable: data[i].detalle.cantidad_fallido>0?false:true,
                                     subtotal: data[i].detalle.subtotal,
-                                    removed: false,
                                 });
                             }
 
@@ -2383,8 +2317,8 @@
                     ListaVenta: this.ListaVenta,
                     Cliente: this.Cliente
                 };
-                // if ( message != '' ) console.log(message);
-                // console.log(data);
+                if ( message != '' ) console.log(message);
+                console.log(data);
             },
             error(){
 

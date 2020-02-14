@@ -1112,6 +1112,7 @@
                                 +'&dia='+this.Busqueda.dia
                                 +'&mes='+this.Busqueda.mes
                                 +'&year='+this.Busqueda.year
+                                +'&rol='+$('meta[name="rol"]').attr('content')
                                 +'&centro_id='+this.Puesto.id;
                         
                         axios.get(url).then(function (response) {
