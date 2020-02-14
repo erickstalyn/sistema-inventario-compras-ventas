@@ -38,7 +38,7 @@ class CreateEnvioBUTrigger extends Migration
                         ON denvio.producto_id = dproducto.producto_id
                         AND denvio.envio_id = NEW.id
                         AND dproducto.centro_id = NEW.centro_from_id
-                    SET dproducto.substock = dproducto.substock - denvio.cantidad;
+                    SET dproducto.traslado = dproducto.traslado - denvio.cantidad;
                 END IF;
             END IF;
         END

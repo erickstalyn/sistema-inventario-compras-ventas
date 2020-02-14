@@ -14,7 +14,7 @@
             <div class="row form-group">
                 <div class="col-md-5">
                     <div class="input-group">
-                        <input type="search" class="form-control" v-model="Busqueda.texto" @keyup.enter="listar()">
+                        <input type="search" class="form-control" v-model="Busqueda.texto" @keyup.enter="listar()" placeholder="Buscar por CODIGO o NOMBRE">
                         <button type="button" class="btn btn-primary" @click="listar()">
                             <i class="fa fa-search"></i>&nbsp; Buscar
                         </button>
@@ -43,6 +43,7 @@
                                 <th class="text-center">Disponible</th>
                                 <th class="text-center">Reservados</th>
                                 <th class="text-center">Fallidos</th>
+                                <th class="text-center">Traslado</th>
                                 <th class="text-center">Total</th>
                             </tr>
                         </thead>
@@ -55,7 +56,8 @@
                                 <td v-text="producto.detalle.substock" class="text-right"></td>
                                 <td v-text="producto.detalle.reservados==0?'---':producto.detalle.reservados" class="text-right"></td>
                                 <td v-text="producto.detalle.fallidos==0?'---':producto.detalle.fallidos" class="text-right"></td>
-                                <td v-text="producto.detalle.substock + producto.detalle.reservados + producto.detalle.fallidos" class="text-right"></td>
+                                <td v-text="producto.detalle.traslado==0?'---':producto.detalle.traslado" class="text-right"></td>
+                                <td v-text="producto.detalle.substock + producto.detalle.reservados + producto.detalle.fallidos + producto.detalle.traslado" class="text-right"></td>
                             </tr>
                         </tbody>
                     </table>

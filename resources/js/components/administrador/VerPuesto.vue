@@ -356,7 +356,7 @@
                         </div>
                     </div>
                     <div style="width: 24rem;">
-                        <input type="search" class="form-control" v-model="Busqueda.texto" @keyup.enter="listar()" placeholder="Buscar por centro de origen">
+                        <input type="search" class="form-control" v-model="Busqueda.texto" @keyup.enter="listar()" placeholder="Buscar por CENTRO DE ORIGEN">
                     </div>
                     <div class="col-md-1">
                         <label for="">Fecha de envío</label>
@@ -464,7 +464,7 @@
                                 <option value="1">Usado</option>
                                 <option value="2">Sin usar</option>
                             </select>
-                            <input type="search" class="form-control" v-model="Busqueda.texto" @keyup.enter="listar()" placeholder="Buscar por dni, ruc, nombres , razón social">
+                            <input type="search" class="form-control" v-model="Busqueda.texto" @keyup.enter="listar()" placeholder="Buscar por DNI, RUC, NOMBRES , RAZÓN SOCIAL">
                             <button type="button" class="btn btn-primary" @click="listar()">
                                 <i class="fa fa-search"></i>&nbsp; Buscar
                             </button>

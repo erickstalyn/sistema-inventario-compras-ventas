@@ -23,13 +23,13 @@
                         <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.estado">
                             <option value="3">Todos</option>
                             <option value="0">En espera</option>
-                            <option value="1">Aceptados</option>
-                            <option value="2">Rechazados</option>
+                            <option value="1">Recibidos</option>
+                            <!-- <option value="2">Rechazados</option> -->
                         </select>
                     </div>
                 </div>
                 <div style="width: 24rem;">
-                    <input type="search" class="form-control" v-model="Busqueda.texto" @keyup.enter="listar()" placeholder="Buscar por centro de destino">
+                    <input type="search" class="form-control" v-model="Busqueda.texto" @keyup.enter="listar()" placeholder="Buscar por CENTRO DE DESTINO">
                 </div>
                 <div class="col-md-1">
                     <label for="">Fecha de envío</label>
@@ -77,7 +77,7 @@
                             <tr class="table-info">
                                 <th>Centro de destino</th>
                                 <th class="text-center">Fecha de envio</th>
-                                <th class="text-center">Fecha Aceptado/Rechazado</th>
+                                <th class="text-center">Fecha de recepción</th>
                                 <th>Estado</th>
                                 <th class="text-center">Opciones</th>
                             </tr>
@@ -92,23 +92,23 @@
                                         <span class="badge badge-primary">En espera</span>
                                     </div>
                                     <div v-else-if="envio.estado == 1">
-                                        <span class="badge badge-success">Aceptado</span>
+                                        <span class="badge badge-success">Recibido</span>
                                     </div>
-                                    <div v-else="">
+                                    <!-- <div v-else="">
                                         <span class="badge badge-danger">Rechazado</span>
-                                    </div>
+                                    </div> -->
                                 </td>
                                 <td class="text-center">
                                     <button type="button" title="Ver" class="btn btn-sm btn-primary" @click="abrirModalVer(envio)">
                                         <i class="far fa-eye"></i>
                                     </button>
-                                    <template v-if="envio.estado == 2">
+                                    <!-- <template v-if="envio.estado == 2">
                                         <button type="button"  title="Reenviar" class="btn btn-info btn-sm" @click="abrirModalReenviar(envio)">
                                             <i class="fas fa-plane"></i>
                                         </button>
-                                    </template>
-                                    <template v-if="envio.estado != 1">
-                                        <button type="button"  title="Anular" class="btn btn-danger btn-sm" @click="anularAbasto(envio.id)">
+                                    </template> -->
+                                    <template v-if="envio.estado == 0">
+                                        <button type="button"  title="Anular" class="btn btn-danger btn-sm" @click="anularEnvio(envio.id)">
                                                 <i class="fas fa-trash-alt"></i>
                                         </button>
                                     </template>
@@ -526,7 +526,8 @@
                     if(this.ListaDetalleEnvio[i].id == producto.id){
                         incluido = true;
                         //adiciono uno más a la cantidad de este producto en la tabla de detalles
-                        this.ListaDetalleEnvio[i].cantidad ++;
+                        // this.ListaDetalleEnvio[i].cantidad ++;
+                        if ( this.ListaDetalleEnvio[i].cantidad < this.ListaDetalleEnvio[i].stock ) this.ListaDetalleEnvio[i].cantidad++;
                         break;
                     }
                 }
@@ -611,36 +612,36 @@
                     }
                 }
             },
-            reenviar(){
-                if ( this.validar(2) ) return;
-                var me = this;
-                //Selecciono el nombre del centro
-                let nombreCentro;
-                me.SelectCentro.forEach(element => {
-                    if(element.id == me.EnvioRealizado.centro_to_id) nombreCentro = element.nombre;
-                });
-                axios.put('/envioRealizado/reenviar', {
-                    'id' : me.EnvioRealizado.id,
-                    'centro_to_id': me.EnvioRealizado.centro_to_id,
-                }).then(function(response){
-                    me.cerrarModal();
-                    me.listar();
-                    Swal.fire({
-                        position: 'top-end',
-                        toast: true,
-                        type: 'success',
-                        title: 'Se REENVIÓ satisfactoriamente a ' + nombreCentro,
-                        showConfirmButton: false,
-                        timer: 4500,
-                        animation:false,
-                        customClass:{
-                            popup: 'animated bounceIn fast'
-                        }
-                    });
-                }).catch(function(error){
-                    console.log(error);
-                });
-            },
+            // reenviar(){
+            //     if ( this.validar(2) ) return;
+            //     var me = this;
+            //     //Selecciono el nombre del centro
+            //     let nombreCentro;
+            //     me.SelectCentro.forEach(element => {
+            //         if(element.id == me.EnvioRealizado.centro_to_id) nombreCentro = element.nombre;
+            //     });
+            //     axios.put('/envioRealizado/reenviar', {
+            //         'id' : me.EnvioRealizado.id,
+            //         'centro_to_id': me.EnvioRealizado.centro_to_id,
+            //     }).then(function(response){
+            //         me.cerrarModal();
+            //         me.listar();
+            //         Swal.fire({
+            //             position: 'top-end',
+            //             toast: true,
+            //             type: 'success',
+            //             title: 'Se REENVIÓ satisfactoriamente a ' + nombreCentro,
+            //             showConfirmButton: false,
+            //             timer: 4500,
+            //             animation:false,
+            //             customClass:{
+            //                 popup: 'animated bounceIn fast'
+            //             }
+            //         });
+            //     }).catch(function(error){
+            //         console.log(error);
+            //     });
+            // },
             abrirModalAgregar(){
                 this.abrirModal(1, 'Registrar Envío', 'Agregar', 'Cancelar', 'modal-xl modal-dialog-scrollable');
                 if(!this.SelectCentro.length) this.selectCentro();
@@ -690,14 +691,10 @@
                         this.agregar();
                         break;
                     }
-                    case 'Editar': {
-                        this.editar();
-                        break;
-                    }
-                    case 'Reenviar': {
-                        this.reenviar();
-                        break;
-                    }
+                    // case 'Reenviar': {
+                    //     this.reenviar();
+                    //     break;
+                    // }
                 }
             },
             cambiarPagina(page){
@@ -723,7 +720,7 @@
                         break;
                 }
             },
-            anularAbasto(id){
+            anularEnvio(id){
                 Swal.fire({
                     title: '¿Está seguro que desea ANULAR el Envío?',
                     type: 'error',
