@@ -1555,7 +1555,7 @@
                                     if ( Number.parseInt(this.ListaDetalle[i].cantidad_fallido) < 0 && !found_b ){
                                         this.Error.mensaje.push('Los fallidos no pueden ser negativos'); found_b = true;
                                     } 
-                                    if ( this.ListaDetalle[i].cantidad_fallido > this.ListaDetalle[i].cantidad_start && !found_c ){
+                                    if ( Number.parseInt(this.ListaDetalle[i].cantidad_fallido) > this.ListaDetalle[i].cantidad_start && !found_c ){
                                         this.Error.mensaje.push('Los fallidos no pueden superar la cantidad inicial'); found_c = true;
                                     } 
                                 }
@@ -1565,7 +1565,7 @@
                                     if ( Number.parseInt(this.ListaDetalle[i].devuelto) < 0 && !found_e ){
                                         this.Error.mensaje.push('Los devueltos no pueden ser negativos'); found_e = true;
                                     } 
-                                    if ( this.ListaDetalle[i].devuelto > this.ListaDetalle[i].cantidad_start && !found_f ){
+                                    if ( Number.parseInt(this.ListaDetalle[i].devuelto) > this.ListaDetalle[i].cantidad_start && !found_f ){
                                         this.Error.mensaje.push('Los devueltos no pueden superar la cantidad inicial'); found_f = true;
                                     } 
                                 }
@@ -1940,7 +1940,7 @@
                         if ( this.Modal.numero == 1 ) {
                             this.update('venta.total_faltante');
                             this.update('cliente.removable');
-                            this.update('venta.total_redcibido');
+                            this.update('venta.total_recibido');
                         }
                         if ( this.Modal.numero == 3 ) {
                             if ( (this.Venta.total > this.Venta.total_start && this.Venta.tipo.charAt(0) == '1') || this.Venta.tipo.charAt(0) == '2' ) {
@@ -2194,8 +2194,8 @@
                                     nombre_producto: data[i].detalle.nombre_producto,
                                     cantidad: data[i].detalle.cantidad,
                                     cantidad_start: data[i].detalle.cantidad,
-                                    devuelto: 0,
-                                    cantidad_fallido: 0,
+                                    devuelto: '0',
+                                    cantidad_fallido: '0',
                                     substock: data[i].substock,
                                     precio: data[i].detalle.precio,
                                     subtotal: data[i].detalle.subtotal,
