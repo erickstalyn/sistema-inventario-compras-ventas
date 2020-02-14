@@ -20,25 +20,35 @@ class CreateEnvioBUTrigger extends Migration
         FOR EACH ROW
         BEGIN
             IF ( NEW.estado = 1 ) THEN	
-                IF ( OLD.abasto_id is not NULL ) THEN
-                    UPDATE detalle_producto dproducto
-                    JOIN detalle_abasto dabasto 
-                        ON dabasto.producto_id = dproducto.producto_id
-                            AND dabasto.abasto_id = NEW.abasto_id
-                            AND dproducto.centro_id = NEW.centro_to_id
-                    SET dproducto.substock = dproducto.substock + dabasto.cantidad;	
-                ELSE
-                    UPDATE detalle_producto dproducto
+                IF ( OLD.abasto_id is NULL ) THEN
+                    IF(OLD.tipo = '1') THEN
+                        UPDATE detalle_producto dproducto
                         JOIN detalle_envio denvio ON denvio.producto_id = dproducto.producto_id
                                     AND denvio.envio_id = NEW.id
                             AND dproducto.centro_id = NEW.centro_to_id
-                    SET dproducto.substock = dproducto.substock + denvio.cantidad;
+                        SET dproducto.substock = dproducto.substock + denvio.cantidad;
+                    END IF;
+                    IF(OLD.tipo = '2') THEN
+                        UPDATE detalle_producto dproducto
+                        JOIN detalle_envio denvio ON denvio.producto_id = dproducto.producto_id
+                                    AND denvio.envio_id = NEW.id
+                            AND dproducto.centro_id = NEW.centro_to_id
+                        SET dproducto.fallidos = dproducto.fallidos + denvio.cantidad;
+                    END IF;
+                    
                     UPDATE detalle_producto dproducto
                     JOIN detalle_envio denvio		
                         ON denvio.producto_id = dproducto.producto_id
                         AND denvio.envio_id = NEW.id
                         AND dproducto.centro_id = NEW.centro_from_id
                     SET dproducto.traslado = dproducto.traslado - denvio.cantidad;
+                ELSE
+                    UPDATE detalle_producto dproducto
+                    JOIN detalle_abasto dabasto 
+                        ON dabasto.producto_id = dproducto.producto_id
+                            AND dabasto.abasto_id = NEW.abasto_id
+                            AND dproducto.centro_id = NEW.centro_to_id
+                    SET dproducto.substock = dproducto.substock + dabasto.cantidad;
                 END IF;
             END IF;
         END

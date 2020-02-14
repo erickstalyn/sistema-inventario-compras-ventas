@@ -57,7 +57,7 @@
                                 <td v-text="producto.detalle.reservados==0?'---':producto.detalle.reservados" class="text-right"></td>
                                 <td v-text="producto.detalle.fallidos==0?'---':producto.detalle.fallidos" class="text-right"></td>
                                 <td v-text="producto.detalle.traslado==0?'---':producto.detalle.traslado" class="text-right"></td>
-                                <td v-text="producto.detalle.substock + producto.detalle.reservados + producto.detalle.fallidos" class="text-right"></td>
+                                <td v-text="producto.detalle.substock + producto.detalle.reservados + producto.detalle.fallidos + producto.detalle.traslado" class="text-right"></td>
                             </tr>
                         </tbody>
                     </table>

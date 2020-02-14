@@ -144,6 +144,7 @@ class AbastoController extends Controller
             }
             //Registramos el ENVÍO
             $envio = new Envio();
+            $envio->tipo = 1;
             $envio->centro_to_id = $request->centro_to_id;
             $envio->abasto_id = $abasto->id;
             $envio->created_at = $now;
