@@ -64,7 +64,7 @@
                                             <i class="far fa-eye"></i>
                                         </button>
                                     </template>
-                                    <template v-if="Number.parseFloat(venta.total_venta)!=0">
+                                    <template v-if="venta.editable">
                                         <button type="button" title="EDITAR" class="btn btn-warning btn-sm" @click="abrirModalEditar(venta)">
                                             <i class="fas fa-edit"></i>
                                         </button>
@@ -1109,6 +1109,7 @@
                 axios.get(url).then(function (response) {
                     me.ListaVenta = response.data.ventas.data;
                     me.Paginacion = response.data.pagination;
+                    me.fix('venta.editable');
                 }).catch(function (error) {
                     console.log(error);
                 });
@@ -1707,6 +1708,7 @@
                             me.Cliente.apellidos = persona.apellidos;
 
                             me.update('cliente.removable');
+                            me.remove('vale.usado');
                         } else {
                             me.Service.msm = 'El DNI no existe';
                             me.Service.msmclass = 'badge badge-primary';
@@ -1743,6 +1745,7 @@
                             me.Cliente.razon_social = empresa.RazonSocial;
 
                             me.update('cliente.removable');
+                            me.update('vale.usado');
                         } else {
                             me.Service.msm = 'El RUC no existe';
                             me.Service.msmclass = 'badge badge-primary';
@@ -2233,6 +2236,33 @@
                     case 'tipo_precio': //para conseguir el nombre del tipo de precio
                         if ( this.Venta.tipo_precio == '1' ) fixed = 'Al por menor'; 
                         if ( this.Venta.tipo_precio == '2' ) fixed = 'Al por mayor'; 
+                        break;
+                    case 'venta.editable':
+                        this.ListaVenta.forEach(venta =>{
+                            let state = false;
+                            if ( venta.vale_generada_id == null ) {
+                                if ( venta.tipo.charAt(0) == '1' ) {
+                                    state = true;
+                                } else if ( venta.tipo.charAt(0) == '2') {
+                                    if ( venta.tipo.charAt(1) == '1' ) {
+                                        state = true;
+                                    } else if ( venta.tipo.charAt(1) == '2' ) {
+                                        if ( venta.total_faltante == null ) {
+                                            state = true;
+                                        } else {
+                                            state = false;
+                                        }
+                                    } else {
+                                        this.error();
+                                    }
+                                } else {
+                                    this.error();
+                                }
+                            } else {
+                                state = false;
+                            }
+                            venta.editable = state;
+                        });
                         break;
                     default:
                         fixed = '';
