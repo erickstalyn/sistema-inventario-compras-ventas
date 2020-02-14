@@ -26,7 +26,7 @@
                     </div>
                 </div>
                 <div style="width: 24rem;">
-                    <input type="search" class="form-control" v-model="Busqueda.texto" @keyup.enter="listar()" placeholder="Buscar por centro de origen">
+                    <input type="search" class="form-control" v-model="Busqueda.texto" @keyup.enter="listar()" placeholder="Buscar por CENTRO DE ORIGEN">
                 </div>
                 <div class="col-md-1">
                     <label for="">Fecha de envío</label>
