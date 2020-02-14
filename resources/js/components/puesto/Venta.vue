@@ -64,7 +64,7 @@
                                             <i class="far fa-eye"></i>
                                         </button>
                                     </template>
-                                    <template v-if="Number.parseFloat(venta.total_venta)!=0">
+                                    <template v-if="venta.editable">
                                         <button type="button" title="EDITAR" class="btn btn-warning btn-sm" @click="abrirModalEditar(venta)">
                                             <i class="fas fa-edit"></i>
                                         </button>
@@ -1109,6 +1109,7 @@
                 axios.get(url).then(function (response) {
                     me.ListaVenta = response.data.ventas.data;
                     me.Paginacion = response.data.pagination;
+                    me.fix('venta.editable');
                 }).catch(function (error) {
                     console.log(error);
                 });
@@ -1555,7 +1556,7 @@
                                     if ( Number.parseInt(this.ListaDetalle[i].cantidad_fallido) < 0 && !found_b ){
                                         this.Error.mensaje.push('Los fallidos no pueden ser negativos'); found_b = true;
                                     } 
-                                    if ( this.ListaDetalle[i].cantidad_fallido > this.ListaDetalle[i].cantidad_start && !found_c ){
+                                    if ( Number.parseInt(this.ListaDetalle[i].cantidad_fallido) > this.ListaDetalle[i].cantidad_start && !found_c ){
                                         this.Error.mensaje.push('Los fallidos no pueden superar la cantidad inicial'); found_c = true;
                                     } 
                                 }
@@ -1565,7 +1566,7 @@
                                     if ( Number.parseInt(this.ListaDetalle[i].devuelto) < 0 && !found_e ){
                                         this.Error.mensaje.push('Los devueltos no pueden ser negativos'); found_e = true;
                                     } 
-                                    if ( this.ListaDetalle[i].devuelto > this.ListaDetalle[i].cantidad_start && !found_f ){
+                                    if ( Number.parseInt(this.ListaDetalle[i].devuelto) > this.ListaDetalle[i].cantidad_start && !found_f ){
                                         this.Error.mensaje.push('Los devueltos no pueden superar la cantidad inicial'); found_f = true;
                                     } 
                                 }
@@ -1707,6 +1708,7 @@
                             me.Cliente.apellidos = persona.apellidos;
 
                             me.update('cliente.removable');
+                            me.remove('vale.usado');
                         } else {
                             me.Service.msm = 'El DNI no existe';
                             me.Service.msmclass = 'badge badge-primary';
@@ -1743,6 +1745,7 @@
                             me.Cliente.razon_social = empresa.RazonSocial;
 
                             me.update('cliente.removable');
+                            me.update('vale.usado');
                         } else {
                             me.Service.msm = 'El RUC no existe';
                             me.Service.msmclass = 'badge badge-primary';
@@ -1940,7 +1943,7 @@
                         if ( this.Modal.numero == 1 ) {
                             this.update('venta.total_faltante');
                             this.update('cliente.removable');
-                            this.update('venta.total_redcibido');
+                            this.update('venta.total_recibido');
                         }
                         if ( this.Modal.numero == 3 ) {
                             if ( (this.Venta.total > this.Venta.total_start && this.Venta.tipo.charAt(0) == '1') || this.Venta.tipo.charAt(0) == '2' ) {
@@ -2194,8 +2197,8 @@
                                     nombre_producto: data[i].detalle.nombre_producto,
                                     cantidad: data[i].detalle.cantidad,
                                     cantidad_start: data[i].detalle.cantidad,
-                                    devuelto: 0,
-                                    cantidad_fallido: 0,
+                                    devuelto: '0',
+                                    cantidad_fallido: '0',
                                     substock: data[i].substock,
                                     precio: data[i].detalle.precio,
                                     subtotal: data[i].detalle.subtotal,
@@ -2233,6 +2236,33 @@
                     case 'tipo_precio': //para conseguir el nombre del tipo de precio
                         if ( this.Venta.tipo_precio == '1' ) fixed = 'Al por menor'; 
                         if ( this.Venta.tipo_precio == '2' ) fixed = 'Al por mayor'; 
+                        break;
+                    case 'venta.editable':
+                        this.ListaVenta.forEach(venta =>{
+                            let state = false;
+                            if ( venta.vale_generada_id == null ) {
+                                if ( venta.tipo.charAt(0) == '1' ) {
+                                    state = true;
+                                } else if ( venta.tipo.charAt(0) == '2') {
+                                    if ( venta.tipo.charAt(1) == '1' ) {
+                                        state = true;
+                                    } else if ( venta.tipo.charAt(1) == '2' ) {
+                                        if ( venta.total_faltante == null ) {
+                                            state = true;
+                                        } else {
+                                            state = false;
+                                        }
+                                    } else {
+                                        this.error();
+                                    }
+                                } else {
+                                    this.error();
+                                }
+                            } else {
+                                state = false;
+                            }
+                            venta.editable = state;
+                        });
                         break;
                     default:
                         fixed = '';
