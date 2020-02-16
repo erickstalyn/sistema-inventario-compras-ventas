@@ -158,6 +158,7 @@ class EnvioController extends Controller
             $envio = new Envio();
             $envio->centro_from_id = $request->idCentro;
             $envio->centro_to_id = $request->centro_to_id;
+            $envio->tipo = $request->tipo;
             $envio->created_at = $now;
             $envio->save();
 

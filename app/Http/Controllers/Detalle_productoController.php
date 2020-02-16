@@ -14,7 +14,7 @@ class Detalle_productoController extends Controller
         $idCentro = $request->idCentro;
         $texto = $request->texto;
 
-        $productos = Detalle_producto::select('producto.id', 'producto.codigo as codigo', 'producto.nombre as nombre', 'detalle_producto.substock as substock')
+        $productos = Detalle_producto::select('producto.id', 'producto.codigo as codigo', 'producto.nombre as nombre', 'detalle_producto.substock as substock', 'detalle_producto.fallidos as fallidos')
                             ->join('producto', 'producto.id', 'detalle_producto.producto_id')
                             ->where(function ($query) use ($texto) {
                                 if ( $texto != '' ) {
@@ -47,6 +47,26 @@ class Detalle_productoController extends Controller
             $error = $e;
         }
 
+        return [
+            'estado' => $error==NULL?1:0,
+            'error' => $error
+        ];
+    }
+
+    public function reparar(Request $request){
+        if(!$request->ajax()) return redirect('/');
+        try {
+            DB::beginTransaction();
+            $detalle_producto = Detalle_producto::findOrFail($request->detalle_producto_id);
+            $detalle_producto->fallidos = $detalle_producto->fallidos - $request->cant_reparar;
+            $detalle_producto->substock = $detalle_producto->substock + $request->cant_reparar;
+            $detalle_producto->save();
+            DB::commit();
+            $error = NULL;
+        } catch (Exception $e) {
+            DB::rollback();
+            $error = $e;
+        }
         return [
             'estado' => $error==NULL?1:0,
             'error' => $error

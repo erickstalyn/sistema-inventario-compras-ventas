@@ -138,6 +138,9 @@ Route::group(['middleware' => ['auth']], function () {
         //Rutas de ENVIOS REALIZADOS
         Route::put('/envioRealizado/anular', 'EnvioController@anular');
 
+        //Ruta de reparación de detalles de producto
+        Route::put('/detalle_producto/reparar', 'Detalle_productoController@reparar');
+
     });
 
 });
