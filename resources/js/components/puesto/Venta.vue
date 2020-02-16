@@ -620,44 +620,6 @@
                                 </button>
                             </div>
                             <div class="col-md-12 p-0 m-0 input-group" v-if="Step.number==0" style="height: 26rem;">
-                                <!-- <div class="container-small col-md-4">
-                                    <div class="shadow rounded pt-2 bg-warning" style="border: 1px solid; height: 26rem;">
-                                        <div class="col-md-12 form-group">
-                                            <label class="h5 mb-0 font-weight-bold">LISTA DE PRODUCTOS</label>
-                                        </div>
-                                        <div class="col-md-12 input-group form-group">
-                                            <input type="search" class="form-control form-control-sm" v-model="Service.text" @keyup.enter="list('detalle_producto')" id="filtroProducto" placeholder="Producto,marca,modelo,tamaño,color">
-                                            <button type="button" class="btn btn-sm btn-primary" @click="list('detalle_producto')">
-                                                <i class="fa fa-search"></i>&nbsp; Buscar
-                                            </button>
-                                        </div>
-                                        <div v-if="ListaProducto.length" class="col-md-12 overflow-auto" style="height: 19rem;">
-                                            <table class="table table-bordered table-striped table-sm text-gray-900 p-0 m-0 bg-white">
-                                                <thead>
-                                                    <tr class="table-danger">
-                                                        <th class="text-center" style="width: 10%;">Agregar</th>
-                                                        <th class="text-center">Nombre</th>
-                                                        <th class="text-center">Stock</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr v-for="producto in ListaProducto" :key="producto.id">
-                                                        <td class="text-center">
-                                                            <button type="button" v-if="producto.detalle.substock>0" title="AGREGAR" class="btn btn-circle btn-sm btn-outline-success" @click="add('detalle_venta', producto)">
-                                                                <i class="fas fa-plus"></i>
-                                                            </button>
-                                                        </td>
-                                                        <td v-text="producto.nombre"></td>
-                                                        <td v-text="producto.detalle.substock" class="text-right"></td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                        <div v-else class="col-md-12">
-                                            <label class="h5 text-danger">No se han encontrado resultados</label>
-                                        </div>
-                                    </div>
-                                </div> -->
                                 <div class="container-small col-md-12">
                                     <div class="shadow rounded pt-2 bg-warning" style="border: 1px solid; height: 26rem;">
                                         <div class="col-md-12 form-group input-group">
@@ -806,18 +768,21 @@
                                         <div class="col-md-12 form-group">
                                             <label class="font-weight-bold h5">DESCUENTOS</label>
                                         </div>
-                                        <div class="col-md-12" v-if="Vale.usado.id!=null">
-                                            <div class="col-md-12 input-group form-group">
-                                                <label class="col-md-6 font-weight-bold">Monto</label>
-                                                <label class="col-md-6 text-white" v-text="'S/. '+Vale.usado.monto"></label>
+                                        <div class="col-md-12" v-if="Vale.usado.monto!=null">
+                                            <div class="col-md-12 form-group text-center">
+                                                <label class="font-weight-bold">-- Vale usado --</label>
                                             </div>
-                                            <div class="col-md-12 input-group form-group">
-                                                <label class="col-md-6 font-weight-bold">Fecha</label>
-                                                <label class="col-md-6 text-white" v-text="fix('fecha', Vale.usado.created_at)"></label>
+                                            <div class="col-md-12 input-group">
+                                                <label class="col-md-5 font-weight-bold">Monto</label>
+                                                <label class="col-md-7 text-white" v-text="'S/. '+Vale.usado.monto"></label>
                                             </div>
-                                            <div class="col-md-12 input-group form-group">
-                                                <label class="col-md-6 font-weight-bold">Hora</label>
-                                                <label class="col-md-6 text-white" v-text="fix('hora', Vale.usado.created_at)"></label>
+                                            <div class="col-md-12 input-group">
+                                                <label class="col-md-5 font-weight-bold">Fecha</label>
+                                                <label class="col-md-7 text-white" v-text="fix('fecha', Vale.usado.created_at)"></label>
+                                            </div>
+                                            <div class="col-md-12 input-group">
+                                                <label class="col-md-5 font-weight-bold">Hora</label>
+                                                <label class="col-md-7 text-white" v-text="fix('hora', Vale.usado.created_at)"></label>
                                             </div>
                                         </div>
                                     </div>
@@ -1102,9 +1067,9 @@
                         +'&rows='+this.Busqueda.rows
                         +'&centro_id='+$('meta[name="idCentro"]').attr('content')
                         +'&rol='+$('meta[name="rol"]').attr('content')
-                        +'&dia='+this.fix(1)
-                        +'&mes='+this.fix(2)
-                        +'&year='+this.fix(3);
+                        +'&dia='+this.fix('day')
+                        +'&mes='+this.fix('month')
+                        +'&year='+this.fix('year');
 
                 axios.get(url).then(function (response) {
                     me.ListaVenta = response.data.ventas.data;
@@ -1154,7 +1119,7 @@
             },
             editar(){
                 if ( this.validar([5]) ) return;
-                if ( this.validar([0, 1, 2, 3]) ) return;
+                if ( this.validar([0, 1, 3]) ) return;
 
                 var me = this;
                 var url = this.Ruta.venta+'/editar';
@@ -1223,8 +1188,9 @@
                 this.ListaPago.forEach(pago => {
                     if(pago.estado) pagos.push(pago);
                 });
-                var venta_tipo_pago = this.Venta.tipo_pago;
-                var venta_total_faltante = Number.parseFloat(this.Venta.total_faltante);
+                var tipo_pago = this.Venta.tipo_pago;
+                var tipo_entrega = this.Venta.tipo_entrega;
+                var total_faltante = Number.parseFloat(this.Venta.total_faltante);
                 var venta_id = this.Venta.id;
 
                 let me = this;
@@ -1236,20 +1202,7 @@
                 }).then(function(response){
                     me.cerrarModal();
                     me.listar();
-                    if ( venta_tipo_pago != 3 || venta_total_faltante != 0 ) {
-                        Swal.fire({
-                            position: 'top-end',
-                            toast: true,
-                            type: 'success',
-                            title: 'El pago se ha REGISTRADO correctamente',
-                            showConfirmButton: false,
-                            timer: 4500,
-                            animation:false,
-                            customClass:{
-                                popup: 'animated bounceIn fast'
-                            }
-                        });
-                    } else {
+                    if ( tipo_pago == '2' && tipo_entrega == '2' && total_faltante == 0 ) {
                         Swal.fire({
                             title: 'Pagos Finalizados',
                             text: "Ya que se ha pagado por completo la venta, ahora tiene que entregar los siguientes productos",
@@ -1266,6 +1219,19 @@
                             } else if ( result.dismiss === Swal.DismissReason.cancel ) {
                             }
                         })
+                    } else {
+                        Swal.fire({
+                            position: 'top-end',
+                            toast: true,
+                            type: 'success',
+                            title: 'El pago se ha REGISTRADO correctamente',
+                            showConfirmButton: false,
+                            timer: 4500,
+                            animation:false,
+                            customClass:{
+                                popup: 'animated bounceIn fast'
+                            }
+                        });
                     }
                 }).catch(function(error){
                     console.log(error);
@@ -1343,22 +1309,9 @@
                 this.list('pago');
             },
             abrirModalEditar(data){
-                // if ( this.fix('year', data.created_at) != this.fix(3) || this.fix('year', data.created_at) != this.fix(2) ) {
-                //     Swal.fire({
-                //         title: 'Esta venta ya no se puede editar',
-                //         text: 'Esta venta fue realizada el mes pasado y por eso ya no se puede editar',
-                //         type: 'info',
-                //         showCancelButton: false,
-                //         customClass: {
-                //             confirmButton: 'btn btn-primary'
-                //         },
-                //         buttonsStyling: false
-                //     });
-                //     return;
-                // }
-
                 this.Venta.id = data.id;
                 this.Venta.total_venta = Number.parseFloat(data.total_venta);
+                this.Venta.total_venta_start = Number.parseFloat(data.total_venta);
                 this.Venta.total_descuento = data.total_descuento==null?null:Number.parseFloat(data.total_descuento);
                 this.Venta.total = Number.parseFloat(data.total);
                 this.Venta.total_start = Number.parseFloat(data.total);
@@ -1382,12 +1335,12 @@
                 this.Cliente.removable = false;
 
                 this.Vale.usado.id = data.vale_usada_id;
-                this.Vale.usado.monto = data.vale_usada_monto;
+                this.Vale.usado.monto = data.vale_usada_monto==null?null:Number.parseFloat(data.vale_usada_monto);
+                this.Vale.usado.monto_start = data.vale_usada_monto;
                 this.Vale.usado.created_at = data.vale_usada_created_at;
 
                 this.Vale.generado.id = data.vale_generada_id;
-                this.Vale.generado.monto = data.vale_generada_monto==null?null:Number.parseFloat(data.vale_generada_monto);
-                this.Vale.generado.monto_start = Number.parseFloat(data.vale_generada_monto==null?0:data.vale_generada_monto);
+                this.Vale.generado.monto = data.vale_generada_monto;
                 this.Vale.generado.created_at = data.vale_generada_created_at;
 
                 this.ListaProducto = [];
@@ -1402,6 +1355,7 @@
                 this.Venta.total = venta.total;
                 this.Venta.total_faltante = venta.total_faltante==null?0:venta.total_faltante;
                 this.Venta.tipo_pago = venta.tipo.charAt(0);
+                this.Venta.tipo_entrega = venta.tipo.charAt(1);
                 
                 this.ListaPago = [];
                 this.Pago.monto = '';
@@ -2034,18 +1988,20 @@
                         break;
                     case 'vale.generado':
                         if ( this.Modal.numero == 3 ) {
-                            if ( this.Vale.generado.monto_start == 0 ) {
-                                if ( this.Venta.total < this.Venta.total_start ) {
-                                    this.Vale.generado.monto = this.Venta.total_start - this.Venta.total;
-                                } else {
-                                    this.Vale.generado.monto = null;
-                                } 
+                            let monto = 0
+                            
+                            if ( this.Venta.tipo_pago == '1' ) {
+                                let descuento = this.Venta.total_descuento==null?0:this.Venta.total_descuento;
+                                monto = this.Venta.total_venta  - (this.Venta.total_start + descuento);
+                            } else if ( this.Venta.tipo_pago == '2' ) {
+                                let descuento = this.Venta.total_descuento==null?0:this.Venta.total_descuento;
+                                monto = this.Venta.total_venta  - ((this.Venta.total_start - this.Venta.total_faltante_start) + descuento);
+                            }
+
+                            if ( monto < 0 ) {
+                                this.Vale.generado.monto = - monto;
                             } else {
-                                if ( (this.Venta.total - this.Venta.total_start) >= this.Vale.generado.monto_start ) {
-                                    this.Vale.generado.monto = null;
-                                } else {
-                                    this.Vale.generado.monto = this.Vale.generado.monto_start - (this.Venta.total - this.Venta.total_start);
-                                }
+                                this.Vale.generado.monto = null;
                             }
                         }
                         break;
@@ -2151,13 +2107,13 @@
                         hora_fixed = (hora[0]>12?(hora[0]-12).toString().padStart(2, '0'):hora[0])+':'+hora[1]+' '+(hora[0]>12?'pm':'am') ;
                         fixed = fecha_fixed+' '+hora_fixed;
                         break;
-                    case 1:
+                    case 'day':
                         fixed = (new Date()).getDate();
                         break;
-                    case 2:
+                    case 'month':
                         fixed = (new Date()).getMonth()+1;
                         break;
-                    case 3:
+                    case 'year':
                         fixed = (new Date()).getFullYear();
                         break;
                     case 'detalle_venta':
@@ -2219,10 +2175,10 @@
                         hora_fixed = (hora[0]>12?(hora[0]-12).toString().padStart(2, '0'):hora[0])+':'+hora[1]+' '+(hora[0]>12?'pm':'am') ;
                         fixed = hora_fixed;
                         break; 
-                    case 9:
+                    case 'date.month':
                         fixed = data.split(' ')[0].split('-')[1];
                         break; 
-                    case 10:
+                    case 'date.year':
                         fixed = data.split(' ')[0].split('-')[0];
                         break; 
                     case 'tipo_pago': //para conseguir el nombre del tipo de pago
@@ -2240,7 +2196,7 @@
                     case 'venta.editable':
                         this.ListaVenta.forEach(venta =>{
                             let state = false;
-                            if ( venta.vale_generada_id == null ) {
+                            if ( venta.vale_generada_id == null  && this.fix('month') == this.fix('date.month', venta.created_at) && this.fix('year') == this.fix('date.year', venta.created_at) ) {
                                 if ( venta.tipo.charAt(0) == '1' ) {
                                     state = true;
                                 } else if ( venta.tipo.charAt(0) == '2') {
@@ -2290,8 +2246,6 @@
                         got =  y + '-' + m + '-' + d + ' ' + h + ':' + minu + ':' + seg;
                         break;
                     case 'vale.usado':
-                        console.log('on get("vale.usado")');
-
                         if ( this.Modal.numero == 1 ) {
                             url = this.Ruta.vale+'/get';
 
@@ -2302,8 +2256,7 @@
                             }).then(function (response) {
                                 if ( response.data.state == 'success' && response.data.vale != null ) {
                                     me.Vale.usado.id = response.data.vale.id;
-                                    me.Vale.usado.monto = response.data.vale.monto;
-                                    me.Vale.usado.venta_usada_id = null;
+                                    me.Vale.usado.monto = response.data.vale.monto==null?null:Number.parseFloat(response.data.vale.monto);
                                     me.Vale.usado.created_at = response.data.vale.created_at;
                                     
                                     me.update('venta.total_descuento');
@@ -2312,6 +2265,31 @@
                                 }
                             }).catch(function (error) {
                                 me.remove('vale.usado');
+                                console.log(error);
+                            });
+                        }
+                        if ( this.Modal.numero == 3 ) {
+                            url = this.Ruta.vale+'/get';
+
+                            axios.get(url, {
+                                params: {
+                                    'id': data 
+                                }
+                            }).then(function (response) {
+                                if ( response.data.state == 'success' && response.data.vale != null ) {
+                                    me.Vale.usado.id = response.data.vale.id;
+                                    me.Vale.usado.monto = response.data.vale.monto==null?null:Number.parseFloat(response.data.vale.monto);
+                                    me.Vale.usado.created_at = response.data.vale.created_at;
+                                    
+                                    me.update('venta.total_descuento');
+                                    me.update('vale.generado');
+                                } else {
+                                    me.remove('vale.usado');
+                                    me.update('vale.generado');
+                                }
+                            }).catch(function (error) {
+                                me.remove('vale.usado');
+                                me.update('vale.generado');
                                 console.log(error);
                             });
                         }
