@@ -143,7 +143,10 @@
             </div>
             <div id="fact">
                 <p style="font-size: 15px;">
-                    {{date("d/m/Y")}}
+                    @php
+                        $date = new DateTime($ven->created_at);
+                        echo $date->format('d/m/Y');
+                    @endphp
                 </p>
                 <span style="font-size: 15px;">
                     {{-- @if(substr($ven->tipo, 0, 1) == '1')
@@ -185,8 +188,12 @@
                     <thead>                        
                         <tr class="fa">
                             <th style="width: 18rem">Cliente</th>
+                            @if($ven->vale_generada_created_at)
                             <th style="width: 8rem">Beneficio</th>
+                            @endif
+                            @if($ven->vale_usada_created_at)
                             <th style="width: 8rem">Descuentos</th>
+                            @endif
                             <th style="width: 8rem">Fecha</th>
                         </tr>
                     </thead>
@@ -205,8 +212,8 @@
                                     ---
                                 @endif
                             </td>
+                            @if($ven->vale_generada_created_at)
                             <td style="font-size:13px;">
-                                @if($ven->vale_usada_created_at)
                                     -- Vale Generado -- <br>
                                     @php
                                         $date = new DateTime($ven->vale_generada_created_at);
@@ -214,10 +221,10 @@
                                     Monto: s/. {{$ven->vale_generada_monto}} <br>
                                     Fecha: {{$date->format('d/m/Y')}} <br>
                                     Hora: {{$date->format('h:i a')}}
-                                @endif
                             </td>
+                            @endif
+                            @if($ven->vale_usada_created_at)
                             <td>
-                                @if($ven->vale_usada_created_at)
                                     -- Vale Usado -- <br>
                                     @php
                                         $date = new DateTime($ven->vale_usada_created_at);
@@ -225,8 +232,8 @@
                                     Monto: s/. {{$ven->vale_usada_monto}} <br>
                                     Fecha: {{$date->format('d/m/Y')}} <br>
                                     Hora: {{$date->format('h:i a')}}
-                                @endif
                             </td>
+                            @endif
                             <td>
                                 @php
                                     $date = new DateTime($ven->created_at);
@@ -240,13 +247,21 @@
         </section>
         @endForeach
         <br>
+        @php
+            $existFail = false;
+            foreach ($detalles as $det) {
+                if($det->detalle->cantidad_fallido != null){ $existFail = true; break;}
+            }
+        @endphp
         <section>
             <div>
                 <table class="facarticulo">
                     <thead>
                         <tr class="fa">
                             <th style="width: 20rem">Nombre</th>
-                            <th>Fallidos</th>
+                            @if($existFail)
+                                <th>Fallidos</th>
+                            @endif
                             <th>Cantidad</th>
                             <th style="padding-right: 35px; text-align: right;">P. unit.</th>
                             <th style="padding-right: 35px; text-align: right;">Subtotal</th>
@@ -259,7 +274,9 @@
                         @endphp
                         <tr>
                             <td >{{$element->nombre_producto}}</td>
+                            @if($existFail)
                             <td >{{$element->cantidad_fallido == null ? '---': $element->cantidad_fallido}}</td>
+                            @endif
                             <td >{{$element->cantidad}}</td>
                             <td style="padding-right: 35px; text-align: right;">{{$element->precio}}</td>
                             <td style="padding-right: 35px; text-align: right;">{{$element->subtotal}}</td>

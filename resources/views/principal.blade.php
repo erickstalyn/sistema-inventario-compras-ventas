@@ -88,7 +88,7 @@
                         {{-- <i class="fas fa-bell fa-fw"></i> --}}
                         <i class="fas fa-cart-arrow-down"></i>
                         <!-- Counter - Alerts -->
-                        <span class="badge badge-danger badge-counter" v-text="notifications.length"></span>
+                        <span class="badge badge-danger badge-counter" v-text="notifications.length ? 'nuevo': ''"></span>
                       </a>
                       <!-- Dropdown - Alerts -->
                       <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="alertsDropdown">
@@ -103,7 +103,7 @@
                         {{-- <i class="fas fa-bell fa-fw"></i> --}}
                         <i class="fas fa-store-alt"></i>
                         <!-- Counter - Alerts -->
-                        <span class="badge badge-danger badge-counter" v-text="notifications.length"></span>
+                        <span class="badge badge-danger badge-counter" v-text="notifications.length ? 'nuevo': ''"></span>
                       </a>
                       <!-- Dropdown - Alerts -->
                       <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="alertsDropdown">

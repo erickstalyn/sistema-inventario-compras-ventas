@@ -325,12 +325,12 @@
                                 <div class="row">
                                     <div class="col-md-3"></div>
                                     <div class="col-md-4 form-inline">
-                                        Fecha de inicio&nbsp;<span class="text-danger">*</span>
-                                        <input type="date" class="form-control form-control-sm" v-model="Produccion.fecha_inicio">
+                                        Fecha de inicio&nbsp;
+                                        <input type="date" class="form-control" v-model="Produccion.fecha_inicio" readonly>
                                     </div>
                                     <div class="col-md-5 form-inline">
-                                        Fecha prog. finalización&nbsp;<span class="text-danger">*</span>
-                                        <input type="date" class="form-control form-control-sm" v-model="Produccion.fecha_programada">
+                                        Fecha prog. finalización&nbsp;
+                                        <input type="date" class="form-control" v-model="Produccion.fecha_programada" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -422,6 +422,7 @@
                 Ruta: {
                     produccion: '/produccion'
                 }
+
             }
         },
         computed: {
