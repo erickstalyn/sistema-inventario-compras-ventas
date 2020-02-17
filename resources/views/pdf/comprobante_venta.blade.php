@@ -202,17 +202,19 @@
                                     RUC: {{$ven->ruc}}<br>
                                     </p>
                                 @else
-                                    ------
+                                    ---
                                 @endif
                             </td>
                             <td style="font-size:13px;">
-                                -- Vale Generado -- <br>
-                                @php
-                                    $date = new DateTime($ven->vale_generada_created_at);
-                                @endphp
-                                Monto: s/. {{$ven->vale_generada_monto}} <br>
-                                Fecha: {{$date->format('d/m/Y')}} <br>
-                                Hora: {{$date->format('h:i a')}}
+                                @if($ven->vale_usada_created_at)
+                                    -- Vale Generado -- <br>
+                                    @php
+                                        $date = new DateTime($ven->vale_generada_created_at);
+                                    @endphp
+                                    Monto: s/. {{$ven->vale_generada_monto}} <br>
+                                    Fecha: {{$date->format('d/m/Y')}} <br>
+                                    Hora: {{$date->format('h:i a')}}
+                                @endif
                             </td>
                             <td>
                                 @if($ven->vale_usada_created_at)
