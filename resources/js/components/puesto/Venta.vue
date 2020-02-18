@@ -133,7 +133,15 @@
                             </div>
                             <div class="col-md-12 p-0 m-0 input-group" v-if="Step.number==0" style="height: 26rem;">
                                 <div class="container-small col-md-4">
-                                    <div class="shadow rounded pt-2 bg-warning" style="border: 1px solid; height: 26rem;">
+                                    <div v-if="Modal.step==0" class="shadow rounded bg-warning" style="border: 1px solid; height: 26rem;">
+                                        <div class="container-small col-md-12 input-group form-group p-0">
+                                            <button type="button" class="col-md-6 btn btn-warning btn" @click="Modal.step=0" style="border: 1px solid; border-color: black;">
+                                                <label class="font-weight-bold m-0" style="color: black;">Productos</label>
+                                            </button>
+                                            <button type="button" class="col-md-6 btn btn-info" @click="Modal.step=1" style="border: 1px solid; border-color: black;">
+                                                <label class="font-weight-bold m-0" style="color: black;">Adquiridos</label>
+                                            </button>
+                                        </div>
                                         <div class="col-md-12 form-group">
                                             <label class="h5 mb-0 font-weight-bold">LISTA DE PRODUCTOS</label>
                                         </div>
@@ -143,7 +151,7 @@
                                                 <i class="fa fa-search"></i>&nbsp; Buscar
                                             </button>
                                         </div>
-                                        <div v-if="ListaProducto.length" class="col-md-12 overflow-auto" style="height: 19rem;">
+                                        <div v-if="ListaProducto.length" class="col-md-12 overflow-auto" style="height: 16rem;">
                                             <table class="table table-bordered table-striped table-sm text-gray-900 p-0 m-0 bg-white">
                                                 <thead>
                                                     <tr class="table-danger">
@@ -167,6 +175,51 @@
                                         </div>
                                         <div v-else class="col-md-12">
                                             <label class="h5 text-danger">No se han encontrado resultados</label>
+                                        </div>
+                                    </div>
+                                    <div v-if="Modal.step==1" class="shadow rounded bg-info" style="border: 1px solid; height: 26rem;">
+                                        <div class="container-small col-md-12 input-group form-group p-0">
+                                            <button type="button" class="col-md-6 btn btn-warning btn" @click="Modal.step=0" style="border: 1px solid; border-color: black;">
+                                                <label class="font-weight-bold m-0" style="color: black;">Productos</label>
+                                            </button>
+                                            <button type="button" class="col-md-6 btn btn-info" @click="Modal.step=1" style="border: 1px solid; border-color: black;">
+                                                <label class="font-weight-bold m-0" style="color: black;">Adquiridos</label>
+                                            </button>
+                                        </div>
+                                        <div class="col-md-12 input-group form-group">
+                                            <label class="h5 font-weight-bold">PRODUCTO NUEVO</label>
+                                        </div>
+                                        <div class="col-md-12 input-group form-group">
+                                            <label class="col-md-4 m-0 font-wight-bold">Proveedor</label>
+                                            <input type="text" class="col-md-8 text-gray-900" v-model="Proveedor.nombres">
+                                        </div>
+                                        <div class="col-md-12 input-group form-group">
+                                            <label class="col-md-4 m-0 font-wight-bold">Nombre</label>
+                                            <input type="text" class="col-md-8 text-gray-900" v-model="DetalleAbasto.nombre_producto">
+                                        </div>
+                                        <div class="col-md-12 input-group form-group">
+                                            <label class="col-md-6 m-0 font-wight-bold">Costo de compra</label>
+                                            <label class="col-md-2 m-0 text-right font-wight-bold">S/.</label>
+                                            <input type="number" class="col-md-4 text-right text-gray-900" v-model="DetalleAbasto.costo_abasto" @keyup="update('detalle_abasto.subtotal')" @click="update('detalle_abasto.subtotal')">
+                                        </div>
+                                        <div class="col-md-12 input-group form-group">
+                                            <label class="col-md-6 m-0 font-wight-bold">Precio de venta</label>
+                                            <label class="col-md-2 m-0 text-right font-wight-bold">S/.</label>
+                                            <input type="number" class="col-md-4 text-right text-gray-900" v-model="DetalleVenta.precio">
+                                        </div>
+                                        <div class="col-md-12 input-group form-group">
+                                            <label class="col-md-4 m-0 font-wight-bold">Cantidad</label>
+                                            <input type="number" class="col-md-8 text-right text-gray-900" v-model="DetalleAbasto.cantidad"  @keyup="update('detalle_abasto.subtotal')" @click="update('detalle_abasto.subtotal')">
+                                        </div>
+                                        <div class="col-md-12 input-group form-group">
+                                            <label class="col-md-4 m-0 font-wight-bold">Subtotal</label>
+                                            <label class="col-md-8 m-0 text-right font-wight-bold" v-text="'S/. '+Number.parseFloat(DetalleAbasto.subtotal).toFixed(2)"></label>
+                                        </div>
+                                        <div class="col-md-12 d-flex justify-content-center">
+                                            <button type="button" class="btn btn-sm btn-primary btn-icon-split">
+                                                <span class="icon text-white-50"><i class="fas fa-plus"></i></span>
+                                                <span class="text font-weight-bold">Agregar</span>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -911,7 +964,7 @@
                     total_descuento_start: null,
                     total_venta: null,
                     total_venta_start: null,
-                    tipo: null, // 1: contado, 2: credito
+                    tipo: null,
                     tipo_pago: null, // 1: contado, 2: credito
                     tipo_entrega: null, // 1: prepago, 2: postpago
                     tipo_precio: null, // 1: al por menor, 2: al por mayor
@@ -919,9 +972,37 @@
                     total_recibido: null,
                     total_vuelto: null
                 },
+                ListaAbasto: [],
+                Abasto: {
+                    centro_id: null,
+                    total: null,
+                    tipo: null
+                },
+                
+                DetalleVenta:{
+                    cantidad: null,
+                    precio: null,
+                    subtotal: null
+                },
+                DetalleAbasto:{
+                    cantidad: null,
+                    costo_abasto: null,
+                    subtotal: null
+                },
+
                 ListaProducto: null,
                 ListaDetalle: null,
+                ListaDetalleAbasto: null,
                 
+                Proveedor: {
+                    id: null,
+                    dni: null,
+                    ruc: null,
+                    nombres: null,
+                    apellidos: null,
+                    razon_social: null,
+                    tipo: null,
+                },
                 Cliente:{
                     id: null,
                     documento: null,
@@ -949,7 +1030,8 @@
                     titulo: null,
                     size: null,
                     btnA: null,
-                    btnC: null
+                    btnC: null,
+                    step: null
                 },
                 Step: {
                     number: null
@@ -1249,8 +1331,22 @@
                 this.Venta.total_recibido = '';
                 this.Venta.total_vuelto = 0;
                 
+                this.Abasto.total = 0
+                this.Abasto.tipo = '1';
+                
+                this.DetalleVenta.precio = '';
+
+                this.DetalleAbasto.nombre_producto = '';
+                this.DetalleAbasto.costo_abasto = '';
+                this.DetalleAbasto.cantidad = '';
+                this.DetalleAbasto.subtotal = 0;
+                
+                this.ListaAbasto = [];
+
                 this.ListaProducto = [];
+                
                 this.ListaDetalle = [];
+                this.ListaDetalleAbasto = [];
                 
                 this.Pago.monto = '';
             
@@ -1264,6 +1360,8 @@
                 this.Cliente.tipo = null;
                 this.Cliente.removable = false;
                 
+                this.Proveedor.nombres = '';
+
                 this.Service.document = '';
                 this.Service.msm = '';
                 this.Service.msmclass = '';
@@ -1376,10 +1474,12 @@
                 this.Modal.btnA = btnA;
                 this.Modal.btnC = btnC;
                 this.Modal.numero = numero;
+                this.Modal.step = 0;
                 this.Modal.estado = 1;
             },
             cerrarModal(){
                 this.Modal.estado = 0;
+                this.Modal.step = null;
                 this.Modal.numero = null;
                 this.Modal.titulo = null;
                 this.Modal.size = null;
@@ -1763,18 +1863,18 @@
 
                 switch (numero) {
                     case 'detalle_venta':
-                        let found = false;
-                        for (let i = 0; i < this.ListaDetalle.length; i++) {
-                            if ( this.ListaDetalle[i].detalle_producto_id == data.detalle.id ){
-                                if ( this.Modal.numero == 1 ) {
-                                    if ( this.ListaDetalle[i].cantidad < this.ListaDetalle[i].substock ) this.ListaDetalle[i].cantidad++;
+                        if ( data != null ) {
+                            let found = false;
+                            for (let i = 0; i < this.ListaDetalle.length; i++) {
+                                if ( this.ListaDetalle[i].detalle_producto_id == data.detalle.id ){
+                                    if ( this.Modal.numero == 1 ) {
+                                        if ( this.ListaDetalle[i].cantidad < this.ListaDetalle[i].substock ) this.ListaDetalle[i].cantidad++;
+                                    }
+                                    found = true; break;
                                 }
-                                found = true; break;
                             }
-                        }
 
-                        if ( !found ){
-                            if ( this.Modal.numero == 1 ) {
+                            if ( !found ){
                                 this.ListaDetalle.push({
                                     id: null,
                                     detalle_producto_id: data.detalle.id,
@@ -1785,9 +1885,20 @@
                                     precio_mayor: data.detalle.precio_mayor,
                                     subtotal: 0
                                 });
-                            }
-                        } 
-
+                            } 
+                        } else {
+                            this.ListaDetalle.push({
+                                id: null,
+                                detalle_producto_id: null,
+                                nombre_producto: this.DetalleAbasto.nombre_producto,
+                                cantidad: this.DetalleAbasto.cantidad,
+                                substock: -1,
+                                precio_menor: this.DetalleVenta.precio,
+                                precio_mayor: this.DetalleVenta.precio,
+                                subtotal: 0
+                            });
+                        }
+                        
                         this.update('detalle_venta.subtotal');
                         break;
                     case 'pago':
@@ -1964,6 +2075,26 @@
                         if ( this.Modal.numero == 3 ) {
                             this.update('detalle_venta.cantidad', data);
                         }
+                        break;
+                    case 'detalle_abasto.subtotal':
+                        if ( this.Modal.numero == 1 ) {
+                            console.log('almenos entro');
+
+                            let costo = Number.parseFloat(this.DetalleAbasto.costo_abasto==''?0:this.DetalleAbasto.costo_abasto);
+                            console.log('costo: '+costo);
+                            let cantidad = Number.parseInt(this.DetalleAbasto.cantidad==''?0:this.DetalleAbasto.cantidad);
+                            console.log('cantidad: '+cantidad);
+                            let subtotal = costo * cantidad;
+
+                            if ( subtotal < 0 ) {
+                                this.DetalleAbasto.subtotal = 0;
+                            } else {
+                                this.DetalleAbasto.subtotal = subtotal;
+                            }
+                        }
+                        break;
+                    case 'abasto.total':
+
                         break;
                     case 'cliente.removable':
                         if ( this.Modal.numero == 1 ) {
@@ -2326,7 +2457,7 @@
                     Cliente: this.Cliente
                 };
                 if ( message != '' ) console.log(message);
-                console.log(data);
+                // console.log(data);
             },
             error(){
 
