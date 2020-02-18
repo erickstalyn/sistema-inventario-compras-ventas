@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Venta;
+use App\Abasto;
 use App\Detalle_venta;
+use App\Detalle_abasto;
 use App\Persona;
 use App\Pago;
 use App\Vale;
@@ -85,6 +87,7 @@ class VentaController extends Controller {
         $dataVale = $request->dataVale;
         $dataCliente = $request->dataCliente;
         $dataPago = $request->dataPago;
+        $dataListaAbasto = $request->dataListaAbasto;
         $listDetalle = $request->listDetalle;
 
         $state = 'error';
@@ -159,6 +162,27 @@ class VentaController extends Controller {
                     $pago->created_at = $now;
                     $pago->updated_at = NULL;
                     $pago->save();
+                }
+            }
+
+            //abastos
+            foreach ($dataListaAbasto as $ep => $compra){
+                $abasto = new Abasto();
+                $abasto->proveedor_nombre = $compra['proveedor_nombre'];
+                $abasto->centro_id = $venta->centro_id;
+                $abasto->total = $compra['total'];
+                $abasto->tipo = '0';
+                $abasto->created_at = $now;
+                $abasto->save();
+
+                foreach ( $compra['lista_detalle_abasto'] as $ep => $det ) {
+                    $detalle = new Detalle_abasto();
+                    $detalle->abasto_id = $abasto->id;
+                    $detalle->nombre_producto = $det['nombre_producto'];
+                    $detalle->cantidad = $det['cantidad'];
+                    $detalle->costo_abasto = $det['costo_abasto'];
+                    $detalle->subtotal = $det['subtotal'];
+                    $detalle->save();
                 }
             }
 

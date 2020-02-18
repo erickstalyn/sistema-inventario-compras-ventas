@@ -118,7 +118,7 @@
                                 <div class="col-md-6 alert alert-danger">
                                     <button type="button" @click="close(0)" class="close text-primary" data-dismiss="alert">×</button>
                                     <strong>Corregir los siguentes errores:</strong>
-                                    <ul> 
+                                    <ul class="m-0"> 
                                         <li v-for="error in Error.mensaje" :key="error" v-text="error"></li> 
                                     </ul>
                                 </div>
@@ -190,33 +190,33 @@
                                             <label class="h5 font-weight-bold">PRODUCTO NUEVO</label>
                                         </div>
                                         <div class="col-md-12 input-group form-group">
-                                            <label class="col-md-4 m-0 font-wight-bold">Proveedor</label>
+                                            <label class="col-md-4 m-0 font-weight-bold">Proveedor</label>
                                             <input type="text" class="col-md-8 text-gray-900" v-model="Proveedor.nombres">
                                         </div>
                                         <div class="col-md-12 input-group form-group">
-                                            <label class="col-md-4 m-0 font-wight-bold">Nombre</label>
+                                            <label class="col-md-4 m-0 font-weight-bold">Nombre</label>
                                             <input type="text" class="col-md-8 text-gray-900" v-model="DetalleAbasto.nombre_producto">
                                         </div>
                                         <div class="col-md-12 input-group form-group">
-                                            <label class="col-md-6 m-0 font-wight-bold">Costo de compra</label>
-                                            <label class="col-md-2 m-0 text-right font-wight-bold">S/.</label>
+                                            <label class="col-md-6 m-0 font-weight-bold">Costo de compra</label>
+                                            <label class="col-md-2 m-0 text-right font-weight-bold">S/.</label>
                                             <input type="number" class="col-md-4 text-right text-gray-900" v-model="DetalleAbasto.costo_abasto" @keyup="update('detalle_abasto.subtotal')" @click="update('detalle_abasto.subtotal')">
                                         </div>
                                         <div class="col-md-12 input-group form-group">
-                                            <label class="col-md-6 m-0 font-wight-bold">Precio de venta</label>
-                                            <label class="col-md-2 m-0 text-right font-wight-bold">S/.</label>
+                                            <label class="col-md-6 m-0 font-weight-bold">Precio de venta</label>
+                                            <label class="col-md-2 m-0 text-right font-weight-bold">S/.</label>
                                             <input type="number" class="col-md-4 text-right text-gray-900" v-model="DetalleVenta.precio">
                                         </div>
                                         <div class="col-md-12 input-group form-group">
-                                            <label class="col-md-4 m-0 font-wight-bold">Cantidad</label>
-                                            <input type="number" class="col-md-8 text-right text-gray-900" v-model="DetalleAbasto.cantidad"  @keyup="update('detalle_abasto.subtotal')" @click="update('detalle_abasto.subtotal')">
+                                            <label class="col-md-7 m-0 font-weight-bold">Cantidad de items</label>
+                                            <input type="number" class="col-md-5 text-right text-gray-900" v-model="DetalleAbasto.cantidad"  @keyup="update('detalle_abasto.subtotal')" @click="update('detalle_abasto.subtotal')">
                                         </div>
                                         <div class="col-md-12 input-group form-group">
-                                            <label class="col-md-4 m-0 font-wight-bold">Subtotal</label>
-                                            <label class="col-md-8 m-0 text-right font-wight-bold" v-text="'S/. '+Number.parseFloat(DetalleAbasto.subtotal).toFixed(2)"></label>
+                                            <label class="col-md-7 m-0 font-weight-bold">Subtotal de abasto</label>
+                                            <label class="col-md-5 m-0 text-right font-weight-bold" v-text="'S/. '+Number.parseFloat(DetalleAbasto.subtotal).toFixed(2)"></label>
                                         </div>
                                         <div class="col-md-12 d-flex justify-content-center">
-                                            <button type="button" class="btn btn-sm btn-primary btn-icon-split">
+                                            <button type="button" class="btn btn-sm btn-primary btn-icon-split" @click="add('detalle_venta_especial')">
                                                 <span class="icon text-white-50"><i class="fas fa-plus"></i></span>
                                                 <span class="text font-weight-bold">Agregar</span>
                                             </button>
@@ -256,10 +256,11 @@
                                                             </button>
                                                         </td>
                                                         <td v-text="detalle.nombre_producto"></td>
-                                                        <td>
+                                                        <td v-if="detalle.substock != null">
                                                             <input type="number" v-model="detalle.cantidad" class="form-control form-control-sm text-right" min="1" :max="detalle.substock" @click="update('detalle_venta.cantidad')" @keyup="update('detalle_venta.cantidad')">
                                                         </td>
-                                                        <td class="text-right" v-text="Venta.tipo_precio=='1'?detalle.precio_menor:detalle.precio_mayor"></td>
+                                                        <td v-else class="text-right" v-text="detalle.cantidad"></td>
+                                                        <td class="text-right" v-text="Number.parseFloat(Venta.tipo_precio=='1'?detalle.precio_menor:detalle.precio_mayor).toFixed(2)"></td>
                                                         <td class="text-right" v-text="Number.parseFloat(detalle.subtotal).toFixed(2)">
                                                         </td>
                                                     </tr>
@@ -974,9 +975,7 @@
                 },
                 ListaAbasto: [],
                 Abasto: {
-                    centro_id: null,
-                    total: null,
-                    tipo: null
+                    total: null
                 },
                 
                 DetalleVenta:{
@@ -992,7 +991,6 @@
 
                 ListaProducto: null,
                 ListaDetalle: null,
-                ListaDetalleAbasto: null,
                 
                 Proveedor: {
                     id: null,
@@ -1162,7 +1160,7 @@
                 });
             },
             agregar(){
-                if ( this.validar([0, 1, 2, 3]) ) return;
+                if ( this.validar([0, 1, 2]) ) return;
                 
                 this.Venta.total_descuento = this.Venta.total_descuento==0?null:this.Venta.total_descuento;
                 this.Venta.total_faltante = this.Venta.total_faltante==0?null:this.Venta.total_faltante;
@@ -1175,6 +1173,7 @@
                     'dataPago': this.Pago,
                     'dataVale': this.Vale,
                     'dataCliente': this.Cliente,
+                    'dataListaAbasto': this.ListaAbasto,
                     'listDetalle': this.ListaDetalle
                 }).then(function(response){
                     me.cerrarModal();
@@ -1331,9 +1330,6 @@
                 this.Venta.total_recibido = '';
                 this.Venta.total_vuelto = 0;
                 
-                this.Abasto.total = 0
-                this.Abasto.tipo = '1';
-                
                 this.DetalleVenta.precio = '';
 
                 this.DetalleAbasto.nombre_producto = '';
@@ -1346,7 +1342,6 @@
                 this.ListaProducto = [];
                 
                 this.ListaDetalle = [];
-                this.ListaDetalleAbasto = [];
                 
                 this.Pago.monto = '';
             
@@ -1550,6 +1545,7 @@
             validar(data = []) {
                 this.Error.estado = 0;
                 this.Error.mensaje = [];
+                this.Error.place = [];
 
                 for (let i = 0; i < data.length; i++) {
                     switch ( data[i] ) {
@@ -1593,8 +1589,10 @@
                                     if ( (Number.parseFloat(this.ListaDetalle[i].cantidad) < 0 || (Number.parseFloat(this.ListaDetalle[i].cantidad) == 0 && this.Modal.numero == 1)) && !found_a ){
                                         this.Error.mensaje.push('Las cantidades no pueden 0 o negativos'); found_a = true;
                                     }
-                                    if ( this.ListaDetalle[i].cantidad > this.ListaDetalle[i].substock && !found_b ){
-                                        this.Error.mensaje.push('Las cantidades no pueden superar al stock'); found_b = true;
+                                    if ( this.ListaDetalle[i].substock != null ) {
+                                        if ( this.ListaDetalle[i].cantidad > this.ListaDetalle[i].substock && !found_b ){
+                                            this.Error.mensaje.push('Las cantidades no pueden superar al stock'); found_b = true;
+                                        }
                                     }
                                     if ( found_a && found_b ) break;
                                 }
@@ -1660,6 +1658,42 @@
                                 }
                             }
                             if ( !change1 && !change2 && !change3 ) this.Error.mensaje.push('Ningun cambio realizado');
+                            break;
+                        case 'detalle_venta_especial':
+                            //unitarias
+                            if ( this.Proveedor.nombres == '' ) this.Error.mensaje.push('Debe ingresar el nombre del proveedor');
+                            if ( this.DetalleAbasto.nombre_producto == '' ) {
+                                this.Error.mensaje.push('Debe ingresar el nombre del producto');
+                            } else {
+                                for (let i = 0; i < this.ListaDetalle.length; i++) {
+                                    if ( this.ListaDetalle[i].nombre_producto == this.DetalleAbasto.nombre_producto ) {
+                                        this.Error.mensaje.push('El nombre de producto ingresado ya existe en los detalles de venta');
+                                    }
+                                }
+                            }
+                            if ( this.DetalleAbasto.costo_abasto == '' ) {
+                                this.Error.mensaje.push('Debe ingresar el costo de abasto del producto');
+                            } else {
+                                if ( Number.parseFloat(this.DetalleAbasto.costo_abasto) <= 0) this.Error.mensaje.push('El costo de abasto no puede ser 0 o negativo');
+                            }
+                            if ( this.DetalleVenta.precio == '' ){
+                                this.Error.mensaje.push('Debe ingresar el precio al que vendera el producto');
+                            } else {
+                                if ( Number.parseFloat(this.DetalleVenta.precio) <= 0) this.Error.mensaje.push('El precio de venta no puede ser 0 o negativo');
+                            }
+                            if ( this.DetalleAbasto.cantidad == '' ) {
+                                this.Error.mensaje.push('Debe ingresar la cantidad de items');
+                            } else {
+                                if ( Number.parseFloat(this.DetalleAbasto.cantidad) <= 0) this.Error.mensaje.push('La cantidad no puede ser 0 o negativo');
+                            }
+                            //integrales
+                            if ( this.DetalleAbasto.costo_abasto != '' && this.DetalleVenta.precio != '' ) {
+                                if ( Number.parseFloat(this.DetalleAbasto.costo_abasto) > 0 && Number.parseFloat(this.DetalleVenta.precio) > 0 ) {
+                                    if ( Number.parseFloat(this.DetalleAbasto.costo_abasto) >= Number.parseFloat(this.DetalleVenta.precio) ) {
+                                        this.Error.mensaje.push('El costo de abasto no puede ser mayor que el precio de venta del producto');
+                                    }
+                                }
+                            }
                             break;
                     }
                 }
@@ -1861,44 +1895,87 @@
             add(numero, data = ''){
                 this.log('on add("'+numero+'")');
 
+                let found;
+
                 switch (numero) {
                     case 'detalle_venta':
-                        if ( data != null ) {
-                            let found = false;
-                            for (let i = 0; i < this.ListaDetalle.length; i++) {
-                                if ( this.ListaDetalle[i].detalle_producto_id == data.detalle.id ){
-                                    if ( this.Modal.numero == 1 ) {
-                                        if ( this.ListaDetalle[i].cantidad < this.ListaDetalle[i].substock ) this.ListaDetalle[i].cantidad++;
-                                    }
-                                    found = true; break;
+                        found = false;
+                        for (let i = 0; i < this.ListaDetalle.length; i++) {
+                            if ( this.ListaDetalle[i].detalle_producto_id == data.detalle.id ){
+                                if ( this.Modal.numero == 1 ) {
+                                    if ( this.ListaDetalle[i].cantidad < this.ListaDetalle[i].substock ) this.ListaDetalle[i].cantidad++;
                                 }
+                                found = true; break;
                             }
+                        }
 
-                            if ( !found ){
-                                this.ListaDetalle.push({
-                                    id: null,
-                                    detalle_producto_id: data.detalle.id,
-                                    nombre_producto: data.nombre,
-                                    cantidad: 1,
-                                    substock: data.detalle.substock,
-                                    precio_menor: data.detalle.precio_menor,
-                                    precio_mayor: data.detalle.precio_mayor,
-                                    subtotal: 0
-                                });
-                            } 
-                        } else {
+                        if ( !found ){
                             this.ListaDetalle.push({
                                 id: null,
-                                detalle_producto_id: null,
-                                nombre_producto: this.DetalleAbasto.nombre_producto,
-                                cantidad: this.DetalleAbasto.cantidad,
-                                substock: -1,
-                                precio_menor: this.DetalleVenta.precio,
-                                precio_mayor: this.DetalleVenta.precio,
+                                detalle_producto_id: data.detalle.id,
+                                nombre_producto: data.nombre,
+                                cantidad: 1,
+                                substock: data.detalle.substock,
+                                precio_menor: Number.parseFloat(data.detalle.precio_menor),
+                                precio_mayor: Number.parseFloat(data.detalle.precio_mayor),
                                 subtotal: 0
                             });
-                        }
+                        } 
                         
+                        this.update('detalle_venta.subtotal');
+                        break;
+                    case 'detalle_venta_especial':
+                        if ( this.validar(['detalle_venta_especial']) ) return;
+                        
+                        found = false;
+                        
+                        for (let i = 0; i < this.ListaAbasto.length; i++) {
+                            if ( this.ListaAbasto[i].proveedor_nombre == this.Proveedor.nombres) {
+                                //se añade el detalle_abasto a las lista_detalle_abasto
+                                this.ListaAbasto[i].lista_detalle_abasto.push({
+                                    nombre_producto: this.DetalleAbasto.nombre_producto,
+                                    cantidad: Number.parseInt(this.DetalleAbasto.cantidad),
+                                    costo_abasto: Number.parseFloat(this.DetalleAbasto.costo_abasto),
+                                    subtotal: this.DetalleAbasto.subtotal
+                                })
+                                //se actualiza los datos del abasto
+                                this.ListaAbasto[i].total += this.DetalleAbasto.subtotal;
+                                // se afirma que se encontro
+                                found = true;
+                            }
+                        }
+
+                        if ( !found ) {
+                            this.ListaAbasto.push({
+                                proveedor_nombre: this.Proveedor.nombres,
+                                total: this.DetalleAbasto.subtotal,
+                                lista_detalle_abasto: [{
+                                    nombre_producto: this.DetalleAbasto.nombre_producto,
+                                    cantidad: Number.parseInt(this.DetalleAbasto.cantidad),
+                                    costo_abasto: Number.parseFloat(this.DetalleAbasto.costo_abasto),
+                                    subtotal: this.DetalleAbasto.subtotal
+                                }]
+                            })
+                        }
+
+                        this.ListaDetalle.push({
+                            id: null,
+                            detalle_producto_id: null,
+                            nombre_producto: this.DetalleAbasto.nombre_producto,
+                            cantidad: Number.parseInt(this.DetalleAbasto.cantidad),
+                            substock: null,
+                            precio_menor: Number.parseFloat(this.DetalleVenta.precio),
+                            precio_mayor: Number.parseFloat(this.DetalleVenta.precio),
+                            subtotal: 0
+                        });
+                        
+                        this.Proveedor.nombres = '';
+                        this.DetalleAbasto.nombre_producto = '';
+                        this.DetalleAbasto.costo_abasto = '';
+                        this.DetalleVenta.precio = '';
+                        this.DetalleAbasto.cantidad = '';
+                        this.DetalleAbasto.subtotal = 0;
+
                         this.update('detalle_venta.subtotal');
                         break;
                     case 'pago':
@@ -2078,12 +2155,8 @@
                         break;
                     case 'detalle_abasto.subtotal':
                         if ( this.Modal.numero == 1 ) {
-                            console.log('almenos entro');
-
                             let costo = Number.parseFloat(this.DetalleAbasto.costo_abasto==''?0:this.DetalleAbasto.costo_abasto);
-                            console.log('costo: '+costo);
                             let cantidad = Number.parseInt(this.DetalleAbasto.cantidad==''?0:this.DetalleAbasto.cantidad);
-                            console.log('cantidad: '+cantidad);
                             let subtotal = costo * cantidad;
 
                             if ( subtotal < 0 ) {
@@ -2171,6 +2244,24 @@
                 switch (numero) {
                     case 'detalle_venta':
                         if ( this.Modal.numero == 1 ) {
+                            
+
+                            if ( this.ListaDetalle[data].detalle_producto_id == null ) {
+                                let found = false; 
+
+                                for (let i = 0; i < this.ListaAbasto.length; i++) {
+                                    for (let j = 0; j < this.ListaAbasto[i].lista_detalle_abasto.length; j++) {
+                                        if ( this.ListaDetalle[data].nombre_producto == this.ListaAbasto[i].lista_detalle_abasto[j].nombre_producto ) {
+                                            this.ListaAbasto[i].total -= this.ListaAbasto[i].lista_detalle_abasto[j].subtotal;
+                                            this.ListaAbasto[i].lista_detalle_abasto.splice(j, 1);
+                                            found = true; break;
+                                        }
+                                    }
+                                    if ( this.ListaAbasto[i].total == 0 ) this.ListaAbasto.splice(i, 1); 
+                                    if ( found == true ) break;
+                                }
+                            } 
+                            
                             this.ListaDetalle.splice(data, 1);
 
                             this.update('venta.total_venta');
