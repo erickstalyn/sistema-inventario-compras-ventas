@@ -1863,18 +1863,18 @@
 
                 switch (numero) {
                     case 'detalle_venta':
-                        let found = false;
-                        for (let i = 0; i < this.ListaDetalle.length; i++) {
-                            if ( this.ListaDetalle[i].detalle_producto_id == data.detalle.id ){
-                                if ( this.Modal.numero == 1 ) {
-                                    if ( this.ListaDetalle[i].cantidad < this.ListaDetalle[i].substock ) this.ListaDetalle[i].cantidad++;
+                        if ( data != null ) {
+                            let found = false;
+                            for (let i = 0; i < this.ListaDetalle.length; i++) {
+                                if ( this.ListaDetalle[i].detalle_producto_id == data.detalle.id ){
+                                    if ( this.Modal.numero == 1 ) {
+                                        if ( this.ListaDetalle[i].cantidad < this.ListaDetalle[i].substock ) this.ListaDetalle[i].cantidad++;
+                                    }
+                                    found = true; break;
                                 }
-                                found = true; break;
                             }
-                        }
 
-                        if ( !found ){
-                            if ( this.Modal.numero == 1 ) {
+                            if ( !found ){
                                 this.ListaDetalle.push({
                                     id: null,
                                     detalle_producto_id: data.detalle.id,
@@ -1885,9 +1885,20 @@
                                     precio_mayor: data.detalle.precio_mayor,
                                     subtotal: 0
                                 });
-                            }
-                        } 
-
+                            } 
+                        } else {
+                            this.ListaDetalle.push({
+                                id: null,
+                                detalle_producto_id: null,
+                                nombre_producto: this.DetalleAbasto.nombre_producto,
+                                cantidad: this.DetalleAbasto.cantidad,
+                                substock: -1,
+                                precio_menor: this.DetalleVenta.precio,
+                                precio_mayor: this.DetalleVenta.precio,
+                                subtotal: 0
+                            });
+                        }
+                        
                         this.update('detalle_venta.subtotal');
                         break;
                     case 'pago':
