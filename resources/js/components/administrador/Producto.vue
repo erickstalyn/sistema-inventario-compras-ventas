@@ -20,7 +20,7 @@
             <div class="row form-group">
                 <div class="col-md-5">
                     <div class="input-group">
-                        <input type="search" class="form-control" v-model="Busqueda.texto" @keyup.enter="listar()" placeholder="Buscar por NOMBRE o CÓDIGO">
+                        <input type="search" class="form-control" v-model="Busqueda.texto" placeholder="Buscar por NOMBRE o CÓDIGO" @keyup="listar()">
                         <button type="button" class="btn btn-primary" @click="listar()">
                             <i class="fa fa-search"></i>&nbsp; Buscar
                         </button>
@@ -31,7 +31,7 @@
                     <label>N° filas:</label>
                 </div>
                 <div class="col-md-1">
-                    <select class="form-control text-gray-900" v-model="Busqueda.filas">
+                    <select class="form-control text-gray-900" v-model="Busqueda.filas" @change="listar()">
                         <option v-for="fila in Filas" :key="fila" :value="fila" v-text="fila"></option>
                     </select>
                 </div>

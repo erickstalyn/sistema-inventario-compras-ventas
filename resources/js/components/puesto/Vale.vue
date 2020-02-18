@@ -20,12 +20,12 @@
             <div class="row form-group">
                 <div class="col-md-8">
                     <div class="input-group"> 
-                        <select class="col-md-3 custom-select text-gray-900" v-model="Busqueda.estado">
+                        <select class="col-md-3 custom-select text-gray-900" v-model="Busqueda.estado" @change="listar()">
                             <option value="3">Todos</option>
                             <option value="1">Usado</option>
                             <option value="2">Sin usar</option>
                         </select>
-                        <input type="search" class="form-control" v-model="Busqueda.texto" @keyup.enter="listar()" placeholder="Buscar por DNI, RUC, NOMBRES , RAZÓN SOCIAL">
+                        <input type="search" class="form-control" v-model="Busqueda.texto" @keyup="listar()" placeholder="Buscar por DNI, RUC, NOMBRES , RAZÓN SOCIAL">
                         <button type="button" class="btn btn-primary" @click="listar()">
                             <i class="fa fa-search"></i>&nbsp; Buscar
                         </button>
@@ -36,7 +36,7 @@
                     <label>N° filas:</label>
                 </div>
                 <div class="col-md-1">
-                    <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.filas">
+                    <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.filas" @change="listar()">
                         <option v-for="item in Filas" :key="item" :value="item" v-text="item"></option>
                     </select>
                 </div>

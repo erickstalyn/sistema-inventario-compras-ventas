@@ -20,7 +20,7 @@
             <div class="row form-group">
                 <div class="col-md-2">
                     <div class="input-group"> 
-                        <select class="custom-select text-gray-900" v-model="Busqueda.estado">
+                        <select class="custom-select text-gray-900" v-model="Busqueda.estado" @change="listar()">
                             <option value="3">Todos</option>
                             <option value="2">Sin iniciar</option>
                             <option value="1">En Proceso</option>
@@ -33,21 +33,21 @@
                 </div>
                 <div class="col-md-1">
                     Dia
-                    <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.dia">
+                    <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.dia" @change="listar()">
                         <option value="">Todos</option>
                         <option v-for="item in getDia()" :key="item" :value="item" v-text="item"></option>
                     </select>
                 </div>
                 <div class="col-md-2">
                     Mes
-                    <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.mes">
+                    <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.mes" @change="listar()">
                         <option value="">Todos</option>
                         <option v-for="item in getMes()" :key="item.valor" :value="item.valor" v-text="item.nombre"></option>
                     </select>
                 </div>
                 <div class="col-md-1">
                     Año
-                    <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.year">
+                    <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.year" @change="listar()">
                         <option value="">Todos</option>
                         <option v-for="item in getYear(2019)" :key="item" :value="item" v-text="item"></option>
                     </select>
@@ -55,7 +55,7 @@
                 <div class="col-md-1"></div>
                 <div class="col-md-1">
                     N° filas:
-                    <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.filas">
+                    <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.filas" @change="listar()">
                         <option v-for="item in Filas" :key="item" :value="item" v-text="item"></option>
                     </select>
                 </div>
@@ -184,10 +184,10 @@
                                         </div>
                                         <div class="row">
                                             <div class="input-group"> 
-                                                <input type="search" class="form-control form-control-sm" v-model="BusquedaFiltro.texto" @keyup.enter="listarFiltro()" id="filtroProducto" autofocus placeholder="Producto,marca,modelo,tamaño,color">
-                                                <button type="button" class="btn btn-sm btn-primary" @click="listarFiltro()">
+                                                <input type="search" class="form-control form-control-sm" v-model="BusquedaFiltro.texto" @keyup="listarFiltro()" id="filtroProducto" autofocus placeholder="Producto,marca,modelo,tamaño,color">
+                                                <!-- <button type="button" class="btn btn-sm btn-primary" @click="listarFiltro()">
                                                     <i class="fa fa-search"></i>&nbsp; Buscar
-                                                </button>
+                                                </button> -->
                                             </div>
                                         </div>
                                         <br>
