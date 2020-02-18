@@ -38,7 +38,7 @@
                 <pue_venta></pue_venta>
             </template>
             <template v-if="menu==2">
-                <pue_vale></pue_vale>
+                <vale></vale>
             </template>
             <template v-if="menu==3">
                 <enviorealizado></enviorealizado>
@@ -62,6 +62,9 @@
             </template>
             <template v-if="menu==4">
                 <pue_venta></pue_venta>
+            </template>
+            <template v-if="menu==5">
+                <vale></vale>
             </template>
         @else
 

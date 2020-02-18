@@ -64,7 +64,13 @@
               <i class="fas fa-cart-arrow-down"></i><span >Ventas</span>
           </a>
         </li>
-    
+        <!-- Elemento de navegación - MENÚ VALES -->
+        <li class="nav-item">
+          <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#vales" aria-expanded="true" aria-controls="vales" @click="menu=5">
+              <i class="far fa-credit-card"></i>
+              <span >Vales</span>
+          </a>
+        </li>
     
         <!-- Divisor -->
         {{-- <hr class="sidebar-divider"> --}}
