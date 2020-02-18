@@ -20,44 +20,43 @@
             <div class="row form-group">
                 <div style="width: 8rem;" class="mr-1">
                     <div class="input-group"> 
-                        <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.estado">
+                        <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.estado" @change="listar()">
                             <option value="3">Todos</option>
                             <option value="0">En espera</option>
                             <option value="1">Recibidos</option>
-                            <!-- <option value="2">Rechazados</option> -->
                         </select>
                     </div>
                 </div>
                 <div style="width: 24rem;">
-                    <input type="search" class="form-control" v-model="Busqueda.texto" @keyup.enter="listar()" placeholder="Buscar por CENTRO DE DESTINO">
+                    <input type="search" class="form-control" v-model="Busqueda.texto" @keyup="listar()" placeholder="Buscar por CENTRO DE DESTINO">
                 </div>
                 <div class="col-md-1">
                     <label for="">Fecha de envío</label>
                 </div>
                 <div class="col-md-1">
                     Dia
-                    <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.dia">
+                    <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.dia" @change="listar()">
                         <option value="">Todos</option>
                         <option v-for="item in getDia()" :key="item" :value="item" v-text="item"></option>
                     </select>
                 </div>
                 <div style="width: 8rem;">
                     Mes
-                    <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.mes">
+                    <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.mes" @change="listar()">
                         <option value="">Todos</option>
                         <option v-for="item in getMes()" :key="item.valor" :value="item.valor" v-text="item.nombre"></option>
                     </select>
                 </div>
                 <div class="col-md-1">
                     Año
-                    <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.year">
+                    <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.year" @change="listar()">
                         <option value="">Todos</option>
                         <option v-for="item in getYear(2016)" :key="item" :value="item" v-text="item"></option>
                     </select>
                 </div>
                 <div class="col-md-1">
                     N° filas:
-                    <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.filas">
+                    <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.filas" @change="listar()">
                         <option v-for="item in Filas" :key="item" :value="item" v-text="item"></option>
                     </select>
                 </div>

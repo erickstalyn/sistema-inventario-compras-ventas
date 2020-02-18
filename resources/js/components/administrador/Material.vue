@@ -20,12 +20,12 @@
             <div class="row form-group">
                 <div class="col-md-8">
                     <div class="input-group"> 
-                        <select class="col-md-3 custom-select text-gray-900" v-model="Busqueda.estado">
+                        <!-- <select class="col-md-3 custom-select text-gray-900" v-model="Busqueda.estado" @change="listar()">
                             <option value="2">Todos</option>
                             <option value="1">Activados</option>
                             <option value="0">Desactivados</option>
-                        </select>
-                        <input type="search" class="form-control" v-model="Busqueda.texto" @keyup.enter="listar()" placeholder="Buscar por NOMBRE">
+                        </select> -->
+                        <input type="search" class="form-control" v-model="Busqueda.texto" placeholder="Buscar por NOMBRE" @keyup="listar()">
                         <button type="button" class="btn btn-primary" @click="listar()">
                             <i class="fa fa-search"></i>&nbsp; Buscar
                         </button>
@@ -36,7 +36,7 @@
                     <label>N° filas:</label>
                 </div>
                 <div class="col-md-1">
-                    <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.filas">
+                    <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.filas" @change="listar()">
                         <option v-for="item in Filas" :key="item" :value="item" v-text="item"></option>
                     </select>
                 </div>
@@ -52,7 +52,7 @@
                                 <th>Nombre</th>
                                 <th>Unid. Medida</th>
                                 <th >Costo Unit.</th>
-                                <th>Estado</th>
+                                <!-- <th>Estado</th> -->
                                 <th>Opciones</th>
                             </tr>
                         </thead>
@@ -61,19 +61,19 @@
                                 <td v-text="material.nombre"></td>
                                 <td v-text="material.unidad"></td>
                                 <td v-text="material.costo"></td>
-                                <td>
+                                <!-- <td>
                                     <div v-if="material.estado">
                                         <span class="badge badge-success">Activado</span>
                                     </div>
                                     <div v-else>
                                         <span class="badge badge-danger">Desactivado</span>
                                     </div>
-                                </td>
+                                </td> -->
                                 <td>
                                     <button type="button" @click="abrirModalEditar(material)" title="Editar" class="btn btn-outline-warning btn-sm">
                                         <i class="fas fa-user-edit"></i>
                                     </button>
-                                    <template v-if="material.estado">
+                                    <!-- <template v-if="material.estado">
                                         <button type="button" @click="desactivar(material)" title="Desactivar" class="btn btn-outline-danger btn-sm">
                                             <i class="fas fa-user-times"></i>
                                         </button>
@@ -82,7 +82,7 @@
                                         <button type="button" @click="activar(material)" title="Activar" class="btn btn-outline-success btn-sm">
                                             <i class="fas fa-user-check"></i>
                                         </button>
-                                    </template>
+                                    </template> -->
                                 </td>
                             </tr>
                         </tbody>
