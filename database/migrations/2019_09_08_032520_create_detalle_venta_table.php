@@ -22,8 +22,8 @@ class CreateDetalleVentaTable extends Migration
 
             $table->unsignedMediumInteger('venta_id');
             $table->foreign('venta_id')->references('id')->on('venta');
-            $table->unsignedInteger('detalle_producto_id');
-            $table->foreign('detalle_producto_id')->references('id')->on('detalle_producto')->nullable();
+            $table->unsignedInteger('detalle_producto_id')->nullable();
+            $table->foreign('detalle_producto_id')->references('id')->on('detalle_producto');
         });
     }
 
