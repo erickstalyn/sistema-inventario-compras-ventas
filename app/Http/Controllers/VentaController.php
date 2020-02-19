@@ -91,12 +91,14 @@ class VentaController extends Controller {
         $listDetalle = $request->listDetalle;
 
         $state = 'error';
+        $place = 'inicio';
         $exception = NULL;
 
         try {
             DB::beginTransaction();
             
             //cliente
+            $place = 'cliente';
             if ( $dataCliente['id'] != null ) {
                 if ( $dataCliente['id'] > 0 ) { //existe
                     $persona = Persona::findOrFail($dataCliente['id']);
@@ -130,6 +132,7 @@ class VentaController extends Controller {
             }
 
             //venta
+            $place = 'venta';
             $venta = new Venta();
             $venta->centro_id = $dataVenta['centro_id'];    // centro_id
             $venta->tipo = $dataVenta['tipo_pago'].$dataVenta['tipo_entrega'].$dataVenta['tipo_precio'];    // tipo
@@ -144,6 +147,7 @@ class VentaController extends Controller {
             $venta->save();
 
             //vale
+            $place = 'vale_usado';
             if ( $dataVale['usado']['id'] != null ) {
                 if ( $dataVale['usado']['id'] > 0 ) {
                     $vale = Vale::findOrFail($dataVale['usado']['id']);
@@ -154,6 +158,7 @@ class VentaController extends Controller {
             }
 
             //pago
+            $place = 'pago';
             if ( $dataVenta['tipo_pago'] == '2' && $dataPago['monto'] != NULL ){
                 if ( $dataPago['monto'] > 0 ) {
                     $pago = new Pago();
@@ -166,27 +171,30 @@ class VentaController extends Controller {
             }
 
             //abastos
+            $place = 'abasto';
             foreach ($dataListaAbasto as $ep => $compra){
                 $abasto = new Abasto();
                 $abasto->proveedor_nombre = $compra['proveedor_nombre'];
                 $abasto->centro_id = $venta->centro_id;
-                $abasto->total = $compra['total'];
+                $abasto->total = 0;
                 $abasto->tipo = '0';
                 $abasto->created_at = $now;
                 $abasto->save();
 
+                $place = 'detalle_abasto';
                 foreach ( $compra['lista_detalle_abasto'] as $ep => $det ) {
                     $detalle = new Detalle_abasto();
                     $detalle->abasto_id = $abasto->id;
                     $detalle->nombre_producto = $det['nombre_producto'];
                     $detalle->cantidad = $det['cantidad'];
-                    $detalle->costo_abasto = $det['costo_abasto'];
-                    $detalle->subtotal = $det['subtotal'];
+                    $detalle->costo_abasto = 0;
+                    $detalle->subtotal = 0;
                     $detalle->save();
                 }
             }
 
             //lista de detalles
+            $place = 'detalle_venta';
             foreach ($listDetalle as $ep => $det){
                 $detalle = new Detalle_venta();
                 $detalle->detalle_producto_id = $det['detalle_producto_id']; 
@@ -200,8 +208,12 @@ class VentaController extends Controller {
             }
 
             //Sección notificaciones
+            $place = 'notificacion';
+            $place = 'a';
             $fechaActual = date('Y-m-d');
+            $place = 'b';
             $listaCentros = DB::table('centro')->get();
+            $place = 'c';
             foreach ($listaCentros as $centro) {
                 $cant = Venta::whereDate('created_at', $fechaActual)->where('centro_id', $centro->id)->count();
                 $arregloDatos['c'.$centro->id] = [
@@ -209,14 +221,17 @@ class VentaController extends Controller {
                     'numero' => $cant,
                 ];
             }
-            
+            $place = 'd';
             $usersAdmin = Usuario::where('rol', 'M')->get();
-
+            $place = 'e';
+            $place = 0;
             foreach($usersAdmin as $notificar){
+                $place = $place + 1;
                 Usuario::findOrFail($notificar->id)->notify(new NotifyAdmin($arregloDatos));
             }
 
             DB::commit();
+            $place = 'proccess complete';
             $state = 'success';
         } catch (Exception $e) {
             DB::rollback();
@@ -226,6 +241,7 @@ class VentaController extends Controller {
 
         return [
             'state' => $state,
+            'place' => $place,
             'exception' => $exception,
             'arreglo de datos' => $arregloDatos,
         ];
