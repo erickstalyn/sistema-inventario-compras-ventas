@@ -1062,7 +1062,10 @@
                         <div class="modal-footer">
                             <div class="row form-group col-md-12 d-flex justify-content-around">
                                 <div v-if="Modal.accion">
-                                    <button type="button" @click="accionar()" class="btn btn-success" v-text="Modal.accion"></button>
+                                    <button type="button" @click="accionar()" class="btn btn-success" :disabled="Button.press">
+                                        <div v-if="!Button.press">{{Modal.accion}}</div>
+                                        <span v-else class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                    </button>
                                 </div>
                                 <button type="button" @click="cerrarModal()" class="btn btn-secondary" v-text="Modal.cancelar"></button>
                             </div>
@@ -1206,6 +1209,9 @@
                     accion: '',
                     cancelar: '',
                     size: ''
+                },
+                Button: {
+                    press: false
                 },
                 //datos de ruta de consultas
                 Ruta: {
@@ -1684,8 +1690,11 @@
 
                 this.Error.estado = 0;
                 this.Error.mensaje = [];
+                
+                this.Button.press = false;
             },
             accionar(){
+                this.Button.press = true;
                 switch( this.Modal.numero ){
                     case 1 : this.editarProducto(); break;
                     case 5 : this.generatePdfSpecificVenta(); //Generar comprobante de venta
@@ -1747,7 +1756,7 @@
                     break;
                 }
 
-                if ( this.Error.mensaje.length ) this.Error.estado = 1;
+                if ( this.Error.mensaje.length ) {this.Error.estado = 1; this.Button.press = false;}
 
                 return this.Error.estado;
             },
@@ -1854,6 +1863,7 @@
             },
             generatePdfSpecificVenta(){
                 window.open(this.Ruta.serverPhp + '/venta/generatePdfSpecific?id=' + this.Venta.id,'_blank');
+                this.Button.press = false;
             }
         },
         mounted() {

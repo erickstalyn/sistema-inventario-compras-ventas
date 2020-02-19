@@ -45,7 +45,7 @@
                                 <th class="text-center">Fallidos</th>
                                 <th class="text-center">Traslado</th>
                                 <th class="text-center">Total</th>
-                                <th class="text-center">Opciones</th>
+                                <th class="text-center">Opción</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -63,6 +63,7 @@
                                     <template v-if="producto.detalle.fallidos">
                                         <button type="button"  title="REPARAR" class="btn btn-info btn-sm" @click="abrirModalReparar(producto)"><i class="fas fa-tools"></i></button>
                                     </template>
+                                    <div v-else>---</div>
                                 </td>
                             </tr>
                         </tbody>
@@ -100,7 +101,7 @@
                     </div>
                     
                     <div class="modal-body">
-                        <!-- Modal Numero 1 de AGREGAR-->
+                        <!-- Modal Numero 1 de REPARAR-->
                         <div v-if="Modal.numero==1" class="container">
                             <div v-if="Error.estado && (Error.numero==1 || Error.numero==2)" class="row d-flex justify-content-center">
                                 <div class="alert alert-danger">
@@ -125,7 +126,7 @@
                             </div>
                             <div class="row">
                                 <label class="col-md-6 font-weight-bold">Cantidad de reparados&nbsp;<span class="text-danger">*</span></label>
-                                <input type="number" class="col-md-6 text-right form-control form-control-sm" v-model="Producto.cant_reparar" placeholder="Ingrese la cantidad reparada" min="1" :max="Producto.fallidos">
+                                <input type="number" class="col-md-6 text-left form-control form-control-sm" v-model="Producto.cant_reparar" placeholder="Ingrese la cantidad reparada" min="1" :max="Producto.fallidos">
                             </div>
                         </div>
                     </div>
@@ -133,7 +134,10 @@
                     <div class="modal-footer">
                         <div class="row form-group col-md-12 d-flex justify-content-around">
                             <div v-if="Modal.btnA">
-                                <button type="button" @click="accionar()" class="btn btn-success" v-text="Modal.btnA"></button>
+                                <button type="button" @click="accionar()" class="btn btn-success font-weight-bold" :disabled="Button.press">
+                                    <div v-if="!Button.press">{{Modal.btnA}}</div>
+                                    <span v-else class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                </button>
                             </div>
                             <div v-if="Modal.btnC">
                                 <button type="button" @click="cerrarModal()" class="btn btn-secondary" v-text="Modal.btnC"></button>
@@ -194,6 +198,9 @@
                     estado: 0,
                     numero: 0,
                     mensaje: []
+                },
+                Button: {
+                    press: false
                 },
                 //datos de ruta de consultas
                 Ruta: {
@@ -278,11 +285,13 @@
                 this.Modal.btnC = '';
 
                 this.Producto.cant_reparar = null;
+                this.Button.press = false;
 
                 this.Error.estado = 0;
                 this.Error.mensaje = [];
             },
             accionar(){
+                this.Button.press = true;
                 switch( this.Modal.numero ){
                     case 1: this.reparar(); break;
                 }
@@ -328,7 +337,7 @@
                         if(this.Producto.cant_reparar<=0 || this.Producto.cant_reparar==null || this.Producto.cant_reparar> this.Producto.fallidos) this.Error.mensaje.push('Debe ingresar una cantidad correcta');
                         break;
                 }
-                if ( this.Error.mensaje.length ) this.Error.estado = 1;
+                if ( this.Error.mensaje.length ) {this.Error.estado = 1; this.Button.press = false;}
                 return this.Error.estado;
             },
             closeError(){

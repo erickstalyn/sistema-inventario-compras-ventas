@@ -330,7 +330,10 @@
                     <div class="modal-footer" v-if="permisoModalFooter">
                         <div class="row form-group col-md-12 d-flex justify-content-around">
                             <div v-if="Modal.accion">
-                                <button type="button" @click="accionar(Modal.accion)" class="btn btn-success" v-text="Modal.accion"></button>
+                                <button type="button" @click="accionar(Modal.accion)" class="btn btn-success" :disabled="Button.press">
+                                    <div v-if="!Button.press">{{Modal.accion}}</div>
+                                    <span v-else class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                </button>
                             </div>
                             <button type="button" @click="cerrarModal()" class="btn btn-secondary" v-text="Modal.cancelar"></button>
                         </div>
@@ -407,6 +410,9 @@
                 ],
                 //ALMACENES PARA REALIZAR EL ENVIO
                 SelectCentro: [],
+                Button: {
+                    press: false
+                }
             }
         },
         computed: {
@@ -631,7 +637,7 @@
                         break;
 
                 }
-                if ( this.Error.mensaje.length ) this.Error.estado = 1;
+                if ( this.Error.mensaje.length ) {this.Error.estado = 1; this.Button.press = false;}
                 return this.Error.estado;
             },
             validarCantidadesDetalles(){
@@ -722,8 +728,11 @@
                 this.ListaProducto = [];
                 this.BusquedaFiltro.texto = '';
 
+                this.Button.press = false;
+
             },
             accionar(accion){
+                this.Button.press = true;
                 switch( accion ){
                     case 'Agregar': {
                         this.agregar();

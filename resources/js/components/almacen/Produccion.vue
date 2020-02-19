@@ -339,7 +339,10 @@
                     <div class="modal-footer" v-if="permisoModalFooter">
                         <div class="row form-group col-md-12 d-flex justify-content-around">
                             <div v-if="Modal.accion">
-                                <button type="button" @click="accionar(Modal.accion)" class="btn btn-success" v-text="Modal.accion"></button>
+                                <button type="button" @click="accionar(Modal.accion)" class="btn btn-success" :disabled="Button.press">
+                                    <div v-if="!Button.press">{{Modal.accion}}</div>
+                                    <span v-else class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                </button>
                             </div>
                             <button type="button" @click="cerrarModal()" class="btn btn-secondary" v-text="Modal.cancelar"></button>
                         </div>
@@ -417,7 +420,9 @@
                 ListaDetalleProduccionFiltrada: [],
                 //DATOS PARA ENVIAR UNA PRODUCCION
                 SelectAlmacen: [],
-
+                Button: {
+                    press : false
+                },
                 //datos de rutas
                 Ruta: {
                     produccion: '/produccion'
@@ -703,7 +708,7 @@
                         if(!found) this.Error.mensaje.push('No existe ningun detalle de producción');
                         break;
                 }
-                if ( this.Error.mensaje.length ) this.Error.estado = 1;
+                if ( this.Error.mensaje.length ) {this.Error.estado = 1; this.Button.press = false;}
                 return this.Error.estado;
             },
             finalizar(produccion = []){
@@ -829,11 +834,14 @@
                 this.Produccion.fecha_inicio = '';
                 this.Produccion.fecha_programada = '';
 
+                this.Button.press = false;
+
                 this.ListaDetalleProduccion = [];
                 this.BusquedaFiltro.texto = '';
 
             },
             accionar(accion){
+                this.Button.press = true;
                 switch( accion ){
                     case 'Agregar': {
                         this.agregar();

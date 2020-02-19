@@ -99,7 +99,7 @@
                                         <i class="far fa-eye"></i>
                                     </button>
                                     <template v-if="envio.estado == 0">
-                                        <button type="button"  title="Recibir" class="btn btn-sm btn-outline-warning" @click="accion(envio)">
+                                        <button type="button"  title="Recibir" class="btn btn-sm btn-outline-warning" @click="recibir(envio)">
                                             <i class="fas fa-sort-amount-down-alt"></i>
                                         </button>
                                     </template>
@@ -183,7 +183,10 @@
                     <div class="modal-footer" v-if="permisoModalFooter">
                         <div class="row form-group col-md-12 d-flex justify-content-around">
                             <div v-if="Modal.accion">
-                                <button type="button" @click="accionar(Modal.accion)" class="btn btn-success" v-text="Modal.accion"></button>
+                                <button type="button" @click="accionar(Modal.accion)" class="btn btn-success" :disabled="Button.press">
+                                    <div v-if="!Button.press">{{Modal.accion}}</div>
+                                    <span v-else class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                </button>
                             </div>
                             <button type="button" @click="cerrarModal()" class="btn btn-secondary" v-text="Modal.cancelar"></button>
                         </div>
@@ -261,6 +264,9 @@
                 ListaDetalleEnvio: [],
                 //DATOS PARA ENVIAR UNA PRODUCCION
                 SelectAlmacen: [],
+                Button: {
+                    press: false
+                }
             }
         },
         computed: {
@@ -346,7 +352,7 @@
                 let newFecha = arrayFecha[2] + '-' + arrayFecha[1] + '-' + arrayFecha[0];
                 return newFecha;
             },
-            accion(envio = []){
+            recibir(envio = []){
                 this.EnvioRecibido.id = envio['id'];
                 const swalWithBootstrapButtons = Swal.mixin({
                     customClass: {
@@ -420,6 +426,7 @@
                 this.Modal.numero = 0;
                 this.Modal.estado = 0;
                 this.Modal.mensaje = [];
+                this.Button.press = false;
 
                 this.Error.estado = 0;
                 this.Error.mensaje = [];
@@ -461,16 +468,9 @@
                 }
             },
             accionar(accion){
-                switch( accion ){
-                    case 'Agregar': {
-                        this.agregar();
-                        break;
-                    }
-                    case 'Editar': {
-                        this.editar();
-                        break;
-                    }
-                }
+                this.Button.press = true;
+                // switch( accion ){
+                // }
             },
             cambiarPagina(page){
                 if ( page >= 1 && page <= this.Paginacion.lastPage) {

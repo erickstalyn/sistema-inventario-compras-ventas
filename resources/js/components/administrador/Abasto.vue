@@ -1382,6 +1382,7 @@
             },
             generatePdfSpecific(){
                 window.open(this.Ruta.serverPhp + '/abasto/generatePdfSpecific?code=' + this.Abasto.id,'_blank');
+                this.Button.press = false;
             }
         },
         mounted() {
