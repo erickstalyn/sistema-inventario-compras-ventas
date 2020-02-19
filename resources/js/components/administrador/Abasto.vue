@@ -961,8 +961,8 @@
                 let me = this;
                 let dni = me.DatosServicio.documento;
                 $.ajax({
-                    type: 'GET',
-                    url: me.Ruta.serverApache + '/Reniec/demo.php',
+                    type: 'POST',
+                    url: me.Ruta.serverApache + '/Reniec/consulta_reniec.php',
                     data: 'dni=' + dni,
                     beforeSend(){
                         me.Carga.clase = 'spinner-border spinner-border-sm text-primary';
@@ -970,20 +970,26 @@
                         me.DatosServicio.mensaje = 'Consultado...';
                     },
                     success: function (data, textStatus, jqXHR) {
-                        let persona = JSON.parse(data);
-                        if(persona.estado == true){
-                            me.DatosServicio.documento = '';
-                            me.DatosServicio.alert = '';
-                            me.DatosServicio.mensaje = '';
-                            me.DatosServicio.tipo = 1;
-                            me.DatosProveedor.documento = persona.dni;
-                            me.DatosProveedor.nombres = persona.nombres;
-                            me.DatosProveedor.apellidos = persona.apellidos;
-                        }else{
+                        // console.log(JSON.parse(data));
+                        try {
+                            let persona = JSON.parse(data);
+                            if(persona[2] != null ){
+                                me.DatosServicio.documento = '';
+                                me.DatosServicio.alert = '';
+                                me.DatosServicio.mensaje = '';
+                                me.DatosServicio.tipo = 1;
+                                me.DatosProveedor.documento = persona[0];
+                                me.DatosProveedor.nombres = persona[1];
+                                me.DatosProveedor.apellidos = persona[2] + ' ' + persona[3];
+                            }else{
+                                me.DatosServicio.alert = 'badge badge-primary';
+                                me.DatosServicio.mensaje = 'El DNI no existe';
+                            }
+                            me.Carga.clase = '';
+                        } catch (e) {
                             me.DatosServicio.alert = 'badge badge-primary';
-                            me.DatosServicio.mensaje = 'El DNI no existe';
+                            me.DatosServicio.mensaje = 'Vuelva a intentarlo porfavor =D';
                         }
-                        me.Carga.clase = '';
                     }
                 }).fail(function(){
                 });
