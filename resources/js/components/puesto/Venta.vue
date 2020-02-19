@@ -21,7 +21,7 @@
                         <option value="1">Contado</option>
                         <option value="2">Credito</option>
                     </select>
-                    <input type="search" class="col-md-8 form-control" v-model="Busqueda.text" placeholder="Busca por CÓDIGO de venta" @keyup="listar()">
+                    <input type="search" class="col-md-8 form-control" v-model="Busqueda.text" placeholder="Busca por CÓDIGO de venta" @keyup.enter="listar()">
                     <button type="button" class="col-md-2 btn btn-primary" @click="listar()">
                         <i class="fa fa-search"></i>&nbsp;Buscar
                     </button>
