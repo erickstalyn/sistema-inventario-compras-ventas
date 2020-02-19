@@ -610,11 +610,14 @@
                     <div class="modal-footer" v-if="permisoModalFooter">
                         <div class="row form-group col-md-12 d-flex justify-content-around">
                             <div v-if="Modal.accion">
-                                <button type="button" @click="accionar(Modal.accion)" :class="[Modal.accion == 'Generar comprobante' ? 'btn btn-danger' : 'btn btn-success']">
-                                    <div v-if="Modal.accion == 'Generar comprobante'">
-                                        <i class="far fa-file-pdf"></i>&nbsp; {{Modal.accion}}
+                                <button type="button" @click="accionar(Modal.accion)" :class="[Modal.accion == 'Generar comprobante' ? 'btn btn-danger' : 'btn btn-success']" :disabled="Button.press">
+                                    <div v-if="!Button.press">
+                                        <div v-if="Modal.accion == 'Generar comprobante'">
+                                            <i class="far fa-file-pdf"></i>&nbsp; {{Modal.accion}}
+                                        </div>
+                                        <div v-else>{{Modal.accion}}</div>
                                     </div>
-                                    <div v-else>{{Modal.accion}}</div>
+                                    <span v-else class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                                 </button>
                             </div>
                             <button type="button" @click="cerrarModal()" class="btn btn-secondary" v-text="Modal.cancelar"></button>
@@ -693,6 +696,10 @@
                 },
                 Carga: {
                     clase: ''
+                },
+                //Boton de accion
+                Button: {
+                    press: false
                 },
                 //DATOS PARA AGREGAR UNA PRODUCCION
                 BusquedaFiltro:{
@@ -1021,6 +1028,7 @@
                 this.Modal.size = size;
             },
             accionar(accion){
+                this.Button.press = true;
                 switch( accion ){
                     case 'Agregar': 
                         this.agregar();
@@ -1219,6 +1227,7 @@
                 this.ListaDetalleAbasto = [];
                 this.ListaDetalleAbastoVer = [];
                 this.BusquedaFiltro.texto = '';
+                this.Button.press = false;
             },
             anularAbasto(id){
                 Swal.fire({
