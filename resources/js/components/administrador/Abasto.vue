@@ -1069,7 +1069,7 @@
                 }else{ //Modal editar
                     if (this.Pago.monto == '' || this.Pago.monto <= 0 || this.Pago.monto > (this.Abasto.total_ver - this.getSumaPagos)) this.Error.mensaje.push('Debe ingresar un monto válido');
                 }
-                if ( this.Error.mensaje.length ) this.Error.estado = 1;
+                if ( this.Error.mensaje.length ) {this.Error.estado = 1; this.Button.press = false;}
                 return this.Error.estado;
             },
             validarNegativos(){
