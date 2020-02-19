@@ -150,7 +150,6 @@
                     <div class="modal-body">
                         <div class="container-fluid">
                         <!-- Modal Numero 1 de AGREGAR-->
-                        
                             <div v-if="Modal.numero==1">
                                 <!-- Filtro de productos -->
                                 <div v-if="Error.estado" class="row d-flex justify-content-center">
@@ -176,10 +175,10 @@
                                         </div>
                                         <div class="row">
                                             <div class="input-group">
-                                                <input type="search" class="form-control form-control-sm" v-model="BusquedaFiltro.texto" @keyup.enter="listarFiltro()" id="filtroProducto" autofocus placeholder="Guia: Producto - marca - modelo - tamaño - color">
-                                                <button type="button" class="btn btn-sm btn-primary" @click="listarFiltro()">
+                                                <input type="search" class="form-control form-control-sm" v-model="BusquedaFiltro.texto" @keyup="listarFiltro()" id="filtroProducto" autofocus placeholder="Guia: Producto - marca - modelo - tamaño - color">
+                                                <!-- <button type="button" class="btn btn-sm btn-primary" @click="listarFiltro()">
                                                     <i class="fa fa-search"></i>&nbsp; Buscar
-                                                </button>
+                                                </button> -->
                                             </div>
                                         </div>
                                         <br>
