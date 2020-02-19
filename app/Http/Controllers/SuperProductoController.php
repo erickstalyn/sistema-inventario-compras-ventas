@@ -47,7 +47,8 @@ class SuperProductoController extends Controller{
             $now = Carbon::now('America/Lima')->toDateString();
 
             $superproducto = new SuperProducto();
-            $superproducto->nombre = ucfirst($request->nombre);
+            // $superproducto->nombre = ucfirst($request->nombre);
+            $superproducto->nombre = strtr(strtoupper($request->nombre),"àèìòùáéíóúçñäëïöü","ÀÈÌÒÙÁÉÍÓÚÇÑÄËÏÖÜ");
             $superproducto->descripcion = $request->descripcion==''?NULL:$request->descripcion;
             $superproducto->created_at = $now;
             $superproducto->save();
@@ -84,7 +85,8 @@ class SuperProductoController extends Controller{
             DB::beginTransaction();
 
             $superproducto = SuperProducto::findOrFail($request->id);
-            $superproducto->nombre = $request->nombre;
+            // $superproducto->nombre = ucfirst($request->nombre);
+            $superproducto->nombre = strtr(strtoupper($request->nombre),"àèìòùáéíóúçñäëïöü","ÀÈÌÒÙÁÉÍÓÚÇÑÄËÏÖÜ");
             $superproducto->descripcion = $request->descripcion==''?NULL:$request->descripcion;
             $superproducto->save();
             
