@@ -89,6 +89,29 @@ class AbastoController extends Controller
         ];
     }
 
+    public function list(Request $request){
+        if ( !$request->ajax() ) return redirect('/');
+
+        $centro_id = $request->centro_id;
+        $payed = $request->payed;
+
+        $list = Abasto::select('abasto.id as a_id', 'total', 'proveedor_nombre','created_at',
+                                'detalle_abasto.id as da_id', 'nombre_producto', 'cantidad')
+                        ->join('detalle_abasto AS d', 'd.id', '=', 'abasto.id')
+                        ->where(function ($query) use ($payed) {
+                            if ( $payed ) {
+                                $query->where('total', '!=', 0);
+                            } else {
+                                $query->where('total', '=', 0);
+                            }
+                        })
+                        ->where('tipo', '=', '0')
+                        ->where('centro_id', '=', $centro_id)
+                        ->where('administrador_id', '=', NULL)->get();
+
+        return $list;
+    }
+
     public function agregar(Request $request){
         if ( !$request->ajax() ) return redirect('/');
         try {
