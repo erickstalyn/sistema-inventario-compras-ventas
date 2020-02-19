@@ -16,12 +16,12 @@
             <!-- Inputs de busqueda -->
             <div class="row form-group">
                 <div class="col-md-7 input-group"> 
-                    <select class="col-md-2 custom-select text-gray-900 w4rem" v-model="Busqueda.type">
+                    <select class="col-md-2 custom-select text-gray-900 w4rem" v-model="Busqueda.type" @change="listar()">
                         <option value="0">Todos</option>
                         <option value="1">Contado</option>
                         <option value="2">Credito</option>
                     </select>
-                    <input type="search" class="col-md-8 form-control" v-model="Busqueda.text" placeholder="Busca por CÓDIGO de venta" @keyup.enter="listar()">
+                    <input type="search" class="col-md-8 form-control" v-model="Busqueda.text" placeholder="Busca por CÓDIGO de venta" @keyup="listar()">
                     <button type="button" class="col-md-2 btn btn-primary" @click="listar()">
                         <i class="fa fa-search"></i>&nbsp;Buscar
                     </button>
@@ -146,10 +146,10 @@
                                             <label class="h5 mb-0 font-weight-bold">LISTA DE PRODUCTOS</label>
                                         </div>
                                         <div class="col-md-12 input-group form-group">
-                                            <input type="search" class="form-control form-control-sm" v-model="Service.text" @keyup.enter="list('detalle_producto')" id="filtroProducto" placeholder="Producto,marca,modelo,tamaño,color">
-                                            <button type="button" class="btn btn-sm btn-primary" @click="list('detalle_producto')">
+                                            <input type="search" class="form-control form-control-sm" v-model="Service.text" @keyup="list('detalle_producto')" id="filtroProducto" placeholder="Producto - marca - modelo - tamaño - color">
+                                            <!-- <button type="button" class="btn btn-sm btn-primary" @click="list('detalle_producto')">
                                                 <i class="fa fa-search"></i>&nbsp; Buscar
-                                            </button>
+                                            </button> -->
                                         </div>
                                         <div v-if="ListaProducto.length" class="col-md-12 overflow-auto" style="height: 16rem;">
                                             <table class="table table-bordered table-striped table-sm text-gray-900 p-0 m-0 bg-white">
@@ -928,11 +928,14 @@
 
                     <div class="modal-footer">
                         <div class="row col-md-12 d-flex justify-content-around">
-                            <button type="button" v-if="Modal.btnA" @click="accionar()" :class="[Modal.numero == 2 ? 'btn btn-danger' : 'btn btn-success']">
-                                <div v-if="Modal.numero == 2">
-                                    <i class="far fa-file-pdf"></i>&nbsp; {{Modal.btnA}}
+                            <button type="button" v-if="Modal.btnA" @click="accionar()" :class="[Modal.numero == 2 ? 'btn btn-danger' : 'btn btn-success']" :disabled="Button.press">
+                                <div v-if="!Button.press">
+                                    <div v-if="Modal.numero == 2">
+                                        <i class="far fa-file-pdf"></i>&nbsp; {{Modal.btnA}}
+                                    </div>
+                                    <div v-else>{{Modal.btnA}}</div>
                                 </div>
-                                <div v-else>{{Modal.btnA}}</div>
+                                <span v-else class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                             </button>
                             <button type="button" v-if="Modal.btnC" @click="cerrarModal()" class="btn btn-secondary" v-text="Modal.btnC"></button>
                         </div>
@@ -1082,6 +1085,9 @@
                         monto: null,
                         created_at: null
                     }
+                },
+                Button : {
+                    press : false
                 },
 
                 //datos de Rutas
@@ -1530,11 +1536,14 @@
                 this.Vale.generado.monto = null;
                 this.Vale.generado.created_at = null;
 
+                this.Button.press = false;
+
                 this.ListaProducto = null;
 
                 this.ListaDetalle = null;
             },
             accionar(){
+                this.Button.press = true;
                 switch ( this.Modal.numero ){
                     case 1: this.agregar(); break;
                     case 2: this.generatePdfSpecific(); break;
@@ -1698,7 +1707,7 @@
                     }
                 }
 
-                if ( this.Error.mensaje.length ) this.Error.estado = 1;
+                if ( this.Error.mensaje.length ) {this.Error.estado = 1; this.Button.press = false;}
                 return this.Error.estado;
             },
             consultar(){
@@ -2555,6 +2564,7 @@
             },
             generatePdfSpecific(){
                 window.open(this.Ruta.serverPhp + '/venta/generatePdfSpecific?id=' + this.Venta.id,'_blank');
+                this.Button.press = false;
             }
         },
         mounted() {
