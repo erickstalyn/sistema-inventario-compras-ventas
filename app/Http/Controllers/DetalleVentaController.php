@@ -14,7 +14,13 @@ class DetalleVentaController extends Controller {
 
         $venta_id = $request->venta_id;
 
-        $list = Venta::findOrFail($venta_id)->getDetalleVenta;
+        // $list = Venta::findOrFail($venta_id)->getDetalleVenta;
+        $list = Detalle_venta::select('detalle_venta.id as dv_id', 'detalle_venta.nombre_producto as dv_nombre_producto', 'detalle_venta.cantidad as dv_cantidad', 'detalle_venta.precio as dv_precio', 
+                                    'detalle_venta.cantidad_fallido as dv_cantidad_fallido', 'detalle_venta.subtotal as dv_subtotal',
+                                    'dp.id as dp_id', 'dp.substock as dp_substock', 'dp.precio_menor as dp_precio_menor', 'dp.precio_mayor as dp_precio_mayor')
+                            ->leftJoin('detalle_producto AS dp', 'detalle_venta.detalle_producto_id', '=', 'dp.id')
+                            ->where('detalle_venta.venta_id', '=', $venta_id)
+                            ->orderBy('dv_id', 'desc')->get();
 
         return $list;
     }

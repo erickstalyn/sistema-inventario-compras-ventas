@@ -700,12 +700,14 @@
                                                 <tbody>
                                                     <tr v-for="(detalle, indice) in ListaDetalle" :key="indice">
                                                         <td v-text="detalle.nombre_producto"></td>
-                                                        <td class="text-right">
+                                                        <td class="text-right bg-info" v-if="detalle.detalle_producto_id!=null">
                                                             <input type="number" v-model="detalle.devuelto" class="form-control form-control-sm text-right" min="0" :max="detalle.cantidad_start" @click="update('detalle_venta.devuelto', indice)" @keyup="update('detalle_venta.devuelto', indice)">
                                                         </td>
-                                                        <td class="text-right">
+                                                        <td class="text-right bg-info" v-else v-text="detalle.devuelto"></td>
+                                                        <td class="text-right bg-secondary" v-if="detalle.detalle_producto_id">
                                                             <input type="number" v-model="detalle.cantidad_fallido" class="form-control form-control-sm text-right" min="0" :max="detalle.cantidad_start" @click="update('detalle_venta.cantidad_fallido', indice)" @keyup="update('detalle_venta.cantidad_fallido', indice)">
                                                         </td>
+                                                        <td class="text-right bg-secondary" v-else v-text="detalle.cantidad_fallido"></td>
                                                         <td class="text-right" v-text="detalle.cantidad"></td>
                                                         <td class="text-right" v-text="detalle.precio"></td>
                                                         <td class="text-right" v-text="Number.parseFloat(detalle.subtotal).toFixed(2)">
@@ -2343,12 +2345,12 @@
                             for (let i = 0; i < data.length; i++) {
                                 this.ListaDetalle.push({
                                     id: null,
-                                    detalle_producto_id: data[i].detalle.id,
-                                    nombre_producto: data[i].detalle.nombre_producto,
+                                    detalle_producto_id: data[i].dp_id,
+                                    nombre_producto: data[i].dv_nombre_producto,
                                     cantidad: 1,
-                                    substock: data[i].substock,
-                                    precio_menor: data[i].precio_menor,
-                                    precio_mayor: data[i].precio_mayor,
+                                    substock: data[i].dp_substock,
+                                    precio_menor: data[i].dp_precio_menor,
+                                    precio_mayor: data[i].dp_precio_mayor,
                                     subtotal: 0
                                 });
                             }
@@ -2358,28 +2360,28 @@
                         if ( this.Modal.numero == 2 ) {
                             for (let i = 0; i < data.length; i++) {
                                 this.ListaDetalle.push({
-                                    detalle_producto_id: data[i].detalle.id,
-                                    nombre_producto: data[i].detalle.nombre_producto,
-                                    cantidad: data[i].detalle.cantidad,
-                                    cantidad_fallido: data[i].detalle.cantidad_fallido,
-                                    precio: data[i].detalle.precio,
-                                    subtotal: data[i].detalle.subtotal
+                                    detalle_producto_id: data[i].dp_id,
+                                    nombre_producto: data[i].dv_nombre_producto,
+                                    cantidad: data[i].dv_cantidad,
+                                    cantidad_fallido: data[i].dv_cantidad_fallido,
+                                    precio: data[i].dv_precio,
+                                    subtotal: data[i].dv_subtotal
                                 });
                             }
                         }
                         if ( this.Modal.numero == 3 ) {
                             for (let i = 0; i < data.length; i++) {
                                 this.ListaDetalle.push({
-                                    id: data[i].detalle.id,
-                                    detalle_producto_id: data[i].detalle.detalle_producto_id,
-                                    nombre_producto: data[i].detalle.nombre_producto,
-                                    cantidad: data[i].detalle.cantidad,
-                                    cantidad_start: data[i].detalle.cantidad,
+                                    id: data[i].dv_id,
+                                    detalle_producto_id: data[i].dp_id,
+                                    nombre_producto: data[i].dv_nombre_producto,
+                                    cantidad: data[i].dv_cantidad,
+                                    cantidad_start: data[i].dv_cantidad,
                                     devuelto: '0',
                                     cantidad_fallido: '0',
-                                    substock: data[i].substock,
-                                    precio: data[i].detalle.precio,
-                                    subtotal: data[i].detalle.subtotal,
+                                    substock: data[i].dp_substock,
+                                    precio: data[i].dv_precio,
+                                    subtotal: data[i].dv_subtotal,
                                 });
                             }
 
