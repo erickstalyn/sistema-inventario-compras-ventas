@@ -286,24 +286,27 @@
                     <tfoot>
                         @foreach($venta as $ven)
                         <tr>
-                            <th></th>
-                            <th></th>
-                            {{-- <th></th> --}}
-                            <th colspan="2" style="padding-right: 35px; text-align: right;">TOTAL VENTA</th>
+                            <td></td>
+                            @if($existFail)
+                            <td></td>
+                            @endif
+                            <td colspan="2" style="padding-right: 35px; text-align: right;">TOTAL VENTA</td>
                             <td style="padding-right: 35px; text-align: right;">s/ {{$ven->total_venta}}</td>
                         </tr>
                         <tr>
-                            <th></th>
-                            <th></th>
-                            {{-- <th></th> --}}
-                            <th colspan="2" style="padding-right: 35px; text-align: right;">TOTAL DESCUENTO</th>
+                            <td></td>
+                            @if($existFail)
+                            <td></td>
+                            @endif
+                            <td colspan="2" style="padding-right: 35px; text-align: right;">TOTAL DESCUENTO</td>
                             <td style="padding-right: 35px; text-align: right;">s/ {{$ven->total_descuento ? $ven->total_descuento : 0}}</td>
                         </tr>
                         <tr>
-                            <th></th>
-                            <th></th>
-                            {{-- <th></th> --}}
-                            <th colspan="2" style="padding-right: 35px; text-align: right;">TOTAL</th>
+                            <td></td>
+                            @if($existFail)
+                            <td></td>
+                            @endif
+                            <td colspan="2" style="padding-right: 35px; text-align: right;">TOTAL</td>
                             <td style="padding-right: 35px; text-align: right;">s/ {{$ven->total}}</td>
                         </tr>
                         @endForeach
