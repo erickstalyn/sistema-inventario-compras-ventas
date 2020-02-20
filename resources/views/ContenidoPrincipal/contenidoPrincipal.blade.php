@@ -3,7 +3,7 @@
 @section('contenidoPrincipal')
 
     @if(Auth::check())
-        @if(Auth::user()->rol=='M')
+        @if(Auth::user()->getRol->id===1)
             <template v-if="menu==0">
                 <adm_material></adm_material>
             </template>
@@ -30,7 +30,7 @@
                 {{-- <dashboard :num_mostrar="1"></dashboard> --}}
             </template>
 
-        @elseif(Auth::user()->rol=='P')
+        @elseif(Auth::user()->getRol->id===2)
             <template v-if="menu==0">
                 <pue_producto></pue_producto>
             </template>
@@ -47,7 +47,7 @@
                 <enviorecibido></enviorecibido>
             </template>
 
-        @elseif(Auth::user()->rol=='A')
+        @elseif(Auth::user()->getRol->id===3)
             <template v-if="menu==0">
                 <alm_producto></alm_producto>
             </template>

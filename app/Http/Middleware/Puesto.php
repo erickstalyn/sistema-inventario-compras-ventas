@@ -23,7 +23,7 @@ class Puesto
     }
 
     private function permiso(){
-        return Auth::user()->rol == 'P';
+        return Auth::user()->getRol->id === 2;
     }
 
 }

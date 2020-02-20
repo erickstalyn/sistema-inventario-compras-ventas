@@ -31,11 +31,11 @@
       <!-- BARRA LATERAL DE OPCIONES SEGUN EL TIPO SE USUARIO -->
       
       @if(Auth::check())
-          @if(Auth::user()->rol=='M')
+          @if(Auth::user()->getRol->id===1)
               @include('sidebars.sidebaradministrador')
-          @elseif(Auth::user()->rol=='P')
+          @elseif(Auth::user()->getRol->id===2)
               @include('sidebars.sidebarpuesto')
-          @elseif(Auth::user()->rol=='A')
+          @elseif(Auth::user()->getRol->id===3)
               @include('sidebars.sidebaralmacen')
           @else
 
@@ -82,7 +82,7 @@
           
               <!-- INICIO DE ALERTAS -->
               @if(Auth::check())
-                  @if(Auth::user()->rol=='M')
+                  @if(Auth::user()->getRol->id==1)
                     <li class="nav-item dropdown no-arrow mx-1">
                       <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         {{-- <i class="fas fa-bell fa-fw"></i> --}}
