@@ -21,28 +21,26 @@ class UsuarioController extends Controller
         $estado = $request->estado;
         $texto = $request->texto;
         $items_per_page = $request->items;
-        $ordenarPor = $request->ordenarPor;
-        $orden = $request->orden;
+        // $ordenarPor = $request->ordenarPor;
+        // $orden = $request->orden;
 
-        $usuarios = Usuario::join('persona', 'usuario.persona_id', '=', 'persona.id')->join('rol', 'usuario.rol_id', '=', 'rol.id')
-                            ->select('persona.nombre', 'persona.direccion',
-                                // DB::raw('Date_Format(persona.created_at,\'' .'%d-%M-%Y' . '\') as fecha_creacion'), // para mysql
-                                // DB::raw('to_char(persona.created_at,\'' .'DD-Mon-YYYY' . '\') as fecha_creacion'), //para postgresql
-                                'persona.created_at as fecha_creacion',  
-                                'persona.updated_at as fecha_actualizacion', 'persona.deleted_at as fecha_eliminacion',
-                                'usuario.id', 'usuario.usuario', 'usuario.estado', 'rol.nombre as rol', 'rol.id as rol_id')
-                            ->where(function ($query) use ($estado) {
-                                if ( $estado != 2 ) {
-                                    $query->where('usuario.estado', '=', $estado);
-                                }
-                            })
-                            ->where(function ($query) use ($texto) {
-                                if ( $texto != '' ) {
-                                    $query->where('rol.nombre', 'like', '%'.$texto.'%')
-                                        ->orWhere('persona.nombre', 'like', '%'.$texto.'%');
-                                }
-                            })
-                            ->orderBy($ordenarPor, $orden)->paginate($items_per_page);
+        $usuarios = Usuario::select('persona.nombres','persona.apellidos','centro.nombre as centro_nombre','usuario.id', 'usuario.usuario', 'usuario.estado', 
+                        'rol.descripcion as rol', 'rol.id as rol_id')
+                        ->join('rol', 'usuario.rol_id', '=', 'rol.id')
+                        ->leftjoin('persona', 'usuario.persona_id', '=', 'persona.id')
+                        ->leftjoin('centro', 'usuario.centro_id', '=', 'centro.id')
+                        ->where(function ($query) use ($estado) {
+                            if ( $estado != 2 ) {
+                                $query->where('usuario.estado', '=', $estado);
+                            }
+                        })
+                        ->where(function ($query) use ($texto) {
+                            if ( $texto != '' ) {
+                                $query->where('rol.descripcion', 'like', '%'.$texto.'%')
+                                    ->orWhere('persona.nombres', 'like', '%'.$texto.'%');
+                            }
+                        })
+                        ->orderBy('usuario.id', 'asc')->paginate($items_per_page);
 
         return [
             'paginacion' => [

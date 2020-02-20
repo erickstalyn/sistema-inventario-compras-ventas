@@ -403,14 +403,15 @@
                 var url = '/usuario?page='+this.Paginacion.currentPage
                         +'&estado='+this.Busqueda.estado
                         +'&texto='+this.Busqueda.texto
-                        +'&items='+this.Busqueda.items
-                        +'&ordenarPor='+this.Navegacion.ordenarPor
-                        +'&orden='+this.Navegacion.orden;
+                        +'&items='+this.Busqueda.items;
+                        // +'&ordenarPor='+this.Navegacion.ordenarPor
+                        // +'&orden='+this.Navegacion.orden;
                 
                 var me = this;
                 axios.get(url).then(function (response) {
-                    me.ListaUsuario = response.data.usuarios.data;
-                    me.Paginacion = response.data.paginacion;
+                    console.log(response.data.usuarios.data);
+                    // me.ListaUsuario = response.data.usuarios.data;
+                    // me.Paginacion = response.data.paginacion;
                 }).catch(function (error) {
                     console.log(error)
                 });
