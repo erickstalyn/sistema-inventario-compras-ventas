@@ -8,12 +8,9 @@
             <div class="row form-group">
                 <i class="fas fa-map-signs"></i>&nbsp;&nbsp;
                 <span class="h3 mb-0 text-gray-900">Usuarios</span>
-                <button type="button" class="btn btn-success" @click="abrirModalAgregar()">
+                <!-- <button type="button" class="btn btn-success" @click="abrirModalAgregar()">
                     <i class="fas fa-user-plus"></i>&nbsp; Nuevo
-                </button>
-                <button type="button" class="btn btn-danger">
-                    <i class="far fa-file-pdf"></i>&nbsp; PDF
-                </button>
+                </button> -->
             </div>
 
             <!-- Inputs de busqueda -->
@@ -118,7 +115,7 @@
                     
                     <div class="modal-body">
                         <!-- Modal Numero 1 de AGREGAR-->
-                        <div v-if="Modal.numero==1">
+                        <!-- <div v-if="Modal.numero==1">
                             <div v-if="Error.estado" class="row d-flex justify-content-center">
                                 <div class="alert alert-danger">
                                     <button type="button" @click="Error.estado=0" class="close text-primary" data-dismiss="alert">×</button>
@@ -129,15 +126,8 @@
                                 </div>
                             </div>
                             <div class="row form-group">
-                                <label class="col-md-3 font-weight-bold" for="nom">Nombre&nbsp;<span class="text-danger">*</span></label>
+                                <label class="col-md-3 font-weight-bold" for="nom">Entidad&nbsp;<span class="text-danger">*</span></label>
                                 <div class="col-md-9">
-                                    <input type="text" v-model="Usuario.nombre" class="form-control" placeholder="ingrese el nombre" id="nom">
-                                </div>
-                            </div>
-                            <div class="row form-group">
-                                <label class="col-md-3 font-weight-bold" for="dir">Direccion</label>
-                                <div class="col-md-9">
-                                    <input type="text" v-model="Usuario.direccion" class="form-control" placeholder="ingrese la direccion" id="dir">
                                 </div>
                             </div>
                             <div class="row form-group">
@@ -145,7 +135,7 @@
                                 <div class="col-md-9">
                                     <select v-model="Usuario.rol_id" class="form-control" id="rol">
                                         <option value="0" disabled>seleccione un rol</option>
-                                        <option v-for="rol in SelectRol" :key="rol.id" :value="rol.id" v-text="rol.nombre"></option>
+                                        <option v-for="rol in SelectRol" :key="rol.id" :value="rol.id" v-text="rol.descripcion"></option>
                                     </select>
                                 </div>
                             </div>
@@ -161,7 +151,7 @@
                                     <input type="password" v-model="Usuario.password" class="form-control" placeholder="ingrese la contraseña" id="contra">
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                         <!-- Modal Numero 2 de EDITAR-->
                         <div v-if="Modal.numero==2">
                             <div v-if="Error.estado" class="row d-flex justify-content-center">
@@ -395,38 +385,34 @@
                     console.log(error)
                 });
             },
-            agregar(){
-                if ( this.validar() ) return;
-                
-                this.Usuario.tipo = this.getTipo(this.Usuario.rol_id);
+            // agregar(){
+            //     if ( this.validar() ) return;
 
-                var me = this;
-                axios.post('usuario/agregar', {
-                    'usuario' : this.Usuario.usuario,
-                    'password' : this.Usuario.password,
-                    'nombre' : this.Usuario.nombre,
-                    'direccion' : this.Usuario.direccion,
-                    'tipo': this.Usuario.tipo,
-                    'rol_id' : this.Usuario.rol_id
-                }).then(function(response){
-                    me.cerrarModal();
-                    me.listar();
-                    Swal.fire({
-                        position: 'top-end',
-                        toast: true,
-                        type: 'success',
-                        title: 'El usuario se ha AGREGADO correctamente',
-                        showConfirmButton: false,
-                        timer: 4500,
-                        animation:false,
-                        customClass:{
-                            popup: 'animated bounceIn fast'
-                        }
-                    });
-                }).catch(function(error){
-                    console.log(error);
-                });
-            },
+            //     var me = this;
+            //     axios.post('usuario/agregar', {
+            //         'usuario' : this.Usuario.usuario,
+            //         'password' : this.Usuario.password,
+            //         'nombre' : this.Usuario.nombre,
+            //         'rol_id' : this.Usuario.rol_id
+            //     }).then(function(response){
+            //         me.cerrarModal();
+            //         me.listar();
+            //         Swal.fire({
+            //             position: 'top-end',
+            //             toast: true,
+            //             type: 'success',
+            //             title: 'El usuario se ha AGREGADO correctamente',
+            //             showConfirmButton: false,
+            //             timer: 4500,
+            //             animation:false,
+            //             customClass:{
+            //                 popup: 'animated bounceIn fast'
+            //             }
+            //         });
+            //     }).catch(function(error){
+            //         console.log(error);
+            //     });
+            // },
             editar(){
                 if ( this.validar() ) return;
 
@@ -582,10 +568,10 @@
             accionar(accion){
                 this.Button.press = true;
                 switch( accion ){
-                    case 'Agregar': {
-                        this.agregar();
-                        break;
-                    }
+                    // case 'Agregar': {
+                    //     this.agregar();
+                    //     break;
+                    // }
                     case 'Editar': {
                         this.editar();
                         break;
