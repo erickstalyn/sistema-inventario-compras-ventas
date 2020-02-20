@@ -36,8 +36,10 @@ class UsuarioController extends Controller
                         })
                         ->where(function ($query) use ($texto) {
                             if ( $texto != '' ) { 
-                                $query->where('rol.descripcion', 'like', '%'.$texto.'%')
-                                    ->orWhere('persona.nombres', 'like', '%'.$texto.'%');
+                                $query->where('rol.descripcion', 'like', $texto . '%')
+                                    ->orWhere('persona.nombres', 'like', '%'.$texto.'%')
+                                    ->orWhere('persona.apellidos', 'like', '%'.$texto.'%')
+                                    ->orWhere('centro.nombre', 'like', '%'.$texto.'%');
                             }
                         })
                         ->orderBy('usuario.id', 'asc')->paginate($items_per_page);

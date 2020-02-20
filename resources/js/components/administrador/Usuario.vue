@@ -20,12 +20,12 @@
             <div class="row form-group">
                 <div class="col-md-8">
                     <div class="input-group">
-                        <select class="col-md-3 form-control text-gray-900" v-model="Busqueda.estado" @click="listar()">
+                        <select class="col-md-3 form-control text-gray-900" v-model="Busqueda.estado" @change="listar()">
+                            <option value="2">Todos</option>
                             <option value="1">Activados</option>
                             <option value="0">Desactivados</option>
-                            <option value="2">Todos</option>
                         </select>
-                        <input type="search" class="form-control" v-model="Busqueda.texto" @keyup.enter="listar()">
+                        <input type="search" class="form-control" v-model="Busqueda.texto" @keyup="listar()">
                         <button type="button" class="btn btn-primary" @click="listar()">
                             <i class="fa fa-search"></i>&nbsp; Buscar
                         </button>
@@ -36,7 +36,7 @@
                     <label>N° filas:</label>
                 </div>
                 <div class="col-md-1">
-                    <select class="form-control text-gray-900" v-model="Busqueda.items" @click="listar()">
+                    <select class="form-control text-gray-900" v-model="Busqueda.items" @change="listar()">
                         <option v-for="item in Items" :key="item" :value="item" v-text="item"></option>
                     </select>
                 </div>
@@ -50,7 +50,6 @@
                         <thead>
                             <tr>
                                 <th>Nombre</th>
-                                <!-- <th>Usuario</th> -->
                                 <th>Rol</th>
                                 <th>Estado</th>
                                 <th>Opciones</th>
@@ -59,7 +58,6 @@
                         <tbody>
                             <tr v-for="usuario in ListaUsuario" :key="usuario.id" >
                                 <td v-text="usuario.centro_nombre?usuario.centro_nombre: usuario.nombres + ' ' + usuario.apellidos"></td>
-                                <!-- <td v-text="usuario.usuario"></td> -->
                                 <td v-text="usuario.rol"></td>
                                 <td>
                                     <div v-if="usuario.estado">
@@ -197,7 +195,10 @@
                                     <div class="col-md-5">
                                         <input type="password" v-model="Credencial.password" class="form-control" id="cont" @keyup.enter="comprobar()">
                                     </div>
-                                    <button type="button" @click="comprobar()" class="btn btn-primary">Comprobar</button>
+                                    <button type="button" @click="comprobar()" class="btn btn-primary" :disabled="Button.press">
+                                        <div v-if="!Button.press">Comprobar</div>
+                                        <span v-else class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                    </button>
                                 </div>
                             </div>
                             <div v-else>
@@ -225,7 +226,10 @@
                                     <div class="col-md-5">
                                         <input type="password" v-model="Credencial.password" class="form-control" id="cont" @keyup.enter="comprobar()">
                                     </div>
-                                    <button type="button" @click="comprobar()" class="btn btn-success">Comprobar</button>
+                                    <button type="button" @click="comprobar()" class="btn btn-success" :disabled="Button.press">
+                                        <div v-if="!Button.press">Comprobar</div>
+                                        <span v-else class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                    </button>
                                 </div>
                             </div>
                             <div v-else>
@@ -241,7 +245,10 @@
                                     <div class="col-md-5">
                                         <input type="password" v-model="Credencial.password" class="form-control" id="cont" @keyup.enter="comprobar()">
                                     </div>
-                                    <button type="button" @click="comprobar()" class="btn btn-success">Comprobar</button>
+                                    <button type="button" @click="comprobar()" class="btn btn-success" :disabled="Button.press">
+                                        <div v-if="!Button.press">Comprobar</div>
+                                        <span v-else class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                    </button>
                                 </div>
                             </div>
                             <div v-else>
@@ -372,22 +379,13 @@
             }
         },
         methods: {
-            listar(page = 1, ordenarPor = ''){
-                if ( ordenarPor == this.Navegacion.ordenarPor ) {
-                    this.Navegacion.orden = (this.Navegacion.orden == 'asc'?'desc':'asc');
-                } else {
-                    this.Navegacion.ordenarPor = ordenarPor!=''?ordenarPor:this.Navegacion.ordenarPor;
-                    this.Navegacion.orden = 'asc';
-                }
+            listar(page = 1){
                 this.Paginacion.currentPage = page==1?1:page;
 
                 var url = '/usuario?page='+this.Paginacion.currentPage
                         +'&estado='+this.Busqueda.estado
                         +'&texto='+this.Busqueda.texto
                         +'&items='+this.Busqueda.items;
-                        // +'&ordenarPor='+this.Navegacion.ordenarPor
-                        // +'&orden='+this.Navegacion.orden;
-                
                 var me = this;
                 axios.get(url).then(function (response) {
                     // console.log(response.data.usuarios.data);
@@ -613,11 +611,13 @@
                 });
             },
             comprobar(){
+                this.Button.press = true;
                 var me = this;
                 var url = 'usuario/comprobar?password='+this.Credencial.password;
 
                 axios.get(url).then(function(response){
                     me.Credencial.comprobado = response.data;
+                    me.Button.press = false;
                 }).catch(function(error){
                     console.log(error);
                 });
