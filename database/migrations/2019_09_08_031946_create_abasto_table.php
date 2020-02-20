@@ -27,7 +27,7 @@ class CreateAbastoTable extends Migration
             $table->unsignedTinyInteger('centro_id')->nullable();
             $table->foreign('centro_id')->references('id')->on('centro');
 
-            $table->date('created_at'); //Fecha de creación manual
+            $table->dateTime('created_at'); //Fecha de creación manual
 
             //Abasto tiene una eliminación física, y solo se puede eliminar un abasto si tiene su estado de envio en ENVIADO
         });

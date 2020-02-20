@@ -931,8 +931,89 @@
                             </div>
                         </div>
                         <!-- Modal de ABASTECER-->
-                        <div v-if="Modal.numero=='abastecer'" class="container-small input-group d-flex justify-content-center">
-                            
+                        <div v-if="Modal.numero=='abastecer'" class="input-group">
+                            <div v-if="Error.estado" class="col-md-12 d-flex justify-content-center">
+                                <div class="col-md-6 alert alert-danger">
+                                    <button type="button" @click="close('error')" class="close text-primary" data-dismiss="alert">×</button>
+                                    <strong>Corregir los siguentes errores:</strong>
+                                    <ul class="m-0"> 
+                                        <li v-for="error in Error.mensaje" :key="error" v-text="error"></li> 
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="container-small col-md-6">
+                                <div class="shadow rounded pt-3" style="border: 1px solid; height: 30rem;">
+                                    <div class="col-md-12 form-group">
+                                        <label class="h5">LISTA DE COMPRAS</label>
+                                    </div>
+                                    <div class="col-md-12 overflow-auto" style="height: 26rem;">
+                                        <table v-if="ListaAbasto.length > 0" class="table table-bordered table-condensed text-gray-900 m-0 p-0">
+                                            <thead>
+                                                <tr class="table-warning">
+                                                    <th class="text-center" style="width: 10%;">Ver</th>
+                                                    <th class="text-center">Proveedor</th>
+                                                    <th class="text-center">Fecha</th>
+                                                    <th class="text-center">Total</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="abasto in ListaAbasto" :key="abasto.id" :class="Abasto.id==abasto.id?'table-info':(abasto.total!=null?'table-success':'')">
+                                                    <td class="text-center">
+                                                        <button type="button" title="VER" class="btn btn-circle btn-sm btn-outline-success" @click="list('detalle_abasto', abasto)">
+                                                            <i class="fas fa-eye"></i>
+                                                        </button>
+                                                    </td>
+                                                    <td v-text="abasto.proveedor_nombre"></td>
+                                                    <td v-text="fix('fecha_hora', abasto.created_at)"></td>
+                                                    <td v-if="abasto.total!=null" v-text="Number.parseFloat(abasto.total).toFixed(2)" class="text-right"></td>
+                                                    <td v-else v-text="'---'" class="text-center"></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <label v-else class="h5 text-danger">Sin registros de compras por pagar</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="container-small col-md-6">
+                                <div class="shadow rounded pt-3" style="border: 1px solid; height: 30rem;">
+                                    <div class="col-md-12 form-group">
+                                        <label class="h5">LISTA DE DETALLES</label>
+                                    </div>
+                                    <div class="col-md-12 form-group" style="height: 22rem;">
+                                        <table v-if="ListaDetalleAbasto.length > 0" class="table table-bordered table-condensed table-sm text-gray-900 m-0 p-0">
+                                            <thead>
+                                                <tr class="table-info">
+                                                    <th class="text-center">Nombre del producto</th>
+                                                    <th class="text-center">Cantidad</th>
+                                                    <th class="text-center" style="width: 20%;">Costo</th>
+                                                    <th class="text-center">Subtotal</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="overflow-auto">
+                                                <tr v-for="detalle in ListaDetalleAbasto" :key="detalle.id">
+                                                    <td v-text="detalle.nombre_producto"></td>
+                                                    <td v-text="detalle.cantidad" class="text-right"></td>
+                                                    <td>
+                                                        <input type="number" v-model="detalle.costo_abasto" class="form-control form-control-sm text-right" min="0" @click="update('detalle_abasto.subtotal')" @keyup="update('detalle_abasto.subtotal')">
+                                                    </td>
+                                                    <td v-text="Number.parseFloat(detalle.subtotal).toFixed(2)" class="text-right"></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <label v-else class="h5 text-danger">Sin registros de compras por pagar</label>
+                                    </div>
+                                    <div v-if="Abasto.id != null" class="col-md-12 input-group">
+                                        <div class="col-md-5">
+                                            <button class="btn btn-success btn-sm" @click="set('abasto')">Guardar precios</button>
+                                        </div>
+                                        <div class="col-md-7 input-group">
+                                            <label class="col-md-5 text-right h5">Total</label>
+                                            <label class="col-md-2 text-right h5 text-primary">S/.</label>
+                                            <label class="col-md-5 text-right h5 text-primary" v-text="Number.parseFloat(Abasto.total).toFixed(2)"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -987,7 +1068,11 @@
                     total_vuelto: null
                 },
                 ListaAbasto: [],
-                
+                Abasto: {
+                    id: null,
+                    total: null
+                },
+
                 DetalleVenta:{
                     cantidad: null,
                     precio: null,
@@ -999,15 +1084,10 @@
 
                 ListaProducto: null,
                 ListaDetalle: null,
+                ListaDetalleAbasto: null,
                 
                 Proveedor: {
-                    id: null,
-                    dni: null,
-                    ruc: null,
-                    nombres: null,
-                    apellidos: null,
-                    razon_social: null,
-                    tipo: null,
+                    nombres: null
                 },
                 Cliente:{
                     id: null,
@@ -1037,7 +1117,9 @@
                     size: null,
                     btnA: null,
                     btnC: null,
-                    step: null
+                    superstep: null,
+                    step: null,
+                    substep: null
                 },
                 Step: {
                     number: null
@@ -1098,6 +1180,7 @@
                 //datos de Rutas
                 Ruta: {
                     venta: '/venta',
+                    abasto: '/abasto',
                     persona: '/persona',
                     producto: '/producto',
                     detalle_producto: '/detalle_producto',
@@ -1319,14 +1402,41 @@
                             title: 'El pago se ha REGISTRADO correctamente',
                             showConfirmButton: false,
                             timer: 4500,
-                            animation:false,
-                            customClass:{
+                            animation: false,
+                            customClass: {
                                 popup: 'animated bounceIn fast'
                             }
                         });
                     }
                 }).catch(function(error){
                     console.log(error);
+                });
+            },
+            abastecer(){
+                if ( this.validar(['abasto.total']) ) ;
+
+                let me = this;
+                let url = this.Ruta.abasto+'/pay';
+                
+                axios.post(url, {
+                    'dataListaAbasto': this.ListaAbasto
+                }).then(function (response) {
+                    me.cerrarModal();
+                    me.listar();
+                    Swal.fire({
+                        position: 'top-end',
+                        toast: true,
+                        type: 'success',
+                        title: 'Abastos pagados correctamente',
+                        showConfirmButton: false,
+                        timer: 4500,
+                        animation: false,
+                        customClass: {
+                            popup: 'animated bounceIn fast'
+                        }
+                    });
+                }).catch(function (exception){
+                    console.log(exception);
                 });
             },
             abrirModalAgregar(){
@@ -1471,12 +1581,17 @@
                     option: 'abastecer',
                     titulo: 'COMPRA DE PRODUCTOS EXTERNOS',
                     size: 'modal-xl',
-                    btnA: 'Confirmar compras',
+                    btnA: 'Confirmar Cambios',
                     btnC: 'Cerrar'
                 });
+                
+                this.ListaAbasto = [];
+                this.ListaDetalleAbasto = [];
+
+                this.Abasto.id = null;
+                this.Abasto.total = null;
 
                 this.list('abasto');
-                this.list('detalle_abasto');
 
                 this.open('modal');
             },
@@ -1561,11 +1676,13 @@
             },
             accionar(){
                 this.Button.press = true;
+
                 switch ( this.Modal.numero ){
                     case 1: this.agregar(); break;
                     case 2: this.generatePdfSpecific(); break;
                     case 3: this.editar(); break;
                     case 4: this.pagar(); break;
+                    case 'abastecer': this.abastecer(); break;
                 }
             },
             validar(data = []) {
@@ -1708,6 +1825,30 @@
                                 if ( Number.parseFloat(this.DetalleVenta.cantidad) <= 0) this.Error.mensaje.push('La cantidad no puede ser 0 o negativo');
                             }
                             break;
+                        case 'detalle_abasto.costo_abasto':
+                            let found1 = false, found2 = false;
+                            for (let i = 0; i < this.ListaDetalleAbasto.length; i++) {
+                                if ( this.ListaDetalleAbasto[i].costo_abasto == '' && !found1 ) {
+                                    this.Error.mensaje.push('Debe ingresar el costo de todos los items');
+                                    found1 = true;
+                                } else {
+                                    if ( Number.parseFloat(this.ListaDetalleAbasto[i].costo_abasto) <= 0 && !found2 ) {
+                                        this.Error.mensaje.push('Los costos no pueden ser 0 o negativos');
+                                        found2 = true;
+                                    }
+                                }
+                                if ( found1 && found2 ) break;
+                            }
+                            break;
+                        case 'abasto.total':
+                            let found = false;
+                            for (let i = 0; i < this.ListaAbasto.length; i++) {
+                                if ( this.ListaAbasto[i].total != null ) {
+                                    found = true; break;
+                                } 
+                            }
+                            if ( !found ) this.Error.mensaje.push('Debe ingresar los precios de almenos una compra');
+                            break;
                     }
                 }
 
@@ -1786,8 +1927,8 @@
                 let dni = me.Service.document;
 
                 $.ajax({
-                    type: 'GET',
-                    url: me.Ruta.serverApache + '/Reniec/demo.php',
+                    type: 'POST',
+                    url: me.Ruta.serverApache + '/Reniec/consulta_reniec.php',
                     data: "dni="+dni,
                     beforeSend(){
                         me.Service.msm = 'Consultado...';
@@ -1795,26 +1936,32 @@
                         me.Service.loadclass = 'spinner-border spinner-border-sm text-primary';
                     },
                     success: function (data, textStatus, jqXHR) {
-                        let persona = JSON.parse(data);
-                        if (persona.estado == true){
-                            me.Service.document = '';
-                            me.Service.msm = '';
-                            me.Service.msmclass = '';
+                        try {
+                            let persona = JSON.parse(data);
+                            if (persona[2] != null){
+                                me.Service.document = '';
+                                me.Service.msm = '';
+                                me.Service.msmclass = '';
 
-                            me.Cliente.id = 0;
-                            me.Cliente.tipo = 'P';
-                            me.Cliente.documento = persona.dni;
-                            me.Cliente.dni = persona.dni;
-                            me.Cliente.nombres = persona.nombres;
-                            me.Cliente.apellidos = persona.apellidos;
+                                me.Cliente.id = null;
+                                me.Cliente.tipo = 'P';
+                                me.Cliente.documento = persona[0];
+                                me.Cliente.dni = persona[0];
+                                me.Cliente.nombres = persona[1];
+                                me.Cliente.apellidos = persona[2] + ' ' +persona[3];
 
-                            me.update('cliente.removable');
-                            me.remove('vale.usado');
-                        } else {
-                            me.Service.msm = 'El DNI no existe';
+                                me.update('cliente.removable');
+                                me.remove('vale.usado');
+                            } else {
+                                me.Service.msm = 'El DNI no existe';
+                                me.Service.msmclass = 'badge badge-primary';
+                            }
+                            me.Service.loadclass = '';
+                        } catch (error) {
+                            console.log(error);
+                            me.Service.msm = 'Vuelva a intentarlo porfavor =D';
                             me.Service.msmclass = 'badge badge-primary';
                         }
-                        me.Service.loadclass = '';
                     }
                 }).fail(function(){
                 });
@@ -1902,6 +2049,35 @@
                         }).catch(function(error){
                             console.log(error);
                         });
+                        break;
+                    case 'abasto':
+                        url = this.Ruta.abasto+'/list';
+
+                        axios.get(url, {
+                            params: {
+                                centro_id: $('meta[name="idCentro"]').attr('content')
+                            }
+                        }).then(function (response) {
+                            me.fix('lista_abasto', response.data);
+                        }).catch(function (exception) {
+                            console.log(exception);
+                        });
+                        break;
+                    case 'detalle_abasto':
+                        this.ListaDetalleAbasto = [];
+
+                        data.lista_detalle_abasto.forEach(detalle => {
+                            this.ListaDetalleAbasto.push({
+                                id: detalle.id,
+                                nombre_producto: detalle.nombre_producto,
+                                cantidad: detalle.cantidad,
+                                costo_abasto: detalle.costo_abasto,
+                                subtotal: detalle.subtotal
+                            });
+                        });
+                        
+                        this.Abasto.total = data.total==null?0:data.total;
+                        this.Abasto.id = data.id;
                         break;
                 }
             },
@@ -2232,6 +2408,30 @@
                             }
                         }
                         break;
+                    case 'detalle_abasto.subtotal':
+                        this.ListaDetalleAbasto.forEach(detalle => {
+                            let costo_abasto = detalle.costo_abasto!=''?Number.parseFloat(detalle.costo_abasto):0;
+                            let cantidad = detalle.cantidad;
+                            let subtotal = costo_abasto * cantidad;
+
+                            if ( subtotal < 0 ) {
+                                detalle.subtotal = 0;
+                            } else {
+                                detalle.subtotal = subtotal;
+                            }
+                        });
+
+                        this.update('abasto.total');
+                        break;
+                    case 'abasto.total':
+                        let total = 0;
+
+                        this.ListaDetalleAbasto.forEach(detalle => {
+                            total += detalle.subtotal;
+                        });
+
+                        this.Abasto.total = total;
+                        break;
                 }
 
                 return updated;
@@ -2321,6 +2521,7 @@
 
                 switch (numero) {
                     case 0:
+                    case 'fecha_hora':
                         fecha = data.split(' ')[0].split('-');
                         hora = data.split(' ')[1].split(':');
                         fecha_fixed = fecha[2]+'-'+fecha[1]+'-'+fecha[0];
@@ -2416,7 +2617,7 @@
                     case 'venta.editable':
                         this.ListaVenta.forEach(venta =>{
                             let state = false;
-                            if ( venta.vale_generada_id == null  && this.fix('month') == this.fix('date.month', venta.created_at) && this.fix('year') == this.fix('date.year', venta.created_at) ) {
+                            if ( venta.vale_generada_id == null && this.fix('month') == this.fix('date.month', venta.created_at) && this.fix('year') == this.fix('date.year', venta.created_at) ) {
                                 if ( venta.tipo.charAt(0) == '1' ) {
                                     state = true;
                                 } else if ( venta.tipo.charAt(0) == '2') {
@@ -2438,6 +2639,42 @@
                                 state = false;
                             }
                             venta.editable = state;
+                        });
+                        break;
+                    case 'lista_abasto':
+                        if ( data.length <= 0) break;
+
+                        data.forEach(abasto => {
+                            let found = false;
+
+                            for (let i = 0; i < this.ListaAbasto.length; i++) {
+                                if ( this.ListaAbasto[i].id == abasto.a_id) {
+                                    this.ListaAbasto[i].lista_detalle_abasto.push({
+                                        id: abasto.da_id,
+                                        nombre_producto: abasto.nombre_producto,
+                                        cantidad: abasto.cantidad,
+                                        costo_abasto: '',
+                                        subtotal: 0
+                                    });
+                                    found = true; break;
+                                }
+                            }
+
+                            if ( !found ) {
+                                this.ListaAbasto.push({
+                                    id: abasto.a_id,
+                                    proveedor_nombre: abasto.proveedor_nombre,
+                                    created_at: abasto.created_at,
+                                    total: null,
+                                    lista_detalle_abasto: [{
+                                        id: abasto.da_id,
+                                        nombre_producto: abasto.nombre_producto,
+                                        cantidad: abasto.cantidad,
+                                        costo_abasto: '',
+                                        subtotal: 0
+                                    }]
+                                });
+                            }
                         });
                         break;
                     default:
@@ -2518,6 +2755,35 @@
                 
                 return got;
             },
+            set(option, data = ''){
+                switch (option) {
+                    case 'abasto':
+                        if ( this.validar(['detalle_abasto.costo_abasto']) ) break;
+
+                        for (let i = 0; i < this.ListaAbasto.length; i++) {
+                            if ( this.ListaAbasto[i].id == this.Abasto.id ) {
+                                this.ListaAbasto[i].total = this.Abasto.total;
+                                this.ListaAbasto[i].lista_detalle_abasto.forEach(detalle => {
+                                    for (let j = 0; j < this.ListaDetalleAbasto.length; j++) {
+                                        if ( this.ListaDetalleAbasto[j].id == detalle.id ) {
+                                            detalle.costo_abasto = Number.parseFloat(this.ListaDetalleAbasto[j].costo_abasto);
+                                            detalle.subtotal = this.ListaDetalleAbasto[j].subtotal;
+                                            break;
+                                        }
+                                    }
+                                });
+                                break;
+                            }
+                        }
+
+                        this.ListaDetalleAbasto = [];
+                        this.Abasto.id = null;
+                        this.Abasto.total = null;
+                        break;
+                    default:
+                        break;
+                }
+            },
             open(option){
                 switch (option) {
                     case 'modal':
@@ -2531,6 +2797,7 @@
             close(numero){
                 switch (numero) {
                     case 0:
+                    case 'error':
                         this.Error.estado = 0;
                         this.Error.mensaje = [];
                         this.Error.numero = 0;

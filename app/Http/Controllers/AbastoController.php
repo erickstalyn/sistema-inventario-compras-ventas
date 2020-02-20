@@ -93,23 +93,64 @@ class AbastoController extends Controller
         if ( !$request->ajax() ) return redirect('/');
 
         $centro_id = $request->centro_id;
-        $payed = $request->payed;
+        $paid = $request->paid;
 
-        $list = Abasto::select('abasto.id as a_id', 'total', 'proveedor_nombre','created_at',
-                                'detalle_abasto.id as da_id', 'nombre_producto', 'cantidad')
-                        ->join('detalle_abasto AS d', 'd.id', '=', 'abasto.id')
-                        ->where(function ($query) use ($payed) {
-                            if ( $payed ) {
-                                $query->where('total', '!=', 0);
-                            } else {
-                                $query->where('total', '=', 0);
-                            }
-                        })
-                        ->where('tipo', '=', '0')
+        $list = Abasto::select('abasto.id as a_id', 'proveedor_nombre', 'created_at',
+                                'da.id as da_id', 'nombre_producto', 'cantidad')
+                        ->join('detalle_abasto AS da', 'da.abasto_id', '=', 'abasto.id')
+                        ->where('total', '=', 0)
+                        ->where('tipo', '=', '1')
                         ->where('centro_id', '=', $centro_id)
                         ->where('administrador_id', '=', NULL)->get();
 
         return $list;
+    }
+
+    public function pay(Request $request){
+        if ( !$request->ajax() ) return redirect('/');
+
+        $now = Carbon::now('America/Lima')->toDateTimeString();
+        $dataListaAbasto = $request->dataListaAbasto;
+
+        $state = 'error';
+        $exception = NULL;
+
+        try {
+            DB::beginTransaction();
+
+            foreach ($dataListaAbasto as $compra) {
+                if ( $compra['total'] != NULL ) {
+                    $abasto = Abasto::findOrFail($compra['id']);
+                    $abasto->total = $compra['total'];
+                    $abasto->save();
+
+                    $pago = new Pago();
+                    $pago->abasto_id = $abasto->id;
+                    $pago->monto = $abasto->total;
+                    $pago->created_at = $now;
+                    $pago->save();
+
+                    foreach ( $compra['lista_detalle_abasto'] as $det ) {
+                        $detalle = Detalle_abasto::findOrFail($det['id']);
+                        $detalle->costo_abasto = $det['costo_abasto'];
+                        $detalle->subtotal = $det['subtotal'];
+                        $detalle->save();
+                    }
+                }
+            }
+
+            DB::commit();
+            $state = 'success';
+        } catch (Exception $e) {
+            DB::rollback();
+            $state = 'exception';
+            $exception = $e;
+        }
+
+        return [
+            'state' => $state,
+            'exception' => $exception
+        ];
     }
 
     public function agregar(Request $request){
