@@ -4,6 +4,11 @@
         <div>
             <!-- Encabezado principal -->
             <div class="row form-group">
+                <div class="col-md-1">
+                    <button class="btn btn-outline-info" @click="abrirModalSettings()">
+                        <i class="fas fa-cogs"></i>
+                    </button>
+                </div>
                 <div class="col-md-6 text-center">
                     <!-- <i class="fas fa-hammer"></i>&nbsp; -->
                     <span class="h3 mb-0 text-gray-900 font-italic" v-text="Almacen.nombre"></span>&nbsp;&nbsp;
@@ -15,7 +20,7 @@
                         </select>
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <div class="input-group">
                         <select class="custom-select text-gray-900" v-model="Almacen.quieroVer" @change="listar()">
                             <option value="1">Inventario</option>
@@ -1057,6 +1062,30 @@
                                     </div>
                                 </div>
                             </div>
+                            <!-- Modal configurar Puesto-->
+                            <div v-else-if="Modal.numero == 6"> 
+                                <div v-if="Error.estado" class="row d-flex justify-content-center">
+                                    <div class="alert alert-danger">
+                                        <button type="button" @click="Error.estado=0" class="close text-primary" data-dismiss="alert">×</button>
+                                        <strong>Corregir los siguentes errores:</strong>
+                                        <ul> 
+                                            <li v-for="error in Error.mensaje" :key="error" v-text="error"></li> 
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <label class="col-md-3 font-weight-bold" id="nom">Nombre&nbsp;<span class="text-danger">*</span></label>
+                                    <div class="col-md-9">
+                                        <input type="text" v-model="Almacen.nombre" class="form-control" id="nom">
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <label class="col-md-3 font-weight-bold" for="dir">Dirección&nbsp;</label>
+                                    <div class="col-md-9">
+                                        <input type="text" v-model="Almacen.direccion" class="form-control" min="0" id="dir">
+                                    </div>
+                                </div>
+                            </div>
 
                         </div>
                         <div class="modal-footer">
@@ -1086,6 +1115,7 @@
                 Almacen: {
                     id: 4,
                     nombre: '',
+                    direccion: '',
                     quieroVer: 1, // 1:Inventario, 2: Envios Realizados, 3: Envios Recibidos, 4: Producciones, 5: Ventas, 6: vales
                     titulo: '',
                     mostrar: 0 // 1:Inventario, 2: Envios Realizados, 3: Envios Recibidos, 4: Producciones, 5: Ventas, 6: vales
@@ -1439,7 +1469,10 @@
                         break;
                 }
                 for (let i = 0; i < this.SelectAlmacen.length; i++) { //Busco el nombre
-                    if(this.SelectAlmacen[i].id == this.Almacen.id) this.Almacen.nombre = this.SelectAlmacen[i].nombre;
+                    if(this.SelectAlmacen[i].id == this.Almacen.id) {
+                        this.Almacen.nombre = this.SelectAlmacen[i].nombre;
+                        this.Almacen.direccion = this.SelectAlmacen[i].direccion;
+                    }
                 }
             },
             listarDetalles(numero){
@@ -1559,6 +1592,10 @@
                 this.Producto.precio_mayor = producto['detalle']['precio_mayor'];
 
                 this.abrirModal(1, 'Editar Producto', 'Editar', 'Cancelar', '');
+            },
+            abrirModalSettings(){
+
+                this.abrirModal(6, 'Configurar Almacén', 'Guardar', 'Cerrar', '')
             },
             abrirModalVerEnvioRealizado(envio = []){
                 this.EnvioRealizado.id = envio['id'];
@@ -1698,6 +1735,7 @@
                 switch( this.Modal.numero ){
                     case 1 : this.editarProducto(); break;
                     case 5 : this.generatePdfSpecificVenta(); //Generar comprobante de venta
+                    case 6 : this.saveSettingsPuesto(); break;
                 }
             },
             editarProducto(){
@@ -1732,6 +1770,38 @@
                     console.log(error);
                 });
             },
+            saveSettingsPuesto(){
+                if ( this.validar(3) ) return;
+                
+                var me = this;
+                var url = this.Ruta.centro +'/editar';
+                axios.put(url , {
+                    'id': this.Almacen.id,
+                    'nombre' : this.Almacen.nombre,
+                    'direccion' : this.Almacen.direccion
+                }).then(function(response){
+                    var estado = response.data.estado;
+                    if ( estado == 1 ) {
+                        me.select(1);
+                        me.cerrarModal();
+                        me.listar();
+                        Swal.fire({
+                            position: 'top-end',
+                            toast: true,
+                            type: 'success',
+                            title: 'El almacén se ha configurado con éxito',
+                            showConfirmButton: false,
+                            timer: 4500,
+                            animation:false,
+                            customClass:{
+                                popup: 'animated bounceIn fast'
+                            }
+                        });
+                    }
+                }).catch(function(error){
+                    console.log(error);
+                });
+            },
             validar(numero){
                 this.Error.estado = 0;
                 this.Error.numero = numero;
@@ -1753,7 +1823,10 @@
                                 break;
                             }
                         }
-                    break;
+                        break;
+                    case 3:
+                        if ( this.Almacen.nombre == '') this.Error.mensaje.push("Debe ingresar un nombre para el almacén");
+                        break;
                 }
 
                 if ( this.Error.mensaje.length ) {this.Error.estado = 1; this.Button.press = false;}

@@ -14,7 +14,7 @@ class CreateDetalleFuncionTable extends Migration
     public function up()
     {
         Schema::create('detalle_funcion', function (Blueprint $table) {
-            // $table->tinyIncrements('id');// usa 1 byte , cantidad max: 127
+            $table->boolean('estado')->default(1);
             $table->unsignedSmallInteger('persona_id');
             $table->foreign('persona_id')->references('id')->on('persona');
             $table->unsignedTinyInteger('funcion_id');
