@@ -31,21 +31,21 @@
         </a>
         <div id="inventario" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item font-weight-bold" href="#" @click="menu=0">Productos</a>
+                <a class="collapse-item font-weight-bold" href="#" @click="menu=1">Productos</a>
             </div>
         </div>
     </li>
 
     <!-- Elemento de navegación - MENÚ VENTAS -->
     <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#ventas" aria-expanded="true" aria-controls="ventas" @click="menu=1">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#ventas" aria-expanded="true" aria-controls="ventas" @click="menu=2">
             <i class="fas fa-cart-arrow-down"></i>
             <span >Ventas</span>
         </a>
     </li>
     <!-- Elemento de navegación - MENÚ VALES -->
     <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#vales" aria-expanded="true" aria-controls="vales" @click="menu=2">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#vales" aria-expanded="true" aria-controls="vales" @click="menu=3">
             <i class="far fa-credit-card"></i>
             <span >Vales</span>
         </a>
@@ -58,8 +58,8 @@
         </a>
         <div id="envios" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item font-weight-bold" href="#" @click="menu=3">Envíos Realizados</a>
-                <a class="collapse-item font-weight-bold" href="#" @click="menu=4">Envíos Recibidos</a>
+                <a class="collapse-item font-weight-bold" href="#" @click="menu=4">Envíos Realizados</a>
+                <a class="collapse-item font-weight-bold" href="#" @click="menu=5">Envíos Recibidos</a>
             </div>
         </div>
     </li>

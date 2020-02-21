@@ -4,11 +4,16 @@
         <div>
             <!-- Encabezado principal -->
             <div class="row form-group">
+                <div class="col-md-1">
+                    <button class="btn btn-outline-info" @click="abrirModalSettings()">
+                        <i class="fas fa-cogs"></i>
+                    </button>
+                </div>
                 <div class="col-md-6 text-center">
                     <!-- <i class="fas fa-hammer"></i>&nbsp; -->
                     <span class="h3 mb-0 text-gray-900 font-italic" v-text="Puesto.nombre"></span>&nbsp;&nbsp;
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <div class="input-group">
                         <select class="custom-select text-gray-900" v-model="Puesto.id" @change="listar()">
                             <option v-for="puesto in SelectPuesto" :key="puesto.id" :value="puesto.id" v-text="puesto.nombre"></option>
@@ -881,6 +886,30 @@
                                     </div>
                                 </div>
                             </div>
+                            <!-- Modal configurar Puesto-->
+                            <div v-else-if="Modal.numero == 5"> 
+                                <div v-if="Error.estado" class="row d-flex justify-content-center">
+                                    <div class="alert alert-danger">
+                                        <button type="button" @click="Error.estado=0" class="close text-primary" data-dismiss="alert">×</button>
+                                        <strong>Corregir los siguentes errores:</strong>
+                                        <ul> 
+                                            <li v-for="error in Error.mensaje" :key="error" v-text="error"></li> 
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <label class="col-md-3 font-weight-bold" id="nom">Nombre&nbsp;<span class="text-danger">*</span></label>
+                                    <div class="col-md-9">
+                                        <input type="text" v-model="Puesto.nombre" class="form-control" id="nom">
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <label class="col-md-3 font-weight-bold" for="dir">Dirección&nbsp;</label>
+                                    <div class="col-md-9">
+                                        <input type="text" v-model="Puesto.direccion" class="form-control" min="0" id="dir">
+                                    </div>
+                                </div>
+                            </div>
 
                         </div>
                         <div class="modal-footer">
@@ -910,6 +939,7 @@
                 Puesto: {
                     id: 1,
                     nombre: '',
+                    direccion: '',
                     quieroVer: 1, // 1: Ventas, 2: Inventario 3: Envios Realizados, 4: Envios Recibidos, 5: Vales
                     titulo: '',
                     mostrar: 0 // 1:Inventario, 2: Ventas, 3: Envios Realizados, 4: Envios Recibidos
@@ -1225,7 +1255,10 @@
                         break;
                 }
                 for (let i = 0; i < this.SelectPuesto.length; i++) { //Busco el nombre
-                    if(this.SelectPuesto[i].id == this.Puesto.id) this.Puesto.nombre = this.SelectPuesto[i].nombre;
+                    if(this.SelectPuesto[i].id == this.Puesto.id){
+                        this.Puesto.nombre = this.SelectPuesto[i].nombre;
+                        this.Puesto.direccion = this.SelectPuesto[i].direccion;
+                    }
                 }
             },
             listarDetalles(numero, data = ''){
@@ -1293,6 +1326,10 @@
                         break;
                 }
             },
+            abrirModalSettings(){
+
+                this.abrirModal(5, 'Configurar Puesto', 'Guardar', 'Cerrar', '')
+            },
             abrirModaEditar(producto = []){
                 this.Producto.id = producto['detalle']['id'];
                 this.Producto.nombre = producto['nombre'];
@@ -1321,8 +1358,7 @@
             abrirModalVerVenta(numero, data){
 
                 switch (numero) {
-                    case 1:
-                        console.log('ingrese al case 1');
+                    case 1: //Modal de ver del componentes de VENTAS
                         this.Venta.id = data.id;
                         this.Venta.total = data.total;
                         this.Venta.total_venta = data.total_venta;
@@ -1358,8 +1394,7 @@
                         this.listarDetalles(3, 'Ver');
                         this.listarDetalles(4);
                         break;
-                    case 2:
-                        console.log('Ingrese al case 2');
+                    case 2://Modal de ver venta del componente VALE
                         let url = this.Ruta.ventaWithAll + '?venta_id='+data;
                         let me = this;
                         axios.get(url).then(function (response) {
@@ -1431,7 +1466,8 @@
                 this.Button.press = true;
                 switch( this.Modal.numero ){
                     case 1 : this.editarProducto(); break; //Editar el precio del producto en este lugar
-                    case 4 : this.generatePdfSpecificVenta(); //Generar comprobante de venta
+                    case 4 : this.generatePdfSpecificVenta(); break; //Generar comprobante de venta
+                    case 5 : this.saveSettingsPuesto(); break;
                 }
             },
             editarProducto(){
@@ -1448,12 +1484,44 @@
                     var estado = response.data.estado;
                     if ( estado == 1 ) {
                         me.cerrarModal();
-                        me.listar(1);
+                        me.listar();
                         Swal.fire({
                             position: 'top-end',
                             toast: true,
                             type: 'success',
                             title: 'El producto se ha EDITADO correctamente',
+                            showConfirmButton: false,
+                            timer: 4500,
+                            animation:false,
+                            customClass:{
+                                popup: 'animated bounceIn fast'
+                            }
+                        });
+                    }
+                }).catch(function(error){
+                    console.log(error);
+                });
+            },
+            saveSettingsPuesto(){
+                if ( this.validar(3) ) return;
+                
+                var me = this;
+                var url = this.Ruta.centro +'/editar';
+                axios.put(url , {
+                    'id': this.Puesto.id,
+                    'nombre' : this.Puesto.nombre,
+                    'direccion' : this.Puesto.direccion
+                }).then(function(response){
+                    var estado = response.data.estado;
+                    if ( estado == 1 ) {
+                        me.select(1);
+                        me.cerrarModal();
+                        me.listar();
+                        Swal.fire({
+                            position: 'top-end',
+                            toast: true,
+                            type: 'success',
+                            title: 'El puesto se ha configurado con éxito',
                             showConfirmButton: false,
                             timer: 4500,
                             animation:false,
@@ -1487,7 +1555,10 @@
                                 break;
                             }
                         }
-                    break;
+                        break;
+                    case 3:
+                        if ( this.Puesto.nombre == '') this.Error.mensaje.push("Debe ingresar un nombre para el puesto");
+                        break;
                 }
 
                 if ( this.Error.mensaje.length ) {this.Error.estado = 1; this.Button.press = false;}

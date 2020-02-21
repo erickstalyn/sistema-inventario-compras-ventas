@@ -111,6 +111,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/data/selectUnidad', 'DataController@selectUnidad'); //metodos secundarios
 
         Route::get('/centro/selectCentro', 'CentroController@selectCentro');
+        Route::put('/centro/editar', 'CentroController@editar');
 
         //RUTAS DETALLES DE PRODUCTOS
         Route::put('/detalle_producto/editar', 'Detalle_productoController@editar');

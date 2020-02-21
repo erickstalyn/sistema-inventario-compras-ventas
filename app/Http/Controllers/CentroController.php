@@ -4,21 +4,27 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Centro;
+use Illuminate\Support\Facades\DB;
 
 class CentroController extends Controller {
     
     public function selectCentro(Request $request){
         if ( !$request->ajax() ) return redirect('/');
+        $id = $request->id;
         $tipo = $request->tipo;
-        $almacenes = Centro::select('id', 'nombre')
+        $centros = Centro::select('id', 'nombre', 'direccion', 'telefono')
                             ->where(function ($query) use ($tipo) {
                                 if ( $tipo != '' ) {
                                     $query->where('tipo','=', $tipo);
                                 }
                             })
-                            // ->where('tipo','=','A')
-                            ->orderBy('nombre', 'asc')->get();
-        return $almacenes;
+                            ->where(function ($query) use ($id) {
+                                if ( $id != '' ) {
+                                    $query->where('id','=', $id);
+                                }
+                            })
+                            ->orderBy('id', 'asc')->get();
+        return $centros;
     }
 
     public function selectCentroEnvio(Request $request){
@@ -54,5 +60,24 @@ class CentroController extends Controller {
             ],
             'list' => $list
         ];
+    }
+    
+    public function editar(Request $request){
+        if ( !$request->ajax() ) return redirect('/');
+        $estado = 1;
+        try {
+            DB::beginTransaction();
+
+            $centro = Centro::findOrFail($request->id);
+            $centro->nombre = $request->nombre;
+            $centro->direccion = $request->direccion;
+            $centro->save();
+
+            DB::commit();
+        } catch(Exception $e) {
+            DB::rollback();
+            if($e != null) $estado = 0;
+        }
+        return ['estado' => $estado];
     }
 }
