@@ -590,7 +590,7 @@
                                         </div>
                                         <div v-if="Vale.generado.monto!=null" class="col-md-12 form-group p-0">
                                             <div class="col-md-12 text-center">
-                                                <label class="font-weight-bold">-- VALE GENERADO --</label>
+                                                <label class="font-weight-bold">-- Vale Generado --</label>
                                             </div>
                                             <div class="col-md-12 input-group">
                                                 <label class="col-md-5 m-0 font-weight-bold">Monto</label>
@@ -616,20 +616,20 @@
                                             <label class="font-weight-bold h5">DESCUENTOS</label>
                                         </div>
                                         <div v-if="Vale.usado.monto!=null" class="col-md-12 form-group p-0">
-                                            <div class="col-md-12 input-group form-group">
-                                                <label class="col-md-12 d-flex justify-content-center">-- VALE USADO --</label>
+                                            <div class="col-md-12 input-group">
+                                                <label class="col-md-12 d-flex justify-content-center">-- Vale Usado --</label>
                                             </div>
-                                            <div class="col-md-12 input-group form-group">
-                                                <label class="col-md-4 font-weight-bold">Monto</label>
-                                                <label class="col-md-8 text-white" v-text="'S/. '+Vale.usado.monto"></label>
+                                            <div class="col-md-12 input-group">
+                                                <label class="col-md-5 m-0 font-weight-bold">Monto</label>
+                                                <label class="col-md-7 m-0 text-white" v-text="'S/. '+Vale.usado.monto"></label>
                                             </div>
-                                            <div class="col-md-12 input-group form-group">
-                                                <label class="col-md-4 font-weight-bold">Fecha</label>
-                                                <label class="col-md-8 text-white" v-text="fix('fecha', Vale.usado.created_at)"></label>
+                                            <div class="col-md-12 input-group">
+                                                <label class="col-md-5 m-0 font-weight-bold">Fecha</label>
+                                                <label class="col-md-7 m-0 text-white" v-text="fix('fecha', Vale.usado.created_at)"></label>
                                             </div>
-                                            <div class="col-md-12 input-group form-group">
-                                                <label class="col-md-4 font-weight-bold">Hora</label>
-                                                <label class="col-md-8 text-white" v-text="fix('hora', Vale.usado.created_at)"></label>
+                                            <div class="col-md-12 input-group">
+                                                <label class="col-md-5 m-0 font-weight-bold">Hora</label>
+                                                <label class="col-md-7 m-0 text-white" v-text="fix('hora', Vale.usado.created_at)"></label>
                                             </div>
                                         </div>
                                     </div>
@@ -1000,7 +1000,7 @@
                                                 </tr>
                                             </tbody>
                                         </table>
-                                        <label v-else class="h5 text-danger">Sin registros de compras por pagar</label>
+                                        <label v-else class="h5 text-info">Seleccione una compra</label>
                                     </div>
                                     <div v-if="Abasto.id != null" class="col-md-12 input-group">
                                         <div class="col-md-5">

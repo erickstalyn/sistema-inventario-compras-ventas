@@ -211,7 +211,6 @@ class VentaController extends Controller {
             }
             $usersAdmin = Usuario::where('rol', 'M')->get();
             foreach($usersAdmin as $notificar){
-                $place = $place + 1;
                 Usuario::findOrFail($notificar->id)->notify(new NotifyAdmin($arregloDatos));
             }
 
