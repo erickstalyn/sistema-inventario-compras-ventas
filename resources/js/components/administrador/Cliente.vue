@@ -20,11 +20,11 @@
             <div class="row form-group">
                 <div class="col-md-8">
                     <div class="input-group"> 
-                        <!-- <select class="col-md-3 custom-select text-gray-900" v-model="Busqueda.estado" @change="listar()">
+                        <select class="col-md-3 custom-select text-gray-900" v-model="Busqueda.estado" @change="listar()">
                             <option value="2">Todos</option>
                             <option value="1">Activados</option>
                             <option value="0">Desactivados</option>
-                        </select> -->
+                        </select>
                         <input type="search" class="form-control" v-model="Busqueda.texto" placeholder="Buscar por NOMBRE" @keyup="listar()">
                         <button type="button" class="btn btn-primary" @click="listar()">
                             <i class="fa fa-search"></i>&nbsp; Buscar
@@ -43,34 +43,38 @@
             </div>
 
             <!-- Listado -->
-            <div v-if="ListaMaterial.length" class="table-responsive">
+            <div v-if="ListaCliente.length" class="table-responsive">
                 <!-- Tabla -->
                 <div class="ec-table overflow-auto">
                     <table class="table table-borderless table-sm text-gray-900">
                         <thead>
                             <tr class="table-info">
                                 <th>Nombre</th>
-                                <th>Unid. Medida</th>
-                                <th >Costo Unit.</th>
-                                <!-- <th>Estado</th> -->
+                                <th>DNI/RUC</th>
+                                <th>Dirección</th>
+                                <th>Teléfono</th>
+                                <th>Email</th>
+                                <th>Estado</th>
                                 <th>Opciones</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="material in ListaMaterial" :key="material.id" >
-                                <td v-text="material.nombre"></td>
-                                <td v-text="material.unidad"></td>
-                                <td v-text="material.costo"></td>
-                                <!-- <td>
-                                    <div v-if="material.estado">
+                            <tr v-for="cliente in ListaCliente" :key="cliente.id" >
+                                <td v-text="cliente.razon_social? cliente.razon_social: cliente.nombres+' '+cliente.apellidos"></td>
+                                <td v-text="cliente.dni? cliente.dni:cliente.ruc"></td>
+                                <td v-text="cliente.direccion?cliente.direccion:'---'"></td>
+                                <td v-text="cliente.telefono?cliente.telefono:'---'"></td>
+                                <td v-text="cliente.email?cliente.email:'---'"></td>
+                                <td>
+                                    <div v-if="cliente.estado">
                                         <span class="badge badge-success">Activado</span>
                                     </div>
                                     <div v-else>
                                         <span class="badge badge-danger">Desactivado</span>
                                     </div>
-                                </td> -->
+                                </td>
                                 <td>
-                                    <button type="button" @click="abrirModalEditar(material)" title="Editar" class="btn btn-outline-warning btn-sm">
+                                    <button type="button" @click="abrirModalEditar(cliente)" title="Editar" class="btn btn-outline-warning btn-sm">
                                         <i class="fas fa-user-edit"></i>
                                     </button>
                                     <!-- <template v-if="material.estado">
@@ -133,19 +137,19 @@
                             <div class="row form-group">
                                 <label class="col-md-3 font-weight-bold" for="nom">Nombre&nbsp;<span class="text-danger">*</span></label>
                                 <div class="col-md-9">
-                                    <input type="text" v-model="Material.nombre" class="form-control" placeholder="ingrese el nombre" autofocus>
+                                    <input type="text" v-model="Cliente.nombre" class="form-control" placeholder="ingrese el nombre" autofocus>
                                 </div>
                             </div>
                             <div class="row form-group">
                                 <label class="col-md-3 font-weight-bold" for="des">Unid.Medida&nbsp;<span class="text-danger">*</span></label>
                                 <div class="col-md-4">
-                                    <select v-model="Material.subtipo" class="custom-select">
+                                    <select v-model="Cliente.subtipo" class="custom-select">
                                         <option value="" disabled>Tipo</option>
                                         <option v-for="item in SelectTipoFiltrado" :key="item" :value="item" v-text="item"></option>
                                     </select>
                                 </div>
                                 <div class="col-md-5">
-                                    <select v-model="Material.unidad" class="custom-select" id="cat">
+                                    <select v-model="Cliente.unidad" class="custom-select" id="cat">
                                         <option value="" disabled>Subtipo</option>
                                         <option v-for="unidad in selectUnidadFiltrado" :key="unidad.id" :value="unidad.nombre" v-text="unidad.nombre"></option>
                                     </select>
@@ -154,7 +158,7 @@
                             <div class="row form-group">
                                 <label class="col-md-3 font-weight-bold" for="nom">Costo por Unidad&nbsp;<span class="text-danger">*</span></label>
                                 <div class="col-md-4">
-                                    <input type="number" v-model="Material.costo" class="form-control" min="0">
+                                    <input type="number" v-model="Cliente.costo" class="form-control" min="0">
                                 </div>
                             </div>
                         </div>
@@ -172,19 +176,19 @@
                             <div class="row form-group">
                                 <label class="col-md-3 font-weight-bold" for="nom">Nombre&nbsp;<span class="text-danger">*</span></label>
                                 <div class="col-md-9">
-                                    <input type="text" v-model="Material.nombre" class="form-control" placeholder="ingrese el nombre">
+                                    <input type="text" v-model="Cliente.nombre" class="form-control" placeholder="ingrese el nombre">
                                 </div>
                             </div>
                             <div class="row form-group">
                                 <label class="col-md-3 font-weight-bold" for="des">Unid.Medida&nbsp;<span class="text-danger">*</span></label>
                                 <div class="col-md-4">
-                                    <select v-model="Material.subtipo" class="custom-select" id="cat">
+                                    <select v-model="Cliente.subtipo" class="custom-select" id="cat">
                                         <option value="" disabled>Tipo</option>
                                         <option v-for="item in SelectTipoFiltrado" :key="item" :value="item" v-text="item"></option>
                                     </select>
                                 </div>
                                 <div class="col-md-5">
-                                    <select v-model="Material.unidad" class="custom-select" id="cat">
+                                    <select v-model="Cliente.unidad" class="custom-select" id="cat">
                                         <option value="" disabled>Subtipo</option>
                                         <option v-for="unidad in selectUnidadFiltrado" :key="unidad.id" :value="unidad.nombre" v-text="unidad.nombre"></option>
                                     </select>
@@ -193,7 +197,7 @@
                             <div class="row form-group">
                                 <label class="col-md-3 font-weight-bold" for="nom">Costo por Unidad&nbsp;<span class="text-danger">*</span></label>
                                 <div class="col-md-4">
-                                    <input type="number" v-model="Material.costo" class="form-control" min="0">
+                                    <input type="number" v-model="Cliente.costo" class="form-control" min="0">
                                 </div>
                             </div>
                         </div>
@@ -221,25 +225,17 @@
         data(){
             return {
                 //datos generales
-                ListaMaterial: [],
-                Material: {
+                ListaCliente: [],
+                Cliente: {
                     id: 0,
                     nombre: '',
                     subtipo: '',
                     unidad: '',
                     costo: 0,
-                    estado: ''
-                },
-                MaterialOrigen: {
-                    id: 0,
-                    nombre: '',
-                    subtipo: '',
-                    unidad: '',
-                    costo: 0,
+                    estado: 2
                 },
                 SelectUnidad: [],
                 SelectTipoFiltrado: [],
-                YaIngrese: 0,
                 //datos de busqueda y filtracion
                 Busqueda: {
                     texto: '',
@@ -278,6 +274,7 @@
                     mensaje: []
                 },
                 Ruta: {
+                    persona: '/persona',
                     serverPhp: 'http://127.0.0.1:8000'
                 }
             }
@@ -324,46 +321,18 @@
 
                 return false;
             },
-            selectUnidadFiltrado: function(){
-                // console.log('Soy el computado selectUnidadFiltrado');
-                let selectUnidadFiltrado = [];
-                // console.log('tamaño de SelectUnidad: ' + this.SelectUnidad.length);
-                if(this.SelectUnidad.length){
-                    this.SelectUnidad.forEach(unidad => {
-                        if(unidad.subtipo == this.Material.subtipo){
-                            selectUnidadFiltrado.push(unidad);
-                        }
-                    });
-
-                    if(this.Modal.numero == 1  || this.YaIngrese) {//Es moda nuevo o ya ingrese
-                        this.Material.unidad = '';
-                    }else{
-                        this.YaIngrese = 1;
-                    }
-                    return selectUnidadFiltrado;
-                }
-            }
         },
         methods: {
-            listar(page = 1, ordenarPor = ''){
-                if ( ordenarPor == this.Navegacion.ordenarPor ) {
-                    this.Navegacion.orden = (this.Navegacion.orden == 'asc' ? 'desc' : 'asc');
-                } else {
-                    this.Navegacion.ordenarPor = (ordenarPor != '' ? ordenarPor: this.Navegacion.ordenarPor);
-                    // this.Navegacion.orden = 'asc';
-                }
-                this.Paginacion.currentPage = page==1?1:page;
-
-                var url = '/material?page='+this.Paginacion.currentPage
+            listar(page = 1){
+                this.Paginacion.currentPage = page;
+                var url = this.Ruta.persona + '?page='+this.Paginacion.currentPage +'&funcion=1'
                         +'&estado='+this.Busqueda.estado
                         +'&texto='+this.Busqueda.texto
-                        +'&filas='+this.Busqueda.filas
-                        +'&ordenarPor='+this.Navegacion.ordenarPor
-                        +'&orden='+this.Navegacion.orden;
+                        +'&filas='+this.Busqueda.filas;
                 
                 var me = this;
                 axios.get(url).then(function (response) {
-                    me.ListaMaterial = response.data.materiales.data;
+                    me.ListaCliente = response.data.personas.data;
                     me.Paginacion = response.data.paginacion;
                 }).catch(function (error) {
                     console.log(error)
@@ -374,10 +343,10 @@
                 
                 var me = this;
                 axios.post('/material/agregar', {
-                    'nombre' : this.Material.nombre,
-                    'subtipo': this.Material.subtipo,
-                    'unidad' : this.Material.unidad,
-                    'costo' : this.Material.costo
+                    'nombre' : this.Cliente.nombre,
+                    'subtipo': this.Cliente.subtipo,
+                    'unidad' : this.Cliente.unidad,
+                    'costo' : this.Cliente.costo
                 }).then(function(response){
                     if(response.data.estado){
                         me.cerrarModal();
@@ -395,7 +364,7 @@
                             }
                         });
                     }else{
-                        me.Error.mensaje.push("El material '"+ me.Material.nombre + "' ya se encuentra registrado");
+                        me.Error.mensaje.push("El material '"+ me.Cliente.nombre + "' ya se encuentra registrado");
                         me.Error.estado = 1;
                     }
                     
@@ -408,11 +377,11 @@
 
                 var me = this;
                 axios.put('/material/editar', {
-                    'id' : this.Material.id,
-                    'nombre' : this.Material.nombre,
-                    'subtipo' : this.Material.subtipo,
-                    'unidad' : this.Material.unidad,
-                    'costo' : this.Material.costo,
+                    'id' : this.Cliente.id,
+                    'nombre' : this.Cliente.nombre,
+                    'subtipo' : this.Cliente.subtipo,
+                    'unidad' : this.Cliente.unidad,
+                    'costo' : this.Cliente.costo,
                 }).then(function(response){
                     if(response.data.estado){
                         me.cerrarModal();
@@ -421,7 +390,7 @@
                             position: 'top-end',
                             toast: true,
                             type: 'success',
-                            title: 'El Material se ha EDITADO correctamente',
+                            title: 'El Cliente se ha EDITADO correctamente',
                             showConfirmButton: false,
                             timer: 4500,
                             animation:false,
@@ -438,11 +407,11 @@
                 });
             },
             activar(material = []){
-                this.Material.id = material['id'];
-                this.Material.nombre = material['nombre'];
+                this.Cliente.id = material['id'];
+                this.Cliente.nombre = material['nombre'];
 
                 Swal.fire({
-                    title: '¿Esta seguro de ACTIVAR el material "'+this.Material.nombre+'"?',
+                    title: '¿Esta seguro de ACTIVAR el material "'+this.Cliente.nombre+'"?',
                     type: 'warning',
                     showCancelButton: true,
                     confirmButtonText: 'Aceptar',
@@ -459,7 +428,7 @@
                         var me = this;
                 
                         axios.put('/material/activar', {
-                            'id' : me.Material.id
+                            'id' : me.Cliente.id
                         }).then(function (response) {
                             me.listar();
                             Swal.fire({
@@ -483,11 +452,11 @@
                 });
             },
             desactivar(material = []){
-                this.Material.id = material['id'];
-                this.Material.nombre = material['nombre'];
+                this.Cliente.id = material['id'];
+                this.Cliente.nombre = material['nombre'];
 
                 Swal.fire({
-                    title: '¿Esta seguro de DESACTIVAR el material "'+this.Material.nombre+'"?',
+                    title: '¿Esta seguro de DESACTIVAR el material "'+this.Cliente.nombre+'"?',
                     type: 'error',
                     showCancelButton: true,
                     confirmButtonText: 'Aceptar',
@@ -503,7 +472,7 @@
                         var me = this;
                 
                         axios.put('/material/desactivar', {
-                            'id' : me.Material.id
+                            'id' : me.Cliente.id
                         }).then(function (response) {
                             me.listar();
                             Swal.fire({
@@ -527,7 +496,7 @@
                 });
             },
             abrirModalAgregar(){
-                this.abrirModal(1, 'Nuevo Material', 'Agregar');
+                this.abrirModal(1, 'Nuevo Cliente', 'Agregar');
 
                 //Verifico si el arreglo SelectUnidad esta vacia
                 if(!this.SelectUnidad.length) this.selectUnidad();
@@ -536,15 +505,15 @@
                 // this.selectTipoFiltrado();
             },
             abrirModalEditar(data = []){
-                this.abrirModal(2, 'Editar Material', 'Editar');
+                this.abrirModal(2, 'Editar Cliente', 'Editar');
                 
-                this.Material.id = data['id'];
-                this.Material.nombre = data['nombre'];
-                this.Material.subtipo = data['subtipo'];
-                this.Material.unidad = data['unidad'];
-                this.Material.costo  = data['costo'];
+                this.Cliente.id = data['id'];
+                this.Cliente.nombre = data['nombre'];
+                this.Cliente.subtipo = data['subtipo'];
+                this.Cliente.unidad = data['unidad'];
+                this.Cliente.costo  = data['costo'];
 
-                //Lleno los campos de mi Material Original
+                //Lleno los campos de mi Cliente Original
                 this.MaterialOrigen.id = data['id'];
                 this.MaterialOrigen.nombre = data['nombre'];
                 this.MaterialOrigen.subtipo = data['subtipo'];
@@ -570,11 +539,11 @@
                 this.Error.estado = 0;
                 this.Error.mensaje = [];
 
-                this.Material.id = 0;
-                this.Material.nombre = '';
-                this.Material.unidad = '';
-                this.Material.subtipo = '';
-                this.Material.costo = 0;
+                this.Cliente.id = 0;
+                this.Cliente.nombre = '';
+                this.Cliente.unidad = '';
+                this.Cliente.subtipo = '';
+                this.Cliente.costo = 0;
 
                 this.Button.press = false;
 
@@ -625,20 +594,20 @@
                 this.Error.estado = 0;
                 this.Error.mensaje = [];
 
-                //Recorrere la lista de Material
+                //Recorrere la lista de Cliente
                 if(this.Modal.numero == 1){
                     //Modal agregar
-                    if ( !this.Material.nombre ) this.Error.mensaje.push("Debe ingresar un nombre");
-                    if ( !this.Material.unidad ) this.Error.mensaje.push("Debe seleccionar una Unid. Medida");
-                    if ( this.Material.costo == 0 || this.Material.costo < 0) this.Error.mensaje.push("Debe ingresar un costo válido");
+                    if ( !this.Cliente.nombre ) this.Error.mensaje.push("Debe ingresar un nombre");
+                    if ( !this.Cliente.unidad ) this.Error.mensaje.push("Debe seleccionar una Unid. Medida");
+                    if ( this.Cliente.costo == 0 || this.Cliente.costo < 0) this.Error.mensaje.push("Debe ingresar un costo válido");
                 }else{
                     //Modal editar
-                    if(this.Material.nombre == this.MaterialOrigen.nombre && this.Material.subtipo == this.MaterialOrigen.subtipo && this.Material.unidad == this.MaterialOrigen.unidad && this.Material.costo == this.MaterialOrigen.costo){
+                    if(this.Cliente.nombre == this.MaterialOrigen.nombre && this.Cliente.subtipo == this.MaterialOrigen.subtipo && this.Cliente.unidad == this.MaterialOrigen.unidad && this.Cliente.costo == this.MaterialOrigen.costo){
                         this.Error.mensaje.push("Ningun cambio realizado");
                     }else{ 
-                        if ( !this.Material.nombre ) this.Error.mensaje.push("Debe ingresar un nombre");
-                        if ( !this.Material.unidad ) this.Error.mensaje.push("Debe seleccionar una Unid. Medida");
-                        if ( this.Material.costo == 0 || this.Material.costo < 0) this.Error.mensaje.push("Debe ingresar un costo válido");
+                        if ( !this.Cliente.nombre ) this.Error.mensaje.push("Debe ingresar un nombre");
+                        if ( !this.Cliente.unidad ) this.Error.mensaje.push("Debe seleccionar una Unid. Medida");
+                        if ( this.Cliente.costo == 0 || this.Cliente.costo < 0) this.Error.mensaje.push("Debe ingresar un costo válido");
                     }
                 }
 

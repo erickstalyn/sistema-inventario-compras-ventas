@@ -70,6 +70,9 @@ Route::group(['middleware' => ['auth']], function () {
         Route::put('/usuario/desactivar', 'UsuarioController@desactivar');
         Route::get('/usuario/comprobar', 'UsuarioController@comprobar'); //metodos secundarios
         Route::get('/usuario/selectRol', 'UsuarioController@selectRol');
+
+        //Rutas para PERSONA
+        Route::get('/persona', 'PersonaController@listar');
         
         //RUTAS PARA MATERIALES
         Route::get('/material', 'MaterialController@listar'); //métodos generales
