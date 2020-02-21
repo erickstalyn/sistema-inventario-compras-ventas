@@ -22,6 +22,9 @@
             <template v-if="menu==6">
                 <adm_veralmacen></adm_veralmacen>
             </template>
+            <template v-if="menu==7">
+                <adm_cliente></adm_cliente>
+            </template>
             <template v-if="menu==10">
                 <adm_usuario></adm_usuario>
             </template>
