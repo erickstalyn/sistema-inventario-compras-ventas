@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Persona;
+use App\Detalle_funcion;
+use Illuminate\Support\Facades\DB;
+use Exception;
 
 class PersonaController extends Controller
 {
@@ -47,6 +50,45 @@ class PersonaController extends Controller
             ],
             'personas' => $personas
         ];
+    }
+
+    public function agregar(Request $request){
+        if(!$request-ajax()) return redirect('/');
+        $estado = 1;
+        try {
+            DB::beginTransaction();
+
+            $persona = new Persona();
+            $persona->tipo = $request->tipo;
+            if($persona->tipo == 'P'){
+                $persona->nombres = $request->nombres;
+                $persona->apellidos = $request->apellidos;
+                $persona->dni = $request->dni;
+                $persona->direccion = $request->direccion;
+                $persona->telefono = $request->telefono;
+                $persona->email = $request->email;
+                
+            }
+            if($persona->tipo == 'E'){
+                $persona->razon_social = $request->razon_social;
+                $persona->ruc = $request->ruc;
+                $persona->direccion = $request->direccion;
+                $persona->telefono = $request->telefono;
+                $persona->email = $request->email;
+            }
+            $persona->save();
+            //Asigno la funcion de cliente a esta Persona
+            $detalle_funcion = new Detalle_funcion();
+            $detalle_funcion->persona_id = $persona->id;
+            $detalle_funcion->funcion_id = 1;// 1: CLIENTE, 2: PROVEEDOR, 3: TRABAJADOR
+            $detalle_funcion->save();
+
+            DB::commit();
+        } catch(Exception $e) {
+            DB::rollback();
+            if($e != null) $estado = 0;
+        }
+        return ['estado' => $estado];
     }
     public function getPersona(Request $request){
         if ( !$request->ajax() ) return redirect('/');

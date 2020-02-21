@@ -77,7 +77,7 @@
                                     <button type="button" @click="abrirModalEditar(cliente)" title="Editar" class="btn btn-outline-warning btn-sm">
                                         <i class="fas fa-user-edit"></i>
                                     </button>
-                                    <!-- <template v-if="material.estado">
+                                    <template v-if="cliente.estado">
                                         <button type="button" @click="desactivar(material)" title="Desactivar" class="btn btn-outline-danger btn-sm">
                                             <i class="fas fa-user-times"></i>
                                         </button>
@@ -86,7 +86,7 @@
                                         <button type="button" @click="activar(material)" title="Activar" class="btn btn-outline-success btn-sm">
                                             <i class="fas fa-user-check"></i>
                                         </button>
-                                    </template> -->
+                                    </template>
                                 </td>
                             </tr>
                         </tbody>
@@ -135,30 +135,74 @@
                                 </div>
                             </div>
                             <div class="row form-group">
-                                <label class="col-md-3 font-weight-bold" for="nom">Nombre&nbsp;<span class="text-danger">*</span></label>
-                                <div class="col-md-9">
-                                    <input type="text" v-model="Cliente.nombre" class="form-control" placeholder="ingrese el nombre" autofocus>
-                                </div>
-                            </div>
-                            <div class="row form-group">
-                                <label class="col-md-3 font-weight-bold" for="des">Unid.Medida&nbsp;<span class="text-danger">*</span></label>
-                                <div class="col-md-4">
-                                    <select v-model="Cliente.subtipo" class="custom-select">
-                                        <option value="" disabled>Tipo</option>
-                                        <option v-for="item in SelectTipoFiltrado" :key="item" :value="item" v-text="item"></option>
-                                    </select>
+                                <label class="col-md-2 font-weight-bold" for="nom">DNI/RUC</label>
+                                <div class="col-md-5">
+                                    <div class="input-group">
+                                        <input type="text" v-model="DatosServicio.documento" class="form-control" autofocus placeholder="Consultar..." @keyup.enter="consultar()" :readonly="DatosServicio.readonly">
+                                        <button class="btn btn-primary" title="CONSULTAR" @click="consultar()"><i class="fas fa-sync-alt"></i></button>
+                                        <!-- <h5>
+                                            <span role="status" :class="Carga.clase"></span>&nbsp;
+                                            <span v-text="DatosServicio.mensaje" :class="DatosServicio.alert"></span>
+                                        </h5> -->
+                                    </div>
                                 </div>
                                 <div class="col-md-5">
-                                    <select v-model="Cliente.unidad" class="custom-select" id="cat">
-                                        <option value="" disabled>Subtipo</option>
-                                        <option v-for="unidad in selectUnidadFiltrado" :key="unidad.id" :value="unidad.nombre" v-text="unidad.nombre"></option>
-                                    </select>
+                                    <p style="font-size: 18px">
+                                        <span role="status" :class="Carga.clase"></span>&nbsp;
+                                        <span v-text="DatosServicio.mensaje" :class="DatosServicio.alert"></span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div v-if="Cliente.tipo == 'P'">
+                                <div class="row form-group">
+                                    <label class="col-md-3 font-weight-bold" for="nom">DNI&nbsp;<span class="text-danger">*</span></label>
+                                    <div class="col-md-4">
+                                            <input type="text" v-model="Cliente.dni" class="form-control" readonly>
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <label class="col-md-3 font-weight-bold" for="nom">Nombres&nbsp;<span class="text-danger">*</span></label>
+                                    <div class="col-md-9">
+                                        <input type="text" v-model="Cliente.nombres" class="form-control" readonly>
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <label class="col-md-3 font-weight-bold" for="nom">Apellidos&nbsp;<span class="text-danger">*</span></label>
+                                    <div class="col-md-9">
+                                        <input type="text" v-model="Cliente.apellidos" class="form-control" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-if="Cliente.tipo == 'E'">
+                                <div class="row form-group">
+                                    <label class="col-md-3 font-weight-bold" for="nom">RUC&nbsp;<span class="text-danger">*</span></label>
+                                    <div class="col-md-4">
+                                        <input type="text" v-model="Cliente.ruc" class="form-control" readonly>
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <label class="col-md-3 font-weight-bold" for="nom">Razón social&nbsp;<span class="text-danger">*</span></label>
+                                    <div class="col-md-9">
+                                        <input type="text" v-model="Cliente.razon_social" class="form-control" readonly>
+                                    </div>
                                 </div>
                             </div>
                             <div class="row form-group">
-                                <label class="col-md-3 font-weight-bold" for="nom">Costo por Unidad&nbsp;<span class="text-danger">*</span></label>
+                                <label class="col-md-3 font-weight-bold" for="nom">Teléfono</label>
                                 <div class="col-md-4">
-                                    <input type="number" v-model="Cliente.costo" class="form-control" min="0">
+                                        <input type="text" v-model="Cliente.telefono" class="form-control">
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <label class="col-md-3 font-weight-bold" for="nom">Dirección</label>
+                                <div class="col-md-9">
+                                    <input type="text" v-model="Cliente.direccion" class="form-control">
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <label class="col-md-3 font-weight-bold" for="nom">Email</label>
+                                <div class="col-md-9">
+                                    <input type="text" v-model="Cliente.email" class="form-control">
                                 </div>
                             </div>
                         </div>
@@ -229,13 +273,13 @@
                 Cliente: {
                     id: 0,
                     nombre: '',
-                    subtipo: '',
-                    unidad: '',
-                    costo: 0,
+                    documento: '',
+                    direccion: '',
+                    telefono: '',
+                    emai: '',
+                    tipo: 'P',
                     estado: 2
                 },
-                SelectUnidad: [],
-                SelectTipoFiltrado: [],
                 //datos de busqueda y filtracion
                 Busqueda: {
                     texto: '',
@@ -245,13 +289,23 @@
 
                 //datos de modales
                 Modal: {
-                    numero: 0,
+                    numero: 0, // 1: Agregar, 2: Editar
                     estado: 0,
                     titulo: '',
                     accion: ''
                 },
                 Button:{
                     press: false
+                },
+                Carga: {
+                    clase: ''
+                },
+                //DATOS PARA CONSULTA SUNAT Y RENIEC
+                DatosServicio: {
+                    documento: '',
+                    mensaje: '',
+                    alert: '',
+                    readonly: false
                 },
                 //datos de paginacion
                 Paginacion: {
@@ -275,6 +329,7 @@
                 },
                 Ruta: {
                     persona: '/persona',
+                    serverApache: 'http://localhost:80',
                     serverPhp: 'http://127.0.0.1:8000'
                 }
             }
@@ -497,12 +552,6 @@
             },
             abrirModalAgregar(){
                 this.abrirModal(1, 'Nuevo Cliente', 'Agregar');
-
-                //Verifico si el arreglo SelectUnidad esta vacia
-                if(!this.SelectUnidad.length) this.selectUnidad();
-                //Verifico si el arreglo SelectTipoFiltro esta vacia
-                // if(!this.SelectTipoFiltrado.length) this.selectTipoFiltrado();
-                // this.selectTipoFiltrado();
             },
             abrirModalEditar(data = []){
                 this.abrirModal(2, 'Editar Cliente', 'Editar');
@@ -569,6 +618,125 @@
                         break;
                     }
                 }
+            },
+            consultar(){
+                this.DatosServicio.alert = '';
+                this.DatosServicio.mensaje = '';
+                this.DatosServicio.readonly = true;
+                switch (this.DatosServicio.documento.length) {
+                    case 0:
+                        this.DatosServicio.alert = 'badge badge-warning';
+                        this.DatosServicio.mensaje = 'Ingrese un DNI o RUC';
+                        this.DatosServicio.readonly = false;
+                        break;
+                    case 8: case 11:
+                        this.consultarDB();
+                        break;
+                    default:
+                        // this.DatosServicio.alert = 'alert alert-danger';
+                        this.DatosServicio.alert = 'badge badge-primary';
+                        this.DatosServicio.mensaje = 'Documento inválido'
+                        this.DatosServicio.readonly = false;
+                        break;
+                }
+            },
+            consultarDB(){
+                var me = this;
+                var url = this.Ruta.persona + '/getPersona';
+
+                me.DatosServicio.alert = 'badge badge-info';
+                me.DatosServicio.mensaje = 'Consultado...';
+                me.Carga.clase = 'spinner-border spinner-border-sm text-success';
+                axios.get(url,{
+                    params: {
+                        'documento': me.DatosServicio.documento
+                    }
+                }).then(function(response){
+                    if(response.data.persona.length){//Si existe la persona en la db
+                        me.DatosServicio.alert = 'badge badge-danger';
+                        me.DatosServicio.mensaje = 'Documento ya registrado';
+                        me.Carga.clase = '';
+                        me.DatosServicio.readonly = false;
+                    }else{//No esxiste la persona en la db
+                        if(me.DatosServicio.documento.length == 8){
+                            me.consultarDNI();
+                        }else{
+                            me.consultarRUC();
+                        }
+                    }
+                }).catch(function(error){
+                    console.log(error);
+                });
+            },
+            consultarRUC(){
+                let me = this;
+                let ruc = me.DatosServicio.documento;
+                $.ajax({
+                    type: 'GET',
+                    url: me.Ruta.serverApache + '/SunatPHP/demo.php',
+                    data: 'ruc=' + ruc,
+                    beforeSend(){
+                        me.Carga.clase = 'spinner-border spinner-border-sm text-primary';
+                        me.DatosServicio.alert = 'badge badge-info';
+                        me.DatosServicio.mensaje = 'Consultado...';
+                    },
+                    success: function (data, textStatus, jqXHR) {
+                        let empresa = JSON.parse(data);
+                        if( empresa.RazonSocial ){
+                            me.DatosServicio.documento = '';
+                            me.DatosServicio.alert = '';
+                            me.DatosServicio.mensaje = '';
+
+                            me.Cliente.tipo = 'E';
+                            me.Cliente.ruc = empresa.RUC;
+                            me.Cliente.razon_social = empresa.RazonSocial;
+                        } else {
+                            me.DatosServicio.alert = 'badge badge-primary';
+                            me.DatosServicio.mensaje = 'El RUC no existe';
+                        }
+                        me.DatosServicio.readonly = false;
+                        me.Carga.clase = '';
+                    }
+                }).fail(function(){
+                });
+            },
+            consultarDNI(){
+                let me = this;
+                let dni = me.DatosServicio.documento;
+                $.ajax({
+                    type: 'POST',
+                    url: me.Ruta.serverApache + '/Reniec/consulta_reniec.php',
+                    data: 'dni=' + dni,
+                    beforeSend(){
+                        me.Carga.clase = 'spinner-border spinner-border-sm text-primary';
+                        me.DatosServicio.alert = 'badge badge-info';
+                        me.DatosServicio.mensaje = 'Consultado...';
+                    },
+                    success: function (data, textStatus, jqXHR) {
+                        // console.log(JSON.parse(data));
+                        try {
+                            let persona = JSON.parse(data);
+                            if(persona[2] != null ){
+                                me.DatosServicio.documento = '';
+                                me.DatosServicio.alert = '';
+                                me.DatosServicio.mensaje = '';
+                                me.Cliente.dni = persona[0];
+                                me.Cliente.nombres = persona[1];
+                                me.Cliente.apellidos = persona[2] + ' ' + persona[3];
+                                me.Cliente.tipo = 'P';
+                            }else{
+                                me.DatosServicio.alert = 'badge badge-primary';
+                                me.DatosServicio.mensaje = 'El DNI no existe';
+                            }
+                            me.Carga.clase = '';
+                        } catch (e) {
+                            me.DatosServicio.alert = 'badge badge-primary';
+                            me.DatosServicio.mensaje = 'Vuelva a intentarlo =D';
+                        }
+                        me.DatosServicio.readonly = false;
+                    }
+                }).fail(function(){
+                });
             },
             getTitulo(titulo){
                 var seleccionada = 0;
