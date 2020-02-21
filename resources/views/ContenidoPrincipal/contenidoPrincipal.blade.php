@@ -22,10 +22,10 @@
             <template v-if="menu==6">
                 <adm_veralmacen></adm_veralmacen>
             </template>
-            <template v-if="menu==7">
+            <template v-if="menu==8">
                 <adm_usuario></adm_usuario>
             </template>
-            <template v-if="menu==8">
+            <template v-if="menu==9">
                 <adm_estadistica></adm_estadistica>
                 {{-- <dashboard :num_mostrar="1"></dashboard> --}}
             </template>

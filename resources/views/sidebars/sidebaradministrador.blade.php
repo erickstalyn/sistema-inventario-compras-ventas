@@ -69,15 +69,21 @@
 
     <!-- Elemento de navegación: MENÚ USUARIOS -->
     <li class="nav-item">
-    <a class="nav-link collapsed" href="#" @click="menu=7">
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#acceso" aria-expanded="true" aria-controls="acceso">
         <i class="fas fa-users"></i>
-        <span>Usuarios</span>
+        <span>Acceso</span>
     </a>
+    <div id="acceso" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+        <div class="bg-white py-2 collapse-inner rounded">
+            <a class="collapse-item font-weight-bold" href="#" @click="menu=7">Entidades</a>
+            <a class="collapse-item font-weight-bold" href="#" @click="menu=8">Usuarios</a>
+        </div>
+    </div>
     </li>
 
     <!-- Elemento de navegación: MENÚ ESTADISTICAS -->
     <li class="nav-item">
-    <a class="nav-link collapsed" href="#" @click="menu=8">
+    <a class="nav-link collapsed" href="#" @click="menu=9">
         <i class="fas fa-chart-pie"></i>
         <span>Estadisticas</span>
     </a>
