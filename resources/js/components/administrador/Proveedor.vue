@@ -188,26 +188,26 @@
                                 <div class="row form-group">
                                     <label class="col-md-2 font-weight-bold" for="nom">Razón social&nbsp;<span class="text-danger">*</span></label>
                                     <div class="col-md-10">
-                                        <input type="text" v-model="Proveedor.razon_social" class="form-control">
+                                        <input type="text" v-model="Proveedor.razon_social" class="form-control" :readonly="!DatosServicio.edit">
                                     </div>
                                 </div>
                             </div>
                             <div class="row form-group">
                                 <label class="col-md-2 font-weight-bold" for="nom">Dirección</label>
                                 <div class="col-md-10">
-                                    <input type="text" v-model="Proveedor.direccion" class="form-control">
+                                    <input type="text" v-model="Proveedor.direccion" class="form-control" :readonly="!DatosServicio.edit">
                                 </div>
                             </div>
                             <div class="row form-group">
                                 <label class="col-md-2 font-weight-bold" for="nom">Teléfono</label>
                                 <div class="col-md-4">
-                                        <input type="number" v-model="Proveedor.telefono" class="form-control" maxlength="9">
+                                        <input type="number" v-model="Proveedor.telefono" class="form-control" maxlength="9" :readonly="!DatosServicio.edit">
                                 </div>
                             </div>
                             <div class="row form-group">
                                 <label class="col-md-2 font-weight-bold" for="nom">Email</label>
                                 <div class="col-md-10">
-                                    <input type="email" v-model="Proveedor.email" class="form-control">
+                                    <input type="email" v-model="Proveedor.email" class="form-control" :readonly="!DatosServicio.edit">
                                 </div>
                             </div>
                         </div>
@@ -302,8 +302,11 @@
                 ListaProveedor: [],
                 Proveedor: {
                     id: 0,
-                    nombre: '',
-                    documento: '',
+                    dni: '',
+                    nombres: '',
+                    apellidos: '',
+                    ruc: '',
+                    razon_social: '',
                     direccion: '',
                     telefono: '',
                     emai: '',
@@ -336,7 +339,8 @@
                     documento: '',
                     mensaje: '',
                     alert: '',
-                    readonly: false
+                    readonly: false,
+                    edit: true
                 },
                 //datos de paginacion
                 Paginacion: {
@@ -434,6 +438,8 @@
                 
                 var me = this;
                 axios.post(this.Ruta.persona + '/agregar', {
+                    'funcion' : 2,
+                    'id' : this.Proveedor.id,
                     'tipo': this.Proveedor.tipo,
                     'nombres': this.Proveedor.nombres,
                     'apellidos': this.Proveedor.apellidos,
@@ -460,10 +466,10 @@
                             }
                         });
                     }else{
-                        me.Error.mensaje.push('Error al intentar agregar un cliente');
+                        me.Error.mensaje.push('Este proveedor ya está registrado');
                         me.Error.estado = 1;
                     }
-                    
+                    me.Button.press = false;
                 }).catch(function(error){
                     console.log('soy el error' + error);
                 });
@@ -518,7 +524,7 @@
                     cancelButtonText: 'Cancelar',
                     // reverseButtons: true,
                     customClass: {
-                        confirmButton: 'btn btn-success',
+                        confirmButton: estado ? 'btn btn-success': 'btn btn-danger',
                         cancelButton: 'btn btn-secondary'
                     },
                     buttonsStyling: false
@@ -589,6 +595,7 @@
                 this.DatosServicio.documento = '';
                 this.DatosServicio.alert = '';
                 this.DatosServicio.mensaje = '';
+                this.DatosServicio.edit = true;
 
                 this.Proveedor.id = 0;
                 this.Proveedor.tipo = 'P';
@@ -625,6 +632,10 @@
                 }
             },
             consultar(){
+                this.Error.estado = 0;
+                this.Error.mensaje = [];
+                this.Proveedor.id = 0;
+
                 this.DatosServicio.alert = '';
                 this.DatosServicio.mensaje = '';
                 this.DatosServicio.readonly = true;
@@ -658,10 +669,30 @@
                     }
                 }).then(function(response){
                     if(response.data.persona.length){//Si existe la persona en la db
-                        me.DatosServicio.alert = 'badge badge-danger';
-                        me.DatosServicio.mensaje = 'Documento ya registrado';
+                        me.DatosServicio.alert = '';
+                        me.DatosServicio.mensaje = '';
                         me.Carga.clase = '';
                         me.DatosServicio.readonly = false;
+                        me.DatosServicio.edit = false;
+
+                        const persona = response.data.persona[0];
+                        me.Proveedor.id = persona.id;
+                        if(persona.razon_social){//Es una EMPRESA
+                            me.Proveedor.tipo = 'E';
+                            me.Proveedor.ruc = persona.ruc;
+                            me.Proveedor.razon_social = persona.razon_social;
+
+                        }else{//Es una PERSONA
+                            me.Proveedor.tipo = 'P';
+                            me.Proveedor.dni = persona.dni;
+                            me.Proveedor.nombres = persona.nombres;
+                            me.Proveedor.apellidos = persona.apellidos;
+                        }
+
+                        me.Proveedor.direccion = persona.direccion;
+                        me.Proveedor.telefono = persona.telefono;
+                        me.Proveedor.email = persona.email;
+                        me.DatosServicio.documento = '';
                     }else{//No esxiste la persona en la db
                         if(me.DatosServicio.documento.length == 8){
                             me.consultarDNI();

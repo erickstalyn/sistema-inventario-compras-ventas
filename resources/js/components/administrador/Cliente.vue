@@ -188,26 +188,26 @@
                                 <div class="row form-group">
                                     <label class="col-md-2 font-weight-bold" for="nom">Razón social&nbsp;<span class="text-danger">*</span></label>
                                     <div class="col-md-10">
-                                        <input type="text" v-model="Cliente.razon_social" class="form-control">
+                                        <input type="text" v-model="Cliente.razon_social" class="form-control" :readonly="!DatosServicio.edit">
                                     </div>
                                 </div>
                             </div>
                             <div class="row form-group">
                                 <label class="col-md-2 font-weight-bold" for="nom">Dirección</label>
                                 <div class="col-md-10">
-                                    <input type="text" v-model="Cliente.direccion" class="form-control">
+                                    <input type="text" v-model="Cliente.direccion" class="form-control" :readonly="!DatosServicio.edit">
                                 </div>
                             </div>
                             <div class="row form-group">
                                 <label class="col-md-2 font-weight-bold" for="nom">Teléfono</label>
                                 <div class="col-md-4">
-                                        <input type="number" v-model="Cliente.telefono" class="form-control" maxlength="9">
+                                        <input type="number" v-model="Cliente.telefono" class="form-control" maxlength="9" :readonly="!DatosServicio.edit">
                                 </div>
                             </div>
                             <div class="row form-group">
                                 <label class="col-md-2 font-weight-bold" for="nom">Email</label>
                                 <div class="col-md-10">
-                                    <input type="email" v-model="Cliente.email" class="form-control">
+                                    <input type="email" v-model="Cliente.email" class="form-control" :readonly="!DatosServicio.edit">
                                 </div>
                             </div>
                         </div>
@@ -302,8 +302,11 @@
                 ListaCliente: [],
                 Cliente: {
                     id: 0,
-                    nombre: '',
-                    documento: '',
+                    dni: '',
+                    nombres: '',
+                    apellidos: '',
+                    ruc: '',
+                    razon_social: '',
                     direccion: '',
                     telefono: '',
                     emai: '',
@@ -336,7 +339,8 @@
                     documento: '',
                     mensaje: '',
                     alert: '',
-                    readonly: false
+                    readonly: false,
+                    edit: true
                 },
                 //datos de paginacion
                 Paginacion: {
@@ -434,6 +438,8 @@
                 
                 var me = this;
                 axios.post(this.Ruta.persona + '/agregar', {
+                    'funcion' : 1,
+                    'id' : this.Cliente.id,
                     'tipo': this.Cliente.tipo,
                     'nombres': this.Cliente.nombres,
                     'apellidos': this.Cliente.apellidos,
@@ -460,10 +466,10 @@
                             }
                         });
                     }else{
-                        me.Error.mensaje.push('Error al intentar agregar un cliente');
+                        me.Error.mensaje.push('Este cliente ya está registrado');
                         me.Error.estado = 1;
                     }
-                    
+                    me.Button.press = false;
                 }).catch(function(error){
                     console.log('soy el error' + error);
                 });
@@ -518,7 +524,7 @@
                     cancelButtonText: 'Cancelar',
                     // reverseButtons: true,
                     customClass: {
-                        confirmButton: 'btn btn-success',
+                        confirmButton: estado ? 'btn btn-success': 'btn btn-danger',
                         cancelButton: 'btn btn-secondary'
                     },
                     buttonsStyling: false
@@ -589,6 +595,7 @@
                 this.DatosServicio.documento = '';
                 this.DatosServicio.alert = '';
                 this.DatosServicio.mensaje = '';
+                this.DatosServicio.edit = true;
 
                 this.Cliente.id = 0;
                 this.Cliente.tipo = 'P';
@@ -658,10 +665,30 @@
                     }
                 }).then(function(response){
                     if(response.data.persona.length){//Si existe la persona en la db
-                        me.DatosServicio.alert = 'badge badge-danger';
-                        me.DatosServicio.mensaje = 'Documento ya registrado';
+                        me.DatosServicio.alert = '';
+                        me.DatosServicio.mensaje = '';
                         me.Carga.clase = '';
                         me.DatosServicio.readonly = false;
+                        me.DatosServicio.edit = false;
+
+                        const persona = response.data.persona[0];
+                        me.Cliente.id = persona.id;
+                        if(persona.razon_social){//Es una EMPRESA
+                            me.Cliente.tipo = 'E';
+                            me.Cliente.ruc = persona.ruc;
+                            me.Cliente.razon_social = persona.razon_social;
+
+                        }else{//Es una PERSONA
+                            me.Cliente.tipo = 'P';
+                            me.Cliente.dni = persona.dni;
+                            me.Cliente.nombres = persona.nombres;
+                            me.Cliente.apellidos = persona.apellidos;
+                        }
+
+                        me.Cliente.direccion = persona.direccion;
+                        me.Cliente.telefono = persona.telefono;
+                        me.Cliente.email = persona.email;
+                        me.DatosServicio.documento = '';
                     }else{//No esxiste la persona en la db
                         if(me.DatosServicio.documento.length == 8){
                             me.consultarDNI();

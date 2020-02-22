@@ -64,27 +64,31 @@ class PersonaController extends Controller
         $estado = 1;
         try {
             DB::beginTransaction();
-
-            $persona = new Persona();
-            $persona->tipo = $request->tipo;
-            if($persona->tipo == 'P'){
-                $persona->nombres = mb_convert_case($request->nombres, MB_CASE_TITLE, "UTF-8");
-                $persona->apellidos = mb_convert_case($request->apellidos, MB_CASE_TITLE, "UTF-8");
-                $persona->dni = $request->dni;
-                
+            if($request->id == 0){
+                $persona = new Persona();
+                $persona->tipo = $request->tipo;
+                if($persona->tipo == 'P'){
+                    $persona->nombres = mb_convert_case($request->nombres, MB_CASE_TITLE, "UTF-8");
+                    $persona->apellidos = mb_convert_case($request->apellidos, MB_CASE_TITLE, "UTF-8");
+                    $persona->dni = $request->dni;
+                    
+                }
+                if($persona->tipo == 'E'){
+                    $persona->razon_social = $request->razon_social;
+                    $persona->ruc = $request->ruc;
+                }
+                $persona->direccion = mb_convert_case($request->direccion, MB_CASE_TITLE, "UTF-8");
+                $persona->telefono = $request->telefono;
+                $persona->email = $request->email;
+                $persona->save();
+                $id_persona = $persona->id;
+            }else{
+                $id_persona = $request->id;
             }
-            if($persona->tipo == 'E'){
-                $persona->razon_social = $request->razon_social;
-                $persona->ruc = $request->ruc;
-            }
-            $persona->direccion = mb_convert_case($request->direccion, MB_CASE_TITLE, "UTF-8");
-            $persona->telefono = $request->telefono;
-            $persona->email = $request->email;
-            $persona->save();
             //Asigno la funcion de cliente a esta Persona
             $detalle_funcion = new Detalle_funcion();
-            $detalle_funcion->persona_id = $persona->id;
-            $detalle_funcion->funcion_id = 1;// 1: CLIENTE, 2: PROVEEDOR, 3: TRABAJADOR
+            $detalle_funcion->persona_id = $id_persona;
+            $detalle_funcion->funcion_id = $request->funcion;// 1: CLIENTE, 2: PROVEEDOR, 3: TRABAJADOR
             $detalle_funcion->save();
 
             DB::commit();
@@ -133,7 +137,7 @@ class PersonaController extends Controller
         if ( !$request->ajax() ) return redirect('/');
         $documento = $request->documento;
 
-        $persona = Persona::select('id', 'nombres', 'apellidos', 'razon_social')
+        $persona = Persona::select('id', 'dni', 'ruc', 'nombres', 'apellidos', 'razon_social', 'direccion', 'telefono', 'email')
                             ->where('dni', '=', $documento)
                             ->orWhere('ruc', '=', $documento)
                             ->get();
