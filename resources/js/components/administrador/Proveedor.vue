@@ -7,7 +7,7 @@
             <!-- Encabezado principal -->
             <div class="row form-group">
                 <i class="fas fa-map-signs"></i>&nbsp;&nbsp;
-                <span class="h3 mb-0 text-gray-900">Clientes&nbsp;</span>
+                <span class="h3 mb-0 text-gray-900">Proveedores&nbsp;</span>
                 <button type="button" class="btn btn-success" @click="abrirModalAgregar()">
                     <i class="fas fa-hammer"></i>&nbsp; Nuevo
                 </button>&nbsp;
@@ -48,7 +48,7 @@
             </div>
 
             <!-- Listado -->
-            <div v-if="ListaCliente.length" class="table-responsive">
+            <div v-if="ListaProveedor.length" class="table-responsive">
                 <!-- Tabla -->
                 <div class="ec-table overflow-auto">
                     <table class="table table-borderless table-sm text-gray-900">
@@ -64,7 +64,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="cliente in ListaCliente" :key="cliente.id" >
+                            <tr v-for="cliente in ListaProveedor" :key="cliente.id" >
                                 <td v-text="cliente.razon_social? cliente.razon_social: cliente.nombres+' '+cliente.apellidos"></td>
                                 <td v-text="cliente.dni? cliente.dni:cliente.ruc"></td>
                                 <td v-text="cliente.direccion?cliente.direccion:'---'"></td>
@@ -158,56 +158,56 @@
                                     </p>
                                 </div>
                             </div>
-                            <div v-if="Cliente.tipo == 'P'">
+                            <div v-if="Proveedor.tipo == 'P'">
                                 <div class="row form-group">
                                     <label class="col-md-2 font-weight-bold" for="nom">DNI&nbsp;<span class="text-danger">*</span></label>
                                     <div class="col-md-4">
-                                            <input type="text" v-model="Cliente.dni" class="form-control" readonly>
+                                            <input type="text" v-model="Proveedor.dni" class="form-control" readonly>
                                     </div>
                                 </div>
                                 <div class="row form-group">
                                     <label class="col-md-2 font-weight-bold" for="nom">Nombres&nbsp;<span class="text-danger">*</span></label>
                                     <div class="col-md-10">
-                                        <input type="text" v-model="Cliente.nombres" class="form-control" readonly>
+                                        <input type="text" v-model="Proveedor.nombres" class="form-control" readonly>
                                     </div>
                                 </div>
                                 <div class="row form-group">
                                     <label class="col-md-2 font-weight-bold" for="nom">Apellidos&nbsp;<span class="text-danger">*</span></label>
                                     <div class="col-md-10">
-                                        <input type="text" v-model="Cliente.apellidos" class="form-control" readonly>
+                                        <input type="text" v-model="Proveedor.apellidos" class="form-control" readonly>
                                     </div>
                                 </div>
                             </div>
-                            <div v-if="Cliente.tipo == 'E'">
+                            <div v-if="Proveedor.tipo == 'E'">
                                 <div class="row form-group">
                                     <label class="col-md-2 font-weight-bold" for="nom">RUC&nbsp;<span class="text-danger">*</span></label>
                                     <div class="col-md-4">
-                                        <input type="text" v-model="Cliente.ruc" class="form-control" readonly>
+                                        <input type="text" v-model="Proveedor.ruc" class="form-control" readonly>
                                     </div>
                                 </div>
                                 <div class="row form-group">
                                     <label class="col-md-2 font-weight-bold" for="nom">Razón social&nbsp;<span class="text-danger">*</span></label>
                                     <div class="col-md-10">
-                                        <input type="text" v-model="Cliente.razon_social" class="form-control" :readonly="!DatosServicio.edit">
+                                        <input type="text" v-model="Proveedor.razon_social" class="form-control" :readonly="!DatosServicio.edit">
                                     </div>
                                 </div>
                             </div>
                             <div class="row form-group">
                                 <label class="col-md-2 font-weight-bold" for="nom">Dirección</label>
                                 <div class="col-md-10">
-                                    <input type="text" v-model="Cliente.direccion" class="form-control" :readonly="!DatosServicio.edit">
+                                    <input type="text" v-model="Proveedor.direccion" class="form-control" :readonly="!DatosServicio.edit">
                                 </div>
                             </div>
                             <div class="row form-group">
                                 <label class="col-md-2 font-weight-bold" for="nom">Teléfono</label>
                                 <div class="col-md-4">
-                                        <input type="number" v-model="Cliente.telefono" class="form-control" maxlength="9" :readonly="!DatosServicio.edit">
+                                        <input type="number" v-model="Proveedor.telefono" class="form-control" maxlength="9" :readonly="!DatosServicio.edit">
                                 </div>
                             </div>
                             <div class="row form-group">
                                 <label class="col-md-2 font-weight-bold" for="nom">Email</label>
                                 <div class="col-md-10">
-                                    <input type="email" v-model="Cliente.email" class="form-control" :readonly="!DatosServicio.edit">
+                                    <input type="email" v-model="Proveedor.email" class="form-control" :readonly="!DatosServicio.edit">
                                 </div>
                             </div>
                         </div>
@@ -222,56 +222,56 @@
                                     </ul>
                                 </div>
                             </div>
-                            <div v-if="Cliente.tipo == 'P'">
+                            <div v-if="Proveedor.tipo == 'P'">
                                 <div class="row form-group">
                                     <label class="col-md-2 font-weight-bold" for="nom">DNI</label>
                                     <div class="col-md-4">
-                                            <input type="text" v-model="Cliente.dni" class="form-control" readonly>
+                                            <input type="text" v-model="Proveedor.dni" class="form-control" readonly>
                                     </div>
                                 </div>
                                 <div class="row form-group">
                                     <label class="col-md-2 font-weight-bold" for="nom">Nombres</label>
                                     <div class="col-md-10">
-                                        <input type="text" v-model="Cliente.nombres" class="form-control" readonly>
+                                        <input type="text" v-model="Proveedor.nombres" class="form-control" readonly>
                                     </div>
                                 </div>
                                 <div class="row form-group">
                                     <label class="col-md-2 font-weight-bold" for="nom">Apellidos</label>
                                     <div class="col-md-10">
-                                        <input type="text" v-model="Cliente.apellidos" class="form-control" readonly>
+                                        <input type="text" v-model="Proveedor.apellidos" class="form-control" readonly>
                                     </div>
                                 </div>
                             </div>
-                            <div v-if="Cliente.tipo == 'E'">
+                            <div v-if="Proveedor.tipo == 'E'">
                                 <div class="row form-group">
                                     <label class="col-md-2 font-weight-bold" for="nom">RUC</label>
                                     <div class="col-md-4">
-                                        <input type="text" v-model="Cliente.ruc" class="form-control" readonly>
+                                        <input type="text" v-model="Proveedor.ruc" class="form-control" readonly>
                                     </div>
                                 </div>
                                 <div class="row form-group">
                                     <label class="col-md-2 font-weight-bold" for="nom">Razón social&nbsp;<span class="text-danger">*</span></label>
                                     <div class="col-md-10">
-                                        <input type="text" v-model="Cliente.razon_social" class="form-control">
+                                        <input type="text" v-model="Proveedor.razon_social" class="form-control">
                                     </div>
                                 </div>
                             </div>
                             <div class="row form-group">
                                 <label class="col-md-2 font-weight-bold" for="nom">Dirección</label>
                                 <div class="col-md-10">
-                                    <input type="text" v-model="Cliente.direccion" class="form-control">
+                                    <input type="text" v-model="Proveedor.direccion" class="form-control">
                                 </div>
                             </div>
                             <div class="row form-group">
                                 <label class="col-md-2 font-weight-bold" for="nom">Teléfono</label>
                                 <div class="col-md-4">
-                                        <input type="number" v-model="Cliente.telefono" class="form-control" maxlength="9" min="0">
+                                        <input type="number" v-model="Proveedor.telefono" class="form-control" maxlength="9" min="0">
                                 </div>
                             </div>
                             <div class="row form-group">
                                 <label class="col-md-2 font-weight-bold" for="nom">Email</label>
                                 <div class="col-md-10">
-                                    <input type="email" v-model="Cliente.email" class="form-control">
+                                    <input type="email" v-model="Proveedor.email" class="form-control">
                                 </div>
                             </div>
                         </div>
@@ -299,8 +299,8 @@
         data(){
             return {
                 //datos generales
-                ListaCliente: [],
-                Cliente: {
+                ListaProveedor: [],
+                Proveedor: {
                     id: 0,
                     dni: '',
                     nombres: '',
@@ -415,7 +415,7 @@
         methods: {
             listar(page = 1){
                 this.Paginacion.currentPage = page;
-                var url = this.Ruta.persona + '?page='+this.Paginacion.currentPage +'&funcion=1'
+                var url = this.Ruta.persona + '?page='+this.Paginacion.currentPage +'&funcion=2'
                         +'&estado='+this.Busqueda.estado
                         +'&tipo='+this.Busqueda.tipo
                         +'&texto='+this.Busqueda.texto
@@ -423,14 +423,14 @@
                 
                 var me = this;
                 axios.get(url).then(function (response) {
-                    me.ListaCliente = response.data.personas.data;
+                    me.ListaProveedor = response.data.personas.data;
                     me.Paginacion = response.data.paginacion;
                 }).catch(function (error) {
                     console.log(error)
                 });
             },
             agregar(){
-                if(this.Cliente.tipo == 'P'){
+                if(this.Proveedor.tipo == 'P'){
                     if ( this.validar(1) ) return;
                 }else{
                     if ( this.validar(2) ) return;
@@ -438,17 +438,17 @@
                 
                 var me = this;
                 axios.post(this.Ruta.persona + '/agregar', {
-                    'funcion' : 1,
-                    'id' : this.Cliente.id,
-                    'tipo': this.Cliente.tipo,
-                    'nombres': this.Cliente.nombres,
-                    'apellidos': this.Cliente.apellidos,
-                    'dni': this.Cliente.dni,
-                    'razon_social': this.Cliente.razon_social,
-                    'ruc': this.Cliente.ruc,
-                    'direccion': this.Cliente.direccion,
-                    'telefono': this.Cliente.telefono,
-                    'email': this.Cliente.email,
+                    'funcion' : 2,
+                    'id' : this.Proveedor.id,
+                    'tipo': this.Proveedor.tipo,
+                    'nombres': this.Proveedor.nombres,
+                    'apellidos': this.Proveedor.apellidos,
+                    'dni': this.Proveedor.dni,
+                    'razon_social': this.Proveedor.razon_social,
+                    'ruc': this.Proveedor.ruc,
+                    'direccion': this.Proveedor.direccion,
+                    'telefono': this.Proveedor.telefono,
+                    'email': this.Proveedor.email,
                 }).then(function(response){
                     if(response.data.estado){
                         me.listar();
@@ -466,7 +466,7 @@
                             }
                         });
                     }else{
-                        me.Error.mensaje.push('Este cliente ya está registrado');
+                        me.Error.mensaje.push('Este proveedor ya está registrado');
                         me.Error.estado = 1;
                     }
                     me.Button.press = false;
@@ -475,7 +475,7 @@
                 });
             },
             editar(){
-                if(this.Cliente.tipo == 'P'){
+                if(this.Proveedor.tipo == 'P'){
                     if ( this.validar(1) ) return;
                 }else{
                     if ( this.validar(2) ) return;
@@ -483,11 +483,11 @@
 
                 var me = this;
                 axios.put(this.Ruta.persona +'/editar', {
-                    'id': this.Cliente.id,
-                    'razon_social': this.Cliente.razon_social,
-                    'direccion': this.Cliente.direccion,
-                    'telefono': this.Cliente.telefono,
-                    'email': this.Cliente.email,
+                    'id': this.Proveedor.id,
+                    'razon_social': this.Proveedor.razon_social,
+                    'direccion': this.Proveedor.direccion,
+                    'telefono': this.Proveedor.telefono,
+                    'email': this.Proveedor.email,
                 }).then(function(response){
                     if(response.data.estado){
                         me.listar();
@@ -496,7 +496,7 @@
                             position: 'top-end',
                             toast: true,
                             type: 'success',
-                            title: 'El Cliente se ha EDITADO correctamente',
+                            title: 'El Proveedor se ha EDITADO correctamente',
                             showConfirmButton: false,
                             timer: 4500,
                             animation:false,
@@ -513,9 +513,9 @@
                 });
             },
             setEstado(cliente = [], estado){
-                this.Cliente.id = cliente['id'];
+                this.Proveedor.id = cliente['id'];
                 let name = cliente['tipo'] == 'P'? cliente['nombres'] + ' ' + cliente['apellidos'] : cliente['razon_social'];
-                console.log(this.Cliente);
+                console.log(this.Proveedor);
                 Swal.fire({
                     title: '¿Esta seguro de DESACTIVAR a "'+name+'"?',
                     type: 'error',
@@ -533,9 +533,9 @@
                         var me = this;
                 
                         axios.put(this.Ruta.persona +'/setEstado', {
-                            'id' : me.Cliente.id,
+                            'id' : me.Proveedor.id,
                             'estado': estado,
-                            'funcion': 1
+                            'funcion': 2
                         }).then(function (response) {
                             me.listar();
                             Swal.fire({
@@ -559,23 +559,23 @@
                 });
             },
             abrirModalAgregar(){
-                this.abrirModal(1, 'Nuevo Cliente', 'Agregar');
+                this.abrirModal(1, 'Nuevo Proveedor', 'Agregar');
             },
             abrirModalEditar(data = []){
-                this.abrirModal(2, 'Editar Cliente', 'Editar');
-                this.Cliente.id = data['id'];
-                this.Cliente.tipo = data['tipo'];
-                if(this.Cliente.tipo == 'P'){
-                    this.Cliente.dni = data['dni'];
-                    this.Cliente.nombres = data['nombres'];
-                    this.Cliente.apellidos = data['apellidos'];
-                }else if(this.Cliente.tipo == 'E'){
-                    this.Cliente.ruc = data['ruc'];
-                    this.Cliente.razon_social = data['razon_social'];
+                this.abrirModal(2, 'Editar Proveedor', 'Editar');
+                this.Proveedor.id = data['id'];
+                this.Proveedor.tipo = data['tipo'];
+                if(this.Proveedor.tipo == 'P'){
+                    this.Proveedor.dni = data['dni'];
+                    this.Proveedor.nombres = data['nombres'];
+                    this.Proveedor.apellidos = data['apellidos'];
+                }else if(this.Proveedor.tipo == 'E'){
+                    this.Proveedor.ruc = data['ruc'];
+                    this.Proveedor.razon_social = data['razon_social'];
                 }
-                this.Cliente.direccion = data['direccion'];
-                this.Cliente.telefono = data['telefono'];
-                this.Cliente.email = data['email'];
+                this.Proveedor.direccion = data['direccion'];
+                this.Proveedor.telefono = data['telefono'];
+                this.Proveedor.email = data['email'];
 
             },
             abrirModal(numero, titulo, accion){
@@ -597,16 +597,16 @@
                 this.DatosServicio.mensaje = '';
                 this.DatosServicio.edit = true;
 
-                this.Cliente.id = 0;
-                this.Cliente.tipo = 'P';
-                this.Cliente.nombres = '';
-                this.Cliente.apellidos = '';
-                this.Cliente.dni = '';
-                this.Cliente.razon_social = '';
-                this.Cliente.ruc = '';
-                this.Cliente.direccion = '';
-                this.Cliente.telefono = '';
-                this.Cliente.email = '';
+                this.Proveedor.id = 0;
+                this.Proveedor.tipo = 'P';
+                this.Proveedor.nombres = '';
+                this.Proveedor.apellidos = '';
+                this.Proveedor.dni = '';
+                this.Proveedor.razon_social = '';
+                this.Proveedor.ruc = '';
+                this.Proveedor.direccion = '';
+                this.Proveedor.telefono = '';
+                this.Proveedor.email = '';
 
                 this.Button.press = false;
             },
@@ -632,6 +632,10 @@
                 }
             },
             consultar(){
+                this.Error.estado = 0;
+                this.Error.mensaje = [];
+                this.Proveedor.id = 0;
+
                 this.DatosServicio.alert = '';
                 this.DatosServicio.mensaje = '';
                 this.DatosServicio.readonly = true;
@@ -672,22 +676,22 @@
                         me.DatosServicio.edit = false;
 
                         const persona = response.data.persona[0];
-                        me.Cliente.id = persona.id;
+                        me.Proveedor.id = persona.id;
                         if(persona.razon_social){//Es una EMPRESA
-                            me.Cliente.tipo = 'E';
-                            me.Cliente.ruc = persona.ruc;
-                            me.Cliente.razon_social = persona.razon_social;
+                            me.Proveedor.tipo = 'E';
+                            me.Proveedor.ruc = persona.ruc;
+                            me.Proveedor.razon_social = persona.razon_social;
 
                         }else{//Es una PERSONA
-                            me.Cliente.tipo = 'P';
-                            me.Cliente.dni = persona.dni;
-                            me.Cliente.nombres = persona.nombres;
-                            me.Cliente.apellidos = persona.apellidos;
+                            me.Proveedor.tipo = 'P';
+                            me.Proveedor.dni = persona.dni;
+                            me.Proveedor.nombres = persona.nombres;
+                            me.Proveedor.apellidos = persona.apellidos;
                         }
 
-                        me.Cliente.direccion = persona.direccion;
-                        me.Cliente.telefono = persona.telefono;
-                        me.Cliente.email = persona.email;
+                        me.Proveedor.direccion = persona.direccion;
+                        me.Proveedor.telefono = persona.telefono;
+                        me.Proveedor.email = persona.email;
                         me.DatosServicio.documento = '';
                     }else{//No esxiste la persona en la db
                         if(me.DatosServicio.documento.length == 8){
@@ -719,10 +723,10 @@
                             me.DatosServicio.alert = '';
                             me.DatosServicio.mensaje = '';
 
-                            me.Cliente.tipo = 'E';
-                            me.Cliente.ruc = empresa.RUC;
-                            me.Cliente.razon_social = empresa.RazonSocial;
-                            me.Cliente.direccion = empresa.Direccion;
+                            me.Proveedor.tipo = 'E';
+                            me.Proveedor.ruc = empresa.RUC;
+                            me.Proveedor.razon_social = empresa.RazonSocial;
+                            me.Proveedor.direccion = empresa.Direccion;
                         } else {
                             me.DatosServicio.alert = 'badge badge-primary';
                             me.DatosServicio.mensaje = 'El RUC no existe';
@@ -753,10 +757,10 @@
                                 me.DatosServicio.documento = '';
                                 me.DatosServicio.alert = '';
                                 me.DatosServicio.mensaje = '';
-                                me.Cliente.dni = persona[0];
-                                me.Cliente.nombres = persona[1];
-                                me.Cliente.apellidos = persona[2] + ' ' + persona[3];
-                                me.Cliente.tipo = 'P';
+                                me.Proveedor.dni = persona[0];
+                                me.Proveedor.nombres = persona[1];
+                                me.Proveedor.apellidos = persona[2] + ' ' + persona[3];
+                                me.Proveedor.tipo = 'P';
                             }else{
                                 me.DatosServicio.alert = 'badge badge-primary';
                                 me.DatosServicio.mensaje = 'El DNI no existe';
@@ -775,16 +779,16 @@
                 this.Error.estado = 0;
                 this.Error.mensaje = [];
 
-                //Recorrere la lista de Cliente
+                //Recorrere la lista de Proveedor
                 switch(numero){
                     case 1: //Datos obligatorios PERSONA
-                        if ( !this.Cliente.dni ) this.Error.mensaje.push("Debe ingresar DNI");
-                        if ( !this.Cliente.nombres ) this.Error.mensaje.push("Debe ingresar nombres");
-                        if ( !this.Cliente.apellidos ) this.Error.mensaje.push("Debe ingresar apellidos");
+                        if ( !this.Proveedor.dni ) this.Error.mensaje.push("Debe ingresar DNI");
+                        if ( !this.Proveedor.nombres ) this.Error.mensaje.push("Debe ingresar nombres");
+                        if ( !this.Proveedor.apellidos ) this.Error.mensaje.push("Debe ingresar apellidos");
                         break;
                     case 2: //Datos obligatorios EMPRESA
-                        if ( !this.Cliente.ruc ) this.Error.mensaje.push("Debe ingresar RUC");
-                        if ( !this.Cliente.razon_social ) this.Error.mensaje.push("Debe ingresar razón social");
+                        if ( !this.Proveedor.ruc ) this.Error.mensaje.push("Debe ingresar RUC");
+                        if ( !this.Proveedor.razon_social ) this.Error.mensaje.push("Debe ingresar razón social");
                         break;
                 }
 
