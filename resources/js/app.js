@@ -27,6 +27,7 @@ Vue.component('adm_abasto', require('./components/administrador/Abasto.vue').def
 Vue.component('adm_verpuesto', require('./components/administrador/VerPuesto.vue').default);
 Vue.component('adm_veralmacen', require('./components/administrador/VerAlmacen.vue').default);
 Vue.component('adm_cliente', require('./components/administrador/Cliente.vue').default);
+Vue.component('adm_proveedor', require('./components/administrador/Proveedor.vue').default);
 Vue.component('adm_estadistica', require('./components/administrador/Estadistica.vue').default);
 
 Vue.component('pue_producto', require('./components/puesto/Producto.vue').default);
@@ -54,7 +55,7 @@ Vue.component('noti_venta_alm', require('./components/Notificacion/Notification_
 const app = new Vue({
     el: '#app',
     data:{
-        menu: 7,
+        menu: 8,
         notifications:[],
     },
     created(){

@@ -142,5 +142,4 @@ class PersonaController extends Controller
         ];
     }
 
-
 }
