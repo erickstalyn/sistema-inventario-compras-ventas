@@ -18,20 +18,25 @@
 
             <!-- Inputs de busqueda -->
             <div class="row form-group">
-                <div class="col-md-8">
+                <div class="col-md-10">
                     <div class="input-group"> 
-                        <select class="col-md-3 custom-select text-gray-900" v-model="Busqueda.estado" @change="listar()">
+                        <select class="col-md-2 custom-select text-gray-900" v-model="Busqueda.estado" @change="listar()">
                             <option value="2">Todos</option>
                             <option value="1">Activados</option>
                             <option value="0">Desactivados</option>
                         </select>
-                        <input type="search" class="form-control" v-model="Busqueda.texto" placeholder="Buscar por NOMBRE" @keyup="listar()">
+                        <select class="col-md-3 custom-select text-gray-900" v-model="Busqueda.tipo" @change="listar()">
+                            <option value="">Todos</option>
+                            <option value="P">PERSONAS</option>
+                            <option value="E">EMPRESAS</option>
+                        </select>
+                        <input type="search" class="form-control" v-model="Busqueda.texto" placeholder="Buscar por NOMBRE, DNI o RUC" @keyup="listar()">
                         <button type="button" class="btn btn-primary" @click="listar()">
                             <i class="fa fa-search"></i>&nbsp; Buscar
                         </button>
                     </div>
                 </div>
-                <div class="col-md-2"></div>
+                <!-- <div class="col-md-2"></div> -->
                 <div class="col-md-1" align="right">
                     <label>N° filas:</label>
                 </div>
@@ -78,12 +83,12 @@
                                         <i class="fas fa-user-edit"></i>
                                     </button>
                                     <template v-if="cliente.estado">
-                                        <button type="button" @click="desactivar(material)" title="Desactivar" class="btn btn-outline-danger btn-sm">
+                                        <button type="button" @click="setEstado(cliente, 0)" title="Desactivar" class="btn btn-outline-danger btn-sm">
                                             <i class="fas fa-user-times"></i>
                                         </button>
                                     </template>
                                     <template v-else>
-                                        <button type="button" @click="activar(material)" title="Activar" class="btn btn-outline-success btn-sm">
+                                        <button type="button" @click="setEstado(cliente, 1)" title="Activar" class="btn btn-outline-success btn-sm">
                                             <i class="fas fa-user-check"></i>
                                         </button>
                                     </template>
@@ -155,54 +160,54 @@
                             </div>
                             <div v-if="Cliente.tipo == 'P'">
                                 <div class="row form-group">
-                                    <label class="col-md-3 font-weight-bold" for="nom">DNI&nbsp;<span class="text-danger">*</span></label>
+                                    <label class="col-md-2 font-weight-bold" for="nom">DNI&nbsp;<span class="text-danger">*</span></label>
                                     <div class="col-md-4">
                                             <input type="text" v-model="Cliente.dni" class="form-control" readonly>
                                     </div>
                                 </div>
                                 <div class="row form-group">
-                                    <label class="col-md-3 font-weight-bold" for="nom">Nombres&nbsp;<span class="text-danger">*</span></label>
-                                    <div class="col-md-9">
+                                    <label class="col-md-2 font-weight-bold" for="nom">Nombres&nbsp;<span class="text-danger">*</span></label>
+                                    <div class="col-md-10">
                                         <input type="text" v-model="Cliente.nombres" class="form-control" readonly>
                                     </div>
                                 </div>
                                 <div class="row form-group">
-                                    <label class="col-md-3 font-weight-bold" for="nom">Apellidos&nbsp;<span class="text-danger">*</span></label>
-                                    <div class="col-md-9">
+                                    <label class="col-md-2 font-weight-bold" for="nom">Apellidos&nbsp;<span class="text-danger">*</span></label>
+                                    <div class="col-md-10">
                                         <input type="text" v-model="Cliente.apellidos" class="form-control" readonly>
                                     </div>
                                 </div>
                             </div>
                             <div v-if="Cliente.tipo == 'E'">
                                 <div class="row form-group">
-                                    <label class="col-md-3 font-weight-bold" for="nom">RUC&nbsp;<span class="text-danger">*</span></label>
+                                    <label class="col-md-2 font-weight-bold" for="nom">RUC&nbsp;<span class="text-danger">*</span></label>
                                     <div class="col-md-4">
                                         <input type="text" v-model="Cliente.ruc" class="form-control" readonly>
                                     </div>
                                 </div>
                                 <div class="row form-group">
-                                    <label class="col-md-3 font-weight-bold" for="nom">Razón social&nbsp;<span class="text-danger">*</span></label>
-                                    <div class="col-md-9">
-                                        <input type="text" v-model="Cliente.razon_social" class="form-control" readonly>
+                                    <label class="col-md-2 font-weight-bold" for="nom">Razón social&nbsp;<span class="text-danger">*</span></label>
+                                    <div class="col-md-10">
+                                        <input type="text" v-model="Cliente.razon_social" class="form-control">
                                     </div>
                                 </div>
                             </div>
                             <div class="row form-group">
-                                <label class="col-md-3 font-weight-bold" for="nom">Teléfono</label>
-                                <div class="col-md-4">
-                                        <input type="text" v-model="Cliente.telefono" class="form-control">
-                                </div>
-                            </div>
-                            <div class="row form-group">
-                                <label class="col-md-3 font-weight-bold" for="nom">Dirección</label>
-                                <div class="col-md-9">
+                                <label class="col-md-2 font-weight-bold" for="nom">Dirección</label>
+                                <div class="col-md-10">
                                     <input type="text" v-model="Cliente.direccion" class="form-control">
                                 </div>
                             </div>
                             <div class="row form-group">
-                                <label class="col-md-3 font-weight-bold" for="nom">Email</label>
-                                <div class="col-md-9">
-                                    <input type="text" v-model="Cliente.email" class="form-control">
+                                <label class="col-md-2 font-weight-bold" for="nom">Teléfono</label>
+                                <div class="col-md-4">
+                                        <input type="number" v-model="Cliente.telefono" class="form-control" maxlength="9">
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <label class="col-md-2 font-weight-bold" for="nom">Email</label>
+                                <div class="col-md-10">
+                                    <input type="email" v-model="Cliente.email" class="form-control">
                                 </div>
                             </div>
                         </div>
@@ -217,31 +222,56 @@
                                     </ul>
                                 </div>
                             </div>
-                            <div class="row form-group">
-                                <label class="col-md-3 font-weight-bold" for="nom">Nombre&nbsp;<span class="text-danger">*</span></label>
-                                <div class="col-md-9">
-                                    <input type="text" v-model="Cliente.nombre" class="form-control" placeholder="ingrese el nombre">
+                            <div v-if="Cliente.tipo == 'P'">
+                                <div class="row form-group">
+                                    <label class="col-md-2 font-weight-bold" for="nom">DNI</label>
+                                    <div class="col-md-4">
+                                            <input type="text" v-model="Cliente.dni" class="form-control" readonly>
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <label class="col-md-2 font-weight-bold" for="nom">Nombres</label>
+                                    <div class="col-md-10">
+                                        <input type="text" v-model="Cliente.nombres" class="form-control" readonly>
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <label class="col-md-2 font-weight-bold" for="nom">Apellidos</label>
+                                    <div class="col-md-10">
+                                        <input type="text" v-model="Cliente.apellidos" class="form-control" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-if="Cliente.tipo == 'E'">
+                                <div class="row form-group">
+                                    <label class="col-md-2 font-weight-bold" for="nom">RUC</label>
+                                    <div class="col-md-4">
+                                        <input type="text" v-model="Cliente.ruc" class="form-control" readonly>
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <label class="col-md-2 font-weight-bold" for="nom">Razón social&nbsp;<span class="text-danger">*</span></label>
+                                    <div class="col-md-10">
+                                        <input type="text" v-model="Cliente.razon_social" class="form-control">
+                                    </div>
                                 </div>
                             </div>
                             <div class="row form-group">
-                                <label class="col-md-3 font-weight-bold" for="des">Unid.Medida&nbsp;<span class="text-danger">*</span></label>
-                                <div class="col-md-4">
-                                    <select v-model="Cliente.subtipo" class="custom-select" id="cat">
-                                        <option value="" disabled>Tipo</option>
-                                        <option v-for="item in SelectTipoFiltrado" :key="item" :value="item" v-text="item"></option>
-                                    </select>
-                                </div>
-                                <div class="col-md-5">
-                                    <select v-model="Cliente.unidad" class="custom-select" id="cat">
-                                        <option value="" disabled>Subtipo</option>
-                                        <option v-for="unidad in selectUnidadFiltrado" :key="unidad.id" :value="unidad.nombre" v-text="unidad.nombre"></option>
-                                    </select>
+                                <label class="col-md-2 font-weight-bold" for="nom">Dirección</label>
+                                <div class="col-md-10">
+                                    <input type="text" v-model="Cliente.direccion" class="form-control">
                                 </div>
                             </div>
                             <div class="row form-group">
-                                <label class="col-md-3 font-weight-bold" for="nom">Costo por Unidad&nbsp;<span class="text-danger">*</span></label>
+                                <label class="col-md-2 font-weight-bold" for="nom">Teléfono</label>
                                 <div class="col-md-4">
-                                    <input type="number" v-model="Cliente.costo" class="form-control" min="0">
+                                        <input type="number" v-model="Cliente.telefono" class="form-control" maxlength="9" min="0">
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <label class="col-md-2 font-weight-bold" for="nom">Email</label>
+                                <div class="col-md-10">
+                                    <input type="email" v-model="Cliente.email" class="form-control">
                                 </div>
                             </div>
                         </div>
@@ -284,6 +314,7 @@
                 Busqueda: {
                     texto: '',
                     estado: 2,
+                    tipo: '',
                     filas: 5
                 },
 
@@ -382,6 +413,7 @@
                 this.Paginacion.currentPage = page;
                 var url = this.Ruta.persona + '?page='+this.Paginacion.currentPage +'&funcion=1'
                         +'&estado='+this.Busqueda.estado
+                        +'&tipo='+this.Busqueda.tipo
                         +'&texto='+this.Busqueda.texto
                         +'&filas='+this.Busqueda.filas;
                 
@@ -394,23 +426,32 @@
                 });
             },
             agregar(){
-                if ( this.validar() ) return;
+                if(this.Cliente.tipo == 'P'){
+                    if ( this.validar(1) ) return;
+                }else{
+                    if ( this.validar(2) ) return;
+                }
                 
                 var me = this;
-                axios.post('/material/agregar', {
-                    'nombre' : this.Cliente.nombre,
-                    'subtipo': this.Cliente.subtipo,
-                    'unidad' : this.Cliente.unidad,
-                    'costo' : this.Cliente.costo
+                axios.post(this.Ruta.persona + '/agregar', {
+                    'tipo': this.Cliente.tipo,
+                    'nombres': this.Cliente.nombres,
+                    'apellidos': this.Cliente.apellidos,
+                    'dni': this.Cliente.dni,
+                    'razon_social': this.Cliente.razon_social,
+                    'ruc': this.Cliente.ruc,
+                    'direccion': this.Cliente.direccion,
+                    'telefono': this.Cliente.telefono,
+                    'email': this.Cliente.email,
                 }).then(function(response){
                     if(response.data.estado){
-                        me.cerrarModal();
                         me.listar();
+                        me.cerrarModal();
                         Swal.fire({
                             position: 'top-end',
                             toast: true,
                             type: 'success',
-                            title: 'El material se ha AGREGADO correctamente',
+                            title: 'El cliente se ha AGREGADO correctamente',
                             showConfirmButton: false,
                             timer: 4500,
                             animation:false,
@@ -419,7 +460,7 @@
                             }
                         });
                     }else{
-                        me.Error.mensaje.push("El material '"+ me.Cliente.nombre + "' ya se encuentra registrado");
+                        me.Error.mensaje.push('Error al intentar agregar un cliente');
                         me.Error.estado = 1;
                     }
                     
@@ -428,19 +469,23 @@
                 });
             },
             editar(){
-                if ( this.validar() ) return;
+                if(this.Cliente.tipo == 'P'){
+                    if ( this.validar(1) ) return;
+                }else{
+                    if ( this.validar(2) ) return;
+                }
 
                 var me = this;
-                axios.put('/material/editar', {
-                    'id' : this.Cliente.id,
-                    'nombre' : this.Cliente.nombre,
-                    'subtipo' : this.Cliente.subtipo,
-                    'unidad' : this.Cliente.unidad,
-                    'costo' : this.Cliente.costo,
+                axios.put(this.Ruta.persona +'/editar', {
+                    'id': this.Cliente.id,
+                    'razon_social': this.Cliente.razon_social,
+                    'direccion': this.Cliente.direccion,
+                    'telefono': this.Cliente.telefono,
+                    'email': this.Cliente.email,
                 }).then(function(response){
                     if(response.data.estado){
-                        me.cerrarModal();
                         me.listar();
+                        me.cerrarModal();
                         Swal.fire({
                             position: 'top-end',
                             toast: true,
@@ -454,64 +499,19 @@
                             }
                         });
                     }else{
-                        me.Error.mensaje.push('Este material ya está registrado');
+                        me.Error.mensaje.push('Error al editar el CLIENTE');
                         me.Error.estado = 1;
                     }
                 }).catch(function(error){
                     console.log(error);
                 });
             },
-            activar(material = []){
-                this.Cliente.id = material['id'];
-                this.Cliente.nombre = material['nombre'];
-
+            setEstado(cliente = [], estado){
+                this.Cliente.id = cliente['id'];
+                let name = cliente['tipo'] == 'P'? cliente['nombres'] + ' ' + cliente['apellidos'] : cliente['razon_social'];
+                console.log(this.Cliente);
                 Swal.fire({
-                    title: '¿Esta seguro de ACTIVAR el material "'+this.Cliente.nombre+'"?',
-                    type: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: 'Aceptar',
-                    cancelButtonText: 'Cancelar',
-                    // reverseButtons: true,
-                    
-                    customClass: {
-                        confirmButton: 'btn btn-success',
-                        cancelButton: 'btn btn-secondary'
-                    },
-                    buttonsStyling: false
-                }).then((result) => {
-                    if (result.value) {
-                        var me = this;
-                
-                        axios.put('/material/activar', {
-                            'id' : me.Cliente.id
-                        }).then(function (response) {
-                            me.listar();
-                            Swal.fire({
-                                position: 'top-end',
-                                toast: true,
-                                type: 'success',
-                                title: 'El material se ha ACTIVADO correctamente',
-                                showConfirmButton: false,
-                                timer: 4500,
-                                animation:false,
-                                customClass:{
-                                    popup: 'animated bounceIn fast'
-                                }
-                            });
-                        }).catch(function (error) {
-                            console.log(error);
-                        });
-                    } else if ( result.dismiss === Swal.DismissReason.cancel ) {
-
-                    }
-                });
-            },
-            desactivar(material = []){
-                this.Cliente.id = material['id'];
-                this.Cliente.nombre = material['nombre'];
-
-                Swal.fire({
-                    title: '¿Esta seguro de DESACTIVAR el material "'+this.Cliente.nombre+'"?',
+                    title: '¿Esta seguro de DESACTIVAR a "'+name+'"?',
                     type: 'error',
                     showCancelButton: true,
                     confirmButtonText: 'Aceptar',
@@ -526,15 +526,17 @@
                     if (result.value) {
                         var me = this;
                 
-                        axios.put('/material/desactivar', {
-                            'id' : me.Cliente.id
+                        axios.put(this.Ruta.persona +'/setEstado', {
+                            'id' : me.Cliente.id,
+                            'estado': estado,
+                            'funcion': 1
                         }).then(function (response) {
                             me.listar();
                             Swal.fire({
                                 position: 'top-end',
                                 toast: true,
                                 type: 'success',
-                                title: 'El material se ha DESACTIVADO correctamente',
+                                title: name + ' fue DESACTIVADO correctamente',
                                 showConfirmButton: false,
                                 timer: 4500,
                                 animation:false,
@@ -555,24 +557,20 @@
             },
             abrirModalEditar(data = []){
                 this.abrirModal(2, 'Editar Cliente', 'Editar');
-                
                 this.Cliente.id = data['id'];
-                this.Cliente.nombre = data['nombre'];
-                this.Cliente.subtipo = data['subtipo'];
-                this.Cliente.unidad = data['unidad'];
-                this.Cliente.costo  = data['costo'];
+                this.Cliente.tipo = data['tipo'];
+                if(this.Cliente.tipo == 'P'){
+                    this.Cliente.dni = data['dni'];
+                    this.Cliente.nombres = data['nombres'];
+                    this.Cliente.apellidos = data['apellidos'];
+                }else if(this.Cliente.tipo == 'E'){
+                    this.Cliente.ruc = data['ruc'];
+                    this.Cliente.razon_social = data['razon_social'];
+                }
+                this.Cliente.direccion = data['direccion'];
+                this.Cliente.telefono = data['telefono'];
+                this.Cliente.email = data['email'];
 
-                //Lleno los campos de mi Cliente Original
-                this.MaterialOrigen.id = data['id'];
-                this.MaterialOrigen.nombre = data['nombre'];
-                this.MaterialOrigen.subtipo = data['subtipo'];
-                this.MaterialOrigen.unidad = data['unidad'];
-                this.MaterialOrigen.costo  = data['costo'];
-                
-                //Verifico si el arreglo SelectUnidad esta vacia
-                if(!this.SelectUnidad.length) this.selectUnidad();
-                //Verifico si el arreglo SelectTipoFiltro esta vacia
-                // if(!this.SelectTipoFiltrado.length) this.selectTipoFiltrado();
             },
             abrirModal(numero, titulo, accion){
                 this.Modal.estado = 1;
@@ -588,15 +586,22 @@
                 this.Error.estado = 0;
                 this.Error.mensaje = [];
 
+                this.DatosServicio.documento = '';
+                this.DatosServicio.alert = '';
+                this.DatosServicio.mensaje = '';
+
                 this.Cliente.id = 0;
-                this.Cliente.nombre = '';
-                this.Cliente.unidad = '';
-                this.Cliente.subtipo = '';
-                this.Cliente.costo = 0;
+                this.Cliente.tipo = 'P';
+                this.Cliente.nombres = '';
+                this.Cliente.apellidos = '';
+                this.Cliente.dni = '';
+                this.Cliente.razon_social = '';
+                this.Cliente.ruc = '';
+                this.Cliente.direccion = '';
+                this.Cliente.telefono = '';
+                this.Cliente.email = '';
 
                 this.Button.press = false;
-
-                this.YaIngrese = 0;
             },
             accionar(accion){
                 this.Button.press = true;
@@ -690,6 +695,7 @@
                             me.Cliente.tipo = 'E';
                             me.Cliente.ruc = empresa.RUC;
                             me.Cliente.razon_social = empresa.RazonSocial;
+                            me.Cliente.direccion = empresa.Direccion;
                         } else {
                             me.DatosServicio.alert = 'badge badge-primary';
                             me.DatosServicio.mensaje = 'El RUC no existe';
@@ -738,45 +744,21 @@
                 }).fail(function(){
                 });
             },
-            getTitulo(titulo){
-                var seleccionada = 0;
-
-                for (let i = 0; i < this.Headers.length; i++) {
-                    if ( titulo == this.Headers[i].titulo && this.Navegacion.ordenarPor == this.Headers[i].nombre ) {
-                        seleccionada = 1;
-                        break;
-                    }
-                }
-
-                if ( seleccionada == 1 ) {
-                    if ( this.Navegacion.orden == 'asc' ) {
-                        titulo = titulo + ' ^';
-                    } else {
-                        titulo = titulo + ' v';
-                    }
-                }
-
-                return titulo;
-            },
-            validar(){
+            validar(numero){
                 this.Error.estado = 0;
                 this.Error.mensaje = [];
 
                 //Recorrere la lista de Cliente
-                if(this.Modal.numero == 1){
-                    //Modal agregar
-                    if ( !this.Cliente.nombre ) this.Error.mensaje.push("Debe ingresar un nombre");
-                    if ( !this.Cliente.unidad ) this.Error.mensaje.push("Debe seleccionar una Unid. Medida");
-                    if ( this.Cliente.costo == 0 || this.Cliente.costo < 0) this.Error.mensaje.push("Debe ingresar un costo válido");
-                }else{
-                    //Modal editar
-                    if(this.Cliente.nombre == this.MaterialOrigen.nombre && this.Cliente.subtipo == this.MaterialOrigen.subtipo && this.Cliente.unidad == this.MaterialOrigen.unidad && this.Cliente.costo == this.MaterialOrigen.costo){
-                        this.Error.mensaje.push("Ningun cambio realizado");
-                    }else{ 
-                        if ( !this.Cliente.nombre ) this.Error.mensaje.push("Debe ingresar un nombre");
-                        if ( !this.Cliente.unidad ) this.Error.mensaje.push("Debe seleccionar una Unid. Medida");
-                        if ( this.Cliente.costo == 0 || this.Cliente.costo < 0) this.Error.mensaje.push("Debe ingresar un costo válido");
-                    }
+                switch(numero){
+                    case 1: //Datos obligatorios PERSONA
+                        if ( !this.Cliente.dni ) this.Error.mensaje.push("Debe ingresar DNI");
+                        if ( !this.Cliente.nombres ) this.Error.mensaje.push("Debe ingresar nombres");
+                        if ( !this.Cliente.apellidos ) this.Error.mensaje.push("Debe ingresar apellidos");
+                        break;
+                    case 2: //Datos obligatorios EMPRESA
+                        if ( !this.Cliente.ruc ) this.Error.mensaje.push("Debe ingresar RUC");
+                        if ( !this.Cliente.razon_social ) this.Error.mensaje.push("Debe ingresar razón social");
+                        break;
                 }
 
                 if ( this.Error.mensaje.length ) {this.Error.estado = 1; this.Button.press = false;}
@@ -786,31 +768,6 @@
                 if ( page >= 1 && page <= this.Paginacion.lastPage) {
                     this.listar(page);
                 }
-            },
-            selectUnidad(){
-                var me = this;
-                var url = '/data/selectUnidad';
-                axios.get(url).then(function(response){
-                    me.SelectUnidad = response.data;
-                }).then(function(){
-                    me.selectTipoFiltrado();
-                })
-                .catch(function(error){
-                    console.log(error);
-                });
-            },
-            selectTipoFiltrado(){
-                // let selectTipoFiltrado = [];
-                console.log('Ingrese al metodo selectTipoFiltrado');
-                // console.log("tamaño del SelectUnidad " + this.SelectUnidad.length);
-                this.SelectUnidad.forEach(unidad => {
-                    // console.log('Ingrese el foreach');
-                    if(!this.SelectTipoFiltrado.includes(unidad.subtipo)){
-                        // console.log('ingrese al if del metodo selectTipoFiltrado');
-                        this.SelectTipoFiltrado.push(unidad.subtipo);
-                    }
-                });
-                // return selectTipoFiltrado;
             },
             generatePdf(){
                 window.open(this.Ruta.serverPhp + '/material/generatePdf','_blank');

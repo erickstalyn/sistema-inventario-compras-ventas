@@ -73,6 +73,9 @@ Route::group(['middleware' => ['auth']], function () {
 
         //Rutas para PERSONA
         Route::get('/persona', 'PersonaController@listar');
+        Route::post('/persona/agregar', 'PersonaController@agregar');
+        Route::put('/persona/editar', 'PersonaController@editar');
+        Route::put('/persona/setEstado', 'PersonaController@setEstado');
         
         //RUTAS PARA MATERIALES
         Route::get('/material', 'MaterialController@listar'); //métodos generales
