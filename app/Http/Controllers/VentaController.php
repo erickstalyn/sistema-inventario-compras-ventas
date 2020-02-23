@@ -11,6 +11,8 @@ use App\Detalle_abasto;
 use App\Persona;
 use App\Pago;
 use App\Vale;
+use App\Caja;
+use App\Concepto;
 use Carbon\Carbon;
 use Exception;
 use App\Usuario;
@@ -80,9 +82,24 @@ class VentaController extends Controller {
     }
 
     public function agregar(Request $request) {
-        if ( !$request->ajax() ) return redirect('/');
+        $state = 'validate';
+
+        {   // Validacion: que la consulta sea ajax
+            if ( !$request->ajax() ) return redirect('/');
+        }
+        {   // Validacion: que la caja chica este abierta
+            $caja = $this->validacion($request->dataCentro['id']);
+            
+            if ( $caja == 'error' ) {
+                return [
+                    'state' => 'box-close',
+                    'message' => 'La caja esta cerrada, no puede realizar ventas'
+                ];
+            }
+        }
         
         $now = Carbon::now('America/Lima')->toDateTimeString();
+        $dataCentro = $request->dataCentro;
         $dataVenta = $request->dataVenta;
         $dataVale = $request->dataVale;
         $dataCliente = $request->dataCliente;
@@ -90,13 +107,13 @@ class VentaController extends Controller {
         $dataListaAbasto = $request->dataListaAbasto;
         $listDetalle = $request->listDetalle;
 
-        $state = 'error';
-        $exception = NULL;
-
+        $state = 'transaction-error';
+        $message = 'inicio';
         try {
             DB::beginTransaction();
-            
+
             //cliente
+            $message = 'cliente';
             if ( $dataCliente['id'] != null ) {
                 if ( $dataCliente['id'] > 0 ) { //existe
                     $persona = Persona::findOrFail($dataCliente['id']);
@@ -130,8 +147,9 @@ class VentaController extends Controller {
             }
 
             //venta
+            $message = 'venta';
             $venta = new Venta();
-            $venta->centro_id = $dataVenta['centro_id'];    // centro_id
+            $venta->centro_id = $dataCentro['id'];    // centro_id
             $venta->tipo = $dataVenta['tipo_pago'].$dataVenta['tipo_entrega'].$dataVenta['tipo_precio'];    // tipo
             $venta->total = $dataVenta['total'];    // total
             $venta->total_venta = $dataVenta['total_venta'];    //total_venta
@@ -144,6 +162,7 @@ class VentaController extends Controller {
             $venta->save();
 
             //vale
+            $message = 'vale';
             if ( $dataVale['usado']['id'] != null ) {
                 if ( $dataVale['usado']['id'] > 0 ) {
                     $vale = Vale::findOrFail($dataVale['usado']['id']);
@@ -154,7 +173,16 @@ class VentaController extends Controller {
             }
 
             //pago
-            if ( $dataVenta['tipo_pago'] == '2' && $dataPago['monto'] != NULL ){
+            $message = 'pago';
+            if ( $dataVenta['tipo_pago'] == '1' ) {
+                $concepto = new Concepto();
+                $concepto->caja_id = $caja->id;
+                $concepto->type = 1;
+                $concepto->descripcion = 'Pago de venta al contado';
+                $concepto->monto = $venta->total;
+                $concepto->created_at = $now;
+                $concepto->save();
+            } else if ( $dataVenta['tipo_pago'] == '2' && $dataPago['monto'] != NULL ){
                 if ( $dataPago['monto'] > 0 ) {
                     $pago = new Pago();
                     $pago->monto = $dataPago['monto'];
@@ -162,10 +190,19 @@ class VentaController extends Controller {
                     $pago->created_at = $now;
                     $pago->updated_at = NULL;
                     $pago->save();
+
+                    $concepto = new Concepto();
+                    $concepto->caja_id = $caja->id;
+                    $concepto->type = 1;
+                    $concepto->descripcion = 'Pago de venta al credito';
+                    $concepto->monto = $pago->monto;
+                    $concepto->created_at = $now;
+                    $concepto->save();
                 }
             }
 
             //abastos
+            $message = 'abasto';
             foreach ($dataListaAbasto as $ep => $compra){
                 $abasto = new Abasto();
                 $abasto->proveedor_nombre = $compra['proveedor_nombre'];
@@ -187,6 +224,7 @@ class VentaController extends Controller {
             }
 
             //lista de detalles
+            $message = 'detalle_venta';
             foreach ($listDetalle as $ep => $det){
                 $detalle = new Detalle_venta();
                 $detalle->detalle_producto_id = $det['detalle_producto_id']; 
@@ -200,38 +238,52 @@ class VentaController extends Controller {
             }
 
             //Sección notificaciones
-            $fechaActual = date('Y-m-d');
-            $listaCentros = DB::table('centro')->get();
-            foreach ($listaCentros as $centro) {
-                $cant = Venta::whereDate('created_at', $fechaActual)->where('centro_id', $centro->id)->count();
-                $arregloDatos['c'.$centro->id] = [
-                    'nombre' => $centro->nombre,
-                    'numero' => $cant,
-                ];
-            }
-            $usersAdmin = Usuario::where('rol', 'M')->get();
-            foreach($usersAdmin as $notificar){
-                Usuario::findOrFail($notificar->id)->notify(new NotifyAdmin($arregloDatos));
-            }
+            // $fechaActual = date('Y-m-d');
+            // $listaCentros = DB::table('centro')->get();
+            // foreach ($listaCentros as $centro) {
+            //     $cant = Venta::whereDate('created_at', $fechaActual)->where('centro_id', $centro->id)->count();
+            //     $arregloDatos['c'.$centro->id] = [
+            //         'nombre' => $centro->nombre,
+            //         'numero' => $cant,
+            //     ];
+            // }
+            // $usersAdmin = Usuario::where('rol', 'M')->get();
+            // foreach($usersAdmin as $notificar){
+            //     Usuario::findOrFail($notificar->id)->notify(new NotifyAdmin($arregloDatos));
+            // }
 
             DB::commit();
-            $state = 'success';
+            $state = 'transaction-success';
         } catch (Exception $e) {
             DB::rollback();
-            $state = 'exception';
-            $exception = $e;
+            $state = 'transaction-exception';
+            $message = $e;
         }
 
         return [
             'state' => $state,
-            'exception' => $exception,
-            'arreglo de datos' => $arregloDatos,
+            'message' => $message,
+            // 'arreglo de datos' => $arregloDatos
         ];
     }
 
     public function editar(Request $request) {
-        if ( !$request->ajax() ) return redirect('/');
-        
+        $state = 'validate';
+
+        {   // Validacion: que la consulta sea ajax
+            if ( !$request->ajax() ) return redirect('/');
+        }
+        {   // Validacion: que la caja chica este abierta
+            $caja = $this->validacion($request->dataCentro['id']);
+            
+            if ( $caja == 'error' ) {
+                return [
+                    'state' => 'closeBox',
+                    'message' => 'La caja esta cerrada, no puede realizar ventas',
+                ];
+            }
+        }
+
         $now = Carbon::now('America/Lima')->toDateTimeString();
         $dataCliente = $request->dataCliente;
         $dataVenta = $request->dataVenta;
@@ -239,9 +291,7 @@ class VentaController extends Controller {
         $dataVale = $request->dataVale;
         $listDetalle = $request->listDetalle;
 
-        $state = 'error';
-        $vale = NULL;
-        $exception = NULL;
+        $state = 'transaction-error';
         
         try {
             DB::beginTransaction();
@@ -312,17 +362,17 @@ class VentaController extends Controller {
             }
 
             DB::commit();
-            $state = 'success';
+            $state = 'transaction-success';
         } catch (Exception $e) {
             DB::rollback();
-            $state = 'exception';
-            $exception = $e;
+            $state = 'transaction-exception';
+            $message = $e;
         }
 
         return [
             'vale' => $vale,
             'state' => $state,
-            'exception' => $exception
+            'message' => $message
         ];
     }
 
@@ -362,5 +412,18 @@ class VentaController extends Controller {
             'detalles' => $detalles,
             'pagos' => $pagos
         ];
+    }
+
+
+    public function validacion($centro_id){
+        // Validacion: que la caja chica este abierta
+        $now = Carbon::now('America/Lima')->toDateString();
+        $caja = Caja::where('centro_id', '=', $centro_id)
+                        ->where(DB::raw('CAST(start AS DATE)'), '=', $now)->get();
+        
+        if ( count($caja) == 0 ) return 'error';
+        if ( $caja[0]->state == 0 ) return 'error';
+
+        return $caja[0];
     }
 }

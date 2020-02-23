@@ -35,15 +35,18 @@
                 <pue_producto></pue_producto>
             </template>
             <template v-if="menu==1">
-                <pue_venta></pue_venta>
+                <pue_caja></pue_caja>
             </template>
             <template v-if="menu==2">
-                <vale></vale>
+                <pue_venta></pue_venta>
             </template>
             <template v-if="menu==3">
-                <enviorealizado></enviorealizado>
+                <vale></vale>
             </template>
             <template v-if="menu==4">
+                <enviorealizado></enviorealizado>
+            </template>
+            <template v-if="menu==5">
                 <enviorecibido></enviorecibido>
             </template>
 

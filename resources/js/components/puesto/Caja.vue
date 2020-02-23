@@ -5,106 +5,101 @@
         <div class="container-small">
             
             <!-- Encabezado principal -->
-            <div class="row form-group">
-                <div class="col-md-9">
-                    <i class="fas fa-map-signs"></i>&nbsp;&nbsp;
-                    <span class="h3 mb-0 text-gray-900">Ventas&nbsp;</span>
-                    <button type="button" class="btn btn-success" @click="abrirModalAgregar()" v-if="Caja.state==1">
-                        <i class="fas fa-shopping-cart"></i>&nbsp;Nuevo
-                    </button>&nbsp;
+            <div class="row">
+                <div class="col-md-12 text-center form-group">
+                    <label class="h3 text-gray-900">ESTADO DE LA CAJA CHICA</label>
                 </div>
-                <div class="col-md-3 d-flex justify-content-end">
-                    <button type="button" class="btn btn-success" @click="abrirModalAbastecer()" v-if="Caja.state==1">
-                        <i class="fas fa-comment-dollar" :class="DetalleVenta.button.class"></i>&nbsp;&nbsp;Productos externos
-                    </button>
+                <div class="col-md-12 form-group">
+                    <label class="font-weight-bold text-gray-900" v-text="'Fecha: '+get('date-today')"></label>
                 </div>
             </div>
 
-            <!-- Inputs de busqueda -->
-            <div class="row form-group">
-                <div class="col-md-7"> 
-                    <div class="input-group">
-                        <select class="col-md-2 custom-select text-gray-900 w4rem" v-model="Busqueda.type" @change="listar()">
-                            <option value="0">Todos</option>
-                            <option value="1">Contado</option>
-                            <option value="2">Credito</option>
-                        </select>
-                        <input type="search" class="form-control" v-model="Busqueda.text" placeholder="Busca por CÓDIGO de venta" @keyup.enter="listar()">
-                        <button type="button" class="btn btn-primary" @click="listar()">
-                            <i class="fa fa-search"></i>&nbsp;Buscar
-                        </button>
+            <!-- Conceptos de ingresos y egresos -->
+            <div class="col-md-12 input-group form-group">
+                <div class="col-md-6 container-small">
+                    <div class="shadow rounded table-success" style="border: 1px solid; height: 20rem;">
+                        <div class="col-md-12 pt-3 input-group form-group">
+                            <div class="col-md-3"></div>
+                            <div class="col-md-6 text-center">
+                                <label class="h5 font-weight-bold text-gray-900">INGRESOS</label>
+                            </div>
+                            <div class="col-md-3"></div>
+                        </div>
+                        <div v-if="ListaVenta.length">
+                            <div class="ec-table overflow-auto">
+                                <table class="table table-striped table-condensed table-bordered table-sm text-gray-900">
+                                    <thead>
+                                        <tr class="table-danger">
+                                            <th class="text-center">Codigo</th>
+                                            <th class="text-center">Tipo</th>
+                                            <th class="text-center">Cliente</th>
+                                            <th class="text-center">Total</th>
+                                            <th class="text-center">Realizado</th>
+                                            <th class="text-center">Opciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="venta in ListaVenta" :key="venta.id" >
+                                            <td class="text-center" v-text="venta.codigo"></td>
+                                            <td>
+                                                <label v-if="venta.tipo.charAt(0)=='1'">Contado</label>
+                                                <label v-if="venta.tipo.charAt(0)=='2'">Credito</label>
+                                            </td>
+                                            <td v-text="venta.razon_social!=null?venta.razon_social:(venta.nombres!=null?(venta.nombres+' '+venta.apellidos):'---')"></td>
+                                            <td class="text-right" v-text="venta.total"></td>
+                                            <td class="text-center" v-text="fix(0, venta.created_at)"></td>
+                                            <td class="text-center">
+                                                <template>
+                                                    <button type="button" title="VER" class="btn btn-primary btn-sm" @click="abrirModalVer(venta)">
+                                                        <i class="far fa-eye"></i>
+                                                    </button>
+                                                </template>
+                                                <template v-if="venta.editable && Caja.state==1">
+                                                    <button type="button" title="EDITAR" class="btn btn-warning btn-sm" @click="abrirModalEditar(venta)">
+                                                        <i class="fas fa-edit"></i>
+                                                    </button>
+                                                </template>
+                                                <template v-if="(venta.tipo.charAt(0)=='2') && (venta.total_faltante!=null && venta.total_faltante>0) && Caja.state==1">
+                                                    <button type="button"  title="PAGAR" class="btn btn-success btn-sm" @click="abrirModalPagar(venta)">
+                                                        <i class="fas fa-hand-holding-usd"></i>
+                                                    </button>
+                                                </template>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div v-else>
+                            <!-- <h5>No se han encontrado resultados</h5> -->
+                        </div>
                     </div>
                 </div>
-                <div class="col-md-2"></div>
-                <label class="col-md-2 text-right">N° filas:</label>
-                <select class="col-md-1 text-right custom-select custom-select-sm text-gray-900" v-model="Busqueda.rows">
-                    <option v-for="item in Filas" :key="item" :value="item" v-text="item"></option>
-                </select>
+                <div class="col-md-6 container-small">
+                    <div class="shadow rounded table-warning" style="border: 1px solid; height: 20rem;">
+                        <div class="col-md-12 pt-3 input-group form-group">
+                            <div class="col-md-3"></div>
+                            <div class="col-md-6 text-center">
+                                <label class="h5 font-weight-bold text-gray-900">EGRESOS</label>
+                            </div>
+                            <div class="col-md-3"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <!-- Listado -->
-            <div v-if="ListaVenta.length">
-                <!-- Tabla -->
-                <div class="ec-table overflow-auto">
-                    <table class="table table-striped table-condensed table-bordered table-sm text-gray-900">
-                        <thead>
-                            <tr class="table-danger">
-                                <th class="text-center">Codigo</th>
-                                <th class="text-center">Tipo</th>
-                                <th class="text-center">Cliente</th>
-                                <th class="text-center">Total</th>
-                                <th class="text-center">Realizado</th>
-                                <th class="text-center">Opciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="venta in ListaVenta" :key="venta.id" >
-                                <td class="text-center" v-text="venta.codigo"></td>
-                                <td>
-                                    <label v-if="venta.tipo.charAt(0)=='1'">Contado</label>
-                                    <label v-if="venta.tipo.charAt(0)=='2'">Credito</label>
-                                </td>
-                                <td v-text="venta.razon_social!=null?venta.razon_social:(venta.nombres!=null?(venta.nombres+' '+venta.apellidos):'---')"></td>
-                                <td class="text-right" v-text="venta.total"></td>
-                                <td class="text-center" v-text="fix(0, venta.created_at)"></td>
-                                <td class="text-center">
-                                    <template>
-                                        <button type="button" title="VER" class="btn btn-primary btn-sm" @click="abrirModalVer(venta)">
-                                            <i class="far fa-eye"></i>
-                                        </button>
-                                    </template>
-                                    <template v-if="venta.editable && Caja.state==1">
-                                        <button type="button" title="EDITAR" class="btn btn-warning btn-sm" @click="abrirModalEditar(venta)">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                    </template>
-                                    <template v-if="(venta.tipo.charAt(0)=='2') && (venta.total_faltante!=null && venta.total_faltante>0) && Caja.state==1">
-                                        <button type="button"  title="PAGAR" class="btn btn-success btn-sm" @click="abrirModalPagar(venta)">
-                                            <i class="fas fa-hand-holding-usd"></i>
-                                        </button>
-                                    </template>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+            <div class="col-md-12 input-group form-group">
+                <div class="col-md-8 input-group mr-6">
+                    <div class="col-md-12 input-group">
+                        <label class="col-md-7 text-right h5 text-gray-900">Saldo al inicio del dia</label>
+                        <label class="col-md-2 text-right h5 text-gray-900">S/.</label>
+                        <label class="col-md-3 text-right h5 text-gray-900" v-text="Caja.total_start"></label>
+                    </div>
+                    <div class="col-md-12 input-group">
+
+                    </div>
                 </div>
-                <!-- Barra de navegacion -->
-                <nav class="d-flex justify-content-center">
-                    <ul class="pagination">
-                        <li class="page-item">
-                            <a href="#" @click="cambiarPagina(Paginacion.currentPage-1)" class="page-link">Anterior</a>
-                        </li>
-                        <li class="page-item" v-for="page in Paginas" :key="page" :class="[page==Paginacion.currentPage?'active':'']">
-                            <a href="#" @click="cambiarPagina(page)" v-text="page" class="page-link"></a>
-                        </li>
-                        <li class="page-item">
-                            <a href="#" @click="cambiarPagina(Paginacion.currentPage+1)" class="page-link">Siguiente</a>
-                        </li>
-                    </ul>
-                </nav>
-            </div>
-            <div v-else>
-                <h5>No se han encontrado resultados</h5>
+                <div class="col-md-4 input-group ml-6"></div>
             </div>
 
         </div>
@@ -1044,64 +1039,11 @@
     export default {
         data(){
             return {
-                //datos generales
-                ListaVenta: [],
-                Venta: {
-                    id: null,
-                    codigo: null,
-                    centro_id: null,
-                    total: null,
-                    total_start: null,
-                    total_faltante: null,
-                    total_faltante_start: null,
-                    total_descuento: null,
-                    total_descuento_start: null,
-                    total_venta: null,
-                    total_venta_start: null,
-                    tipo: null,
-                    tipo_pago: null, // 1: contado, 2: credito
-                    tipo_entrega: null, // 1: prepago, 2: postpago
-                    tipo_precio: null, // 1: al por menor, 2: al por mayor
-                    created_at : null,
-                    total_recibido: null,
-                    total_vuelto: null
-                },
-                ListaAbasto: [],
-                Abasto: {
-                    id: null,
-                    total: null
-                },
-
-                DetalleVenta:{
-                    cantidad: null,
-                    precio: null,
-                    subtotal: null,
-                    button:{
-                        class: ''
-                    }
-                },
-
-                ListaProducto: null,
-                ListaDetalle: null,
-                ListaDetalleAbasto: null,
-                
-                Proveedor: {
-                    nombres: null
-                },
-                Cliente:{
-                    id: null,
-                    documento: null,
-                    dni: null,
-                    ruc: null,
-                    nombres: null,
-                    apellidos: null,
-                    razon_social: null,
-                    tipo: null,
-                    searchable: null,
-                    removable: null
-                },
-
                 Caja: {
+                    id: null,
+                    total_start: null,
+                    total_end: null,
+                    
                     state: 0
                 },
 
@@ -1877,161 +1819,16 @@
                 if ( this.Error.mensaje.length ) {this.Error.estado = 1; this.Button.press = false;}
                 return this.Error.estado;
             },
-            consultar(){
-                this.Service.msm = '';
-                this.Service.msmclass = '';
-
-                switch (this.Service.document.length) {
-                    case 0:
-                        this.Service.msm = 'Ingrese un DNI o RUC';
-                        this.Service.msmclass = 'badge badge-warning';
-                        break;
-                    case 8: 
-                    case 11:
-                        this.Service.msm = 'Consultado...';
-                        this.Service.msmclass = 'badge badge-info';
-                        this.Service.loadclass = 'spinner-border spinner-border-sm text-success';
-                        this.consultarDB();
-                        break;
-                    default:
-                        this.Service.msm = 'Documento inválido'
-                        this.Service.msmclass = 'badge badge-primary';
-                        break;
-                }
-            },
-            consultarDB(){
-                var me = this;
-                var url = this.Ruta.persona+'/getPersona';
-
-                axios.get(url, {
-                    params: {
-                        'documento': me.Service.document
-                    }
-                }).then(function(response){
-                    if (response.data.persona.length){ //Si existe la persona en la db
-                        me.Service.msm = '';
-                        me.Service.msmclass = '';
-                        me.Service.loadclass = '';
-
-                        const persona = response.data.persona[0];
-                        
-                        if ( persona.razon_social != null ){ //Es una EMPRESA
-                            me.Cliente.tipo = 'E';
-                            me.Cliente.razon_social = persona.razon_social;
-                            me.Cliente.ruc = me.Service.document;
-                        } else { //Es una PERSONA
-                            me.Cliente.tipo = 'P';
-                            me.Cliente.nombres = persona.nombres;
-                            me.Cliente.apellidos = persona.apellidos;
-                            me.Cliente.dni = me.Service.document;
-                        }
-
-                        me.Cliente.id = persona.id;
-                        me.Cliente.documento = me.Service.document;
-
-                        me.Service.document = '';
-
-                        me.update('cliente.removable');
-                        me.get('vale.usado', persona.id);
-                    } else { //No esxiste la persona en la db
-                        if ( me.Service.document.length == 8 ){
-                            me.consultarDNI();
-                        } else {
-                            me.consultarRUC();
-                        }
-                    }
-                }).catch(function(error){
-                    console.log(error);
-                });
-            },
-            consultarDNI(){
-                let me = this;
-                let dni = me.Service.document;
-
-                $.ajax({
-                    type: 'POST',
-                    url: me.Ruta.serverApache + '/Reniec/consulta_reniec.php',
-                    data: "dni="+dni,
-                    beforeSend(){
-                        me.Service.msm = 'Consultado...';
-                        me.Service.msmclass = 'badge badge-info';
-                        me.Service.loadclass = 'spinner-border spinner-border-sm text-primary';
-                    },
-                    success: function (data, textStatus, jqXHR) {
-                        try {
-                            let persona = JSON.parse(data);
-                            if (persona[2] != null){
-                                me.Service.document = '';
-                                me.Service.msm = '';
-                                me.Service.msmclass = '';
-
-                                me.Cliente.id = null;
-                                me.Cliente.tipo = 'P';
-                                me.Cliente.documento = persona[0];
-                                me.Cliente.dni = persona[0];
-                                me.Cliente.nombres = persona[1];
-                                me.Cliente.apellidos = persona[2] + ' ' +persona[3];
-
-                                me.update('cliente.removable');
-                                me.remove('vale.usado');
-                            } else {
-                                me.Service.msm = 'El DNI no existe';
-                                me.Service.msmclass = 'badge badge-primary';
-                            }
-                            me.Service.loadclass = '';
-                        } catch (error) {
-                            console.log(error);
-                            me.Service.msm = 'Vuelva a intentarlo porfavor =D';
-                            me.Service.msmclass = 'badge badge-primary';
-                        }
-                    }
-                }).fail(function(){
-                });
-            },
-            consultarRUC(){
-                let me = this;
-                let ruc = me.Service.document;
-
-                $.ajax({
-                    type: 'GET',
-                    url: me.Ruta.serverApache + '/SunatPHP/demo.php',
-                    data: "ruc="+ruc,
-                    beforeSend(){
-                        me.Service.msm = 'Consultado...';
-                        me.Service.msmclass = 'badge badge-info';
-                        me.Service.loadclass = 'spinner-border spinner-border-sm text-primary';
-                    },
-                    success: function (data, textStatus, jqXHR) {
-                        let empresa = JSON.parse(data);
-                        if ( empresa.RazonSocial ){
-                            me.Service.document = '';
-                            me.Service.msm = '';
-                            me.Service.msmclass = '';
-
-                            me.Cliente.id = 0;
-                            me.Cliente.tipo = 'E';
-                            me.Cliente.documento = empresa.RUC;
-                            me.Cliente.ruc = empresa.RUC;
-                            me.Cliente.razon_social = empresa.RazonSocial;
-
-                            me.update('cliente.removable');
-                            me.update('vale.usado');
-                        } else {
-                            me.Service.msm = 'El RUC no existe';
-                            me.Service.msmclass = 'badge badge-primary';
-                        }
-                        me.Service.loadclass = '';
-                    }
-                }).fail(function(){
-                });
-            },
-            list(numero, data = ''){
-                this.log('on list("'+numero+'")');
+            list(option, data = ''){
+                this.log('on list("'+option+'")');
 
                 var me = this;
                 var url;
 
-                switch (numero) {
+                switch (option) {
+                    case 'concepto':{
+
+                        }
                     case 'detalle_producto': 
                         if ( this.Service.text == '' ) break;
 
@@ -2706,24 +2503,33 @@
 
                 return fixed;
             },
-            get(numero, data = ''){
-                this.log('on get("'+numero+'")');
+            get(option, data = ''){
+                this.log('on get("'+option+'")');
 
                 var me = this;
                 var url = '';
                 var got = '';
 
-                switch ( numero ) {
-                    case 0:
-                        let n =  new Date();
-                        let y = n.getFullYear();
-                        let m = (n.getMonth()+1).toString().padStart(2, 0);
-                        let d = n.getDate().toString().padStart(2, 0);
-                        let h = n.getHours();
-                        let minu = n.getMinutes().toString().padStart(2, 0);
-                        let seg = n.getSeconds().toString().padStart(2, 0);
-                        got =  y + '-' + m + '-' + d + ' ' + h + ':' + minu + ':' + seg;
-                        break;
+                switch ( option ) {
+                    case 'date-today': {
+                            let n =  new Date();
+                            let y = n.getFullYear();
+                            let m = (n.getMonth()+1).toString().padStart(2, 0);
+                            let d = n.getDate().toString().padStart(2, 0);
+                            got =  d + '-' + m + '-' + y;
+                            break;
+                        }
+                    case 'datetime-today': {
+                            let n =  new Date();
+                            let y = n.getFullYear();
+                            let m = (n.getMonth()+1).toString().padStart(2, 0);
+                            let d = n.getDate().toString().padStart(2, 0);
+                            let h = n.getHours();
+                            let minu = n.getMinutes().toString().padStart(2, 0);
+                            let seg = n.getSeconds().toString().padStart(2, 0);
+                            got =  y + '-' + m + '-' + d + ' ' + h + ':' + minu + ':' + seg;
+                            break;
+                        }
                     case 'vale.usado':
                         if ( this.Modal.numero == 1 ) {
                             url = this.Ruta.vale+'/get';
@@ -2859,64 +2665,17 @@
                         break;
                 }
             },
-            actualize(option){
-                var me = this;
-                var url;
-
-                switch (option) {
-                    case 'caja':
-                        url = this.Ruta.caja+'/state';
-
-                        axios.get(url, {
-                            params: {
-                                centro_id: this.Centro.id
-                            }
-                        }).then(function (response) {
-                            let nuevo = response.data.state;
-                            let viejo = me.Caja.state;
-
-                            if ( viejo == 1 && nuevo == 0 ) console.log(response.data.message);
-                            if ( nuevo != viejo ) me.Caja.state = nuevo;
-
-                            me.actualize('caja');
-                        }).catch(function (error) {
-                            console.log(error);
-                        });
-                        break;
-                }
-            },
-            cambiarPagina(page){
-                if ( page >= 1 && page <= this.Paginacion.lastPage) {
-                    this.listar(page);
-                }
-            },
             log(message = ''){
                 var data = {
-                    Venta: this.Venta,
-                    Vale: this.Vale,
-                    ListaVenta: this.ListaVenta,
-                    ListaPago: this.ListaPago,
-                    ListaDetalle: this.ListaDetalle,
-                    Pago: this.Pago,
-                    ListaProducto: this.ListaProducto,
-                    ListaVenta: this.ListaVenta,
-                    ListaVenta: this.ListaVenta,
-                    Cliente: this.Cliente
                 };
                 // if ( message != '' ) console.log(message);
                 // console.log(data);
             },
             error(){
                 console.log('surgio un supererror');
-            },
-            generatePdfSpecific(){
-                window.open(this.Ruta.serverPhp + '/venta/generatePdfSpecific?id=' + this.Venta.id,'_blank');
-                this.Button.press = false;
             }
         },
         mounted() {
-            this.listar();
-            this.actualize('caja');
         }
     }
 

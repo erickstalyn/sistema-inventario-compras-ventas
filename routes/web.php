@@ -47,6 +47,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/abasto/list', 'AbastoController@list');
     Route::post('/abasto/pay', 'AbastoController@pay');
 
+    //RUTAS PARA CAJA
+    Route::get('/caja/state', 'CajaController@state');
+
     //RUTAS PARA PAGOS
     Route::get('/pago/listVenta', 'PagoController@listVenta');
     Route::post('/pago/agregar', 'PagoController@agregar');
