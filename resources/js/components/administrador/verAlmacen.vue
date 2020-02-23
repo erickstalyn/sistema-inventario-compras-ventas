@@ -13,14 +13,14 @@
                     <!-- <i class="fas fa-hammer"></i>&nbsp; -->
                     <span class="h3 mb-0 text-gray-900 font-italic" v-text="Almacen.nombre"></span>&nbsp;&nbsp;
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <div class="input-group">
                         <select class="custom-select text-gray-900" v-model="Almacen.id" @change="listar()">
                             <option v-for="almacen in SelectAlmacen" :key="almacen.id" :value="almacen.id" v-text="almacen.nombre"></option>
                         </select>
                     </div>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <div class="input-group">
                         <select class="custom-select text-gray-900" v-model="Almacen.quieroVer" @change="listar()">
                             <option value="1">Inventario</option>
