@@ -172,7 +172,7 @@
                             <div class="row form-group">
                                 <label class="col-md-3 font-weight-bold" for="rol">Rol&nbsp;<span class="text-danger">*</span></label>
                                 <div class="col-md-9">
-                                    <select v-model="Usuario.rol_id" class="form-control" id="rol">
+                                    <select v-model="Usuario.rol_id" class="custom-select" id="rol">
                                         <option value="0" disabled>seleccione un rol</option>
                                         <option v-for="rol in SelectRol" :key="rol.id" :value="rol.id" v-text="rol.descripcion"></option>
                                     </select>
