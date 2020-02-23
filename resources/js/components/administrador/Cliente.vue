@@ -632,6 +632,10 @@
                 }
             },
             consultar(){
+                this.Error.estado = 0;
+                this.Error.mensaje = [];
+                this.Cliente.id = 0;
+
                 this.DatosServicio.alert = '';
                 this.DatosServicio.mensaje = '';
                 this.DatosServicio.readonly = true;
@@ -713,6 +717,7 @@
                         me.DatosServicio.mensaje = 'Consultado...';
                     },
                     success: function (data, textStatus, jqXHR) {
+                        me.DatosServicio.edit = true;
                         let empresa = JSON.parse(data);
                         if( empresa.RazonSocial ){
                             me.DatosServicio.documento = '';
@@ -746,8 +751,8 @@
                         me.DatosServicio.mensaje = 'Consultado...';
                     },
                     success: function (data, textStatus, jqXHR) {
-                        // console.log(JSON.parse(data));
                         try {
+                            me.DatosServicio.edit = true;
                             let persona = JSON.parse(data);
                             if(persona[2] != null ){
                                 me.DatosServicio.documento = '';

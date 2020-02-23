@@ -652,7 +652,8 @@
                     documento: '',
                     nombres: '',
                     apellidos: '',
-                    razon_social: ''
+                    razon_social: '',
+                    direccion: ''
                 },
                 //datos de busqueda y filtracion general
                 Busqueda: {
@@ -951,6 +952,7 @@
                             me.DatosServicio.readonly = false;
                             me.DatosProveedor.documento = empresa.RUC;
                             me.DatosProveedor.razon_social = empresa.RazonSocial;
+                            me.DatosProveedor.direccion = empresa.Direccion;
                         } else {
                             me.DatosServicio.alert = 'badge badge-primary';
                             me.DatosServicio.mensaje = 'El RUC no existe';

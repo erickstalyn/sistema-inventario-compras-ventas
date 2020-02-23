@@ -71,7 +71,6 @@ class PersonaController extends Controller
                     $persona->nombres = mb_convert_case($request->nombres, MB_CASE_TITLE, "UTF-8");
                     $persona->apellidos = mb_convert_case($request->apellidos, MB_CASE_TITLE, "UTF-8");
                     $persona->dni = $request->dni;
-                    
                 }
                 if($persona->tipo == 'E'){
                     $persona->razon_social = $request->razon_social;
