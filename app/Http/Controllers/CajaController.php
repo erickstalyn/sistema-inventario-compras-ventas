@@ -45,5 +45,73 @@ class CajaController extends Controller {
         }
         
     }
+    
+    public function get(Request $request){
+        if ( !$request->ajax() ) return redirect('/');
 
+        // $date = $request->date;
+        $date = Carbon::now('America/Lima')->toDateString();
+        $centro_id = $request->centro_id;
+
+        $caja = Caja::where(DB::raw('CAST(start AS DATE)'), '=', $date)
+                    ->where('centro_id', '=', $centro_id)->first();
+
+        if ( $caja == NULL ) {
+            return [
+                'exist' => false
+            ];
+        }
+        
+        $caja->getConceptos;
+        return [
+            'exist' => true,
+            'caja' => $caja
+        ];
+    }
+
+    public function open(Request $request){
+        if ( !$request->ajax() ) return redirect('/');
+
+        $centro_id = $request->centro_id;
+        $now = Carbon::now('America/Lima')->toDateTimeString();
+        $total_start = 0;
+
+        //CERRAR EL ANTERIOR
+        $caja = Caja::where('centro_id', '=', $centro_id)
+                    ->where('state', '=', 1)
+                    ->orderBy('id', 'desc')->first();
+        
+        if ( $caja != null ) {
+            $total_start = $caja->total_end;
+
+            $caja->state = 0;
+            $caja->save();
+        }
+
+        //ABRIR EL ACTUAL
+        $caja = new Caja();
+        $caja->centro_id = $centro_id;
+        $caja->total_start = $total_start;
+        $caja->total_end = $total_start;
+        $caja->start = $now;
+        $caja->end = substr($now, 0, 10).' 23:59:59';
+        $caja->save();
+
+        return $caja;
+    }
+
+    public function close(Request $request){
+        if ( !$request->ajax() ) return redirect('/');
+
+        $now = Carbon::now('America/Lima')->toDateTimeString();
+        $caja_id = $request->caja_id;
+
+        //CERRAR EL ACTUAL
+        $caja = Caja::findOrFail($caja_id);
+        $caja->state = 0;
+        $caja->end = $datetime;
+        $caja->save();
+
+        return $caja;
+    }
 }

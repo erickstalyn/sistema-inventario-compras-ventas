@@ -14,6 +14,6 @@ class Caja extends Model {
     public $timestamps = false;
 
     public function getConceptos(){
-        $this->hasMany('App\Concepto');
+        return $this->hasMany('App\Concepto');
     }
 }

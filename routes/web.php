@@ -49,6 +49,7 @@ Route::group(['middleware' => ['auth']], function () {
 
     //RUTAS PARA CAJA
     Route::get('/caja/state', 'CajaController@state');
+    Route::get('/caja/get', 'CajaController@get');
 
     //RUTAS PARA PAGOS
     Route::get('/pago/listVenta', 'PagoController@listVenta');
