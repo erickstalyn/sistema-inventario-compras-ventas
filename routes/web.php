@@ -44,12 +44,18 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/detalle_venta/listEditar', 'DetalleVentaController@listEditar');
 
     //RUTAS PARA ABASTO DE PRODUCTO EXTERNOS
-    Route::get('/abasto/list', 'AbastoController@list');
+    Route::get('/abasto/listByCenter', 'AbastoController@list');
     Route::post('/abasto/pay', 'AbastoController@pay');
 
     //RUTAS PARA CAJA
     Route::get('/caja/state', 'CajaController@state');
     Route::get('/caja/get', 'CajaController@get');
+    Route::put('/caja/open', 'CajaController@open');
+    Route::put('/caja/close', 'CajaController@close');
+
+    //RUTAS PARA CONCEPTOS
+    Route::post('/concepto/addIngreso', 'ConceptoController@addIngreso');
+    Route::post('/concepto/addEgreso', 'ConceptoController@addEgreso');
 
     //RUTAS PARA PAGOS
     Route::get('/pago/listVenta', 'PagoController@listVenta');

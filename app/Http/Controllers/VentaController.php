@@ -419,7 +419,7 @@ class VentaController extends Controller {
         // Validacion: que la caja chica este abierta
         $now = Carbon::now('America/Lima')->toDateString();
         $caja = Caja::where('centro_id', '=', $centro_id)
-                        ->where(DB::raw('CAST(start AS DATE)'), '=', $now)->get();
+                    ->where(DB::raw('CAST(start AS DATE)'), '=', $now)->get();
         
         if ( count($caja) == 0 ) return 'error';
         if ( $caja[0]->state == 0 ) return 'error';

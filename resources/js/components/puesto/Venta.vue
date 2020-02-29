@@ -1446,18 +1446,31 @@
                 }).then(function (response) {
                     me.cerrarModal();
                     me.listar();
-                    Swal.fire({
-                        position: 'top-end',
-                        toast: true,
-                        type: 'success',
-                        title: 'Abastos pagados correctamente',
-                        showConfirmButton: false,
-                        timer: 4500,
-                        animation: false,
-                        customClass: {
-                            popup: 'animated bounceIn fast'
-                        }
-                    });
+                    if ( response.data.state == 'transaction-success' ) {
+                        Swal.fire({
+                            position: 'top-end',
+                            toast: true,
+                            type: 'success',
+                            title: 'Abastos pagados correctamente',
+                            showConfirmButton: false,
+                            timer: 4500,
+                            animation: false,
+                            customClass: {
+                                popup: 'animated bounceIn fast'
+                            }
+                        });
+                        return;
+                    }
+                    if ( response.data.state == 'transaction-validate' && response.data.validate == 'box-close' ) {
+                        Swal.fire({
+                            title: 'Caja chica cerrada',
+                            text: response.data.message,
+                            type: 'warning'
+                        });
+                        return;
+                    }
+                    console.log('method "abastecer" failed');
+                    console.log(response.data);
                 }).catch(function (exception){
                     console.log(exception);
                 });
@@ -2073,7 +2086,7 @@
                         });
                         break;
                     case 'abasto':
-                        url = this.Ruta.abasto+'/list';
+                        url = this.Ruta.abasto+'/listByCenter';
 
                         axios.get(url, {
                             params: {

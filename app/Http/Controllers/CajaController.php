@@ -52,19 +52,75 @@ class CajaController extends Controller {
         // $date = $request->date;
         $date = Carbon::now('America/Lima')->toDateString();
         $centro_id = $request->centro_id;
+        $total_start = 0;
 
-        $caja = Caja::where(DB::raw('CAST(start AS DATE)'), '=', $date)
-                    ->where('centro_id', '=', $centro_id)->first();
+        $state = 'transaction-start';
+        $exception = NULL;
 
-        if ( $caja == NULL ) {
-            return [
-                'exist' => false
-            ];
+        try {
+            DB::beginTransaction();
+
+            // caja vacia antigua
+            $step = 'caja-vacia-old';
+                            
+            $caja = Caja::where(function ($query) use ($date) {
+                            $query->where('start', '=', NULL)
+                                ->orWhere(DB::raw('CAST(start AS DATE)'), '=', $date);
+                        })
+                        ->where('centro_id', '=', $centro_id)
+                        ->orderBy('start', 'desc')->first();
+
+            if ( $caja != NULL ) {
+                $state = 'transaction-success';
+                $caja->getConceptos;
+                return [
+                    'step' => $step,
+                    'state' => $state,
+                    'caja' => $caja
+                ];
+            }
+
+            // caja ultima
+            $step = 'caja-last';
+            $caja = Caja::where('start', '!=', NULL)
+                        ->where('centro_id', '=', $centro_id)
+                        ->orderBy('start', 'desc')->first();
+            
+            
+            if ( $caja != NULL ) {
+                if ( $caja->state == 1 ) {
+                    $caja->state = 0;
+                    $caja->end = substr($caja->start, 0, 10).' 23:59:59';
+                    $caja->save();
+                }
+                $total_start = $caja->total_end;
+            }
+
+            // caja vacia nueva
+            $step = 'caja-vacia-new';
+            $caja = new Caja();
+            $caja->total_start = $total_start;
+            $caja->total_end = 0;
+            $caja->total_ingreso = 0;
+            $caja->total_egreso = 0;
+            $caja->state = 0;
+            $caja->centro_id = $centro_id;
+            $caja->save();
+
+            $caja->getConceptos;
+            
+            DB::commit();
+            $state = 'transaction-success';
+        } catch (Exception $e) {
+            DB::rollback();
+            $state = 'transaction-exception';
+            $exception = $e;
         }
-        
-        $caja->getConceptos;
+
         return [
-            'exist' => true,
+            'step' => $step,
+            'state' => $state,
+            'exception' => $exception,
             'caja' => $caja
         ];
     }
@@ -72,46 +128,87 @@ class CajaController extends Controller {
     public function open(Request $request){
         if ( !$request->ajax() ) return redirect('/');
 
-        $centro_id = $request->centro_id;
-        $now = Carbon::now('America/Lima')->toDateTimeString();
-        $total_start = 0;
+        $caja_id = $request->caja_id; //id de la caja
+        $datetime = Carbon::now('America/Lima')->toDateTimeString();
 
-        //CERRAR EL ANTERIOR
-        $caja = Caja::where('centro_id', '=', $centro_id)
-                    ->where('state', '=', 1)
-                    ->orderBy('id', 'desc')->first();
-        
-        if ( $caja != null ) {
-            $total_start = $caja->total_end;
+        $caja = NULL;
+        $exception = NULL;
+        $message = NULL;
+        $step = NULL;
 
-            $caja->state = 0;
-            $caja->save();
+        try {
+            DB::beginTransaction();
+            $state = 'transaction-start';
+
+            //ABRIR EL ACTUAL
+            $caja = Caja::findOrFail($caja_id);
+
+            if ( $caja->state == 0 ) {
+                $caja->state = 1;
+                $caja->total_end = $caja->total_start;
+                if ( $caja->start == NULL ) $caja->start = $datetime;
+                $caja->end = NULL;
+                $caja->save();
+            } else {
+                $message = 'try of open box failed because box is open';
+            }
+            
+            DB::commit();
+            $state = 'transaction-success';
+        } catch (Exception $e) {
+            DB::rollback();
+            $state = 'transaction-exception';
+            $exception = $e;
         }
 
-        //ABRIR EL ACTUAL
-        $caja = new Caja();
-        $caja->centro_id = $centro_id;
-        $caja->total_start = $total_start;
-        $caja->total_end = $total_start;
-        $caja->start = $now;
-        $caja->end = substr($now, 0, 10).' 23:59:59';
-        $caja->save();
-
-        return $caja;
+        return [
+            'state' => $state,
+            'step' => $step,
+            'exception' => $exception,
+            'message' => $message,
+            'caja' => $caja
+        ];
     }
 
     public function close(Request $request){
         if ( !$request->ajax() ) return redirect('/');
 
-        $now = Carbon::now('America/Lima')->toDateTimeString();
+        $datetime = Carbon::now('America/Lima')->toDateTimeString();
         $caja_id = $request->caja_id;
 
-        //CERRAR EL ACTUAL
-        $caja = Caja::findOrFail($caja_id);
-        $caja->state = 0;
-        $caja->end = $datetime;
-        $caja->save();
+        $state = 'start';
+        $exception = NULL;
+        $step = NULL;
+        $message = NULL;
 
-        return $caja;
+        try {
+            DB::beginTransaction();
+            $state = 'transaction-start';
+            //CERRAR EL ACTUAL
+            $caja = Caja::findOrFail($caja_id);
+
+            if ( $caja->state == 1 ) {
+                $caja->state = 0;
+                $caja->end = $datetime;
+                $caja->save();
+            } else {
+                $message = 'try of close the box failed because the box is close';
+            }
+
+            DB::commit();
+            $state = 'transaction-success';
+        } catch (Exception $e) {
+            DB::rollback();
+            $state = 'transaction-exception';
+            $exception = $e;
+        }
+        
+        return [
+            'caja' => $caja,
+            'state' => $state,
+            'message' => $message,
+            'step' => $step,
+            'exception' => $exception
+        ];
     }
 }

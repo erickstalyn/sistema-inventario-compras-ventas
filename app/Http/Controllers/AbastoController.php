@@ -91,7 +91,7 @@ class AbastoController extends Controller
         ];
     }
 
-    public function list(Request $request){
+    public function listByCenter(Request $request){
         if ( !$request->ajax() ) return redirect('/');
 
         $centro_id = $request->centro_id;
@@ -109,34 +109,28 @@ class AbastoController extends Controller
     }
 
     public function pay(Request $request){
-        $state = 'error';
+        $state = 'transaction-validate';
         $message = NULL;
+        $step = NULL;
 
         {   // Validacion: que la consulta sea ajax
             if ( !$request->ajax() ) return redirect('/');
         }
         {   // Validacion: que la caja chica este abierta
-            $state = 'closeBox';
-            $message = 'La caja esta cerrada, no puede realizar ventas';
-
             $now = Carbon::now('America/Lima')->toDateString();
             $caja = Caja::where('centro_id', '=', $request->dataCentro['id'])
-                            ->where('start', '=', $now)->get();
+                        ->where(DB::raw('CAST(start AS DATE)'), '=', $now)->first();
             
-            if ( count($caja) == 0 ) {
-                $code = '1';
+            if ( $caja == NULL ) {
                 return [
                     'state' => $state,
-                    'exception' => $message,
-                    'code' => $code
+                    'validate' => 'box-no-exist'
                 ];
             }
-            if ( $caja[0]->state == 0 ) {
-                $code = '2';
+            if ( $caja->state == 0 ) {
                 return [
                     'state' => $state,
-                    'exception' => $message,
-                    'code' => $code
+                    'validate' => 'box-close'
                 ];
             }
         }
@@ -146,6 +140,7 @@ class AbastoController extends Controller
 
         try {
             DB::beginTransaction();
+            $state = 'transacion-start';
 
             foreach ($dataListaAbasto as $compra) {
                 if ( $compra['total'] != NULL ) {
@@ -166,7 +161,7 @@ class AbastoController extends Controller
                     $concepto->monto = $pago->monto;
                     $concepto->created_at = $now;
                     $concepto->save();
-
+                    
                     foreach ( $compra['lista_detalle_abasto'] as $det ) {
                         $detalle = Detalle_abasto::findOrFail($det['id']);
                         $detalle->costo_abasto = $det['costo_abasto'];
@@ -177,16 +172,18 @@ class AbastoController extends Controller
             }
 
             DB::commit();
-            $state = 'success';
+            $state = 'transaction-success';
         } catch (Exception $e) {
             DB::rollback();
-            $state = 'exception';
+            $state = 'transaction-exception';
             $message = $e;
         }
 
         return [
             'state' => $state,
-            'exception' => $message
+            'step' => $step,
+            'exception' => $message,
+            'caja' => $caja
         ];
     }
 
