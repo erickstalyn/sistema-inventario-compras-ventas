@@ -308,6 +308,7 @@ class VentaController extends Controller {
         $listDetalle = $request->listDetalle;
 
         $state = 'transaction-error';
+        $vale = NULL;
         
         try {
             DB::beginTransaction();

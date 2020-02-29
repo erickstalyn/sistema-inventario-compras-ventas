@@ -200,17 +200,17 @@
                                         </div>
                                         <div class="col-md-12 input-group form-group">
                                             <label class="col-md-4 font-weight-bold">Proveedor</label>
-                                            <input type="text" class="col-md-8 text-gray-900" v-model="Proveedor.nombres">
+                                            <input type="text" class="col-md-8 text-gray-900" v-model="Proveedor.nombres" placeholder="Ej: Jose Stalyn Pacherres Cespedes">
                                         </div>
                                         <div class="col-md-12 input-group form-group">
-                                            <label class="col-md-4 font-weight-bold">Nombre</label>
-                                            <input type="text" class="col-md-8 text-gray-900" v-model="DetalleVenta.nombre_producto">
+                                            <label class="col-md-4 font-weight-bold">Producto</label>
+                                            <input type="text" class="col-md-8 text-gray-900" v-model="DetalleVenta.nombre_producto" placeholder="Ej: Mochila Porta Roja">
                                         </div>
                                         <div class="col-md-12 input-group form-group">
                                             <label class="col-md-6 font-weight-bold">Precio de venta</label>
                                             <label class="col-md-2 text-right font-weight-bold">S/.</label>
                                             <input type="number" class="col-md-4 text-right text-gray-900" v-model="DetalleVenta.precio" @keyup="update('form_detalle_venta.subtotal')" @click="update('form_detalle_venta.subtotal')">
-                                        </div>
+                                        </div>0
                                         <div class="col-md-12 input-group form-group">
                                             <label class="col-md-7 font-weight-bold">Cantidad de items</label>
                                             <input type="number" class="col-md-5 text-right text-gray-900" v-model="DetalleVenta.cantidad"  @keyup="update('form_detalle_venta.subtotal')" @click="update('form_detalle_venta.subtotal')">
@@ -1435,7 +1435,7 @@
                 });
             },
             abastecer(){
-                if ( this.validar(['abasto.total']) ) ;
+                if ( this.validar(['abasto.total']) ) return;
 
                 let me = this;
                 let url = this.Ruta.abasto+'/pay';
