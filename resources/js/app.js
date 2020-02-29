@@ -31,11 +31,12 @@ Vue.component('adm_proveedor', require('./components/administrador/Proveedor.vue
 Vue.component('adm_estadistica', require('./components/administrador/Estadistica.vue').default);
 
 Vue.component('pue_producto', require('./components/puesto/Producto.vue').default);
-Vue.component('pue_venta', require('./components/puesto/Venta.vue').default);
-Vue.component('pue_caja', require('./components/puesto/Caja.vue').default);
+
 Vue.component('alm_produccion', require('./components/almacen/Produccion.vue').default);
 Vue.component('alm_producto', require('./components/almacen/Producto.vue').default);
 
+Vue.component('venta', require('./components/Venta.vue').default);
+Vue.component('caja', require('./components/Caja.vue').default);
 Vue.component('enviorecibido', require('./components/EnvioRecibido.vue').default);
 Vue.component('enviorealizado', require('./components/EnvioRealizado.vue').default);
 Vue.component('dashboard', require('./components/Dashboard.vue').default);
@@ -54,7 +55,7 @@ Vue.component('noti_venta_alm', require('./components/Notificacion/Notification_
 
 const app = new Vue({
     el: '#app',
-    data:{
+    data: {
         menu: 1,
         notifications:[],
     },

@@ -41,10 +41,10 @@
                 <pue_producto></pue_producto>
             </template>
             <template v-if="menu==2">
-                <pue_caja></pue_caja>
+                <caja></caja>
             </template>
             <template v-if="menu==3">
-                <pue_venta></pue_venta>
+                <venta></venta>
             </template>
             <template v-if="menu==4">
                 <vale></vale>
@@ -70,9 +70,12 @@
                 <enviorecibido></enviorecibido>
             </template>
             <template v-if="menu==5">
-                <pue_venta></pue_venta>
+                <caja></caja>
             </template>
             <template v-if="menu==6">
+                <venta></venta>
+            </template>
+            <template v-if="menu==7">
                 <vale></vale>
             </template>
         @else
