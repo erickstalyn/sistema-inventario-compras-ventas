@@ -16,6 +16,7 @@ use App\Concepto;
 use Carbon\Carbon;
 use Exception;
 use App\Usuario;
+use App\Funcion;
 use App\Detalle_funcion;
 use App\Notifications\NotifyAdmin;
 
@@ -142,11 +143,15 @@ class VentaController extends Controller {
 
             //detalle_funcion
             if ( $persona != NULL ) {
-                $detalle_function = Detalle_funcion::where('function_id', '=', 1)
-                                                    ->where('persona_id', '=', $persona->id)->first();
+                $funcion_cliente_id = Funcion::select('id')->where('descripcion', '=', 'CLIENTE')->first()->id;
+                $detalle_funcion = Detalle_funcion::where('funcion_id', '=', $funcion_cliente_id)
+                                                ->where('persona_id', '=', $persona->id)->first();
                 
                 if ( $detalle_funcion == NULL ) {
-                    $detalle_function = new Detalle_function();
+                    $detalle_funcion = new Detalle_funcion();
+                    $detalle_funcion->persona_id = $persona->id;
+                    $detalle_funcion->funcion_id = $funcion_cliente_id;
+                    $detalle_funcion->save();
                 }
             }
 
@@ -333,6 +338,20 @@ class VentaController extends Controller {
                 $dataCliente['id'] = $persona->id;
             }
 
+            //detalle_funcion
+            if ( $persona != NULL ) {
+                $funcion_cliente_id = Funcion::select('id')->where('descripcion', '=', 'CLIENTE')->first()->id;
+                $detalle_funcion = Detalle_funcion::where('funcion_id', '=', $funcion_cliente_id)
+                                                ->where('persona_id', '=', $persona->id)->first();
+                
+                if ( $detalle_funcion == NULL ) {
+                    $detalle_funcion = new Detalle_funcion();
+                    $detalle_funcion->persona_id = $persona->id;
+                    $detalle_funcion->funcion_id = $funcion_cliente_id;
+                    $detalle_funcion->save();
+                }
+            }
+            
             //venta
             $venta = Venta::findOrFail($dataVenta['id']);
             $venta->total_venta = $dataVenta['total_venta'];

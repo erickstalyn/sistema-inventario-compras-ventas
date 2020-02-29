@@ -2786,6 +2786,23 @@
                             });
                         }
                         break;
+                    case 'box-state':
+                        url = this.Ruta.caja+'/state';
+
+                        axios.get(url, {
+                            params: {
+                                centro_id: this.Centro.id
+                            }
+                        }).then(function (response) {
+                            let nuevo = response.data.state;
+                            let viejo = me.Caja.state;
+
+                            if ( viejo == 1 && nuevo == 0 ) console.log(response.data.message);
+                            if ( nuevo != viejo ) me.Caja.state = nuevo;
+                        }).catch(function (error) {
+                            console.log(error);
+                        });
+                        break;
                 }
                 
                 return got;
@@ -2872,32 +2889,6 @@
                         break;
                 }
             },
-            actualize(option){
-                var me = this;
-                var url;
-
-                switch (option) {
-                    case 'caja':
-                        url = this.Ruta.caja+'/state';
-
-                        axios.get(url, {
-                            params: {
-                                centro_id: this.Centro.id
-                            }
-                        }).then(function (response) {
-                            let nuevo = response.data.state;
-                            let viejo = me.Caja.state;
-
-                            if ( viejo == 1 && nuevo == 0 ) console.log(response.data.message);
-                            if ( nuevo != viejo ) me.Caja.state = nuevo;
-
-                            me.actualize('caja');
-                        }).catch(function (error) {
-                            console.log(error);
-                        });
-                        break;
-                }
-            },
             cambiarPagina(page){
                 if ( page >= 1 && page <= this.Paginacion.lastPage) {
                     this.listar(page);
@@ -2929,7 +2920,7 @@
         },
         mounted() {
             this.listar();
-            this.actualize('caja');
+            this.get('box-state');
         }
     }
 
