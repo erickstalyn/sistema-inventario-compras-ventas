@@ -317,14 +317,12 @@ class VentaController extends Controller {
             if ( $dataCliente['id'] != null ) {
                 if ( $dataCliente['id'] > 0 ) { //existe
                     $persona = Persona::findOrFail($dataCliente['id']);
-                    $persona->cliente = 1;
                     $persona->save();
                 } else { //excepciones
                     $dataCliente['id'] = NULL;
                 }
             } else if ( $dataCliente['documento'] != NULL ) { //nuevo
                 $persona = new Persona();
-                $persona->cliente = 1;
                 if ( strlen($dataCliente['documento']) == 8 ){
                     $persona->dni = $dataCliente['documento'];
                     $persona->nombres = mb_convert_case($dataCliente['nombres'], MB_CASE_TITLE, "UTF-8");
