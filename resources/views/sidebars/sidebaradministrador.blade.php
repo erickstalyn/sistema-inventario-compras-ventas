@@ -88,7 +88,7 @@
     </a>
     <div id="acceso" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
         <div class="bg-white py-2 collapse-inner rounded">
-            <a class="collapse-item font-weight-bold" href="#" @click="menu=9">Trabajadores</a>
+            {{-- <a class="collapse-item font-weight-bold" href="#" @click="menu=9">Trabajadores</a> --}}
             <a class="collapse-item font-weight-bold" href="#" @click="menu=10">Usuarios</a>
         </div>
     </div>

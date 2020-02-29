@@ -13,6 +13,7 @@ use App\Persona;
 use App\Pago;
 use App\Envio;
 use App\Detalle_abasto;
+use App\Detalle_funcion;
 
 class AbastoController extends Controller
 {
@@ -205,24 +206,29 @@ class AbastoController extends Controller
             if($proveedor['id'] == 0){ //No existe el proveedor
                 //Insertamos al proveedor
                 $persona = new Persona();
-                $persona->proveedor = 1;
+                // $persona->proveedor = 1;
                 if(strlen($proveedor['documento']) == 8){
                     //Convertimos los nombres y apellidos
-                    $newNombres = mb_convert_case($proveedor['nombres'], MB_CASE_TITLE, "UTF-8");
-                    $newApellidos = mb_convert_case($proveedor['apellidos'], MB_CASE_TITLE, "UTF-8");
-                    $persona->dni = $proveedor['documento'];
-                    $persona->nombres = $newNombres;
-                    $persona->apellidos = $newApellidos;
+                    $persona->dni = trim($proveedor['documento']);
+                    $persona->nombres = trim(mb_convert_case($proveedor['nombres'], MB_CASE_TITLE, "UTF-8"));
+                    $persona->apellidos = trim(mb_convert_case($proveedor['apellidos'], MB_CASE_TITLE, "UTF-8"));
                     $persona->tipo = 'P';
                     // $abasto->proveedor_nombre = $newNombres . ' ' . $newApellidos;
                 }else{
-                    $persona->ruc = $proveedor['documento'];
-                    $persona->razon_social = $proveedor['razon_social'];
+                    $persona->ruc = trim($proveedor['documento']);
+                    $persona->razon_social = trim($proveedor['razon_social']);
+                    $persona->direccion = trim($proveedor['direccion']);
                     $persona->tipo = 'E';
                     // $abasto->proveedor_nombre = $proveedor['razon_social'];
                 }
                 $persona->save();
                 $abasto->proveedor_id = $persona->id;
+
+                //Asignamos su funcion
+                $detalle_funcion = new Detalle_funcion();
+                $detalle_funcion->persona_id = $persona->id;
+                $detalle_funcion->funcion_id = 2;
+                $detalle_funcion->save();
             }else{ //Ya existe el proveedor
                 $persona = Persona::findOrFail($proveedor['id']);
                 $persona->proveedor = 1;

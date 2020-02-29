@@ -19,9 +19,9 @@ class CreatePersonaTable extends Migration
             $table->string('nombres', 90)->nullable();
             $table->string('apellidos', 90)->nullable();
             $table->string('razon_social', 350)->nullable();
-            $table->char('dni', 8)->nullable(); // charc(8) equivale a 8 byte
-            $table->char('ruc', 11)->nullable();
-            $table->string('direccion', 120)->nullable();
+            $table->char('dni', 8)->unique()->nullable(); // charc(8) equivale a 8 byte
+            $table->char('ruc', 11)->unique()->nullable();
+            $table->string('direccion', 200)->nullable();
             $table->char('telefono', 30)->nullable(); //Almacenará como máximo 3 telefonos o celulares
             $table->string('email', 100)->nullable();
             $table->date('birthday', 30)->nullable();

@@ -25,6 +25,9 @@
             <template v-if="menu==7">
                 <adm_cliente></adm_cliente>
             </template>
+            <template v-if="menu==8">
+                <adm_proveedor></adm_proveedor>
+            </template>
             <template v-if="menu==10">
                 <adm_usuario></adm_usuario>
             </template>
