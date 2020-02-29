@@ -309,6 +309,7 @@ class VentaController extends Controller {
 
         $state = 'transaction-error';
         $vale = NULL;
+        $message = NULL;
         
         try {
             DB::beginTransaction();
