@@ -100,7 +100,7 @@ class CajaController extends Controller {
             $step = 'caja-vacia-new';
             $caja = new Caja();
             $caja->total_start = $total_start;
-            $caja->total_end = 0;
+            $caja->total_end = $total_start;
             $caja->total_ingreso = 0;
             $caja->total_egreso = 0;
             $caja->state = 0;
@@ -145,7 +145,6 @@ class CajaController extends Controller {
 
             if ( $caja->state == 0 ) {
                 $caja->state = 1;
-                $caja->total_end = $caja->total_start;
                 if ( $caja->start == NULL ) $caja->start = $datetime;
                 $caja->end = NULL;
                 $caja->save();

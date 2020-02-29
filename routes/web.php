@@ -44,7 +44,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/detalle_venta/listEditar', 'DetalleVentaController@listEditar');
 
     //RUTAS PARA ABASTO DE PRODUCTO EXTERNOS
-    Route::get('/abasto/listByCenter', 'AbastoController@list');
+    Route::get('/abasto/listByCenter', 'AbastoController@listByCenter');
     Route::post('/abasto/pay', 'AbastoController@pay');
 
     //RUTAS PARA CAJA
