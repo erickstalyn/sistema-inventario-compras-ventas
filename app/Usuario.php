@@ -13,7 +13,7 @@ class Usuario extends Authenticatable
     protected $table= 'usuario';
     protected $remember_token = false;
     protected $fillable = [
-        'rol', 'persona_id', 'centro_id', 'usuario', 'password', 'estado'
+        'persona_id', 'centro_id', 'usuario', 'password', 'estado', 'rol_id'
     ];
     public $timestamps = false;
     protected $hidden = [
@@ -27,6 +27,10 @@ class Usuario extends Authenticatable
         return $this->belongsTo('App\Centro', 'centro_id');
     }
 
+    public function getRol(){
+        return $this->belongsTo('App\Rol', 'rol_id');
+    }
+
     public function setSession(){
         //con this, me refiero a $user, y $user es el usuario loqueado actualmente
         //Sirve para añadir variables en la sesion
@@ -37,7 +41,7 @@ class Usuario extends Authenticatable
     }
 
     public function getNombres(){
-        if ($this->rol == 'M') {
+        if ($this->getRol->id == 1) {
             return $this->getPersona->nombres.' '.$this->getPersona->apellidos;
         } else {
             return $this->getCentro->nombre;

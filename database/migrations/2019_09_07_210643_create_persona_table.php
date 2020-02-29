@@ -25,12 +25,12 @@ class CreatePersonaTable extends Migration
             $table->char('telefono', 30)->nullable(); //Almacenará como máximo 3 telefonos o celulares
             $table->string('email', 100)->nullable();
             $table->date('birthday', 30)->nullable();
-            $table->text('observacion')->nullable();
+            // $table->text('observacion')->nullable();
             $table->char('tipo', 1); // P: Persona, E: Empresa
-            $table->boolean('cliente')->nullable();
-            $table->boolean('proveedor')->nullable();
+            // $table->boolean('cliente')->nullable();
+            // $table->boolean('proveedor')->nullable();
 
-            $table->unsignedSmallInteger('persona_id')->nullable();;
+            $table->unsignedSmallInteger('persona_id')->nullable();
             $table->foreign('persona_id')->references('id')->on('persona');
 
             // $table->date('created_at'); //Fecha de creacion manual

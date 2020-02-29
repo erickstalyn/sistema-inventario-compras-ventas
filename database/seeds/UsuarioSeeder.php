@@ -17,44 +17,44 @@ class UsuarioSeeder extends Seeder
             'persona_id'=>1 ,
             'usuario'=>'silmar',
             'password'=>bcrypt('silmar'),
-            'rol' => 'M',
+            'rol_id' => 1,
         ));
         DB::table('usuario')->insert(array(
             'centro_id'=>1 ,
             'usuario'=>'puestoa',
             'password'=>bcrypt('puestoa'),
-            'rol' => 'P',
+            'rol_id' => 2,
         ));
         DB::table('usuario')->insert(array(
             'centro_id'=>2 ,
             'usuario'=>'puestob',
             'password'=>bcrypt('puestob'),
-            'rol' => 'P',
+            'rol_id' => 2,
         ));
         DB::table('usuario')->insert(array(
             'centro_id'=>3 ,
             'usuario'=>'puestoc',
             'password'=>bcrypt('puestoc'),
-            'rol' => 'P',
+            'rol_id' => 2,
         ));
         DB::table('usuario')->insert(array(
             'centro_id'=> 4,
             'usuario'=>'almacen1',
             'password'=>bcrypt('almacen1'),
-            'rol' => 'A',
+            'rol_id' => 3,
         ));
         DB::table('usuario')->insert(array(
             'centro_id'=> 5,
             'usuario'=>'almacen2',
             'password'=>bcrypt('almacen2'),
-            'rol' => 'A',
+            'rol_id' => 3,
             // 'estado' => false,
         ));
         DB::table('usuario')->insert(array(
             'centro_id'=> 6,
             'usuario'=>'almacen3',
             'password'=>bcrypt('almacen3'),
-            'rol' => 'A',
+            'rol_id' => 3,
             // 'estado' => false,
         ));
     }

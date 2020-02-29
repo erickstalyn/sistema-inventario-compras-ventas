@@ -8,24 +8,21 @@
             <div class="row form-group">
                 <i class="fas fa-map-signs"></i>&nbsp;&nbsp;
                 <span class="h3 mb-0 text-gray-900">Usuarios</span>
-                <button type="button" class="btn btn-success" @click="abrirModalAgregar()">
+                <!-- <button type="button" class="btn btn-success" @click="abrirModalAgregar()">
                     <i class="fas fa-user-plus"></i>&nbsp; Nuevo
-                </button>
-                <button type="button" class="btn btn-danger">
-                    <i class="far fa-file-pdf"></i>&nbsp; PDF
-                </button>
+                </button> -->
             </div>
 
             <!-- Inputs de busqueda -->
             <div class="row form-group">
                 <div class="col-md-8">
                     <div class="input-group">
-                        <select class="col-md-3 form-control text-gray-900" v-model="Busqueda.estado" @click="listar()">
+                        <select class="col-md-3 form-control text-gray-900" v-model="Busqueda.estado" @change="listar()">
+                            <option value="2">Todos</option>
                             <option value="1">Activados</option>
                             <option value="0">Desactivados</option>
-                            <option value="2">Todos</option>
                         </select>
-                        <input type="search" class="form-control" v-model="Busqueda.texto" @keyup.enter="listar()">
+                        <input type="search" class="form-control" v-model="Busqueda.texto" @keyup="listar()">
                         <button type="button" class="btn btn-primary" @click="listar()">
                             <i class="fa fa-search"></i>&nbsp; Buscar
                         </button>
@@ -36,7 +33,7 @@
                     <label>N° filas:</label>
                 </div>
                 <div class="col-md-1">
-                    <select class="form-control text-gray-900" v-model="Busqueda.items" @click="listar()">
+                    <select class="form-control text-gray-900" v-model="Busqueda.items" @change="listar()">
                         <option v-for="item in Items" :key="item" :value="item" v-text="item"></option>
                     </select>
                 </div>
@@ -49,20 +46,16 @@
                     <table class="table table-bordered table-striped table-sm text-gray-900">
                         <thead>
                             <tr>
-                                <th v-for="head in Headers" :key="head.nombre" @click="listar(1, head.nombre)" class="ec-cursor" v-text="getTitulo(head.titulo)"></th>
+                                <th>Nombre</th>
+                                <th>Rol</th>
                                 <th>Estado</th>
                                 <th>Opciones</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr v-for="usuario in ListaUsuario" :key="usuario.id" >
-                                <td v-text="usuario.nombre"></td>
-                                <td v-text="usuario.usuario"></td>
-                                <td v-text="usuario.direccion==null?'-':usuario.direccion"></td>
+                                <td v-text="usuario.centro_nombre?usuario.centro_nombre: usuario.nombres + ' ' + usuario.apellidos"></td>
                                 <td v-text="usuario.rol"></td>
-                                <td v-text="usuario.fecha_creacion==null?'-':usuario.fecha_creacion"></td>
-                                <td v-text="usuario.fecha_actualizacion==null?'-':usuario.fecha_actualizacion"></td>
-                                <td v-text="usuario.fecha_eliminacion==null?'-':usuario.fecha_eliminacion"></td>
                                 <td>
                                     <div v-if="usuario.estado">
                                         <span class="badge badge-success">Activado</span>
@@ -122,7 +115,7 @@
                     
                     <div class="modal-body">
                         <!-- Modal Numero 1 de AGREGAR-->
-                        <div v-if="Modal.numero==1">
+                        <!-- <div v-if="Modal.numero==1">
                             <div v-if="Error.estado" class="row d-flex justify-content-center">
                                 <div class="alert alert-danger">
                                     <button type="button" @click="Error.estado=0" class="close text-primary" data-dismiss="alert">×</button>
@@ -133,15 +126,8 @@
                                 </div>
                             </div>
                             <div class="row form-group">
-                                <label class="col-md-3 font-weight-bold" for="nom">Nombre&nbsp;<span class="text-danger">*</span></label>
+                                <label class="col-md-3 font-weight-bold" for="nom">Entidad&nbsp;<span class="text-danger">*</span></label>
                                 <div class="col-md-9">
-                                    <input type="text" v-model="Usuario.nombre" class="form-control" placeholder="ingrese el nombre" id="nom">
-                                </div>
-                            </div>
-                            <div class="row form-group">
-                                <label class="col-md-3 font-weight-bold" for="dir">Direccion</label>
-                                <div class="col-md-9">
-                                    <input type="text" v-model="Usuario.direccion" class="form-control" placeholder="ingrese la direccion" id="dir">
                                 </div>
                             </div>
                             <div class="row form-group">
@@ -149,7 +135,7 @@
                                 <div class="col-md-9">
                                     <select v-model="Usuario.rol_id" class="form-control" id="rol">
                                         <option value="0" disabled>seleccione un rol</option>
-                                        <option v-for="rol in SelectRol" :key="rol.id" :value="rol.id" v-text="rol.nombre"></option>
+                                        <option v-for="rol in SelectRol" :key="rol.id" :value="rol.id" v-text="rol.descripcion"></option>
                                     </select>
                                 </div>
                             </div>
@@ -165,7 +151,7 @@
                                     <input type="password" v-model="Usuario.password" class="form-control" placeholder="ingrese la contraseña" id="contra">
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                         <!-- Modal Numero 2 de EDITAR-->
                         <div v-if="Modal.numero==2">
                             <div v-if="Error.estado" class="row d-flex justify-content-center">
@@ -178,15 +164,9 @@
                                 </div>
                             </div>
                             <div class="row form-group">
-                                <label class="col-md-3 font-weight-bold" for="nom">Nombre&nbsp;<span class="text-danger">*</span></label>
+                                <label class="col-md-3 font-weight-bold" for="nom">Nombre&nbsp;</label>
                                 <div class="col-md-9">
-                                    <input type="text" v-model="Usuario.nombre" class="form-control" placeholder="ingrese el nombre" id="nom">
-                                </div>
-                            </div>
-                            <div class="row form-group">
-                                <label class="col-md-3 font-weight-bold" for="dir">Direccion</label>
-                                <div class="col-md-9">
-                                    <input type="text" v-model="Usuario.direccion" class="form-control" placeholder="ingrese la direccion" id="dir">
+                                    <input type="text" v-model="Usuario.nombre" class="form-control" id="nom" readonly>
                                 </div>
                             </div>
                             <div class="row form-group">
@@ -194,7 +174,7 @@
                                 <div class="col-md-9">
                                     <select v-model="Usuario.rol_id" class="form-control" id="rol">
                                         <option value="0" disabled>seleccione un rol</option>
-                                        <option v-for="rol in SelectRol" :key="rol.id" :value="rol.id" v-text="rol.nombre"></option>
+                                        <option v-for="rol in SelectRol" :key="rol.id" :value="rol.id" v-text="rol.descripcion"></option>
                                     </select>
                                 </div>
                             </div>
@@ -205,7 +185,10 @@
                                     <div class="col-md-5">
                                         <input type="password" v-model="Credencial.password" class="form-control" id="cont" @keyup.enter="comprobar()">
                                     </div>
-                                    <button type="button" @click="comprobar()" class="btn btn-success">Comprobar</button>
+                                    <button type="button" @click="comprobar()" class="btn btn-primary" :disabled="Button.press">
+                                        <div v-if="!Button.press">Comprobar</div>
+                                        <span v-else class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                    </button>
                                 </div>
                             </div>
                             <div v-else>
@@ -233,7 +216,10 @@
                                     <div class="col-md-5">
                                         <input type="password" v-model="Credencial.password" class="form-control" id="cont" @keyup.enter="comprobar()">
                                     </div>
-                                    <button type="button" @click="comprobar()" class="btn btn-success">Comprobar</button>
+                                    <button type="button" @click="comprobar()" class="btn btn-success" :disabled="Button.press">
+                                        <div v-if="!Button.press">Comprobar</div>
+                                        <span v-else class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                    </button>
                                 </div>
                             </div>
                             <div v-else>
@@ -249,7 +235,10 @@
                                     <div class="col-md-5">
                                         <input type="password" v-model="Credencial.password" class="form-control" id="cont" @keyup.enter="comprobar()">
                                     </div>
-                                    <button type="button" @click="comprobar()" class="btn btn-success">Comprobar</button>
+                                    <button type="button" @click="comprobar()" class="btn btn-success" :disabled="Button.press">
+                                        <div v-if="!Button.press">Comprobar</div>
+                                        <span v-else class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                    </button>
                                 </div>
                             </div>
                             <div v-else>
@@ -260,8 +249,11 @@
 
                     <div class="modal-footer" v-if="permisoModalFooter">
                         <div class="row form-group col-md-12 d-flex justify-content-around">
+                            <button type="button" @click="accionar(Modal.accion)" class="btn btn-success" :disabled="Button.press">
+                                <div v-if="!Button.press">{{Modal.accion}}</div>
+                                <span v-else class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            </button>
                             <button type="button" @click="cerrarModal()" class="btn btn-secondary">Cancelar</button>
-                            <button type="button" @click="accionar(Modal.accion)" class="btn btn-primary" v-text="Modal.accion"></button>
                         </div>
                     </div>
                 
@@ -288,9 +280,6 @@
                     id: 0,
                     usuario: '',
                     password: '',
-                    nombre: '',
-                    direccion: '',
-                    tipo: '',
                     rol_id: 0,
                 },
                 SelectRol: [],
@@ -324,7 +313,9 @@
                     ordenarPor: 'rol.nombre',
                     orden: 'desc' 
                 },
-
+                Button: {
+                    press: false
+                },
                 //datos de errores
                 Error: {
                     estado: 0,
@@ -368,19 +359,6 @@
 
                 return items;
             },
-            Headers: function(){
-                var headers = [];
-
-                headers.push({titulo: 'Nombre', nombre: 'persona.nombre'});
-                headers.push({titulo: 'Usuario', nombre: 'usuario.usuario'});
-                headers.push({titulo: 'Direccion', nombre: 'persona.direccion'});
-                headers.push({titulo: 'Rol', nombre: 'rol.nombre'});
-                headers.push({titulo: 'F. Creacion', nombre: 'persona.created_at'});
-                headers.push({titulo: 'F. Modificacion', nombre: 'persona.updated_at'});
-                headers.push({titulo: 'F. Eliminacion', nombre: 'persona.deleted_at'});
-
-                return headers;
-            },
             permisoModalFooter: function(){
                 if ( this.Modal.numero == 1 ) return true;
                 if ( this.Modal.numero == 2 ) return true;
@@ -391,66 +369,54 @@
             }
         },
         methods: {
-            listar(page = 1, ordenarPor = ''){
-                if ( ordenarPor == this.Navegacion.ordenarPor ) {
-                    this.Navegacion.orden = (this.Navegacion.orden == 'asc'?'desc':'asc');
-                } else {
-                    this.Navegacion.ordenarPor = ordenarPor!=''?ordenarPor:this.Navegacion.ordenarPor;
-                    this.Navegacion.orden = 'asc';
-                }
+            listar(page = 1){
                 this.Paginacion.currentPage = page==1?1:page;
 
                 var url = '/usuario?page='+this.Paginacion.currentPage
                         +'&estado='+this.Busqueda.estado
                         +'&texto='+this.Busqueda.texto
-                        +'&items='+this.Busqueda.items
-                        +'&ordenarPor='+this.Navegacion.ordenarPor
-                        +'&orden='+this.Navegacion.orden;
-                
+                        +'&items='+this.Busqueda.items;
                 var me = this;
                 axios.get(url).then(function (response) {
+                    // console.log(response.data.usuarios.data);
                     me.ListaUsuario = response.data.usuarios.data;
                     me.Paginacion = response.data.paginacion;
                 }).catch(function (error) {
                     console.log(error)
                 });
             },
-            agregar(){
-                if ( this.validar() ) return;
-                
-                this.Usuario.tipo = this.getTipo(this.Usuario.rol_id);
+            // agregar(){
+            //     if ( this.validar() ) return;
 
-                var me = this;
-                axios.post('usuario/agregar', {
-                    'usuario' : this.Usuario.usuario,
-                    'password' : this.Usuario.password,
-                    'nombre' : this.Usuario.nombre,
-                    'direccion' : this.Usuario.direccion,
-                    'tipo': this.Usuario.tipo,
-                    'rol_id' : this.Usuario.rol_id
-                }).then(function(response){
-                    me.cerrarModal();
-                    me.listar();
-                    Swal.fire({
-                        position: 'top-end',
-                        toast: true,
-                        type: 'success',
-                        title: 'El usuario se ha AGREGADO correctamente',
-                        showConfirmButton: false,
-                        timer: 4500,
-                        animation:false,
-                        customClass:{
-                            popup: 'animated bounceIn fast'
-                        }
-                    });
-                }).catch(function(error){
-                    console.log(error);
-                });
-            },
+            //     var me = this;
+            //     axios.post('usuario/agregar', {
+            //         'usuario' : this.Usuario.usuario,
+            //         'password' : this.Usuario.password,
+            //         'nombre' : this.Usuario.nombre,
+            //         'rol_id' : this.Usuario.rol_id
+            //     }).then(function(response){
+            //         me.cerrarModal();
+            //         me.listar();
+            //         Swal.fire({
+            //             position: 'top-end',
+            //             toast: true,
+            //             type: 'success',
+            //             title: 'El usuario se ha AGREGADO correctamente',
+            //             showConfirmButton: false,
+            //             timer: 4500,
+            //             animation:false,
+            //             customClass:{
+            //                 popup: 'animated bounceIn fast'
+            //             }
+            //         });
+            //     }).catch(function(error){
+            //         console.log(error);
+            //     });
+            // },
             editar(){
                 if ( this.validar() ) return;
 
-                this.Usuario.tipo = this.getTipo(this.Usuario.rol_id);
+                // this.Usuario.tipo = this.getTipo(this.Usuario.rol_id);
                 if ( this.Credencial.comprobado == 0){
                     this.Usuario.usuario = '';
                     this.Usuario.password = '';
@@ -461,9 +427,6 @@
                     'id' : this.Usuario.id,
                     'usuario' : this.Usuario.usuario,
                     'password' : this.Usuario.password,
-                    'nombre' : this.Usuario.nombre,
-                    'direccion' : this.Usuario.direccion,
-                    'tipo': this.Usuario.tipo,
                     'rol_id' : this.Usuario.rol_id
                 }).then(function(response){
                     me.cerrarModal();
@@ -492,8 +455,8 @@
                         'id' : this.Usuario.id
                         
                     }).then(function (response) {
-                        me.cerrarModal();
                         me.listar();
+                        me.cerrarModal();
                         Swal.fire({
                             position: 'top-end',
                             toast: true,
@@ -519,8 +482,8 @@
                         'id' : this.Usuario.id
                         
                     }).then(function (response) {
-                        me.cerrarModal();
                         me.listar();
+                        me.cerrarModal();
                         Swal.fire({
                             position: 'top-end',
                             toast: true,
@@ -556,12 +519,10 @@
                 this.Usuario.id = data['id'];
                 this.Usuario.usuario = data['usuario'];
                 this.Usuario.password = '';
-                this.Usuario.nombre = data['nombre'];
-                this.Usuario.direccion = data['direccion'];
-                this.Usuario.tipo = '';
+                this.Usuario.nombre = data['centro_nombre'] ? data['centro_nombre']:data['nombres'] + ' ' + data['apellidos'];
                 this.Usuario.rol_id = data['rol_id'];
 
-                this.selectRol();
+                if(!this.SelectRol.length) this.selectRol();
             },
             abrirModalActivar(data = []){
                 this.abrirModal(3, 'Activar Usuario', 'Activar');
@@ -569,7 +530,7 @@
                 this.Credencial.password = '';
 
                 this.Usuario.id = data['id'];
-                this.Usuario.nombre = data['nombre'];
+                this.Usuario.nombre = data['centro_nombre'] ? data['centro_nombre'] : data['nombres'] + ' ' + data['apellidos'];
             },
             abrirModalDesactivar(data = []){
                 this.abrirModal(4, 'Desactivar Usuario', 'Desactivar');
@@ -577,7 +538,7 @@
                 this.Credencial.password = '';
 
                 this.Usuario.id = data['id'];
-                this.Usuario.nombre = data['nombre'];
+                this.Usuario.nombre = data['centro_nombre'] ? data['centro_nombre'] : data['nombres'] + ' ' + data['apellidos'];
             },
             abrirModal(numero, titulo, accion){
                 this.Modal.estado = 1;
@@ -598,19 +559,19 @@
                 this.Usuario.id = 0;
                 this.Usuario.usuario = '';
                 this.Usuario.password = '';
-                this.Usuario.nombre = '';
-                this.Usuario.direccion = '';
-                this.Usuario.tipo = '';
                 this.Usuario.rol_id = 0;
 
-                this.SelectRol = [];
+                this.Button.press = false;
+
+                // this.SelectRol = [];
             },
             accionar(accion){
+                this.Button.press = true;
                 switch( accion ){
-                    case 'Agregar': {
-                        this.agregar();
-                        break;
-                    }
+                    // case 'Agregar': {
+                    //     this.agregar();
+                    //     break;
+                    // }
                     case 'Editar': {
                         this.editar();
                         break;
@@ -636,11 +597,13 @@
                 });
             },
             comprobar(){
+                this.Button.press = true;
                 var me = this;
                 var url = 'usuario/comprobar?password='+this.Credencial.password;
 
                 axios.get(url).then(function(response){
                     me.Credencial.comprobado = response.data;
+                    me.Button.press = false;
                 }).catch(function(error){
                     console.log(error);
                 });
@@ -665,31 +628,6 @@
 
                 return titulo;
             },
-            getTipo(rol_id){
-                var nombre = '';
-
-                for (let i = 0; i < this.SelectRol.length; i++) {
-                    if ( this.SelectRol[i].id == rol_id ){
-                        nombre = this.SelectRol[i].nombre;
-                        break;
-                    }
-                }
-
-                switch ( nombre ) {
-                    case 'Administrador': {
-                        return 'N';
-                    }
-                    case 'Puesto': {
-                        return 'P';
-                    }
-                    case 'Almacén': {
-                        return 'A';
-                    }
-                    default: {
-                        console.log('ERROR: no se encontro el nombre de rol para definir el tipo de usuario');
-                    }
-                }
-            },
             validar(){
                 this.Error.estado = 0;
                 this.Error.mensaje = [];
@@ -706,7 +644,7 @@
                     if ( !this.Usuario.password ) this.Error.mensaje.push("Debe ingresar un password");
                 }
 
-                if ( this.Error.mensaje.length ) this.Error.estado = 1;
+                if ( this.Error.mensaje.length ) {this.Error.estado = 1; this.Button.press = false;}
 
                 return this.Error.estado;
             },

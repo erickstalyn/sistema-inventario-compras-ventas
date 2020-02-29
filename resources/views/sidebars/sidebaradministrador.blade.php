@@ -30,9 +30,9 @@
     </a>
     <div id="inventario" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
         <div class="bg-white py-2 collapse-inner rounded">
-            <a class="collapse-item font-weight-bold" href="#" @click="menu=0">Materiales</a>
-            <a class="collapse-item font-weight-bold" href="#" @click="menu=1">Super Productos</a>
-            <a class="collapse-item font-weight-bold" href="#" @click="menu=2">Productos</a>
+            <a class="collapse-item font-weight-bold" href="#" @click="menu=1">Materiales</a>
+            <a class="collapse-item font-weight-bold" href="#" @click="menu=2">Super Productos</a>
+            <a class="collapse-item font-weight-bold" href="#" @click="menu=3">Productos</a>
         </div>
     </div>
     </li>
@@ -46,7 +46,7 @@
     <div id="operaciones" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
         <div class="bg-white py-2 collapse-inner rounded">
         {{-- <a class="collapse-item font-weight-bold" href="#" @click="menu=3">Producciones</a> --}}
-        <a class="collapse-item font-weight-bold" href="#" @click="menu=3">Abastecimiento</a>
+        <a class="collapse-item font-weight-bold" href="#" @click="menu=4">Abastecimiento</a>
         {{-- <h6 class="collapse-header ">Mis proveedores</h6>
         <a class="collapse-item font-weight-bold" href="#" @click="menu=4">Proveedores</a>
         </div> --}}
@@ -67,17 +67,36 @@
     </div>
     </li>
 
-    <!-- Elemento de navegación: MENÚ USUARIOS -->
+    <!-- Elemento de navegación: MENÚ PERSONAS -->
     <li class="nav-item">
-    <a class="nav-link collapsed" href="#" @click="menu=7">
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#personas" aria-expanded="true" aria-controls="personas">
         <i class="fas fa-users"></i>
-        <span>Usuarios</span>
+        <span>Personas</span>
     </a>
+    <div id="personas" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+        <div class="bg-white py-2 collapse-inner rounded">
+            <a class="collapse-item font-weight-bold" href="#" @click="menu=7">Clientes</a>
+            <a class="collapse-item font-weight-bold" href="#" @click="menu=8">Proveedores</a>
+        </div>
+    </div>
+    </li>
+    <!-- Elemento de navegación: MENÚ ACCESO -->
+    <li class="nav-item">
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#acceso" aria-expanded="true" aria-controls="acceso">
+        <i class="fas fa-users"></i>
+        <span>Acceso</span>
+    </a>
+    <div id="acceso" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+        <div class="bg-white py-2 collapse-inner rounded">
+            <a class="collapse-item font-weight-bold" href="#" @click="menu=9">Trabajadores</a>
+            <a class="collapse-item font-weight-bold" href="#" @click="menu=10">Usuarios</a>
+        </div>
+    </div>
     </li>
 
     <!-- Elemento de navegación: MENÚ ESTADISTICAS -->
     <li class="nav-item">
-    <a class="nav-link collapsed" href="#" @click="menu=8">
+    <a class="nav-link collapsed" href="#" @click="menu=11">
         <i class="fas fa-chart-pie"></i>
         <span>Estadisticas</span>
     </a>
