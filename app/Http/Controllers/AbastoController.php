@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Exception;
+use App\Concepto;
+use App\Caja;
 use App\Abasto;
 use App\Persona;
 use App\Pago;
@@ -90,7 +92,7 @@ class AbastoController extends Controller
         ];
     }
 
-    public function list(Request $request){
+    public function listByCenter(Request $request){
         if ( !$request->ajax() ) return redirect('/');
 
         $centro_id = $request->centro_id;
@@ -108,16 +110,38 @@ class AbastoController extends Controller
     }
 
     public function pay(Request $request){
-        if ( !$request->ajax() ) return redirect('/');
+        $state = 'transaction-validate';
+        $message = NULL;
+        $step = NULL;
+
+        {   // Validacion: que la consulta sea ajax
+            if ( !$request->ajax() ) return redirect('/');
+        }
+        {   // Validacion: que la caja chica este abierta
+            $now = Carbon::now('America/Lima')->toDateString();
+            $caja = Caja::where('centro_id', '=', $request->dataCentro['id'])
+                        ->where(DB::raw('CAST(start AS DATE)'), '=', $now)->first();
+            
+            if ( $caja == NULL ) {
+                return [
+                    'state' => $state,
+                    'validate' => 'box-no-exist'
+                ];
+            }
+            if ( $caja->state == 0 ) {
+                return [
+                    'state' => $state,
+                    'validate' => 'box-close'
+                ];
+            }
+        }
 
         $now = Carbon::now('America/Lima')->toDateTimeString();
         $dataListaAbasto = $request->dataListaAbasto;
 
-        $state = 'error';
-        $exception = NULL;
-
         try {
             DB::beginTransaction();
+            $state = 'transacion-start';
 
             foreach ($dataListaAbasto as $compra) {
                 if ( $compra['total'] != NULL ) {
@@ -131,6 +155,14 @@ class AbastoController extends Controller
                     $pago->created_at = $now;
                     $pago->save();
 
+                    $concepto = new Concepto();
+                    $concepto->caja_id = $caja->id;
+                    $concepto->type = 0;
+                    $concepto->descripcion = 'Pago por compra de productos externos a "'.$abasto->proveedor_nombre.'"';
+                    $concepto->monto = $pago->monto;
+                    $concepto->created_at = $now;
+                    $concepto->save();
+                    
                     foreach ( $compra['lista_detalle_abasto'] as $det ) {
                         $detalle = Detalle_abasto::findOrFail($det['id']);
                         $detalle->costo_abasto = $det['costo_abasto'];
@@ -141,16 +173,18 @@ class AbastoController extends Controller
             }
 
             DB::commit();
-            $state = 'success';
+            $state = 'transaction-success';
         } catch (Exception $e) {
             DB::rollback();
-            $state = 'exception';
-            $exception = $e;
+            $state = 'transaction-exception';
+            $message = $e;
         }
 
         return [
             'state' => $state,
-            'exception' => $exception
+            'step' => $step,
+            'exception' => $message,
+            'caja' => $caja
         ];
     }
 

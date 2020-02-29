@@ -9,12 +9,12 @@
                 <div class="col-md-9">
                     <i class="fas fa-map-signs"></i>&nbsp;&nbsp;
                     <span class="h3 mb-0 text-gray-900">Ventas&nbsp;</span>
-                    <button type="button" class="btn btn-success" @click="abrirModalAgregar()">
+                    <button type="button" class="btn btn-success" @click="abrirModalAgregar()" v-if="Caja.state==1">
                         <i class="fas fa-shopping-cart"></i>&nbsp;Nuevo
                     </button>&nbsp;
                 </div>
                 <div class="col-md-3 d-flex justify-content-end">
-                    <button type="button" class="btn btn-success" @click="abrirModalAbastecer()">
+                    <button type="button" class="btn btn-success" @click="abrirModalAbastecer()" v-if="Caja.state==1">
                         <i class="fas fa-comment-dollar" :class="DetalleVenta.button.class"></i>&nbsp;&nbsp;Productos externos
                     </button>
                 </div>
@@ -73,12 +73,12 @@
                                             <i class="far fa-eye"></i>
                                         </button>
                                     </template>
-                                    <template v-if="venta.editable">
+                                    <template v-if="venta.editable && Caja.state==1">
                                         <button type="button" title="EDITAR" class="btn btn-warning btn-sm" @click="abrirModalEditar(venta)">
                                             <i class="fas fa-edit"></i>
                                         </button>
                                     </template>
-                                    <template v-if="(venta.tipo.charAt(0)=='2') && (venta.total_faltante!=null && venta.total_faltante>0)">
+                                    <template v-if="(venta.tipo.charAt(0)=='2') && (venta.total_faltante!=null && venta.total_faltante>0) && Caja.state==1">
                                         <button type="button"  title="PAGAR" class="btn btn-success btn-sm" @click="abrirModalPagar(venta)">
                                             <i class="fas fa-hand-holding-usd"></i>
                                         </button>
@@ -1036,7 +1036,6 @@
             </div>
         </div>
 
-
     </main>
 </template>
 
@@ -1100,6 +1099,14 @@
                     tipo: null,
                     searchable: null,
                     removable: null
+                },
+
+                Caja: {
+                    state: 0
+                },
+
+                Centro: {
+                    id: $('meta[name="idCentro"]').attr('content')
                 },
 
                 //datos de busqueda y filtracion general
@@ -1187,6 +1194,7 @@
                     detalle_venta: '/detalle_venta',
                     pago: '/pago',
                     vale: '/vale',
+                    caja: '/caja',
                     serverApache: 'http://127.0.0.1:80',
                     serverPhp: 'http://127.0.0.1:8000'
                 }
@@ -1263,6 +1271,7 @@
                 var url = this.Ruta.venta+'/agregar';
 
                 axios.post(url, {
+                    'dataCentro': this.Centro,
                     'dataVenta': this.Venta,
                     'dataPago': this.Pago,
                     'dataVale': this.Vale,
@@ -1272,7 +1281,17 @@
                 }).then(function(response){
                     me.cerrarModal();
                     me.listar();
-                    if ( response.data.state == 'success' ) {
+                    //Caja cerrada
+                    if ( response.data.state  == 'box-close') {
+                        Swal.fire({
+                            title: 'Caja chica cerrada',
+                            text: response.data.message,
+                            type: 'warning'
+                        });
+                        return;
+                    }
+                    // Operacion exitosa
+                    if ( response.data.state == 'transaction-success' ) {
                         Swal.fire({
                             position: 'top-end',
                             toast: true,
@@ -1285,9 +1304,10 @@
                                 popup: 'animated bounceIn fast'
                             }
                         });
-                    } else {
-                        console.log(response.data.exception);
+                        return;
                     }
+                    // otros errores
+                    console.log(response.data.state+': '+response.data.message);
                 }).catch(function(error){
                     console.log(error);
                 });
@@ -1300,6 +1320,7 @@
                 var url = this.Ruta.venta+'/editar';
 
                 axios.put(url, {
+                    'dataCentro': this.Centro,
                     'dataVenta': this.Venta,
                     'dataCliente': this.Cliente,
                     'dataPago': this.Pago,
@@ -1372,6 +1393,7 @@
                 let url = this.Ruta.pago+'/agregar';
 
                 axios.post(url, {
+                    'dataCentro': this.Centro,
                     'idVenta': this.Venta.id,
                     'listaPagos': pagos
                 }).then(function(response){
@@ -1419,22 +1441,36 @@
                 let url = this.Ruta.abasto+'/pay';
                 
                 axios.post(url, {
+                    'dataCentro': this.Centro,
                     'dataListaAbasto': this.ListaAbasto
                 }).then(function (response) {
                     me.cerrarModal();
                     me.listar();
-                    Swal.fire({
-                        position: 'top-end',
-                        toast: true,
-                        type: 'success',
-                        title: 'Abastos pagados correctamente',
-                        showConfirmButton: false,
-                        timer: 4500,
-                        animation: false,
-                        customClass: {
-                            popup: 'animated bounceIn fast'
-                        }
-                    });
+                    if ( response.data.state == 'transaction-success' ) {
+                        Swal.fire({
+                            position: 'top-end',
+                            toast: true,
+                            type: 'success',
+                            title: 'Abastos pagados correctamente',
+                            showConfirmButton: false,
+                            timer: 4500,
+                            animation: false,
+                            customClass: {
+                                popup: 'animated bounceIn fast'
+                            }
+                        });
+                        return;
+                    }
+                    if ( response.data.state == 'transaction-validate' && response.data.validate == 'box-close' ) {
+                        Swal.fire({
+                            title: 'Caja chica cerrada',
+                            text: response.data.message,
+                            type: 'warning'
+                        });
+                        return;
+                    }
+                    console.log('method "abastecer" failed');
+                    console.log(response.data);
                 }).catch(function (exception){
                     console.log(exception);
                 });
@@ -1447,7 +1483,6 @@
                 this.Venta.tipo_pago = '1';
                 this.Venta.tipo_entrega = '1';
                 this.Venta.tipo_precio = '1';
-                this.Venta.centro_id = $('meta[name="idCentro"]').attr('content');
                 this.Venta.total_recibido = '';
                 this.Venta.total_vuelto = 0;
                 
@@ -2051,7 +2086,7 @@
                         });
                         break;
                     case 'abasto':
-                        url = this.Ruta.abasto+'/list';
+                        url = this.Ruta.abasto+'/listByCenter';
 
                         axios.get(url, {
                             params: {
@@ -2837,6 +2872,32 @@
                         break;
                 }
             },
+            actualize(option){
+                var me = this;
+                var url;
+
+                switch (option) {
+                    case 'caja':
+                        url = this.Ruta.caja+'/state';
+
+                        axios.get(url, {
+                            params: {
+                                centro_id: this.Centro.id
+                            }
+                        }).then(function (response) {
+                            let nuevo = response.data.state;
+                            let viejo = me.Caja.state;
+
+                            if ( viejo == 1 && nuevo == 0 ) console.log(response.data.message);
+                            if ( nuevo != viejo ) me.Caja.state = nuevo;
+
+                            me.actualize('caja');
+                        }).catch(function (error) {
+                            console.log(error);
+                        });
+                        break;
+                }
+            },
             cambiarPagina(page){
                 if ( page >= 1 && page <= this.Paginacion.lastPage) {
                     this.listar(page);
@@ -2855,7 +2916,7 @@
                     ListaVenta: this.ListaVenta,
                     Cliente: this.Cliente
                 };
-                if ( message != '' ) console.log(message);
+                // if ( message != '' ) console.log(message);
                 // console.log(data);
             },
             error(){
@@ -2868,6 +2929,7 @@
         },
         mounted() {
             this.listar();
+            this.actualize('caja');
         }
     }
 
