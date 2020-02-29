@@ -16,6 +16,7 @@ use App\Concepto;
 use Carbon\Carbon;
 use Exception;
 use App\Usuario;
+use App\Detalle_funcion;
 use App\Notifications\NotifyAdmin;
 
 class VentaController extends Controller {
@@ -109,22 +110,22 @@ class VentaController extends Controller {
 
         $state = 'transaction-error';
         $message = 'inicio';
+
         try {
             DB::beginTransaction();
 
             //cliente
             $message = 'cliente';
+            $persona = NULL;
             if ( $dataCliente['id'] != null ) {
                 if ( $dataCliente['id'] > 0 ) { //existe
                     $persona = Persona::findOrFail($dataCliente['id']);
-                    $persona->cliente = 1;
                     $persona->save();
                 } else { //excepciones
                     $dataCliente['id'] = NULL;
                 }
             } else if ( $dataCliente['documento'] != NULL ) { //nuevo
                 $persona = new Persona();
-                $persona->cliente = 1;
                 if ( strlen($dataCliente['documento']) == 8 ){
                     $persona->dni = $dataCliente['documento'];
                     $persona->nombres = mb_convert_case($dataCliente['nombres'], MB_CASE_TITLE, "UTF-8");
@@ -138,7 +139,17 @@ class VentaController extends Controller {
                 $persona->save();
                 $dataCliente['id'] = $persona->id;
             }
-            
+
+            //detalle_funcion
+            if ( $persona != NULL ) {
+                $detalle_function = Detalle_funcion::where('function_id', '=', 1)
+                                                    ->where('persona_id', '=', $persona->id)->first();
+                
+                if ( $detalle_funcion == NULL ) {
+                    $detalle_function = new Detalle_function();
+                }
+            }
+
             {
                 $data = array_merge(explode('-', explode(' ', $now)[0]), explode(':', explode(' ', $now)[1]));
                 $codigo = '';
@@ -413,7 +424,6 @@ class VentaController extends Controller {
             'pagos' => $pagos
         ];
     }
-
 
     public function validacion($centro_id){
         // Validacion: que la caja chica este abierta
