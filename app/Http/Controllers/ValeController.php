@@ -100,6 +100,7 @@ class ValeController extends Controller {
             'fecha' => $request->vale_fecha,
         ];
 
+
         $pdf = \PDF::loadView('pdf.valepdf', ['cliente' =>$cliente, 'venta' => $venta, 'vale' => $vale]);
         return $pdf->download('comprobante_vale.pdf');
     }

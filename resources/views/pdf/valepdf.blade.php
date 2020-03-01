@@ -145,9 +145,9 @@
             <div id="fact">
                 <p style="font-size: 15px;">
                     @php
-                        $date = new DateTime($venta['created_at']);
-                        echo $date->format('d/m/Y');
+                        $date = new DateTime();
                     @endphp
+                    {{ $date->format('d/m/Y')}}
                 </p>
             </div>
         </header>
@@ -166,16 +166,14 @@
                     <tbody>
                         <tr>
                             <td>
-                                @if($cliente['nombres'])
+                                @if($cliente['nombres'] != null)
                                     <p >Sr(a). {{$cliente['nombres'] . ' ' . $cliente['apellidos']}}<br>
-                                    DNI: {{$cliente['dni']}}<br>
+                                    DNI: {{$cliente['dni']}}
                                     </p>
                                 @elseif($cliente['razon_social'])
                                     <p >{{$cliente['razon_social']}}<br>
-                                    RUC: {{$cliente['ruc']}}<br>
+                                    RUC: {{$cliente['ruc']}}
                                     </p>
-                                @else
-                                    ---
                                 @endif
                             </td>
                             <td>
