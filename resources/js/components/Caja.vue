@@ -140,7 +140,7 @@
 
 
         <!-- Modales de Ver -->
-        <div class="modal text-gray-900" :class="{'mostrar': Modal.visible}" v-if="Modal.visible">
+        <div class="modal text-gray-900 mostrar" v-if="Modal.visible">
             <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable animated bounceIn fast" :class="Modal.class.size">
                 <div class="modal-content">
 
@@ -190,6 +190,69 @@
                                 <label class="col-md-6 font-weight-bold">Monto</label>
                                 <label class="col-md-2 text-right font-weight-bold">S/.</label>
                                 <input type="number" class="col-md-4 text-right text-gray-900" v-model="Concepto.monto">
+                            </div>
+                        </div>
+                        <!-- Modal de BUSCAR-->
+                        <div v-if="Modal.option=='search'" class="input-group">
+                            <div class="col-md-12 container-small"> <!-- Barra de busqueda -->
+                                <div class="shadow rounded input-group">
+                                    <div class="col-md-2 input-group form-group">
+                                        <label class="font-weight-bold">BUSCAR</label>
+                                    </div>
+                                    <div class="col-md-8 input-group form-group">
+                                        <div class="col-md-4">
+                                            <label class="col-md-6 font-weight-bold">Dia</label>
+                                            <select v-model="Day" class="col-md-6 custom-select custom-select-sm">
+                                                <option v-for="day in SelectDay" :key="day" :value="day" class="text-gray-900"></option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <label class="col-md-6 font-weight-bold">Mes</label>
+                                            <select v-model="MonthYear" class="col-md-6 custom-select custom-select-sm">
+                                                <option v-for="monthyear in SelectMonthYear" :key="monthyear.number" :value="monthyear.name" class="text-gray-900"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 form-grou">
+                                        <button class="btn btn-primary btn-sm">
+                                            <div v-if="Modal.loading">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                
+                                            </div>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 container-small"> <!-- Lista de ingresos -->
+                                <div class="shadow rounded input-group">
+
+                                </div>
+                            </div>
+                            <div class="col-md-6 container-small"> <!-- Lista de egresos -->
+                                <div class="shadow rounded input-group">
+
+                                </div>
+                            </div>
+                            <div class="col-md-12 container-small"> <!-- Datos de totales -->
+                                <div class="shadow rounded input-group">
+
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -273,41 +336,6 @@
             }
         },
         computed: {
-            Paginas: function(){
-                if ( !this.Paginacion.lastItem ) {
-                    return [];
-                }
-
-                var from = this.Paginacion.currentPage - this.Navegacion.offset;
-                if ( from < 1) {
-                    from = 1;
-                }
-
-                var to = this.Paginacion.currentPage + this.Navegacion.offset*2;
-                if ( to > this.Paginacion.lastPage ) {
-                    to = this.Paginacion.lastPage;
-                }
-
-                var pagesArray = [];
-                while ( from <= to ) {
-                    pagesArray.push(from);
-                    from++;
-                }
-                
-                return pagesArray;
-            },
-            Filas: function(){
-                var min = 3;
-                var max = 20;
-                var filas = [];
-
-                while ( min <= max) {
-                    filas.push(min);
-                    min++;
-                }
-
-                return filas;
-            }
         },
         methods: {
             openModal(option){
@@ -513,13 +541,13 @@
                         break;
                 }
             },
-            fix(numero, data = ''){
-                this.log('on fix("'+numero+'")');
+            fix(option, data = ''){
+                this.log('on fix("'+option+'")');
 
                 var fixed;
                 let fecha, hora, fecha_fixed, hora_fixed;
 
-                switch (numero) {
+                switch (option) {
                     case 'datetime':
                         fecha = data.split(' ')[0].split('-');
                         hora = data.split(' ')[1].split(':');

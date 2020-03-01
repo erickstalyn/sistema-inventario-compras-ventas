@@ -1614,7 +1614,7 @@
             abrirModalAbastecer(){
                 this.prepare('modal', {
                     option: 'abastecer',
-                    titulo: 'COMPRA DE PRODUCTOS EXTERNOS',
+                    titulo: 'Compra de productos externos no pagados',
                     size: 'modal-xl',
                     btnA: 'Confirmar Cambios',
                     btnC: 'Cerrar'

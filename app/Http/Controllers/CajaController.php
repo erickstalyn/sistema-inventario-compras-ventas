@@ -210,4 +210,43 @@ class CajaController extends Controller {
             'exception' => $exception
         ];
     }
+
+    public function search(Request $request){
+        $state = 'transaction-validate';
+        $step = NULL;
+        $message = NULL;
+        
+        //Validacion: el request debe ser ajax
+        $step = 'validacion ajax';
+        if ( !$request->ajax() ) return redirect('/');
+
+        $step = 'datos del request';
+        $date = $request->date;
+        $center_id = $request->center_id;
+        $state = 'transaction-select';
+
+        $step = 'query a la db';
+        $box = Caja::select('total_start', 'total_end', 'total_ingreso AS total_ingress', 'total_egreso AS total_egress', 'state', 'start AS start_at', 'end AS finish_at')
+                    ->where(DB::raw('CAST(start AS DATE)'), '=', $date)
+                    ->where('centro_id', '=', $center_id)->first();
+        
+        $step = 'verificacion de que de encontro la caja';
+        if ( $box != null ) {
+            $step = 'buscando los conceptos de esa caja';
+            $box->getConceptos;
+            $step = 'conceptos encontrados';
+            $state = 'transaction-success';
+        } else {
+            $step = 'sin caja';
+            $state = 'transaction-not-found';
+        }
+
+        return [
+            'box' => $box,
+            'state' => $state,
+            'step' => $step,
+            'message' => $message
+        ];
+    }
+
 }
