@@ -605,7 +605,7 @@
                                                 <label class="col-md-7 m-0 text-white" v-text="fix('hora', Vale.generado.created_at)"></label>
                                             </div>
                                             <div class="col-md-12 text-center mt-3">
-                                                <button class="btn btn-danger">Imprimir vale</button>
+                                                <button class="btn btn-danger" @click="generatePdfVale()">Imprimir vale</button>
                                             </div>
                                         </div>
                                     </div>
@@ -2913,8 +2913,33 @@
             error(){
                 console.log('surgio un supererror');
             },
-            generatePdfSpecific(){
+            generatePdfSpecific(){ //Comprobante de venta
                 window.open(this.Ruta.serverPhp + '/venta/generatePdfSpecific?id=' + this.Venta.id,'_blank');
+                this.Button.press = false;
+            },
+            generatePdfVale(){
+                // let cliente = {
+                //     nombres : this.Cliente.nombres,
+                //     apellidos : this.Cliente.apellidos,
+                //     dni : this.Cliente.dni,
+                //     ruc : this.Cliente.ruc,
+                //     razon_social : this.Cliente.razon_social,
+                // };
+                // const venta = {
+                //     codigo : this.Venta.codigo,
+                //     created_at : this.Venta.created_at
+                // }
+                // const vale = {
+                //     monto: this.Vale.generado.monto,
+                //     fecha: this.Vale.generado.created_at
+                // }
+                let url = this.Ruta.vale + '/generatePdfSpecific?cliente_nom=' + this.Cliente.nombres +
+                                            '&cliente_ape='+this.Cliente.apellidos + '&cliente_dni='+ this.Cliente.dni+
+                                            '&cliente_ruc=' + this.Cliente.ruc + '&cliente_razon_social=' + this.Cliente.razon_social+
+                                            '&venta_codigo=' + this.Venta.codigo + '&venta_created_at='+ this.Venta.created_at+
+                                            '&vale_monto='+ this.Vale.generado.monto + '&vale_fecha='+ this.Vale.generado.created_at;
+                window.open(url, '_blank');
+
                 this.Button.press = false;
             }
         },

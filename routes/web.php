@@ -73,6 +73,7 @@ Route::group(['middleware' => ['auth']], function () {
 
     //RUTA PARA PDF
     Route::get('/venta/generatePdfSpecific', 'VentaController@generatePdfSpecific');
+    Route::get('/vale/generatePdfSpecific', 'ValeController@generatePdfSpecific');
 
     Route::group(['middleware' => ['Administrador']], function (){
         
