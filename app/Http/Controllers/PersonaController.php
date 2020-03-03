@@ -104,7 +104,7 @@ class PersonaController extends Controller
             DB::beginTransaction();
 
             $persona = Persona::findOrFail($request->id);
-            if($persona->tipo == 'E') $persona->razon_social = $request->razon_social;
+            if($persona->tipo == 'E') $persona->razon_social = mb_convert_case($request->razon_social, MB_CASE_UPPER, "UTF-8");
             $persona->direccion = $request->direccion;
             $persona->telefono = $request->telefono;
             $persona->email = $request->email;

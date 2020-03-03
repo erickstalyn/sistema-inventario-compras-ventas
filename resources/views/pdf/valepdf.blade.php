@@ -166,11 +166,11 @@
                     <tbody>
                         <tr>
                             <td>
-                                @if($cliente['nombres'] != null)
+                                @if($cliente['nombres'] != 'null')
                                     <p >Sr(a). {{$cliente['nombres'] . ' ' . $cliente['apellidos']}}<br>
                                     DNI: {{$cliente['dni']}}
                                     </p>
-                                @elseif($cliente['razon_social'])
+                                @elseif($cliente['razon_social'] != 'null')
                                     <p >{{$cliente['razon_social']}}<br>
                                     RUC: {{$cliente['ruc']}}
                                     </p>

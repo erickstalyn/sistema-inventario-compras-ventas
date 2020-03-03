@@ -60,7 +60,7 @@
                                 <th>Teléfono</th>
                                 <th>Email</th>
                                 <th>Estado</th>
-                                <th>Opciones</th>
+                                <th class="text-center">Opciones</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -78,11 +78,11 @@
                                         <span class="badge badge-danger">Desactivado</span>
                                     </div>
                                 </td>
-                                <td>
-                                    <button type="button" @click="abrirModalEditar(cliente)" title="Editar" class="btn btn-outline-warning btn-sm">
-                                        <i class="fas fa-user-edit"></i>
-                                    </button>
-                                    <template v-if="cliente.estado">
+                                <td class="text-center">
+                                        <button type="button" @click="abrirModalEditar(cliente)" title="Editar" class="btn btn-outline-warning btn-sm">
+                                            <i class="fas fa-user-edit"></i>
+                                        </button>
+                                    <!-- <template v-if="cliente.estado">
                                         <button type="button" @click="setEstado(cliente, 0)" title="Desactivar" class="btn btn-outline-danger btn-sm">
                                             <i class="fas fa-user-times"></i>
                                         </button>
@@ -91,7 +91,7 @@
                                         <button type="button" @click="setEstado(cliente, 1)" title="Activar" class="btn btn-outline-success btn-sm">
                                             <i class="fas fa-user-check"></i>
                                         </button>
-                                    </template>
+                                    </template> -->
                                 </td>
                             </tr>
                         </tbody>
