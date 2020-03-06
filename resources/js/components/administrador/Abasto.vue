@@ -30,7 +30,7 @@
                             </div>
                         </div>
                         <div class="col-md-8">
-                            <input type="search" class="form-control" v-model="Busqueda.texto" @keyup="listar()" placeholder="Buscar por proveedor">
+                            <input type="search" class="form-control" v-model="Busqueda.texto" @keyup="Busqueda.texto.length >=5 || Busqueda.texto.length == 0 ? listar() : ''" placeholder="Buscar por proveedor">
                         </div>
                     </div>
                 </div>
@@ -247,7 +247,7 @@
                                         </div>
                                         <div class="row">
                                             <div class="input-group"> 
-                                                <input type="search" class="form-control form-control-sm" v-model="BusquedaFiltro.texto" @keyup.enter="listarFiltro()" id="filtroProducto" placeholder="Producto,marca,modelo,tamaño,color" @keyup="listarFiltro()">
+                                                <input type="search" class="form-control form-control-sm" v-model="BusquedaFiltro.texto" @keyup.enter="listarFiltro()" id="filtroProducto" placeholder="Producto,marca,modelo,tamaño,color">
                                                 <!-- <button type="button" class="btn btn-sm btn-primary" @click="listarFiltro()">
                                                     <i class="fa fa-search"></i>&nbsp; Buscar
                                                 </button> -->

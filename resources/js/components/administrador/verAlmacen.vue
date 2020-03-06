@@ -45,7 +45,7 @@
                 <div class="row form-group">
                     <div class="col-md-5">
                         <div class="input-group">
-                            <input type="search" class="form-control" v-model="Busqueda.texto" @keyup="listar()" placeholder="Buscar por NOMBRE o CÓDIGO">
+                            <input type="search" class="form-control" v-model="Busqueda.texto" @keyup="Busqueda.texto.length >=10 || Busqueda.texto.length == 0 ? listar() : ''" placeholder="Buscar por NOMBRE o CÓDIGO">
                             <button type="button" class="btn btn-primary" @click="listar()">
                                 <i class="fa fa-search"></i>&nbsp; Buscar
                             </button>
@@ -131,7 +131,7 @@
                         </div>
                     </div>
                     <div style="width: 24rem;">
-                        <input type="search" class="form-control" v-model="Busqueda.texto" @keyup="listar()" placeholder="Buscar por CENTRO DE DESTINO">
+                        <input type="search" class="form-control" v-model="Busqueda.texto" @keyup="Busqueda.texto.length >=5 || Busqueda.texto.length == 0 ? listar() : ''" placeholder="Buscar por CENTRO DE DESTINO">
                     </div>
                     <div class="col-md-1">
                         <label for="">Fecha de envío</label>
@@ -239,7 +239,7 @@
                         </div>
                     </div>
                     <div style="width: 24rem;">
-                        <input type="search" class="form-control" v-model="Busqueda.texto" @keyup="listar()" placeholder="Buscar por CENTRO DE ORIGEN">
+                        <input type="search" class="form-control" v-model="Busqueda.texto" @keyup="Busqueda.texto.length >=5 || Busqueda.texto.length == 0 ? listar() : ''" placeholder="Buscar por CENTRO DE ORIGEN">
                     </div>
                     <div class="col-md-1">
                         <label for="">Fecha de envío</label>
@@ -459,7 +459,7 @@
                                 </select>
                             </div>
                             <div class="col-md-8">
-                                <input type="search" class="form-control" v-model="Busqueda.texto" placeholder="Buscar por CLIENTE o CODIGO de venta" @keyup="listar()">
+                                <input type="search" class="form-control" v-model="Busqueda.texto" placeholder="Buscar por CLIENTE o CODIGO de venta" @keyup="Busqueda.texto.length >=5 || Busqueda.texto.length == 0 ? listar() : ''">
                             </div>
                         </div>
                     </div>
@@ -574,7 +574,7 @@
                                 <option value="1">Usado</option>
                                 <option value="2">Sin usar</option>
                             </select>
-                            <input type="search" class="form-control" v-model="Busqueda.texto" @keyup="listar()" placeholder="Buscar por DNI, RUC, NOMBRES , RAZÓN SOCIAL">
+                            <input type="search" class="form-control" v-model="Busqueda.texto" @keyup="Busqueda.texto.length >=5 || Busqueda.texto.length == 0 ? listar() : ''" placeholder="Buscar por DNI, RUC, NOMBRES , RAZÓN SOCIAL">
                             <button type="button" class="btn btn-primary" @click="listar()">
                                 <i class="fa fa-search"></i>&nbsp; Buscar
                             </button>

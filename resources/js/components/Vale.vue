@@ -25,7 +25,7 @@
                             <option value="1">Usado</option>
                             <option value="2">Sin usar</option>
                         </select>
-                        <input type="search" class="form-control" v-model="Busqueda.texto" @keyup="listar()" placeholder="Buscar por DNI, RUC, NOMBRES , RAZÓN SOCIAL">
+                        <input type="search" class="form-control" v-model="Busqueda.texto" @keyup="Busqueda.texto.length >=5 || Busqueda.texto.length == 0 ? listar() : ''" placeholder="Buscar por DNI, RUC, NOMBRES , RAZÓN SOCIAL">
                         <button type="button" class="btn btn-primary" @click="listar()">
                             <i class="fa fa-search"></i>&nbsp; Buscar
                         </button>

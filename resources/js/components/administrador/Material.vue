@@ -25,7 +25,7 @@
                             <option value="1">Activados</option>
                             <option value="0">Desactivados</option>
                         </select> -->
-                        <input type="search" class="form-control" v-model="Busqueda.texto" placeholder="Buscar por NOMBRE" @keyup="listar()">
+                        <input type="search" class="form-control" v-model="Busqueda.texto" placeholder="Buscar por NOMBRE" @keyup="Busqueda.texto.length >=3 || Busqueda.texto.length == 0 ? listar() : ''">
                         <button type="button" class="btn btn-primary" @click="listar()">
                             <i class="fa fa-search"></i>&nbsp; Buscar
                         </button>

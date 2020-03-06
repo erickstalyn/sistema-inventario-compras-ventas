@@ -30,7 +30,7 @@
                             <option value="P">PERSONAS</option>
                             <option value="E">EMPRESAS</option>
                         </select>
-                        <input type="search" class="form-control" v-model="Busqueda.texto" placeholder="Buscar por NOMBRE, DNI o RUC" @keyup="listar()">
+                        <input type="search" class="form-control" v-model="Busqueda.texto" placeholder="Buscar por NOMBRE, DNI o RUC" @keyup="Busqueda.texto.length >=5 || Busqueda.texto.length == 0 ? listar() : ''">
                         <button type="button" class="btn btn-primary" @click="listar()">
                             <i class="fa fa-search"></i>&nbsp; Buscar
                         </button>
