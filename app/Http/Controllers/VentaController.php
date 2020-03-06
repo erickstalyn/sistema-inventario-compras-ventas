@@ -382,6 +382,7 @@ class VentaController extends Controller {
                 $vale->updated_at = NULL;
                 $vale->save();
             }
+
             //lista de detalles
             foreach($listDetalle as $ep => $det){
                 $detalle = Detalle_venta::findOrFail($det['id']);
@@ -401,6 +402,7 @@ class VentaController extends Controller {
 
         return [
             'vale' => $vale,
+            'venta' => $venta,
             'state' => $state,
             'message' => $message
         ];
