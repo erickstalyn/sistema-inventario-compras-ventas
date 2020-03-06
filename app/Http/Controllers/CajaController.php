@@ -222,12 +222,15 @@ class CajaController extends Controller {
 
         $step = 'datos del request';
         $date = $request->date;
+        $date_today = Carbon::now('America/Lima')->toDateString();
         $center_id = $request->center_id;
+        
         $state = 'transaction-select';
 
         $step = 'query a la db';
-        $box = Caja::select('total_start', 'total_end', 'total_ingreso AS total_ingress', 'total_egreso AS total_egress', 'state', 'start AS start_at', 'end AS finish_at')
+        $box = Caja::select('id', 'total_start', 'total_end AS total_finish', 'total_ingreso AS total_ingress', 'total_egreso AS total_egress', 'state', 'start AS start_at', 'end AS finish_at')
                     ->where(DB::raw('CAST(start AS DATE)'), '=', $date)
+                    ->where(DB::raw('CAST(start AS DATE)'), '!=', $date_today)
                     ->where('centro_id', '=', $center_id)->first();
         
         $step = 'verificacion de que de encontro la caja';

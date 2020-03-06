@@ -5,12 +5,17 @@
         <div class="container-small">
             
             <!-- Encabezado principal -->
-            <div class="col-md-12">
+            <div class="col-md-12 input-group">
                 <div class="col-md-12 text-center form-group">
                     <label class="h3 text-gray-900">ESTADO DE LA CAJA CHICA</label>
                 </div>
-                <div class="col-md-12 form-group">
+                <div class="col-md-6 form-group">
                     <label class="font-weight-bold text-gray-900" v-text="'Fecha: '+get('date-now')"></label>
+                </div>
+                <div class="col-md-6 form-group d-flex justify-content-end">
+                    <button class="btn btn-primary" @click="openModal('search')">
+                        <i class="fas fa-eye"></i>&nbsp;&nbsp;Buscar cajas
+                    </button>
                 </div>
             </div>
 
@@ -141,7 +146,7 @@
 
         <!-- Modales de Ver -->
         <div class="modal text-gray-900 mostrar" v-if="Modal.visible">
-            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable animated bounceIn fast" :class="Modal.class.size">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable animated bounceIn fast" :class="Modal.class">
                 <div class="modal-content">
 
                     <div class="modal-header">
@@ -149,7 +154,7 @@
                         <button type="button" @click="close('modal')" class="close">X</button>
                     </div>
                     
-                    <div class="modal-body" :class="Modal.class.body_bgc">
+                    <div class="modal-body" :class="Modal.body">
                         <!-- Modal de AGREGAR.INGRESO-->
                         <div v-if="Modal.option=='agregar.ingreso'" class="input-group">
                             <div v-if="Error.state" class="col-md-12 d-flex justify-content-center">
@@ -193,66 +198,126 @@
                             </div>
                         </div>
                         <!-- Modal de BUSCAR-->
-                        <div v-if="Modal.option=='search'" class="input-group">
+                        <div v-if="Modal.option=='search'">
                             <div class="col-md-12 container-small"> <!-- Barra de busqueda -->
-                                <div class="shadow rounded input-group">
+                                <div class="shadow rounded input-group pt-3" style="border: 1px solid;">
                                     <div class="col-md-2 input-group form-group">
                                         <label class="font-weight-bold">BUSCAR</label>
                                     </div>
-                                    <div class="col-md-8 input-group form-group">
-                                        <div class="col-md-4">
-                                            <label class="col-md-6 font-weight-bold">Dia</label>
-                                            <select v-model="Day" class="col-md-6 custom-select custom-select-sm">
-                                                <option v-for="day in SelectDay" :key="day" :value="day" class="text-gray-900"></option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-8">
-                                            <label class="col-md-6 font-weight-bold">Mes</label>
-                                            <select v-model="MonthYear" class="col-md-6 custom-select custom-select-sm">
-                                                <option v-for="monthyear in SelectMonthYear" :key="monthyear.number" :value="monthyear.name" class="text-gray-900"></option>
-                                            </select>
-                                        </div>
+                                    <div class="col-md-8 input-group form-group d-flex justify-content-center">
+                                        <label class="col-md-4 mt-2 mb-0 font-weight-bold">Seleccione la fecha:</label>
+                                        <input type="date" v-model="TheDate.date" :min="TheDate.min" :max="TheDate.max" class="col-md-5 form-control">
                                     </div>
-                                    <div class="col-md-2 form-grou">
-                                        <button class="btn btn-primary btn-sm">
-                                            <div v-if="Modal.loading">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                                
+                                    <div class="col-md-2 form-group">
+                                        <button class="btn btn-primary btn-sm" :disabled="Modal.loading">
+                                            <div v-if="!Modal.loading"  class="p-0 m-0">
+                                                <label class="mt-1 mb-1">Buscar Caja</label>
+                                            </div>
+                                            <div v-else class="p-0 m-0">
+                                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                                             </div>
                                         </button>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-6 container-small"> <!-- Lista de ingresos -->
-                                <div class="shadow rounded input-group">
-
+                            <div v-if="FoundBox.id==0" class="col-md-12 pt-3" style="height: 26rem;">
+                                <label class="h5 text-primary">Indique la fecha de la caja que desea ver</label>
+                            </div>
+                            <div v-else-if="FoundBox.id!=null" class="col-md-12 p-0 m-0" style="height: 26rem;"> <!-- Si la caja encontrada es correcta entonces -->
+                                <div class="col-md-6 container-small"> <!-- Lista de ingresos -->
+                                    <div class="shadow rounded input-group table-success" style="border: 1px solid; height: 20rem;">
+                                        <div class="col-md-12 pt-3 form-group">
+                                            <label class="h5 font-weight-bold text-gray-900">Lista de ingresos</label>
+                                        </div>
+                                        <div class="col-md-12 form-group overflow-auto" style="height: 15rem;">
+                                            <table v-if="ListIngress.length" class="table table-condensed table-bordered table-sm bg-white text-gray-900">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="text-center">#</th>
+                                                        <th class="text-center">Hora</th>
+                                                        <th class="text-center">Descripcion</th>
+                                                        <th class="text-center">Monto</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr v-for="(concepto, index) in ListIngress" :key="concepto.id">
+                                                        <td class="text-center" v-text="index+1"></td>
+                                                        <td v-text="concepto.hora" class="text-center"></td>
+                                                        <td v-text="concepto.descripcion"></td>
+                                                        <td v-text="Number.parseFloat(concepto.monto).toFixed(2)" class="text-right"></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                            <h5 v-else>No se han registrado ingresos</h5>
+                                        </div>
+                                        <div class="col-md-12 input-group">
+                                            <label class="col-md-7 h5 text-right font-weight-bold">Total de ingresos:</label>
+                                            <label class="col-md-2 h5 text-right font-weight-bold">S/.</label>
+                                            <label class="col-md-3 h5 text-right font-weight-bold" v-text="Number.parseFloat(FoundBox.total_ingress).toFixed(2)"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 container-small"> <!-- Lista de egresos -->
+                                    <div class="shadow rounded input-group table-warning">
+                                        <div class="col-md-12 pt-3 form-group">
+                                            <label class="h5 font-weight-bold text-gray-900">Lista de egresos</label>
+                                        </div>
+                                        <div class="col-md-12 form-group overflow-auto" style="height: 15rem;">
+                                            <table v-if="ListEgress.length" class="table table-condensed table-bordered table-sm bg-white text-gray-900">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="text-center">#</th>
+                                                        <th class="text-center">Hora</th>
+                                                        <th class="text-center">Descripcion</th>
+                                                        <th class="text-center">Monto</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr v-for="(concepto, index) in ListEgress" :key="concepto.id">
+                                                        <td class="text-center" v-text="index+1"></td>
+                                                        <td v-text="concepto.hora" class="text-center"></td>
+                                                        <td v-text="concepto.descripcion"></td>
+                                                        <td v-text="Number.parseFloat(concepto.monto).toFixed(2)" class="text-right"></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                            <h5 v-else>No se han registrado egresos</h5>
+                                        </div>
+                                        <div class="col-md-12 input-group">
+                                            <label class="col-md-7 h5 text-right font-weight-bold">Total de egresos:</label>
+                                            <label class="col-md-2 h5 text-right font-weight-bold">S/.</label>
+                                            <label class="col-md-3 h5 text-right font-weight-bold" v-text="Number.parseFloat(FoundBox.total_egress).toFixed(2)"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 container-small"> <!-- Datos de totales -->
+                                    <div class="shadow rounded input-group" style="border: 1px solid;">
+                                        <div class="col-md-6 input-group">
+                                            <div class="col-md-6">
+                                                <label class="h5 font-weight-bold">Fecha:&nbsp;&nbsp;<span class="h5 text-primary" v-text="FoundBox.date"></span></label>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="font-weight-bold">Apertura:&nbsp;&nbsp;<span class="font-weight-normal text-primary" v-text="FoundBox.start_at"></span></label>
+                                                <label class="font-weight-bold">Cierre:&nbsp;&nbsp;<span class="font-weight-normal text-primary" v-text="FoundBox.finish_at"></span></label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="col-md-10 input-group">
+                                                <label class="col-md-7 text-right h5 text-gray-900">Efectivo inicial</label>
+                                                <label class="col-md-2 text-right h5 text-gray-900">S/.</label>
+                                                <label class="col-md-3 text-right h5 text-gray-900" v-text="Number.parseFloat(FoundBox.total_start).toFixed(2)"></label>
+                                            </div>
+                                            <div class="col-md-10 input-group">
+                                                <label class="col-md-7 text-right h5 text-gray-900">Efectivo final</label>
+                                                <label class="col-md-2 text-right h5 text-gray-900">S/.</label>
+                                                <label class="col-md-3 text-right h5 text-gray-900" v-text="Number.parseFloat(FoundBox.total_end).toFixed(2)"></label>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-6 container-small"> <!-- Lista de egresos -->
-                                <div class="shadow rounded input-group">
-
-                                </div>
-                            </div>
-                            <div class="col-md-12 container-small"> <!-- Datos de totales -->
-                                <div class="shadow rounded input-group">
-
-                                </div>
+                            <div v-else-if="FoundBox.id==null" class="col-md-12 pt-3" style="height: 26rem;">
+                                <label class="h5 text-danger">No se ha encontrado una caja con la fecha indicada</label>
                             </div>
                         </div>
                     </div>
@@ -301,6 +366,23 @@
                     monto: null
                 },
 
+                FoundBox: {
+                    id: null,
+                    total_start: null,
+                    total_finish: null,
+                    total_ingress: null,
+                    total_egress: null,
+                    ListIngress: [],
+                    ListEgress: []
+                },
+
+
+                TheDate: {
+                    date: null,
+                    min: null,
+                    max: null
+                },
+
                 Centro: {
                     id: $('meta[name="idCentro"]').attr('content')
                 },
@@ -311,6 +393,9 @@
                     option: null,
                     title: null,
                     class: null,
+                    head: null,
+                    body: null,
+                    foot: null,
                     btn_a: null,
                     btn_b: null,
                     superstep: null,
@@ -350,8 +435,8 @@
                             btn_b: {
                                 text: 'Cancelar'
                             },
-                            class: {
-                                body_bgc: 'table-success'
+                            body: {
+                                'table-success': true
                             }
                         });
                         
@@ -370,14 +455,41 @@
                             btn_b: {
                                 text: 'Cancelar'
                             },
-                            class: {
-                                body_bgc: 'table-warning'
+                            body: {
+                                'table-warning': true
                             }
                         });
                         
                         this.Concepto.descripcion = '';
                         this.Concepto.monto = '';
                         
+                        this.open('modal');
+                        break;
+                    case 'search':
+                        this.prepare('modal', {
+                            option: 'search',
+                            title: 'Busqueda de las cajas de los 2 ultimos meses',
+                            btn_b: {
+                                text: 'Cerrar'
+                            },
+                            class: {
+                                'modal-xl': true
+                            }
+                        });
+
+                        this.FoundBox.id = 0;
+                        this.FoundBox.total_start = null;
+                        this.FoundBox.total_finish = null;
+                        this.FoundBox.total_ingress = null;
+                        this.FoundBox.total_egress = null;
+                        this.FoundBox.start_at = null;
+                        this.FoundBox.finish_at = null;
+
+                        this.SelectDay = [];
+                        this.SelectMonthYear = [];
+
+                        this.select('date');
+
                         this.open('modal');
                         break;
                 }
@@ -391,6 +503,9 @@
                         break;
                     case 'agregar.egreso': 
                         this.add('egreso');
+                        break;
+                    case 'search': 
+                        this.search('box');
                         break;
                 }
             },
@@ -571,6 +686,23 @@
                     case 'month':
                         fixed = data.split(' ')[0].split('-')[1];
                         break; 
+                    case 'month.name':
+                        switch (data) {
+                            case 1: fixed = 'Enero'; break;
+                            case 2: fixed = 'Febrero'; break;
+                            case 3: fixed = 'Marzo'; break;
+                            case 4: fixed = 'Abril'; break;
+                            case 5: fixed = 'Mayo'; break;
+                            case 6: fixed = 'Junio'; break;
+                            case 7: fixed = 'Julio'; break;
+                            case 8: fixed = 'Agosto'; break;
+                            case 9: fixed = 'Septiembre'; break;
+                            case 10: fixed = 'Octubre'; break;
+                            case 11: fixed = 'Noviembre'; break;
+                            case 12: fixed = 'Diciembre'; break;
+                            default: fixed = 'ERROR'; break;
+                        }
+                        break; 
                     case 'year':
                         fixed = data.split(' ')[0].split('-')[0];
                         break; 
@@ -711,6 +843,56 @@
                         break;
                 }
             },
+            search(option){
+                switch (option) {
+                    case 'box':
+                        let me = this;
+                        let url = this.Ruta.caja + '/search';
+                        
+                        axios.get(url, {
+                            params: {
+                                date: this.MonthYear+'-'+this.Day,
+                                centro_id: this.Centro.id
+                            }
+                        }).then(function (response) {
+                            if ( reponse.data.state == 'transaction-success') {
+                                this.FoundBox.id = 0;
+                                this.FoundBox.total_start = null;
+                                this.FoundBox.total_finish = null;
+                                this.FoundBox.total_ingress = null;
+                                this.FoundBox.total_egress = null;
+                                this.FoundBox.start_at = null;
+                                this.FoundBox.finish_at = null;
+                            }
+                        }).catch(function (error) {
+
+                        }).then(function (response) {
+                            me.Modal.loading = false;
+                        });
+                        break;
+                    default:
+                        this.error();
+                        break;
+                }
+            },
+            select(option){
+                switch (option) {
+                    case 'date':
+                        let now = new Date();
+                        
+                        let min = new Date();
+                        min.setMonth(now.getMonth()-1);
+                        min.setDate(1);
+
+                        let max = new Date();
+                        max.setDate(now.getDate()-1);
+
+                        this.TheDate.min = min.getFullYear()+'-'+(min.getMonth()+1).toString().padStart(2, '0')+'-'+(min.getDate()).toString().padStart(2, '0');
+                        this.TheDate.max = max.getFullYear()+'-'+(max.getMonth()+1).toString().padStart(2, '0')+'-'+(max.getDate()).toString().padStart(2, '0');
+                        this.TheDate.date = this.TheDate.max;
+                        break;
+                }
+            },
             close(option){
                 switch (option) {
                     case 'mistake':
@@ -772,19 +954,22 @@
                         this.Error.message = [];
                         
                         this.Modal.option = data.option;
-                        this.Modal.btn_a = data.btn_a==null?null:{
+                        this.Modal.title = data.title;
+                        
+                        this.Modal.btn_a = data.btn_a==undefined?null:{
                             text: data.btn_a.text,
                             class: data.btn_a.class==undefined?'btn-success':data.btn_a.class
                         };
-                        this.Modal.btn_b = data.btn_b==null?null:{
+                        this.Modal.btn_b = data.btn_b==undefined?null:{
                             text: data.btn_b.text,
                             class: data.btn_b.class==undefined?'btn-secondary':data.btn_b.class
                         };
-                        this.Modal.title = data.title;
-                        this.Modal.class = {
-                            size: data.class.size==undefined?'':data.class.size,
-                            body_bgc: data.class.body_bgc==undefined?'':data.class.body_bgc
-                        };
+                        
+                        this.Modal.class = data.class==undefined?'':data.class;
+                        this.Modal.head = data.head==undefined?'':data.head;
+                        this.Modal.body = data.body==undefined?'':data.body;
+                        this.Modal.foot = data.foot==undefined?'':data.foot;
+                        
                         this.Modal.loading = false;
 
                         this.Modal.superstep = data.superstep==undefined?0:data.superstep;
