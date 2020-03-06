@@ -66,7 +66,7 @@
                                 </td>
                                 <td v-text="venta.razon_social!=null?venta.razon_social:(venta.nombres!=null?(venta.nombres+' '+venta.apellidos):'---')"></td>
                                 <td class="text-right" v-text="venta.total"></td>
-                                <td class="text-center" v-text="fix(0, venta.created_at)"></td>
+                                <td class="text-center" v-text="fix('fecha_hora', venta.created_at)"></td>
                                 <td class="text-center">
                                     <template>
                                         <button type="button" title="VER" class="btn btn-primary btn-sm" @click="abrirModalVer(venta)">
@@ -457,7 +457,7 @@
                                                     <tbody>
                                                         <tr v-for="(pago, index) in ListaPago" :key="index" :class="pago.color">
                                                             <td class="text-right">{{index+1}}</td>
-                                                            <td class="text-center" v-text="fix(0, pago.created_at)"></td>
+                                                            <td class="text-center" v-text="fix('fecha_hora', pago.created_at)"></td>
                                                             <td class="text-right" v-text="pago.monto"></td>
                                                         </tr>
                                                     </tbody>
@@ -522,7 +522,7 @@
                                         <div class="col-md-12 input-group mt-2">
                                             <div class="col-md-6 input-group">
                                                 <label class="col-md-4 font-weight-bold p-0">Registrado:</label>
-                                                <label class="col-md-8 text-primary p-0" v-text="fix(0, Venta.created_at)"></label>
+                                                <label class="col-md-8 text-primary p-0" v-text="fix('fecha_hora', Venta.created_at)"></label>
                                             </div>
                                             <div class="col-md-6 input-group">
                                                 <label class="col-md-6 text-right font-weight-bold h5 p-0">Monto de venta:</label>
@@ -903,7 +903,7 @@
                                     <tbody>
                                         <tr v-for="(pago, index) in ListaPago" :key="index" :class="pago.color">
                                             <td class="text-right">{{index+1}}</td>
-                                            <td class="text-center" v-text="fix(0, pago.created_at)"></td>
+                                            <td class="text-center" v-text="fix('fecha_hora', pago.created_at)"></td>
                                             <td class="text-right" v-text="Number.parseFloat(pago.monto).toFixed(2)"></td>
                                         </tr>
                                     </tbody>
@@ -1318,6 +1318,7 @@
 
                 var me = this;
                 var url = this.Ruta.venta+'/editar';
+                let data = {};
 
                 axios.put(url, {
                     'dataCentro': this.Centro,
@@ -1327,9 +1328,23 @@
                     'dataVale': this.Vale,
                     'listDetalle': this.ListaDetalle
                 }).then(function(response){
+                    data.cliente_nombres = me.Cliente.nombres;
+                    data.cliente_apellidos = me.Cliente.apellidos;
+                    data.cliente_dni = me.Cliente.dni;
+                    data.cliente_ruc = me.Cliente.ruc;
+                    data.cliente_razon_social = me.Cliente.razon_social;
+
                     me.cerrarModal();
                     me.listar();
                     var vale = response.data.vale;
+                    let venta = response.data.venta;
+
+                    data.venta_codigo = venta.codigo;
+                    data.venta_created_at= venta.created_at;
+                    data.vale_monto = vale.monto;
+                    data.vale_created_at = vale.created_at;
+
+                    console.log(venta);
                     if ( vale != null ) {
                         Swal.fire({
                             title: 'Se ha generado un vale',
@@ -1347,7 +1362,7 @@
                             if (result.value) {
                                 // ZONA PARA EL CODIGO DE IMPRESION DE VALE
                                 console.log('Se imprimio el vale');
-                                
+                                me.generatePdfVale(data);
                             }
                             Swal.fire({
                                 position: 'top-end',
@@ -2556,7 +2571,6 @@
                 let fecha, hora, fecha_fixed, hora_fixed;
 
                 switch (numero) {
-                    case 0:
                     case 'fecha_hora':
                         fecha = data.split(' ')[0].split('-');
                         hora = data.split(' ')[1].split(':');
@@ -2918,15 +2932,23 @@
                 window.open(this.Ruta.serverPhp + '/venta/generatePdfSpecific?id=' + this.Venta.id,'_blank');
                 this.Button.press = false;
             },
-            generatePdfVale(){
-                let url = this.Ruta.vale + '/generatePdfSpecific?cliente_nom=' + this.Cliente.nombres +
-                                            '&cliente_ape='+this.Cliente.apellidos + '&cliente_dni='+ this.Cliente.dni+
-                                            '&cliente_ruc=' + this.Cliente.ruc + '&cliente_razon_social=' + this.Cliente.razon_social+
-                                            '&venta_codigo=' + this.Venta.codigo + '&venta_created_at='+ this.Venta.created_at+
-                                            '&vale_monto='+ this.Vale.generado.monto + '&vale_fecha='+ this.Vale.generado.created_at;
+            generatePdfVale(data = {}){
+                let url = '';
+                if(Object.entries(data).length === 0){
+                    url = this.Ruta.vale + '/generatePdfSpecific?cliente_nom=' + this.Cliente.nombres +
+                                                '&cliente_ape='+this.Cliente.apellidos + '&cliente_dni='+ this.Cliente.dni+
+                                                '&cliente_ruc=' + this.Cliente.ruc + '&cliente_razon_social=' + this.Cliente.razon_social+
+                                                '&venta_codigo=' + this.Venta.codigo + '&venta_created_at='+ this.Venta.created_at+
+                                                '&vale_monto='+ this.Vale.generado.monto + '&vale_fecha='+ this.Vale.generado.created_at;
+                }else{
+                    console.log('data is not empty');
+                    url = this.Ruta.vale + '/generatePdfSpecific?cliente_nom=' + data.cliente_nombres +
+                                                '&cliente_ape='+data.cliente_apellidos + '&cliente_dni='+ data.cliente_dni+
+                                                '&cliente_ruc=' + data.cliente_ruc + '&cliente_razon_social=' + data.cliente_razon_social+
+                                                '&venta_codigo=' + data.venta_codigo + '&venta_created_at='+ data.venta_created_at+
+                                                '&vale_monto='+ data.vale_monto + '&vale_fecha='+ data.vale_created_at;
+                }
                 window.open(url, '_blank');
-
-                this.Button.press = false;
             }
         },
         mounted() {
