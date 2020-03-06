@@ -20,7 +20,7 @@
             <div class="row form-group">
                 <div class="col-md-5">
                     <div class="input-group">
-                        <input type="search" class="form-control" v-model="Busqueda.texto" placeholder="Buscar por NOMBRE o CÓDIGO" @keyup="listar()">
+                        <input type="search" class="form-control" v-model="Busqueda.texto" placeholder="Buscar por NOMBRE o CÓDIGO" @keyup="Busqueda.texto.length >=5 || Busqueda.texto.length == 0 ? listar() : ''">
                         <button type="button" class="btn btn-primary" @click="listar()">
                             <i class="fa fa-search"></i>&nbsp; Buscar
                         </button>

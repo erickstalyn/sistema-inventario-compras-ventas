@@ -184,7 +184,7 @@
                                         </div>
                                         <div class="row">
                                             <div class="input-group"> 
-                                                <input type="search" class="form-control form-control-sm" v-model="BusquedaFiltro.texto" @keyup="listarFiltro()" id="filtroProducto" autofocus placeholder="Producto,marca,modelo,tamaño,color">
+                                                <input type="search" class="form-control form-control-sm" v-model="BusquedaFiltro.texto" @keyup.enter="listarFiltro()" id="filtroProducto" autofocus placeholder="Producto,marca,modelo,tamaño,color">
                                                 <!-- <button type="button" class="btn btn-sm btn-primary" @click="listarFiltro()">
                                                     <i class="fa fa-search"></i>&nbsp; Buscar
                                                 </button> -->
