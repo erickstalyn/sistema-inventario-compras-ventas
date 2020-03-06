@@ -605,7 +605,7 @@
                                                 <label class="col-md-7 m-0 text-white" v-text="fix('hora', Vale.generado.created_at)"></label>
                                             </div>
                                             <div class="col-md-12 text-center mt-3">
-                                                <button class="btn btn-danger">Imprimir vale</button>
+                                                <button class="btn btn-danger" @click="generatePdfVale()">Imprimir vale</button>
                                             </div>
                                         </div>
                                     </div>
@@ -1347,6 +1347,7 @@
                             if (result.value) {
                                 // ZONA PARA EL CODIGO DE IMPRESION DE VALE
                                 console.log('Se imprimio el vale');
+                                
                             }
                             Swal.fire({
                                 position: 'top-end',
@@ -2913,8 +2914,18 @@
             error(){
                 console.log('surgio un supererror');
             },
-            generatePdfSpecific(){
+            generatePdfSpecific(){ //Comprobante de venta
                 window.open(this.Ruta.serverPhp + '/venta/generatePdfSpecific?id=' + this.Venta.id,'_blank');
+                this.Button.press = false;
+            },
+            generatePdfVale(){
+                let url = this.Ruta.vale + '/generatePdfSpecific?cliente_nom=' + this.Cliente.nombres +
+                                            '&cliente_ape='+this.Cliente.apellidos + '&cliente_dni='+ this.Cliente.dni+
+                                            '&cliente_ruc=' + this.Cliente.ruc + '&cliente_razon_social=' + this.Cliente.razon_social+
+                                            '&venta_codigo=' + this.Venta.codigo + '&venta_created_at='+ this.Venta.created_at+
+                                            '&vale_monto='+ this.Vale.generado.monto + '&vale_fecha='+ this.Vale.generado.created_at;
+                window.open(url, '_blank');
+
                 this.Button.press = false;
             }
         },

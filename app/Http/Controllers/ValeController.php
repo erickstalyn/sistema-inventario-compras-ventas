@@ -80,4 +80,28 @@ class ValeController extends Controller {
         ];
 
     }
+
+    public function generatePdfSpecific(Request $request){
+
+        $cliente = [
+            'dni' => $request->cliente_dni,
+            'nombres' => $request->cliente_nom,
+            'apellidos' => $request->cliente_ape,
+            'ruc' => $request->cliente_ruc,
+            'razon_social' => $request->cliente_razon_social
+        ];
+        $venta = [
+            'codigo' => $request->venta_codigo,
+            'created_at' => $request->venta_created_at,
+        ];
+
+        $vale = [
+            'monto' => $request->vale_monto,
+            'fecha' => $request->vale_fecha,
+        ];
+
+
+        $pdf = \PDF::loadView('pdf.valepdf', ['cliente' =>$cliente, 'venta' => $venta, 'vale' => $vale]);
+        return $pdf->download('comprobante_vale.pdf');
+    }
 }
