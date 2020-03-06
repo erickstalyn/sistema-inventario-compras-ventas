@@ -52,6 +52,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/caja/get', 'CajaController@get');
     Route::put('/caja/open', 'CajaController@open');
     Route::put('/caja/close', 'CajaController@close');
+    Route::get('/caja/search', 'CajaController@search');
 
     //RUTAS PARA CONCEPTOS
     Route::post('/concepto/addIngreso', 'ConceptoController@addIngreso');

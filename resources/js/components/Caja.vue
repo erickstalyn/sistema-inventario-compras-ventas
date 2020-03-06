@@ -200,7 +200,7 @@
                         <!-- Modal de BUSCAR-->
                         <div v-if="Modal.option=='search'">
                             <div class="col-md-12 container-small"> <!-- Barra de busqueda -->
-                                <div class="shadow rounded input-group pt-3" style="border: 1px solid;">
+                                <div class="shadow rounded input-group pt-3 form-group" style="border: 1px solid;">
                                     <div class="col-md-2 input-group form-group">
                                         <label class="font-weight-bold">BUSCAR</label>
                                     </div>
@@ -209,7 +209,7 @@
                                         <input type="date" v-model="TheDate.date" :min="TheDate.min" :max="TheDate.max" class="col-md-5 form-control">
                                     </div>
                                     <div class="col-md-2 form-group">
-                                        <button class="btn btn-primary btn-sm" :disabled="Modal.loading">
+                                        <button class="btn btn-primary btn-sm" :disabled="Modal.loading" @click="play()">
                                             <div v-if="!Modal.loading"  class="p-0 m-0">
                                                 <label class="mt-1 mb-1">Buscar Caja</label>
                                             </div>
@@ -223,14 +223,14 @@
                             <div v-if="FoundBox.id==0" class="col-md-12 pt-3" style="height: 26rem;">
                                 <label class="h5 text-primary">Indique la fecha de la caja que desea ver</label>
                             </div>
-                            <div v-else-if="FoundBox.id!=null" class="col-md-12 p-0 m-0" style="height: 26rem;"> <!-- Si la caja encontrada es correcta entonces -->
+                            <div v-else-if="FoundBox.id!=null" class="col-md-12 p-0 m-0 input-group" style="height: 26rem;"> <!-- Si la caja encontrada es correcta entonces -->
                                 <div class="col-md-6 container-small"> <!-- Lista de ingresos -->
-                                    <div class="shadow rounded input-group table-success" style="border: 1px solid; height: 20rem;">
+                                    <div class="shadow rounded input-group form-group table-success" style="border: 1px solid; height: 20rem;">
                                         <div class="col-md-12 pt-3 form-group">
                                             <label class="h5 font-weight-bold text-gray-900">Lista de ingresos</label>
                                         </div>
-                                        <div class="col-md-12 form-group overflow-auto" style="height: 15rem;">
-                                            <table v-if="ListIngress.length" class="table table-condensed table-bordered table-sm bg-white text-gray-900">
+                                        <div class="col-md-12 form-group overflow-auto" style="height: 13rem;">
+                                            <table v-if="FoundBox.ListIngress.length" class="table table-condensed table-bordered table-sm bg-white text-gray-900">
                                                 <thead>
                                                     <tr>
                                                         <th class="text-center">#</th>
@@ -240,11 +240,11 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr v-for="(concepto, index) in ListIngress" :key="concepto.id">
+                                                    <tr v-for="(concepto, index) in FoundBox.ListIngress" :key="index">
                                                         <td class="text-center" v-text="index+1"></td>
-                                                        <td v-text="concepto.hora" class="text-center"></td>
-                                                        <td v-text="concepto.descripcion"></td>
-                                                        <td v-text="Number.parseFloat(concepto.monto).toFixed(2)" class="text-right"></td>
+                                                        <td v-text="fix('time', concepto.created_at)" class="text-center"></td>
+                                                        <td v-text="concepto.description"></td>
+                                                        <td v-text="Number.parseFloat(concepto.amount).toFixed(2)" class="text-right"></td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -258,12 +258,12 @@
                                     </div>
                                 </div>
                                 <div class="col-md-6 container-small"> <!-- Lista de egresos -->
-                                    <div class="shadow rounded input-group table-warning">
+                                    <div class="shadow rounded input-group form-group table-warning" style="border: 1px solid; height: 20rem;">
                                         <div class="col-md-12 pt-3 form-group">
                                             <label class="h5 font-weight-bold text-gray-900">Lista de egresos</label>
                                         </div>
-                                        <div class="col-md-12 form-group overflow-auto" style="height: 15rem;">
-                                            <table v-if="ListEgress.length" class="table table-condensed table-bordered table-sm bg-white text-gray-900">
+                                        <div class="col-md-12 form-group overflow-auto" style="height: 13rem;">
+                                            <table v-if="FoundBox.ListEgress.length" class="table table-condensed table-bordered table-sm bg-white text-gray-900">
                                                 <thead>
                                                     <tr>
                                                         <th class="text-center">#</th>
@@ -273,11 +273,11 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr v-for="(concepto, index) in ListEgress" :key="concepto.id">
+                                                    <tr v-for="(concepto, index) in FoundBox.ListEgress" :key="index">
                                                         <td class="text-center" v-text="index+1"></td>
-                                                        <td v-text="concepto.hora" class="text-center"></td>
-                                                        <td v-text="concepto.descripcion"></td>
-                                                        <td v-text="Number.parseFloat(concepto.monto).toFixed(2)" class="text-right"></td>
+                                                        <td v-text="fix('time', concepto.created_at)" class="text-center"></td>
+                                                        <td v-text="concepto.description"></td>
+                                                        <td v-text="Number.parseFloat(concepto.amount).toFixed(2)" class="text-right"></td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -291,14 +291,14 @@
                                     </div>
                                 </div>
                                 <div class="col-md-12 container-small"> <!-- Datos de totales -->
-                                    <div class="shadow rounded input-group" style="border: 1px solid;">
-                                        <div class="col-md-6 input-group">
+                                    <div class="shadow rounded input-group pt-3" style="border: 1px solid;">
+                                        <div class="col-md-6 input-group d-flex align-content-center">
                                             <div class="col-md-6">
-                                                <label class="h5 font-weight-bold">Fecha:&nbsp;&nbsp;<span class="h5 text-primary" v-text="FoundBox.date"></span></label>
+                                                <label class="h5 font-weight-bold">Fecha:&nbsp;&nbsp;<span class="h5 text-primary" v-text="fix('date', FoundBox.date)"></span></label>
                                             </div>
                                             <div class="col-md-6">
-                                                <label class="font-weight-bold">Apertura:&nbsp;&nbsp;<span class="font-weight-normal text-primary" v-text="FoundBox.start_at"></span></label>
-                                                <label class="font-weight-bold">Cierre:&nbsp;&nbsp;<span class="font-weight-normal text-primary" v-text="FoundBox.finish_at"></span></label>
+                                                <label class="font-weight-bold">Apertura:&nbsp;&nbsp;<span class="font-weight-normal text-primary" v-text="fix('time', FoundBox.start_at)"></span></label>
+                                                <label class="font-weight-bold">Cierre:&nbsp;&nbsp;<span class="font-weight-normal text-primary" v-text="fix('time', FoundBox.finish_at)"></span></label>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
@@ -310,7 +310,7 @@
                                             <div class="col-md-10 input-group">
                                                 <label class="col-md-7 text-right h5 text-gray-900">Efectivo final</label>
                                                 <label class="col-md-2 text-right h5 text-gray-900">S/.</label>
-                                                <label class="col-md-3 text-right h5 text-gray-900" v-text="Number.parseFloat(FoundBox.total_end).toFixed(2)"></label>
+                                                <label class="col-md-3 text-right h5 text-gray-900" v-text="Number.parseFloat(FoundBox.total_finish).toFixed(2)"></label>
                                             </div>
                                         </div>
                                     </div>
@@ -341,6 +341,7 @@
 
 
 <script>
+import { join } from 'path';
     export default {
         data(){
             return {
@@ -375,7 +376,6 @@
                     ListIngress: [],
                     ListEgress: []
                 },
-
 
                 TheDate: {
                     date: null,
@@ -736,6 +736,38 @@
                             }
                         });
                         break;
+                    case 'found.box':
+                        this.FoundBox.id = data.id;
+                        this.FoundBox.total_ingress = data.total_ingress;
+                        this.FoundBox.total_egress = data.total_egress;
+                        this.FoundBox.total_start = data.total_start;
+                        this.FoundBox.total_finish = data.total_finish;
+                        this.FoundBox.date = data.start_at.substring(0, 10);
+                        this.FoundBox.start_at = data.start_at;
+                        this.FoundBox.finish_at = data.finish_at;
+                        break;
+                    case 'found.concepts':
+                        let listIngress = [], listEgress = [];
+
+                        data.forEach(concept => {
+                            let item = {
+                                created_at: concept.created_at,
+                                description: concept.descripcion,
+                                amount: concept.monto
+                            }
+
+                            if ( concept.type == 1 ) {
+                                listIngress.push(item);
+                            } else if ( concept.type == 0 ) {
+                                listEgress.push(item);
+                            } else {
+                                this.error();
+                            }
+                        });
+
+                        this.FoundBox.ListIngress = listIngress;
+                        this.FoundBox.ListEgress = listEgress;
+                        break;
                     default:
                         fixed = '';
                         break;
@@ -851,22 +883,31 @@
                         
                         axios.get(url, {
                             params: {
-                                date: this.MonthYear+'-'+this.Day,
-                                centro_id: this.Centro.id
+                                date: this.TheDate.date,
+                                center_id: this.Centro.id
                             }
                         }).then(function (response) {
-                            if ( reponse.data.state == 'transaction-success') {
-                                this.FoundBox.id = 0;
-                                this.FoundBox.total_start = null;
-                                this.FoundBox.total_finish = null;
-                                this.FoundBox.total_ingress = null;
-                                this.FoundBox.total_egress = null;
-                                this.FoundBox.start_at = null;
-                                this.FoundBox.finish_at = null;
-                            }
-                        }).catch(function (error) {
+                            console.log(response.data);
 
+                            if ( response.data.state == 'transaction-success') {
+                                me.fix('found.box', response.data.box);
+                                me.fix('found.concepts', response.data.box.get_conceptos);
+                                return;
+                            }
+
+                            me.FoundBox.id = null;
+                            me.FoundBox.total_start = null;
+                            me.FoundBox.total_finish = null;
+                            me.FoundBox.total_ingress = null;
+                            me.FoundBox.total_egress = null;
+                            me.FoundBox.start_at = null;
+                            me.FoundBox.finish_at = null;
+
+                            // console.log(response.data);
+                        }).catch(function (error) {
+                            console.log(error);
                         }).then(function (response) {
+                            console.log(response);
                             me.Modal.loading = false;
                         });
                         break;
