@@ -127,7 +127,7 @@
                                     </td>
                                     <td v-text="venta.razon_social!=null?venta.razon_social:(venta.nombres!=null?(venta.nombres+' '+venta.apellidos):'---')"></td>
                                     <td class="text-right" v-text="venta.total"></td>
-                                    <td class="text-center" v-text="fix(0, venta.created_at)"></td>
+                                    <td class="text-center" v-text="fix('fecha_hora', venta.created_at)"></td>
                                     <td class="text-center">
                                         <template>
                                             <button type="button" title="VER" class="btn btn-primary btn-sm" @click="abrirModalVerVenta(1, venta)">
@@ -498,8 +498,8 @@
                                 <tr v-for="vale in ListaVale" :key="vale.id" >
                                     <td v-text="vale.razon_social ? vale.razon_social: (vale.nombres ? vale.nombres + ' ' + vale.apellidos : '---')"></td>
                                     <td v-text="vale.monto"></td>
-                                    <td class="text-center" v-text="fix(0, vale.created_at)"></td>
-                                    <td class="text-center" v-text="vale.updated_at ? fix(0, vale.updated_at) : '---'"></td>
+                                    <td class="text-center" v-text="fix('fecha_hora', vale.created_at)"></td>
+                                    <td class="text-center" v-text="vale.updated_at ? fix('fecha_hora', vale.updated_at) : '---'"></td>
                                     <td class="text-center">
                                         <div v-if="vale.updated_at">
                                             <span class="badge badge-primary">Usado</span>
@@ -685,7 +685,7 @@
                                                         <tbody>
                                                             <tr v-for="(pago, index) in ListaPago" :key="index" :class="pago.color">
                                                                 <td class="text-right">{{index+1}}</td>
-                                                                <td class="text-center" v-text="fix(0, pago.created_at)"></td>
+                                                                <td class="text-center" v-text="fix('fecha_hora', pago.created_at)"></td>
                                                                 <td class="text-right" v-text="pago.monto"></td>
                                                             </tr>
                                                         </tbody>
@@ -750,7 +750,7 @@
                                             <div class="col-md-12 input-group mt-2">
                                                 <div class="col-md-6 input-group">
                                                     <label class="col-md-4 font-weight-bold p-0">Registrado:</label>
-                                                    <label class="col-md-8 text-primary p-0" v-text="fix(0, Venta.created_at)"></label>
+                                                    <label class="col-md-8 text-primary p-0" v-text="fix('fecha_hora', Venta.created_at)"></label>
                                                 </div>
                                                 <div class="col-md-6 input-group">
                                                     <label class="col-md-6 text-right font-weight-bold h5 p-0">Monto de venta:</label>
@@ -833,7 +833,7 @@
                                                     <label class="col-md-7 m-0 text-white" v-text="fix('hora', Vale.generado.created_at)"></label>
                                                 </div>
                                                 <div class="col-md-12 text-center mt-3">
-                                                    <button class="btn btn-danger">Imprimir vale</button>
+                                                    <button class="btn btn-danger" @click="generatePdfVale()">Imprimir vale</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -1574,12 +1574,22 @@
                 var fixed;
                 let fecha, hora, fecha_fixed, hora_fixed;
                 switch (numero) {
-                    case 0://Formatear fecha y hora
+                    case 'fecha_hora':
                         fecha = data.split(' ')[0].split('-');
                         hora = data.split(' ')[1].split(':');
-                        fecha_fixed = fecha[2]+'/'+fecha[1]+'/'+fecha[0];
+                        fecha_fixed = fecha[2]+'-'+fecha[1]+'-'+fecha[0];
                         hora_fixed = (hora[0]>12?(hora[0]-12).toString().padStart(2, '0'):hora[0])+':'+hora[1]+' '+(hora[0]>12?'pm':'am') ;
                         fixed = fecha_fixed+' '+hora_fixed;
+                        break;
+                    case 'fecha':
+                        fecha = data.split(' ')[0].split('-');
+                        fecha_fixed = fecha[2]+'-'+fecha[1]+'-'+fecha[0];
+                        fixed = fecha_fixed;
+                        break;
+                    case 'hora':
+                        hora = data.split(' ')[1].split(':');
+                        hora_fixed = (hora[0]>12?(hora[0]-12).toString().padStart(2, '0'):hora[0])+':'+hora[1]+' '+(hora[0]>12?'pm':'am') ;
+                        fixed = hora_fixed;
                         break;
                     case 1://Formatear solo Fecha
                         fecha = data.split('-');
@@ -1661,6 +1671,14 @@
             generatePdfSpecificVenta(){
                 window.open(this.Ruta.serverPhp + '/venta/generatePdfSpecific?id=' + this.Venta.id,'_blank');
                 this.Button.press = false;
+            },
+            generatePdfVale(){
+                let url = this.Ruta.vale + '/generatePdfSpecific?cliente_nom=' + this.Cliente.nombres +
+                                            '&cliente_ape='+this.Cliente.apellidos + '&cliente_dni='+ this.Cliente.dni+
+                                            '&cliente_ruc=' + this.Cliente.ruc + '&cliente_razon_social=' + this.Cliente.razon_social+
+                                            '&venta_codigo=' + this.Venta.codigo + '&venta_created_at='+ this.Venta.created_at+
+                                            '&vale_monto='+ this.Vale.generado.monto + '&vale_fecha='+ this.Vale.generado.created_at;
+                window.open(url, '_blank');
             }
         },
         mounted() {
