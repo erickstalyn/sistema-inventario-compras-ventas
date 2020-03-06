@@ -1347,6 +1347,7 @@
                             if (result.value) {
                                 // ZONA PARA EL CODIGO DE IMPRESION DE VALE
                                 console.log('Se imprimio el vale');
+                                
                             }
                             Swal.fire({
                                 position: 'top-end',
@@ -2918,21 +2919,6 @@
                 this.Button.press = false;
             },
             generatePdfVale(){
-                // let cliente = {
-                //     nombres : this.Cliente.nombres,
-                //     apellidos : this.Cliente.apellidos,
-                //     dni : this.Cliente.dni,
-                //     ruc : this.Cliente.ruc,
-                //     razon_social : this.Cliente.razon_social,
-                // };
-                // const venta = {
-                //     codigo : this.Venta.codigo,
-                //     created_at : this.Venta.created_at
-                // }
-                // const vale = {
-                //     monto: this.Vale.generado.monto,
-                //     fecha: this.Vale.generado.created_at
-                // }
                 let url = this.Ruta.vale + '/generatePdfSpecific?cliente_nom=' + this.Cliente.nombres +
                                             '&cliente_ape='+this.Cliente.apellidos + '&cliente_dni='+ this.Cliente.dni+
                                             '&cliente_ruc=' + this.Cliente.ruc + '&cliente_razon_social=' + this.Cliente.razon_social+
