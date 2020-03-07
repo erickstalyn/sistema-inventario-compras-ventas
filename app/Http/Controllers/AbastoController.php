@@ -217,7 +217,7 @@ class AbastoController extends Controller
                 }else{
                     $persona->ruc = trim($proveedor['documento']);
                     $persona->razon_social = trim($proveedor['razon_social']);
-                    $persona->direccion = trim($proveedor['direccion']);
+                    $persona->direccion = mb_convert_case($proveedor['direccion'], MB_CASE_TITLE, "UTF-8");
                     $persona->tipo = 'E';
                     // $abasto->proveedor_nombre = $proveedor['razon_social'];
                 }
