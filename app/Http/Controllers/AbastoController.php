@@ -202,8 +202,8 @@ class AbastoController extends Controller
             $abasto->total_faltante = $request->total;
 
             $abasto->created_at = $now;
-            //Verifico si existe el proveedor
-            if($proveedor['id'] == 0){ //No existe el proveedor
+            //Verifico si existe la PERSONA
+            if($proveedor['id'] == 0){ //No existe la PERSONA
                 //Insertamos al proveedor
                 $persona = new Persona();
                 // $persona->proveedor = 1;
@@ -224,18 +224,20 @@ class AbastoController extends Controller
                 $persona->save();
                 $abasto->proveedor_id = $persona->id;
 
-                //Asignamos su funcion
+                //Asignamos su funcion PROVEEDOR
                 $detalle_funcion = new Detalle_funcion();
                 $detalle_funcion->persona_id = $persona->id;
                 $detalle_funcion->funcion_id = 2;
                 $detalle_funcion->save();
-            }else{ //Ya existe el proveedor
-                $persona = Persona::findOrFail($proveedor['id']);
-                $persona->proveedor = 1;
-                $persona->save();
-
+            }else{ //Ya existe la PERSONA
                 $abasto->proveedor_id = $proveedor['id'];
-
+                try {
+                    $detalle_funcion = new Detalle_funcion();
+                    $detalle_funcion->persona_id = $proveedor['id'];
+                    $detalle_funcion->funcion_id = 2;
+                    $detalle_funcion->save();
+                } catch (Exception $e) {
+                }
             }
             $abasto->save();
 
@@ -338,5 +340,13 @@ class AbastoController extends Controller
         $pdf = \PDF::loadView('pdf.comprobante_abasto', ['abasto'=>$abasto, 'detalles'=>$detalles, 'pagos' => $pagos]);
         return $pdf->download('abasto_silmar_' . $request->code . '.pdf');
             
+    }
+
+    public function pruebas(Request $request){
+        $persona = Persona::find(2);
+        $detalle_funcion = $persona->haveFunction(); 
+        return [
+            'detalle_funcion' => $detalle_funcion
+        ];
     }
 }
