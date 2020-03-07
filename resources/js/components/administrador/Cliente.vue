@@ -177,6 +177,24 @@
                                         <input type="text" v-model="Cliente.apellidos" class="form-control" readonly>
                                     </div>
                                 </div>
+                                <div class="row form-group">
+                                    <label class="col-md-2 font-weight-bold" for="nom">Dirección</label>
+                                    <div class="col-md-10">
+                                        <input type="text" v-model="Cliente.direccion" class="form-control" :readonly="!DatosServicio.edit">
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <label class="col-md-2 font-weight-bold" for="nom">Teléfono</label>
+                                    <div class="col-md-4">
+                                            <input type="number" v-model="Cliente.telefono" class="form-control" maxlength="9" :readonly="!DatosServicio.edit">
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <label class="col-md-2 font-weight-bold" for="nom">Email</label>
+                                    <div class="col-md-10">
+                                        <input type="email" v-model="Cliente.email" class="form-control" :readonly="!DatosServicio.edit">
+                                    </div>
+                                </div>
                             </div>
                             <div v-if="Cliente.tipo == 'E'">
                                 <div class="row form-group">
@@ -191,8 +209,26 @@
                                         <input type="text" v-model="Cliente.razon_social" class="form-control" :readonly="!DatosServicio.edit">
                                     </div>
                                 </div>
+                                <div class="row form-group">
+                                    <label class="col-md-2 font-weight-bold" for="nom">Dirección</label>
+                                    <div class="col-md-10">
+                                        <input type="text" v-model="Cliente.direccion" class="form-control" :readonly="!DatosServicio.edit">
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <label class="col-md-2 font-weight-bold" for="nom">Teléfono</label>
+                                    <div class="col-md-4">
+                                            <input type="number" v-model="Cliente.telefono" class="form-control" maxlength="9" :readonly="!DatosServicio.edit">
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <label class="col-md-2 font-weight-bold" for="nom">Email</label>
+                                    <div class="col-md-10">
+                                        <input type="email" v-model="Cliente.email" class="form-control" :readonly="!DatosServicio.edit">
+                                    </div>
+                                </div>
                             </div>
-                            <div class="row form-group">
+                            <!-- <div class="row form-group">
                                 <label class="col-md-2 font-weight-bold" for="nom">Dirección</label>
                                 <div class="col-md-10">
                                     <input type="text" v-model="Cliente.direccion" class="form-control" :readonly="!DatosServicio.edit">
@@ -209,7 +245,7 @@
                                 <div class="col-md-10">
                                     <input type="email" v-model="Cliente.email" class="form-control" :readonly="!DatosServicio.edit">
                                 </div>
-                            </div>
+                            </div> -->
                         </div>
                         <!-- Modal Numero 2 de EDITAR-->
                         <div v-if="Modal.numero==2">
@@ -310,7 +346,7 @@
                     direccion: '',
                     telefono: '',
                     emai: '',
-                    tipo: 'P',
+                    tipo: '',
                     estado: 2
                 },
                 //datos de busqueda y filtracion
@@ -598,7 +634,7 @@
                 this.DatosServicio.edit = true;
 
                 this.Cliente.id = 0;
-                this.Cliente.tipo = 'P';
+                this.Cliente.tipo = '';
                 this.Cliente.nombres = '';
                 this.Cliente.apellidos = '';
                 this.Cliente.dni = '';
@@ -723,11 +759,14 @@
                             me.DatosServicio.documento = '';
                             me.DatosServicio.alert = '';
                             me.DatosServicio.mensaje = '';
+                            me.DatosServicio.edit = true;
+                            me.Cliente.telefono = '';
+                            me.Cliente.email = '';
 
                             me.Cliente.tipo = 'E';
                             me.Cliente.ruc = empresa.RUC;
                             me.Cliente.razon_social = empresa.RazonSocial;
-                            me.Cliente.direccion = empresa.Direccion;
+                            me.Cliente.direccion = empresa.Direccion ? empresa.Direccion : '';
                         } else {
                             me.DatosServicio.alert = 'badge badge-primary';
                             me.DatosServicio.mensaje = 'El RUC no existe';
@@ -758,6 +797,11 @@
                                 me.DatosServicio.documento = '';
                                 me.DatosServicio.alert = '';
                                 me.DatosServicio.mensaje = '';
+                                me.Cliente.direccion = '';
+                                me.Cliente.telefono = '';
+                                me.Cliente.email = '';
+                                me.DatosServicio.edit = true;
+
                                 me.Cliente.dni = persona[0];
                                 me.Cliente.nombres = persona[1];
                                 me.Cliente.apellidos = persona[2] + ' ' + persona[3];
