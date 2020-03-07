@@ -7,10 +7,10 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
-  <meta name="author" content="">
+  <meta name="author" content="EasyCode">
   <meta name="idCentro" content="{{Auth::check() ? Auth::user()->centro_id : ''}}">
   <meta name="userId" content="{{Auth::check() ? Auth::user()->id : ''}}">
-  <meta name="rol" content="{{Auth::check() ? Auth::user()->rol : ''}}">
+  <meta name="rol" content="{{Auth::check() ? Auth::user()->rol_id : ''}}">
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>SILMAR - Control de inventarios</title>
   <link href="fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
