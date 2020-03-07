@@ -30,7 +30,7 @@
                             <option value="P">PERSONAS</option>
                             <option value="E">EMPRESAS</option>
                         </select>
-                        <input type="search" class="form-control" v-model="Busqueda.texto" placeholder="Buscar por NOMBRE, DNI o RUC" @keyup="listar()">
+                        <input type="search" class="form-control" v-model="Busqueda.texto" placeholder="Buscar por NOMBRE, DNI o RUC" @keyup="Busqueda.texto.length >=5 || Busqueda.texto.length == 0 ? listar() : ''">
                         <button type="button" class="btn btn-primary" @click="listar()">
                             <i class="fa fa-search"></i>&nbsp; Buscar
                         </button>
@@ -177,6 +177,24 @@
                                         <input type="text" v-model="Proveedor.apellidos" class="form-control" readonly>
                                     </div>
                                 </div>
+                                <div class="row form-group">
+                                    <label class="col-md-2 font-weight-bold" for="nom">Dirección</label>
+                                    <div class="col-md-10">
+                                        <input type="text" v-model="Proveedor.direccion" class="form-control" :readonly="!DatosServicio.edit">
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <label class="col-md-2 font-weight-bold" for="nom">Teléfono</label>
+                                    <div class="col-md-4">
+                                            <input type="number" v-model="Proveedor.telefono" class="form-control" maxlength="9" :readonly="!DatosServicio.edit">
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <label class="col-md-2 font-weight-bold" for="nom">Email</label>
+                                    <div class="col-md-10">
+                                        <input type="email" v-model="Proveedor.email" class="form-control" :readonly="!DatosServicio.edit">
+                                    </div>
+                                </div>
                             </div>
                             <div v-if="Proveedor.tipo == 'E'">
                                 <div class="row form-group">
@@ -191,8 +209,26 @@
                                         <input type="text" v-model="Proveedor.razon_social" class="form-control" :readonly="!DatosServicio.edit">
                                     </div>
                                 </div>
+                                <div class="row form-group">
+                                    <label class="col-md-2 font-weight-bold" for="nom">Dirección</label>
+                                    <div class="col-md-10">
+                                        <input type="text" v-model="Proveedor.direccion" class="form-control" :readonly="!DatosServicio.edit">
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <label class="col-md-2 font-weight-bold" for="nom">Teléfono</label>
+                                    <div class="col-md-4">
+                                            <input type="number" v-model="Proveedor.telefono" class="form-control" maxlength="9" :readonly="!DatosServicio.edit">
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <label class="col-md-2 font-weight-bold" for="nom">Email</label>
+                                    <div class="col-md-10">
+                                        <input type="email" v-model="Proveedor.email" class="form-control" :readonly="!DatosServicio.edit">
+                                    </div>
+                                </div>
                             </div>
-                            <div class="row form-group">
+                            <!-- <div class="row form-group">
                                 <label class="col-md-2 font-weight-bold" for="nom">Dirección</label>
                                 <div class="col-md-10">
                                     <input type="text" v-model="Proveedor.direccion" class="form-control" :readonly="!DatosServicio.edit">
@@ -209,7 +245,7 @@
                                 <div class="col-md-10">
                                     <input type="email" v-model="Proveedor.email" class="form-control" :readonly="!DatosServicio.edit">
                                 </div>
-                            </div>
+                            </div> -->
                         </div>
                         <!-- Modal Numero 2 de EDITAR-->
                         <div v-if="Modal.numero==2">
@@ -310,7 +346,7 @@
                     direccion: '',
                     telefono: '',
                     emai: '',
-                    tipo: 'P',
+                    tipo: '',
                     estado: 2
                 },
                 //datos de busqueda y filtracion
@@ -598,7 +634,7 @@
                 this.DatosServicio.edit = true;
 
                 this.Proveedor.id = 0;
-                this.Proveedor.tipo = 'P';
+                this.Proveedor.tipo = '';
                 this.Proveedor.nombres = '';
                 this.Proveedor.apellidos = '';
                 this.Proveedor.dni = '';
@@ -689,9 +725,9 @@
                             me.Proveedor.apellidos = persona.apellidos;
                         }
 
-                        me.Proveedor.direccion = persona.direccion;
-                        me.Proveedor.telefono = persona.telefono;
-                        me.Proveedor.email = persona.email;
+                        me.Proveedor.direccion = persona.direccion ? persona.direccion : '';
+                        me.Proveedor.telefono = persona.telefono ? persona.telefono : '';
+                        me.Proveedor.email = persona.email ? persona.email : '';
                         me.DatosServicio.documento = '';
                     }else{//No esxiste la persona en la db
                         if(me.DatosServicio.documento.length == 8){
@@ -722,11 +758,14 @@
                             me.DatosServicio.documento = '';
                             me.DatosServicio.alert = '';
                             me.DatosServicio.mensaje = '';
+                            me.DatosServicio.edit = true;
+                            me.Proveedor.telefono = '';
+                            me.Proveedor.email = '';
 
                             me.Proveedor.tipo = 'E';
                             me.Proveedor.ruc = empresa.RUC;
                             me.Proveedor.razon_social = empresa.RazonSocial;
-                            me.Proveedor.direccion = empresa.Direccion;
+                            me.Proveedor.direccion = empresa.Direccion ? empresa.Direccion : '';
                         } else {
                             me.DatosServicio.alert = 'badge badge-primary';
                             me.DatosServicio.mensaje = 'El RUC no existe';
@@ -757,6 +796,11 @@
                                 me.DatosServicio.documento = '';
                                 me.DatosServicio.alert = '';
                                 me.DatosServicio.mensaje = '';
+                                me.Proveedor.direccion = '';
+                                me.Proveedor.telefono = '';
+                                me.Proveedor.email = '';
+                                me.DatosServicio.edit = true;
+
                                 me.Proveedor.dni = persona[0];
                                 me.Proveedor.nombres = persona[1];
                                 me.Proveedor.apellidos = persona[2] + ' ' + persona[3];

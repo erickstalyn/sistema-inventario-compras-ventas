@@ -155,7 +155,7 @@
                                             <label class="h5 mb-0 font-weight-bold">LISTA DE PRODUCTOS</label>
                                         </div>
                                         <div class="col-md-12 input-group form-group">
-                                            <input type="search" class="form-control form-control-sm" v-model="Service.text" @keyup="list('detalle_producto')" id="filtroProducto" placeholder="Producto - marca - modelo - tamaño - color">
+                                            <input type="search" class="form-control form-control-sm" v-model="Service.text" @keyup.enter="list('detalle_producto')" id="filtroProducto" placeholder="Producto - marca - modelo - tamaño - color">
                                             <!-- <button type="button" class="btn btn-sm btn-primary" @click="list('detalle_producto')">
                                                 <i class="fa fa-search"></i>&nbsp; Buscar
                                             </button> -->
