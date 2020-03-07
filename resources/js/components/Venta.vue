@@ -210,7 +210,7 @@
                                             <label class="col-md-6 font-weight-bold">Precio de venta</label>
                                             <label class="col-md-2 text-right font-weight-bold">S/.</label>
                                             <input type="number" class="col-md-4 text-right text-gray-900" v-model="DetalleVenta.precio" @keyup="update('form_detalle_venta.subtotal')" @click="update('form_detalle_venta.subtotal')">
-                                        </div>0
+                                        </div>
                                         <div class="col-md-12 input-group form-group">
                                             <label class="col-md-7 font-weight-bold">Cantidad de items</label>
                                             <input type="number" class="col-md-5 text-right text-gray-900" v-model="DetalleVenta.cantidad"  @keyup="update('form_detalle_venta.subtotal')" @click="update('form_detalle_venta.subtotal')">
@@ -1415,6 +1415,9 @@
                 }).then(function(response){
                     me.cerrarModal();
                     me.listar();
+                    
+                    console.log(response);
+
                     if ( tipo_pago == '2' && tipo_entrega == '2' && total_faltante == 0 ) {
                         Swal.fire({
                             title: 'Pagos Finalizados',

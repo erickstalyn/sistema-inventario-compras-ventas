@@ -217,30 +217,21 @@ class CajaController extends Controller {
         $message = NULL;
         
         //Validacion: el request debe ser ajax
-        $step = 'validacion ajax';
         if ( !$request->ajax() ) return redirect('/');
 
-        $step = 'datos del request';
         $date = $request->date;
         $date_today = Carbon::now('America/Lima')->toDateString();
         $center_id = $request->center_id;
         
-        $state = 'transaction-select';
-
-        $step = 'query a la db';
         $box = Caja::select('id', 'total_start', 'total_end AS total_finish', 'total_ingreso AS total_ingress', 'total_egreso AS total_egress', 'start AS start_at', 'end AS finish_at')
                     ->where(DB::raw('CAST(start AS DATE)'), '=', $date)
                     ->where(DB::raw('CAST(start AS DATE)'), '!=', $date_today)
                     ->where('centro_id', '=', $center_id)->first();
         
-        $step = 'verificacion de que de encontro la caja';
         if ( $box != null ) {
-            $step = 'buscando los conceptos de esa caja';
             $box->getConceptos;
-            $step = 'conceptos encontrados';
             $state = 'transaction-success';
         } else {
-            $step = 'sin caja';
             $state = 'transaction-not-found';
         }
 
@@ -250,6 +241,18 @@ class CajaController extends Controller {
             'step' => $step,
             'message' => $message
         ];
+    }
+
+    public static function validate_box_open($center_id){
+        // Validacion: que la caja chica este abierta
+        $now = Carbon::now('America/Lima')->toDateString();
+        $box = Caja::where('centro_id', '=', $center_id)
+                    ->where(DB::raw('CAST(start AS DATE)'), '=', $now)->first();
+        
+        if ( $box == NULL ) return NULL;
+        if ( $box->state == 0 ) return NULL;
+    
+        return $box;
     }
 
 }
