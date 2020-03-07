@@ -27,6 +27,7 @@
                             <option value="2">Envios Realizados</option>
                             <option value="3">Envios Recibidos</option>
                             <option value="4">Producciones</option>
+                            <option value="7">Cajas</option>
                             <option value="5">Ventas</option>
                             <option value="6">Vales</option>
                         </select>&nbsp;
@@ -189,8 +190,8 @@
                             <tbody>
                                 <tr v-for="envio in ListaEnvio" :key="envio.id" >
                                     <td v-text="envio.centro_destino"></td>
-                                    <td v-text="fix(1, envio.fecha_envio)" class="text-center"></td>
-                                    <td v-text="envio.fecha_cambio ? fix(1, envio.fecha_cambio) : '-------------'" class="text-center"></td>
+                                    <td v-text="fix('date', envio.fecha_envio)" class="text-center"></td>
+                                    <td v-text="envio.fecha_cambio ? fix('date', envio.fecha_cambio) : '-------------'" class="text-center"></td>
                                     <td>
                                         <div v-if="envio.estado == 0">
                                             <span class="badge badge-primary">En espera</span>
@@ -297,8 +298,8 @@
                             <tbody>
                                 <tr v-for="envio in ListaEnvio" :key="envio.id" >
                                     <td v-text="!envio.abasto_id? envio.centro_origen : 'Administración'"></td>
-                                    <td v-text="fix(1, envio.fecha_envio)" class="text-center"></td>
-                                    <td v-text="envio.fecha_cambio ? fix(1, envio.fecha_cambio) : '-------------'" class="text-center"></td>
+                                    <td v-text="fix('date', envio.fecha_envio)" class="text-center"></td>
+                                    <td v-text="envio.fecha_cambio ? fix('date', envio.fecha_cambio) : '-------------'" class="text-center"></td>
                                     <td>
                                         <div v-if="envio.estado == 0">
                                             <span class="badge badge-primary">En espera</span>
@@ -404,9 +405,9 @@
                             </thead>
                             <tbody>
                                 <tr v-for="produccion in ListaProduccion" :key="produccion.id" >
-                                    <td v-text="fix(1, produccion.fecha_inicio)"></td>
-                                    <td v-text="fix(1, produccion.fecha_programada)"></td>
-                                    <td v-text="produccion.fecha_fin ? fix(1, produccion.fecha_fin) : '----------------'"></td>
+                                    <td v-text="fix('date', produccion.fecha_inicio)"></td>
+                                    <td v-text="fix('date', produccion.fecha_programada)"></td>
+                                    <td v-text="produccion.fecha_fin ? fix('date', produccion.fecha_fin) : '----------------'"></td>
                                     <td v-text="produccion.total"></td>
                                     <td>
                                         <div v-if="produccion.fecha_inicio > getFechaHoy()">
@@ -651,14 +652,142 @@
                     <h5>No se han encontrado resultados</h5>
                 </div>
             </div>
+            <div v-else-if="Almacen.mostrar == 7"> <!-- Busqueda de CAJAS -->
+                <div class="col-md-12 container-small"> <!-- Barra de busqueda -->
+                    <div class="input-group pt-3">
+                        <div class="col-md-2 input-group form-group">
+                            <label class="font-weight-bold text-gray-900 mt-2 mb-2">BUSCAR</label>
+                        </div>
+                        <div class="col-md-8 input-group form-group d-flex justify-content-center">
+                            <label class="col-md-4 mt-2 mb-0 font-weight-bold text-gray-900">Seleccione la fecha:</label>
+                            <input type="date" v-model="TheDate.date" :max="TheDate.max" class="col-md-5 form-control">
+                        </div>
+                        <div class="col-md-2 form-group">
+                            <button class="btn btn-primary" :disabled="Button.press" @click="listar()">
+                                <div v-if="!Button.press"  class="p-0 m-0">
+                                    <i class="fa fa-search"></i>&nbsp;&nbsp;Buscar Caja
+                                </div>
+                                <div v-else class="p-0 m-0">
+                                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div v-if="Button.press" class="col-md-12" style="height: 26rem;">
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                </div>
+                <div v-else-if="Box.id==0" class="col-md-12 pt-3" style="height: 26rem;">
+                    <label class="h5 text-primary">Indique la fecha de la caja que desea ver</label>
+                </div>
+                <div v-else-if="Box.id!=null" class="col-md-12 p-0 m-0 input-group" style="height: 26rem;"> <!-- Si la caja encontrada es correcta entonces -->
+                    <div class="col-md-6 container-small"> <!-- Lista de ingresos -->
+                        <div class="shadow rounded input-group form-group table-success" style="border: 1px solid; height: 20rem;">
+                            <div class="col-md-12 pt-3 form-group">
+                                <label class="h5 font-weight-bold text-gray-900 m-0">Lista de ingresos</label>
+                            </div>
+                            <div class="col-md-12 form-group overflow-auto" style="height: 13rem;">
+                                <table v-if="Box.ListIngress.length" class="table table-condensed table-bordered table-sm bg-white text-gray-900">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">#</th>
+                                            <th class="text-center">Hora</th>
+                                            <th class="text-center">Descripcion</th>
+                                            <th class="text-center">Monto</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="(concept, index) in Box.ListIngress" :key="index">
+                                            <td class="text-center" v-text="index+1"></td>
+                                            <td v-text="fix('time', concept.created_at)" class="text-center"></td>
+                                            <td v-text="concept.description"></td>
+                                            <td v-text="Number.parseFloat(concept.amount).toFixed(2)" class="text-right"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <h5 v-else>No se han registrado ingresos</h5>
+                            </div>
+                            <div class="col-md-12 input-group">
+                                <label class="col-md-7 h5 text-right font-weight-bold text-gray-900">Total de ingresos:</label>
+                                <label class="col-md-2 h5 text-right font-weight-bold text-gray-900">S/.</label>
+                                <label class="col-md-3 h5 text-right font-weight-bold text-gray-900" v-text="Number.parseFloat(Box.total_ingress).toFixed(2)"></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 container-small"> <!-- Lista de egresos -->
+                        <div class="shadow rounded input-group form-group table-warning" style="border: 1px solid; height: 20rem;">
+                            <div class="col-md-12 pt-3 form-group">
+                                <label class="h5 font-weight-bold text-gray-900 m-0">Lista de egresos</label>
+                            </div>
+                            <div class="col-md-12 form-group overflow-auto" style="height: 13rem;">
+                                <table v-if="Box.ListEgress.length" class="table table-condensed table-bordered table-sm bg-white text-gray-900">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">#</th>
+                                            <th class="text-center">Hora</th>
+                                            <th class="text-center">Descripcion</th>
+                                            <th class="text-center">Monto</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="(concept, index) in Box.ListEgress" :key="index">
+                                            <td class="text-center" v-text="index+1"></td>
+                                            <td v-text="fix('time', concept.created_at)" class="text-center"></td>
+                                            <td v-text="concept.description"></td>
+                                            <td v-text="Number.parseFloat(concept.amount).toFixed(2)" class="text-right"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <h5 v-else>No se han registrado egresos</h5>
+                            </div>
+                            <div class="col-md-12 input-group">
+                                <label class="col-md-7 h5 text-right font-weight-bold text-gray-900">Total de egresos:</label>
+                                <label class="col-md-2 h5 text-right font-weight-bold text-gray-900">S/.</label>
+                                <label class="col-md-3 h5 text-right font-weight-bold text-gray-900" v-text="Number.parseFloat(Box.total_egress).toFixed(2)"></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 container-small"> <!-- Datos de totales -->
+                        <div class="shadow rounded table-primary input-group pt-3" style="border: 1px solid;">
+                            <div class="col-md-6 input-group d-flex align-content-center">
+                                <div class="col-md-6">
+                                    <label class="h5 font-weight-bold text-gray-900">Fecha:&nbsp;&nbsp;<span class="h5 text-primary" v-text="fix('date', Box.date)"></span></label>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="font-weight-bold text-gray-900">Apertura:&nbsp;&nbsp;<span class="font-weight-normal text-primary" v-text="fix('time', Box.start_at)"></span></label>
+                                    <label v-if="Box.finish_at!=null" class="font-weight-bold text-gray-900">Cierre:&nbsp;&nbsp;<span class="font-weight-normal text-primary" v-text="fix('time', Box.finish_at)"></span></label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="col-md-10 input-group">
+                                    <label class="col-md-7 text-right h5 font-weight-bold text-gray-900">Efectivo inicial</label>
+                                    <label class="col-md-2 text-right h5 font-weight-bold text-gray-900">S/.</label>
+                                    <label class="col-md-3 text-right h5 font-weight-bold text-gray-900" v-text="Number.parseFloat(Box.total_start).toFixed(2)"></label>
+                                </div>
+                                <div class="col-md-10 input-group">
+                                    <label class="col-md-7 text-right h5 font-weight-bold text-gray-900">Efectivo final</label>
+                                    <label class="col-md-2 text-right h5 font-weight-bold text-gray-900">S/.</label>
+                                    <label class="col-md-3 text-right h5 font-weight-bold text-gray-900" v-text="Number.parseFloat(Box.total_finish).toFixed(2)"></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div v-else-if="Box.id==null" class="col-md-12 pt-3" style="height: 26rem;">
+                    <label class="h5 text-danger">No se ha encontrado una caja con la fecha indicada</label>
+                </div>
+            </div>
+
             <!-- Modales -->
             <div class="modal text-gray-900" :class="{'mostrar': Modal.estado}">
                 <div class="modal-dialog modal-dialog-centered animated bounceIn fast" :class="Modal.size">
                     <div class="modal-content">
+
                         <div class="modal-header">
                             <h3 v-text="Modal.titulo" class="modal-title" ></h3>
                             <button type="button" @click="cerrarModal()" class="close">X</button>
                         </div>
+
                         <div class="modal-body">
                             <!-- Modal Editar producto-->
                             <div v-if="Modal.numero == 1"> 
@@ -1003,11 +1132,11 @@
                                                 </div>
                                                 <div class="col-md-12 input-group">
                                                     <label class="col-md-5 m-0 font-weight-bold">Fecha</label>
-                                                    <label class="col-md-7 m-0 text-white" v-text="fix('fecha', Vale.generado.created_at)"></label>
+                                                    <label class="col-md-7 m-0 text-white" v-text="fix('date', Vale.generado.created_at)"></label>
                                                 </div>
                                                 <div class="col-md-12 input-group form-group">
                                                     <label class="col-md-5 m-0 font-weight-bold">Hora</label>
-                                                    <label class="col-md-7 m-0 text-white" v-text="fix('hora', Vale.generado.created_at)"></label>
+                                                    <label class="col-md-7 m-0 text-white" v-text="fix('time', Vale.generado.created_at)"></label>
                                                 </div>
                                                 <div class="col-md-12 text-center mt-3">
                                                     <button class="btn btn-danger" @click="generatePdfVale()">Imprimir vale</button>
@@ -1030,11 +1159,11 @@
                                                 </div>
                                                 <div class="col-md-12 input-group form-group">
                                                     <label class="col-md-4 font-weight-bold">Fecha</label>
-                                                    <label class="col-md-8 text-white" v-text="fix('fecha', Vale.usado.created_at)"></label>
+                                                    <label class="col-md-8 text-white" v-text="fix('date', Vale.usado.created_at)"></label>
                                                 </div>
                                                 <div class="col-md-12 input-group form-group">
                                                     <label class="col-md-4 font-weight-bold">Hora</label>
-                                                    <label class="col-md-8 text-white" v-text="fix('hora', Vale.usado.created_at)"></label>
+                                                    <label class="col-md-8 text-white" v-text="fix('time', Vale.usado.created_at)"></label>
                                                 </div>
                                             </div>
                                         </div>
@@ -1087,8 +1216,8 @@
                                     </div>
                                 </div>
                             </div>
-
                         </div>
+
                         <div class="modal-footer">
                             <div class="row form-group col-md-12 d-flex justify-content-around">
                                 <div v-if="Modal.accion">
@@ -1100,9 +1229,11 @@
                                 <button type="button" @click="cerrarModal()" class="btn btn-secondary" v-text="Modal.cancelar"></button>
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div>
+
         </div>
 
     </main>
@@ -1117,9 +1248,9 @@
                     id: 4,
                     nombre: '',
                     direccion: '',
-                    quieroVer: 1, // 1:Inventario, 2: Envios Realizados, 3: Envios Recibidos, 4: Producciones, 5: Ventas, 6: vales
+                    quieroVer: 1, // 1:Inventario, 2: Envios Realizados, 3: Envios Recibidos, 4: Producciones, 5: Ventas, 6: vales, 7: Caja
                     titulo: '',
-                    mostrar: 0 // 1:Inventario, 2: Envios Realizados, 3: Envios Recibidos, 4: Producciones, 5: Ventas, 6: vales
+                    mostrar: 0 // 1:Inventario, 2: Envios Realizados, 3: Envios Recibidos, 4: Producciones, 5: Ventas, 6: vales, 7: Caja
                 },
                 SelectAlmacen: [],
                 ListaProducto: [],
@@ -1153,6 +1284,22 @@
                     precio_mayor: 0,
                     stock: 0,
                 },
+
+                //para el ver CAJAS
+                TheDate: {
+                    date: this.getFechaHoy(),
+                    max: this.getFechaHoy()
+                },
+                Box: {
+                    id: 0,
+                    total_start: null,
+                    total_finish: null,
+                    total_ingress: null,
+                    total_egress: null,
+                    ListIngress: [],
+                    ListEgress: []
+                },
+
                 Venta: {
                     id: null,
                     codigo: null,
@@ -1197,6 +1344,7 @@
                 },
                 ListaPago: null,
                 ListaVenta:[],
+
                 //datos de busqueda y filtracion
                 Busqueda: {
                     texto: '',
@@ -1246,6 +1394,7 @@
                 },
                 //datos de ruta de consultas
                 Ruta: {
+                    caja: '/caja',
                     detalle_producto: '/detalle_producto',
                     centro: '/centro',
                     venta: '/venta',
@@ -1320,6 +1469,7 @@
                 me.Carga.clase = 'spinner-border spinner-border-sm text-primary';
                 me.Carga.mensaje = 'Cargando...';
                 me.Carga.alert = 'badge badge-info';
+
                 switch (Number.parseInt(this.Almacen.quieroVer)) {
                     case 1: //Listar inventario
                         me.Busqueda.dia = '';
@@ -1468,7 +1618,43 @@
                             console.log(error)
                         });
                         break;
+                    case 7:  // Buscar caja chica
+                        this.Button.press = true;
+
+                        url = this.Ruta.caja + '/search'
+
+                        axios.get(url, {
+                            params: {
+                                center_id: this.Almacen.id,
+                                date: this.TheDate.date
+                            }
+                        }).then(function (response) {
+                            me.Almacen.titulo = 'Caja Chica'
+                            me.Almacen.mostrar = 7;
+
+                            if ( response.data.state == 'transaction-success') {
+                                me.fix('found.box', response.data.box);
+                                me.fix('found.concepts', response.data.box.get_conceptos);
+                                return;
+                            }
+
+                            me.Box.id = null;
+                            me.Box.total_start = null;
+                            me.Box.total_finish = null;
+                            me.Box.total_ingress = null;
+                            me.Box.total_egress = null;
+                            me.Box.start_at = null;
+                            me.Box.finish_at = null;
+
+                            console.log(response);
+                        }).catch(function (error) {
+                            console.log(error);
+                        }).then( function (resopnse) {
+                            me.Button.press = false;
+                        });
+                        break;
                 }
+
                 for (let i = 0; i < this.SelectAlmacen.length; i++) { //Busco el nombre
                     if(this.SelectAlmacen[i].id == this.Almacen.id) {
                         this.Almacen.nombre = this.SelectAlmacen[i].nombre;
@@ -1839,10 +2025,11 @@
                     this.listar(page);
                 }
             },
-            fix(numero, data){
+            fix(option, data){
                 var fixed;
                 let fecha, hora, fecha_fixed, hora_fixed;
-                switch (numero) {
+
+                switch (option) {
                     case 'fecha_hora':
                         fecha = data.split(' ')[0].split('-');
                         hora = data.split(' ')[1].split(':');
@@ -1850,19 +2037,31 @@
                         hora_fixed = (hora[0]>12?(hora[0]-12).toString().padStart(2, '0'):hora[0])+':'+hora[1]+' '+(hora[0]>12?'pm':'am') ;
                         fixed = fecha_fixed+' '+hora_fixed;
                         break;
-                    case 1://Formatear solo Fecha
-                        fecha = data.split('-');
-                        fixed = fecha[2] + '/' + fecha[1] + '/' + fecha[0];
+                    case 'date':
+                        if ( data.length != 10 && data.lenth != 19){
+                            fixed = 'lenght!=10&&length!=19'; break;
+                        };
+
+                        if ( data.length == 10 ) {
+                            data = data.split('-');
+                        } else {
+                            data = data.split(' ')[0].split('-');
+                        }
+
+                        fixed = data[2]+'-'+data[1]+'-'+data[0];
                         break;
-                    case 'fecha':
-                        fecha = data.split(' ')[0].split('-');
-                        fecha_fixed = fecha[2]+'-'+fecha[1]+'-'+fecha[0];
-                        fixed = fecha_fixed;
-                        break;
-                    case 'hora':
-                        hora = data.split(' ')[1].split(':');
-                        hora_fixed = (hora[0]>12?(hora[0]-12).toString().padStart(2, '0'):hora[0])+':'+hora[1]+' '+(hora[0]>12?'pm':'am') ;
-                        fixed = hora_fixed;
+                    case 'time':
+                        if ( data.length != 8 && data.length != 19 ) {
+                            fixed = 'length!=8&&length!=19'; break;
+                        }
+
+                        if ( data.length == 8 ) {
+                            data = data.split(':');
+                        } else {
+                            data = data.split(' ')[1].split(':');
+                        }
+
+                        fixed = (data[0]-12>12?data[0]-12:data[0]).toString().padStart(2, '0')+':'+data[1]+' '+(data[0]>12?'pm':'am');
                         break;
                     case 'detalle_venta':
                         console.log('on fix(detalle_venta)');
@@ -1877,6 +2076,41 @@
                                 subtotal: data[i].detalle.subtotal
                             });
                         }
+                        break;
+                    case 'found.box':
+                        this.Box.id = data.id;
+                        this.Box.total_ingress = data.total_ingress;
+                        this.Box.total_egress = data.total_egress;
+                        this.Box.total_start = data.total_start;
+                        this.Box.total_finish = data.total_finish;
+                        this.Box.date = data.start_at.substring(0, 10);
+                        this.Box.start_at = data.start_at;
+                        this.Box.finish_at = data.finish_at;
+                        break;
+                    case 'found.concepts':
+                        let listIngress = [], listEgress = [];
+
+                        data.forEach(concept => {
+                            let item = {
+                                created_at: concept.created_at,
+                                description: concept.descripcion,
+                                amount: concept.monto
+                            }
+
+                            if ( concept.type == 1 ) {
+                                listIngress.push(item);
+                            } else if ( concept.type == 0 ) {
+                                listEgress.push(item);
+                            } else {
+                                this.error();
+                            }
+                        });
+
+                        this.Box.ListIngress = listIngress;
+                        this.Box.ListEgress = listEgress;
+                        break;
+                    default:
+                        fixed = '';
                         break;
                 }
 

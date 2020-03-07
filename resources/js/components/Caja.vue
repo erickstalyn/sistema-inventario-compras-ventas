@@ -887,8 +887,6 @@ import { join } from 'path';
                                 center_id: this.Centro.id
                             }
                         }).then(function (response) {
-                            console.log(response.data);
-
                             if ( response.data.state == 'transaction-success') {
                                 me.fix('found.box', response.data.box);
                                 me.fix('found.concepts', response.data.box.get_conceptos);
@@ -903,7 +901,7 @@ import { join } from 'path';
                             me.FoundBox.start_at = null;
                             me.FoundBox.finish_at = null;
 
-                            // console.log(response.data);
+                            console.log(response.data);
                         }).catch(function (error) {
                             console.log(error);
                         }).then(function (response) {

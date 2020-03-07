@@ -220,12 +220,10 @@ class CajaController extends Controller {
         if ( !$request->ajax() ) return redirect('/');
 
         $date = $request->date;
-        $date_today = Carbon::now('America/Lima')->toDateString();
         $center_id = $request->center_id;
         
         $box = Caja::select('id', 'total_start', 'total_end AS total_finish', 'total_ingreso AS total_ingress', 'total_egreso AS total_egress', 'start AS start_at', 'end AS finish_at')
                     ->where(DB::raw('CAST(start AS DATE)'), '=', $date)
-                    ->where(DB::raw('CAST(start AS DATE)'), '!=', $date_today)
                     ->where('centro_id', '=', $center_id)->first();
         
         if ( $box != null ) {
