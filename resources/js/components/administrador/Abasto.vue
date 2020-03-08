@@ -936,7 +936,7 @@
                 let ruc = me.DatosServicio.documento;
                 $.ajax({
                     type: 'GET',
-                    url: me.Ruta.serverPhp + '/SunatPHP/demo.php',
+                    url: me.Ruta.serverPhp +'/SunatPHP/demo.php',
                     data: 'nruc=' +ruc,
                     beforeSend(){
                         me.Carga.clase = 'spinner-border spinner-border-sm text-primary';
