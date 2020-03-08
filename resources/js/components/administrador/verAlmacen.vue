@@ -1192,7 +1192,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- Modal configurar Puesto-->
+                            <!-- Modal configurar ALMACEN-->
                             <div v-else-if="Modal.numero == 6"> 
                                 <div v-if="Error.estado" class="row d-flex justify-content-center">
                                     <div class="alert alert-danger">
@@ -1206,13 +1206,13 @@
                                 <div class="row form-group">
                                     <label class="col-md-3 font-weight-bold" id="nom">Nombre&nbsp;<span class="text-danger">*</span></label>
                                     <div class="col-md-9">
-                                        <input type="text" v-model="Almacen.nombre" class="form-control" id="nom">
+                                        <input type="text" v-model="AlmacenForSettings.nombre" class="form-control" id="nom">
                                     </div>
                                 </div>
                                 <div class="row form-group">
                                     <label class="col-md-3 font-weight-bold" for="dir">Dirección&nbsp;</label>
                                     <div class="col-md-9">
-                                        <input type="text" v-model="Almacen.direccion" class="form-control" min="0" id="dir">
+                                        <input type="text" v-model="AlmacenForSettings.direccion" class="form-control" min="0" id="dir">
                                     </div>
                                 </div>
                             </div>
@@ -1251,6 +1251,11 @@
                     quieroVer: 1, // 1:Inventario, 2: Envios Realizados, 3: Envios Recibidos, 4: Producciones, 5: Ventas, 6: vales, 7: Caja
                     titulo: '',
                     mostrar: 0 // 1:Inventario, 2: Envios Realizados, 3: Envios Recibidos, 4: Producciones, 5: Ventas, 6: vales, 7: Caja
+                },
+                AlmacenForSettings:{
+                    id: 0,
+                    nombre: '',
+                    direccion: ''
                 },
                 SelectAlmacen: [],
                 ListaProducto: [],
@@ -1781,7 +1786,9 @@
                 this.abrirModal(1, 'Editar Producto', 'Editar', 'Cancelar', '');
             },
             abrirModalSettings(){
-
+                this.AlmacenForSettings.id = this.Almacen.id;
+                this.AlmacenForSettings.nombre = this.Almacen.nombre;
+                this.AlmacenForSettings.direccion = this.Almacen.direccion;
                 this.abrirModal(6, 'Configurar Almacén', 'Guardar', 'Cerrar', '')
             },
             abrirModalVerEnvioRealizado(envio = []){
@@ -1911,6 +1918,9 @@
                 this.Modal.numero = 0;
                 this.Modal.estado = 0;
                 this.Modal.mensaje = [];
+                this.AlmacenForSettings.id = 0;
+                this.AlmacenForSettings.nombre = '';
+                this.AlmacenForSettings.direccion = '';
 
                 this.Error.estado = 0;
                 this.Error.mensaje = [];
@@ -1963,9 +1973,9 @@
                 var me = this;
                 var url = this.Ruta.centro +'/editar';
                 axios.put(url , {
-                    'id': this.Almacen.id,
-                    'nombre' : this.Almacen.nombre,
-                    'direccion' : this.Almacen.direccion
+                    'id': this.AlmacenForSettings.id,
+                    'nombre' : this.AlmacenForSettings.nombre,
+                    'direccion' : this.AlmacenForSettings.direccion
                 }).then(function(response){
                     var estado = response.data.estado;
                     if ( estado == 1 ) {
