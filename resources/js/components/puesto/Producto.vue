@@ -37,7 +37,6 @@
                         <thead>
                             <tr class="bg-success">
                                 <th class="text-center">Nombre</th>
-                                <th class="text-center">Codigo</th>
                                 <th class="text-center">Precio al por menor</th>
                                 <th class="text-center">Precio al por mayor</th>
                                 <th class="text-center">Disponible</th>
@@ -48,16 +47,15 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="producto in ListaProducto" :key="producto.id" :class="{'table-danger': producto.detalle.substock === 1, 'table-warning': producto.detalle.substock===2}">
-                                <td v-text="producto.nombre"></td>
-                                <td v-text="producto.codigo" class="text-center"></td>
-                                <td v-text="producto.detalle.precio_menor" class="text-right"></td>
-                                <td v-text="producto.detalle.precio_mayor" class="text-right"></td>
-                                <td v-text="producto.detalle.substock" class="text-right"></td>
-                                <td v-text="producto.detalle.reservados==0?'---':producto.detalle.reservados" class="text-right"></td>
-                                <td v-text="producto.detalle.fallidos==0?'---':producto.detalle.fallidos" class="text-right"></td>
-                                <td v-text="producto.detalle.traslado==0?'---':producto.detalle.traslado" class="text-right"></td>
-                                <td v-text="producto.detalle.substock + producto.detalle.reservados + producto.detalle.fallidos + producto.detalle.traslado" class="text-right"></td>
+                            <tr v-for="producto in ListaProducto" :key="producto.id" :class="producto.class">
+                                <td v-text="producto.producto_nombre"></td>
+                                <td v-text="producto.precio_menor" class="text-right"></td>
+                                <td v-text="producto.precio_mayor" class="text-right"></td>
+                                <td v-text="producto.substock" class="text-right"></td>
+                                <td v-text="producto.reservados==0?'---':producto.reservados" class="text-right"></td>
+                                <td v-text="producto.fallidos==0?'---':producto.fallidos" class="text-right"></td>
+                                <td v-text="producto.traslado==0?'---':producto.traslado" class="text-right"></td>
+                                <td v-text="producto.total" class="text-right"></td>
                             </tr>
                         </tbody>
                     </table>
@@ -174,11 +172,43 @@
                         +'&centro_id='+$('meta[name="idCentro"]').attr('content');
                 
                 axios.get(url).then(function (response) {
-                    me.ListaProducto = response.data.list.data;
+                    me.fix('lista_detalle_producto', response.data.list.data);
                     me.Paginacion = response.data.paginate;
                 }).catch(function (error) {
                     console.log(error)
                 });
+            },
+            fix(option, data){
+                switch (option) {
+                    case 'lista_detalle_producto':
+                        var list = [];
+                        
+                        if ( data.length != 0) {
+                            data.forEach(detalle => {
+                                list.push({
+                                    producto_nombre: detalle.nombre,
+                                    precio_menor: Number.parseFloat(detalle.precio_menor),
+                                    precio_mayor: Number.parseFloat(detalle.precio_mayor),
+                                    substock: detalle.detalle.substock,
+                                    reservados: detalle.detalle.reservados,
+                                    fallidos: detalle.detalle.fallidos,
+                                    traslado: detalle.detalle.traslado,
+                                    total: detalle.detalle.substock + detalle.detalle.reservados + detalle.detalle.fallidos + detalle.detalle.traslado,
+                                    class: {
+                                        'table-secondary': detalle.detalle.substock==0?true:false,
+                                        'table-danger': detalle.detalle.substock==1?true:false,
+                                        'table-warning': detalle.detalle.substock==2?true:false
+                                    }
+                                });
+                            })
+                        }
+                        
+                        this.ListaProducto = list;
+                        break;
+                    default:
+                        console.log('DEFAULT_ERROR:onfix');
+                        break;
+                }
             },
             cambiarPagina(page){
                 if ( page >= 1 && page <= this.Paginacion.lastPage) {
