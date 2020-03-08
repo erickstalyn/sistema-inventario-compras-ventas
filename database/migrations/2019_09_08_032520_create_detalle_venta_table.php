@@ -18,11 +18,11 @@ class CreateDetalleVentaTable extends Migration
             $table->smallInteger('cantidad'); // usa 2 bytes - máximo 32767 datos
             $table->decimal('precio', 10, 2);
             $table->decimal('subtotal', 10, 2);
-            $table->smallInteger('fallidos')->nullable(); // usa 2 bytes - máximo 32767 datos
+            $table->smallInteger('cantidad_fallido')->nullable(); // usa 2 bytes - máximo 32767 datos
 
             $table->unsignedMediumInteger('venta_id');
             $table->foreign('venta_id')->references('id')->on('venta');
-            $table->unsignedInteger('detalle_producto_id');
+            $table->unsignedInteger('detalle_producto_id')->nullable();
             $table->foreign('detalle_producto_id')->references('id')->on('detalle_producto');
         });
     }

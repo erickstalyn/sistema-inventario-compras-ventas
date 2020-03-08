@@ -20,44 +20,43 @@
             <div class="row form-group">
                 <div style="width: 8rem;" class="mr-1">
                     <div class="input-group"> 
-                        <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.estado">
+                        <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.estado" @change="listar()">
                             <option value="3">Todos</option>
                             <option value="0">En espera</option>
-                            <option value="1">Aceptados</option>
-                            <option value="2">Rechazados</option>
+                            <option value="1">Recibidos</option>
                         </select>
                     </div>
                 </div>
                 <div style="width: 24rem;">
-                    <input type="search" class="form-control" v-model="Busqueda.texto" @keyup.enter="listar()" placeholder="Buscar por centro de destino">
+                    <input type="search" class="form-control" v-model="Busqueda.texto" @keyup="Busqueda.texto.length >=5 || Busqueda.texto.length == 0 ? listar() : ''" placeholder="Buscar por CENTRO DE DESTINO">
                 </div>
                 <div class="col-md-1">
                     <label for="">Fecha de envío</label>
                 </div>
                 <div class="col-md-1">
                     Dia
-                    <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.dia">
+                    <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.dia" @change="listar()">
                         <option value="">Todos</option>
                         <option v-for="item in getDia()" :key="item" :value="item" v-text="item"></option>
                     </select>
                 </div>
                 <div style="width: 8rem;">
                     Mes
-                    <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.mes">
+                    <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.mes" @change="listar()">
                         <option value="">Todos</option>
                         <option v-for="item in getMes()" :key="item.valor" :value="item.valor" v-text="item.nombre"></option>
                     </select>
                 </div>
                 <div class="col-md-1">
                     Año
-                    <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.year">
+                    <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.year" @change="listar()">
                         <option value="">Todos</option>
                         <option v-for="item in getYear(2016)" :key="item" :value="item" v-text="item"></option>
                     </select>
                 </div>
                 <div class="col-md-1">
                     N° filas:
-                    <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.filas">
+                    <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.filas" @change="listar()">
                         <option v-for="item in Filas" :key="item" :value="item" v-text="item"></option>
                     </select>
                 </div>
@@ -77,7 +76,7 @@
                             <tr class="table-info">
                                 <th>Centro de destino</th>
                                 <th class="text-center">Fecha de envio</th>
-                                <th class="text-center">Fecha Aceptado/Rechazado</th>
+                                <th class="text-center">Fecha de recepción</th>
                                 <th>Estado</th>
                                 <th class="text-center">Opciones</th>
                             </tr>
@@ -92,23 +91,23 @@
                                         <span class="badge badge-primary">En espera</span>
                                     </div>
                                     <div v-else-if="envio.estado == 1">
-                                        <span class="badge badge-success">Aceptado</span>
+                                        <span class="badge badge-success">Recibido</span>
                                     </div>
-                                    <div v-else="">
+                                    <!-- <div v-else="">
                                         <span class="badge badge-danger">Rechazado</span>
-                                    </div>
+                                    </div> -->
                                 </td>
                                 <td class="text-center">
                                     <button type="button" title="Ver" class="btn btn-sm btn-primary" @click="abrirModalVer(envio)">
                                         <i class="far fa-eye"></i>
                                     </button>
-                                    <template v-if="envio.estado == 2">
+                                    <!-- <template v-if="envio.estado == 2">
                                         <button type="button"  title="Reenviar" class="btn btn-info btn-sm" @click="abrirModalReenviar(envio)">
                                             <i class="fas fa-plane"></i>
                                         </button>
-                                    </template>
-                                    <template v-if="envio.estado != 1">
-                                        <button type="button"  title="Anular" class="btn btn-danger btn-sm" @click="anularAbasto(envio.id)">
+                                    </template> -->
+                                    <template v-if="envio.estado == 0">
+                                        <button type="button"  title="Anular" class="btn btn-danger btn-sm" @click="anularEnvio(envio.id)">
                                                 <i class="fas fa-trash-alt"></i>
                                         </button>
                                     </template>
@@ -151,7 +150,6 @@
                     <div class="modal-body">
                         <div class="container-fluid">
                         <!-- Modal Numero 1 de AGREGAR-->
-                        
                             <div v-if="Modal.numero==1">
                                 <!-- Filtro de productos -->
                                 <div v-if="Error.estado" class="row d-flex justify-content-center">
@@ -166,14 +164,21 @@
                                 <div class="row shadow bg-white rounded p-2">
                                     <div class="col-md-6" v-if="Modal.numero == 1">
                                         <div class="row">
-                                            <h5 class="font-weight-bold">Productos</h5>
+                                            <h5 class="col-md-6 font-weight-bold">LISTA DE PRODUCTOS</h5>
+                                            <div class="col-md-6 input-group">
+                                                <label for="typeEnvio">Tipo envío</label>&nbsp;<span class="text-danger">*</span>&nbsp;
+                                                <select class="custom-select custom-select-sm text-gray-900" id="typeEnvio" v-model="EnvioRealizado.tipo" :disabled="ListaProducto.length>0 || ListaDetalleEnvio.length>0">
+                                                    <option value="1">Buen estado</option>
+                                                    <option value="2">Fallidos</option>
+                                                </select>
+                                            </div>
                                         </div>
                                         <div class="row">
-                                            <div class="input-group"> 
-                                                <input type="search" class="form-control form-control-sm" v-model="BusquedaFiltro.texto" @keyup.enter="listarFiltro()" id="filtroProducto" autofocus placeholder="Guia: Producto - marca - modelo - tamaño - color">
-                                                <button type="button" class="btn btn-sm btn-primary" @click="listarFiltro()">
+                                            <div class="input-group">
+                                                <input type="search" class="form-control form-control-sm" v-model="BusquedaFiltro.texto" @keyup="listarFiltro()" id="filtroProducto" autofocus placeholder="Guia: Producto - marca - modelo - tamaño - color">
+                                                <!-- <button type="button" class="btn btn-sm btn-primary" @click="listarFiltro()">
                                                     <i class="fa fa-search"></i>&nbsp; Buscar
-                                                </button>
+                                                </button> -->
                                             </div>
                                         </div>
                                         <br>
@@ -184,7 +189,7 @@
                                                         <tr class="table-danger">
                                                             <th class="text-center" style="width: 3rem;">Agregar</th>
                                                             <th style="width: 24rem;">Nombre</th>
-                                                            <th>Stock</th>
+                                                            <th v-text="EnvioRealizado.tipo==1?'Disponible':'Fallidos'"></th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -195,7 +200,7 @@
                                                                 </button>
                                                             </td>
                                                             <td v-text="producto.nombre"></td>
-                                                            <td v-text="producto.substock"></td>
+                                                            <td v-text="EnvioRealizado.tipo==1?producto.substock:producto.fallidos"></td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
@@ -207,7 +212,7 @@
                                     </div>
                                     <div class="col-md-6 ml-auto container">
                                         <div class="row">
-                                            <h5 class="font-weight-bold">Lista de items</h5>
+                                            <h5 class="font-weight-bold">LISTA DE ITEMS</h5>
                                         </div>
                                         <div class="row form-group ec-table-modal overflow-auto">
                                             <div v-if="ListaDetalleEnvio.length">
@@ -215,7 +220,7 @@
                                                     <thead>
                                                         <tr class="table-success">
                                                             <th class="text-center">Quitar</th>
-                                                            <th class="text-center">Nombre</th>
+                                                            <th style="width: 23rem;" class="text-center">Nombre</th>
                                                             <th style="width: 6rem;" class="text-left">Cantidad</th>
                                                         </tr>
                                                     </thead>
@@ -227,8 +232,11 @@
                                                                 </button>
                                                             </td>
                                                             <td v-text="detalle.nombre"></td>
-                                                            <td class="text-right pr-4">
+                                                            <!-- <td class="text-right pr-4">
                                                                 <input type="number" v-model="detalle.cantidad" class="form-control form-control-sm" min="1">
+                                                            </td> -->
+                                                            <td >
+                                                                <input type="number" v-model="detalle.cantidad" class="form-control form-control-sm text-right" min="1" :max="EnvioRealizado.tipo==1?detalle.stock:detalle.fallidos">
                                                             </td>
                                                         </tr>
                                                     </tbody>
@@ -322,7 +330,10 @@
                     <div class="modal-footer" v-if="permisoModalFooter">
                         <div class="row form-group col-md-12 d-flex justify-content-around">
                             <div v-if="Modal.accion">
-                                <button type="button" @click="accionar(Modal.accion)" class="btn btn-success" v-text="Modal.accion"></button>
+                                <button type="button" @click="accionar(Modal.accion)" class="btn btn-success" :disabled="Button.press">
+                                    <div v-if="!Button.press">{{Modal.accion}}</div>
+                                    <span v-else class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                </button>
                             </div>
                             <button type="button" @click="cerrarModal()" class="btn btn-secondary" v-text="Modal.cancelar"></button>
                         </div>
@@ -345,6 +356,7 @@
                     estado: 0,
                     fecha_envio: '',
                     fecha_cambio: '',
+                    tipo: 1,
                     idCentro: $('meta[name="idCentro"]').attr('content')
                 },
                 SelectUnidad: [],
@@ -398,6 +410,9 @@
                 ],
                 //ALMACENES PARA REALIZAR EL ENVIO
                 SelectCentro: [],
+                Button: {
+                    press: false
+                }
             }
         },
         computed: {
@@ -488,21 +503,23 @@
                 if(this.BusquedaFiltro.texto != ''){
                     let me = this;
                     let url = '/detalle_producto/getDetalle_productoFiltrado?texto=' 
-                            + this.BusquedaFiltro.texto
-                            + '&idCentro=' + this.EnvioRealizado.idCentro;
+                            + me.BusquedaFiltro.texto
+                            + '&idCentro=' + me.EnvioRealizado.idCentro;
                     axios.get(url).then(function(response){
-                        if(response.data.productos.length == 1 && me.BusquedaFiltro.texto == response.data.productos[0].codigo){
-                            me.agregarDetalle(response.data.productos[0]);
+                        let productos = response.data.productos;
+                        if(productos.length == 1 && me.BusquedaFiltro.texto == productos[0].codigo){
+                            me.agregarDetalle(productos[0]);
                             me.BusquedaFiltro.texto = '';
                         }else{
-                            me.ListaProducto = response.data.productos;
+                            me.ListaProducto = productos;
                         }
-                        let inputFiltro = document.getElementById('filtroProducto');
-                        inputFiltro.focus();
+                        document.getElementById('filtroProducto').focus();
                     })
                     .catch(function(error){
                         console.log(error);
                     });
+                }else{
+                    this.ListaProducto = [];
                 }
             },
             selectCentro(){
@@ -520,25 +537,52 @@
                 });
             },
             agregarDetalle(producto){
-                //Verifico si el producto ya esta en la lista de detalle
-                let incluido = false;
-                for (let i = 0; i < this.ListaDetalleEnvio.length; i++) {
-                    if(this.ListaDetalleEnvio[i].id == producto.id){
-                        incluido = true;
-                        //adiciono uno más a la cantidad de este producto en la tabla de detalles
-                        this.ListaDetalleEnvio[i].cantidad ++;
-                        break;
+                if(this.EnvioRealizado.tipo == 1){
+                    //verifico si tiene almenos una unidad
+                    if(producto.substock > 0){
+                        //Verifico si el producto ya esta en la lista de detalle
+                        let incluido = false;
+                        for (let i = 0; i < this.ListaDetalleEnvio.length; i++) {
+                            if(this.ListaDetalleEnvio[i].id == producto.id){
+                                incluido = true;
+                                //adiciono uno más a la cantidad de este producto en la tabla de detalles
+                                if ( this.ListaDetalleEnvio[i].cantidad < this.ListaDetalleEnvio[i].stock ) this.ListaDetalleEnvio[i].cantidad++;
+                                break;
+                            }
+                        }
+                        if(!incluido){
+                            let elProducto = {
+                                id: producto.id,
+                                nombre: producto.nombre,
+                                cantidad: 1,
+                                stock: producto.substock
+                            }
+                            this.ListaDetalleEnvio.push(elProducto);
+                        }
                     }
-                }
-
-                if(!incluido){
-                    let elProducto = {
-                        id: producto.id,
-                        nombre: producto.nombre,
-                        cantidad: 1,
-                        stock: producto.substock
+                }else if(this.EnvioRealizado.tipo == 2){
+                    //verifico si tiene almenos una unidad
+                    if(producto.fallidos > 0){
+                        //Verifico si el producto ya esta en la lista de detalle
+                        let incluido = false;
+                        for (let i = 0; i < this.ListaDetalleEnvio.length; i++) {
+                            if(this.ListaDetalleEnvio[i].id == producto.id){
+                                incluido = true;
+                                //adiciono uno más a la cantidad de este producto en la tabla de detalles
+                                if ( this.ListaDetalleEnvio[i].cantidad < this.ListaDetalleEnvio[i].fallidos ) this.ListaDetalleEnvio[i].cantidad++;
+                                break;
+                            }
+                        }
+                        if(!incluido){
+                            let elProducto = {
+                                id: producto.id,
+                                nombre: producto.nombre,
+                                cantidad: 1,
+                                fallidos: producto.fallidos
+                            }
+                            this.ListaDetalleEnvio.push(elProducto);
+                        }
                     }
-                    this.ListaDetalleEnvio.push(elProducto);
                 }
             },
             quitarDetalle(indice){
@@ -552,6 +596,7 @@
                     //Datos de la produccion
                     'idCentro': me.EnvioRealizado.idCentro,
                     'centro_to_id': me.EnvioRealizado.centro_to_id,
+                    'tipo': me.EnvioRealizado.tipo,
                     //Datos del detalle del envio
                     'listaDetalleEnvio' : this.ListaDetalleEnvio
                 }).then(function(response){
@@ -592,7 +637,7 @@
                         break;
 
                 }
-                if ( this.Error.mensaje.length ) this.Error.estado = 1;
+                if ( this.Error.mensaje.length ) {this.Error.estado = 1; this.Button.press = false;}
                 return this.Error.estado;
             },
             validarCantidadesDetalles(){
@@ -611,36 +656,36 @@
                     }
                 }
             },
-            reenviar(){
-                if ( this.validar(2) ) return;
-                var me = this;
-                //Selecciono el nombre del centro
-                let nombreCentro;
-                me.SelectCentro.forEach(element => {
-                    if(element.id == me.EnvioRealizado.centro_to_id) nombreCentro = element.nombre;
-                });
-                axios.put('/envioRealizado/reenviar', {
-                    'id' : me.EnvioRealizado.id,
-                    'centro_to_id': me.EnvioRealizado.centro_to_id,
-                }).then(function(response){
-                    me.cerrarModal();
-                    me.listar();
-                    Swal.fire({
-                        position: 'top-end',
-                        toast: true,
-                        type: 'success',
-                        title: 'Se REENVIÓ satisfactoriamente a ' + nombreCentro,
-                        showConfirmButton: false,
-                        timer: 4500,
-                        animation:false,
-                        customClass:{
-                            popup: 'animated bounceIn fast'
-                        }
-                    });
-                }).catch(function(error){
-                    console.log(error);
-                });
-            },
+            // reenviar(){
+            //     if ( this.validar(2) ) return;
+            //     var me = this;
+            //     //Selecciono el nombre del centro
+            //     let nombreCentro;
+            //     me.SelectCentro.forEach(element => {
+            //         if(element.id == me.EnvioRealizado.centro_to_id) nombreCentro = element.nombre;
+            //     });
+            //     axios.put('/envioRealizado/reenviar', {
+            //         'id' : me.EnvioRealizado.id,
+            //         'centro_to_id': me.EnvioRealizado.centro_to_id,
+            //     }).then(function(response){
+            //         me.cerrarModal();
+            //         me.listar();
+            //         Swal.fire({
+            //             position: 'top-end',
+            //             toast: true,
+            //             type: 'success',
+            //             title: 'Se REENVIÓ satisfactoriamente a ' + nombreCentro,
+            //             showConfirmButton: false,
+            //             timer: 4500,
+            //             animation:false,
+            //             customClass:{
+            //                 popup: 'animated bounceIn fast'
+            //             }
+            //         });
+            //     }).catch(function(error){
+            //         console.log(error);
+            //     });
+            // },
             abrirModalAgregar(){
                 this.abrirModal(1, 'Registrar Envío', 'Agregar', 'Cancelar', 'modal-xl modal-dialog-scrollable');
                 if(!this.SelectCentro.length) this.selectCentro();
@@ -683,21 +728,20 @@
                 this.ListaProducto = [];
                 this.BusquedaFiltro.texto = '';
 
+                this.Button.press = false;
+
             },
             accionar(accion){
+                this.Button.press = true;
                 switch( accion ){
                     case 'Agregar': {
                         this.agregar();
                         break;
                     }
-                    case 'Editar': {
-                        this.editar();
-                        break;
-                    }
-                    case 'Reenviar': {
-                        this.reenviar();
-                        break;
-                    }
+                    // case 'Reenviar': {
+                    //     this.reenviar();
+                    //     break;
+                    // }
                 }
             },
             cambiarPagina(page){
@@ -723,7 +767,7 @@
                         break;
                 }
             },
-            anularAbasto(id){
+            anularEnvio(id){
                 Swal.fire({
                     title: '¿Está seguro que desea ANULAR el Envío?',
                     type: 'error',

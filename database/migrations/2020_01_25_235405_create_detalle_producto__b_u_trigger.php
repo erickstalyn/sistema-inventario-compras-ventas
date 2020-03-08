@@ -19,9 +19,9 @@ class CreateDetalleProductoBUTrigger extends Migration
         ON detalle_producto
         FOR EACH ROW
         BEGIN
-            IF ( NEW.substock <> OLD.substock) THEN
+            IF ( NEW.substock <> OLD.substock OR NEW.reservados <> OLD.reservados OR NEW.fallidos <> OLD.fallidos OR NEW.traslado <> OLD.traslado ) THEN
                 UPDATE producto 
-                SET stock = stock + (NEW.substock-OLD.substock)
+                SET stock = stock + (NEW.substock-OLD.substock) + (NEW.reservados-OLD.reservados) + (NEW.fallidos-OLD.fallidos) + (NEW.traslado-OLD.traslado)
                 WHERE id = NEW.producto_id;
             END IF;
         END

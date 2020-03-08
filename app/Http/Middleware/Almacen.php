@@ -23,7 +23,7 @@ class Almacen
     }
 
     private function permiso(){
-        return Auth::user()->rol == 'A';
+        return Auth::user()->getRol->id === 3;
     }
 
 }

@@ -26,19 +26,26 @@ Vue.component('adm_material', require('./components/administrador/Material.vue')
 Vue.component('adm_abasto', require('./components/administrador/Abasto.vue').default);
 Vue.component('adm_verpuesto', require('./components/administrador/VerPuesto.vue').default);
 Vue.component('adm_veralmacen', require('./components/administrador/VerAlmacen.vue').default);
+<<<<<<< HEAD
 
 
+=======
+Vue.component('adm_cliente', require('./components/administrador/Cliente.vue').default);
+Vue.component('adm_proveedor', require('./components/administrador/Proveedor.vue').default);
+>>>>>>> master
 Vue.component('adm_estadistica', require('./components/administrador/Estadistica.vue').default);
 
 Vue.component('pue_producto', require('./components/puesto/Producto.vue').default);
-Vue.component('pue_venta', require('./components/puesto/Venta.vue').default);
 
 Vue.component('alm_produccion', require('./components/almacen/Produccion.vue').default);
 Vue.component('alm_producto', require('./components/almacen/Producto.vue').default);
 
+Vue.component('venta', require('./components/Venta.vue').default);
+Vue.component('caja', require('./components/Caja.vue').default);
 Vue.component('enviorecibido', require('./components/EnvioRecibido.vue').default);
 Vue.component('enviorealizado', require('./components/EnvioRealizado.vue').default);
 Vue.component('dashboard', require('./components/Dashboard.vue').default);
+Vue.component('vale', require('./components/Vale.vue').default);
 
 Vue.component('noti_venta_puesto', require('./components/Notificacion/Notification_vp.vue').default);
 Vue.component('noti_venta_alm', require('./components/Notificacion/Notification_va.vue').default);
@@ -53,8 +60,8 @@ Vue.component('noti_venta_alm', require('./components/Notificacion/Notification_
 
 const app = new Vue({
     el: '#app',
-    data:{
-        menu: 3,
+    data: {
+        menu: 6,
         notifications:[],
     },
     created(){
@@ -67,6 +74,7 @@ const app = new Vue({
         });
         var userId = $('meta[name="userId"]').attr('content');
         Echo.private('App.Usuario.' + userId).notification((notification) =>{
+            console.log(notification);
             me.notifications.unshift(notification);
         });
     }

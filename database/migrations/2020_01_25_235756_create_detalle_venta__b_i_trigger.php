@@ -19,9 +19,11 @@ class CreateDetalleVentaBITrigger extends Migration
         ON detalle_venta
         FOR EACH ROW
         BEGIN
-            UPDATE detalle_producto 
-            SET substock = substock - NEW.cantidad
-            WHERE id = NEW.detalle_producto_id;
+            IF ( NEW.detalle_producto_id IS NOT NULL ) THEN
+                UPDATE detalle_producto 
+                SET substock = substock - NEW.cantidad
+                WHERE id = NEW.detalle_producto_id;
+            END IF;
         END
         ");
     }

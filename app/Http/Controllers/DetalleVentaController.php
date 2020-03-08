@@ -9,6 +9,30 @@ use App\Detalle_venta;
 
 class DetalleVentaController extends Controller {
     
+    public function list(Request $request) {
+        if ( !$request->ajax() ) return redirect('/');
+
+        $venta_id = $request->venta_id;
+
+        // $list = Venta::findOrFail($venta_id)->getDetalleVenta;
+        $list = Detalle_venta::select('detalle_venta.id as dv_id', 'detalle_venta.nombre_producto as dv_nombre_producto', 'detalle_venta.cantidad as dv_cantidad', 'detalle_venta.precio as dv_precio', 
+                                    'detalle_venta.cantidad_fallido as dv_cantidad_fallido', 'detalle_venta.subtotal as dv_subtotal',
+                                    'dp.id as dp_id', 'dp.substock as dp_substock', 'dp.precio_menor as dp_precio_menor', 'dp.precio_mayor as dp_precio_mayor')
+                            ->leftJoin('detalle_producto AS dp', 'detalle_venta.detalle_producto_id', '=', 'dp.id')
+                            ->where('detalle_venta.venta_id', '=', $venta_id)
+                            ->orderBy('dv_id', 'desc')->get();
+
+        return $list;
+    }
+
+    public static function listForPdf($id){
+        //Este metodo me devuelve los detalle de una venta con los datos que necesito para MOSTRAR en el PDF
+
+        $list = Detalle_venta::where('detalle_venta.venta_id', '=', $id)->orderBy('detalle_venta.id', 'desc')->get();
+
+        return $list;
+    }
+
     public function listVer(Request $request) {
         if ( !$request->ajax() ) return redirect('/');
 
@@ -24,9 +48,9 @@ class DetalleVentaController extends Controller {
 
         $venta_id = $request->venta_id;
 
-        $list = Detalle_venta::select('detalle_venta.id', 'detalle_venta.detalle_producto_id', 'detalle_venta.nombre_producto', 'detalle_venta.cantidad', DB::raw('detalle_venta.cantidad as cantidad_inicial'), 'detalle_venta.subtotal', 'detalle_venta.fallidos', DB::raw('detalle_venta.fallidos as fallidos_inicial'),
-                                        'detalle_producto.precio_menor', 'detalle_producto.precio_mayor', 'detalle_producto.substock', DB::raw('1 as estado'))
-                            ->leftJoin('detalle_producto', 'detalle_venta.detalle_producto_id', '=', 'detalle_producto.id')
+        $list = Detalle_venta::select('detalle_venta.id', 'detalle_venta.detalle_producto_id', 'detalle_venta.nombre_producto', 'detalle_venta.cantidad', 'detalle_venta.subtotal', 'detalle_venta.cantidad_fallido',
+                                        'dp.precio_menor', 'dp.precio_mayor', 'dp.substock')
+                            ->leftJoin('detalle_producto as dp', 'detalle_venta.detalle_producto_id', '=', 'dp.id')
                             ->where('detalle_venta.venta_id', '=', $venta_id)
                             ->orderBy('id', 'asc')->get();
 

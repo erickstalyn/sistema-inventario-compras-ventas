@@ -4,6 +4,7 @@ Route::group(['middleware' => ['guest']], function (){
     Route::get('/', 'Seguridad\LoginController@index')->name('login');
 
     Route::post('/login', 'Seguridad\LoginController@login')->name('login_post');
+
 });
 
 Route::group(['middleware' => ['auth']], function () {
@@ -34,12 +35,29 @@ Route::group(['middleware' => ['auth']], function () {
     
     //RUTAS PARA VENTAS
     Route::get('/venta', 'VentaController@listar');
+    Route::get('/venta/getVentaWithAll', 'VentaController@getVentaWithAll');
     Route::post('/venta/agregar', 'VentaController@agregar');
     Route::put('/venta/editar', 'VentaController@editar');
 
     //RUTAS PARA DETALLES DE VENTAS
+    Route::get('/detalle_venta/list', 'DetalleVentaController@list');
     Route::get('/detalle_venta/listVer', 'DetalleVentaController@listVer');
     Route::get('/detalle_venta/listEditar', 'DetalleVentaController@listEditar');
+
+    //RUTAS PARA ABASTO DE PRODUCTO EXTERNOS
+    Route::get('/abasto/listByCenter', 'AbastoController@listByCenter');
+    Route::post('/abasto/pay', 'AbastoController@pay');
+
+    //RUTAS PARA CAJA
+    Route::get('/caja/state', 'CajaController@state');
+    Route::get('/caja/get', 'CajaController@get');
+    Route::put('/caja/open', 'CajaController@open');
+    Route::put('/caja/close', 'CajaController@close');
+    Route::get('/caja/search', 'CajaController@search');
+
+    //RUTAS PARA CONCEPTOS
+    Route::post('/concepto/addIngreso', 'ConceptoController@addIngreso');
+    Route::post('/concepto/addEgreso', 'ConceptoController@addEgreso');
 
     //RUTAS PARA PAGOS
     Route::get('/pago/listVenta', 'PagoController@listVenta');
@@ -47,12 +65,17 @@ Route::group(['middleware' => ['auth']], function () {
 
     //RUTAS PARA VALES
     Route::get('/vale/get', 'ValeController@get');
+    Route::get('/vale', 'ValeController@listar');
 
     //RUTAS PARA PRODUCCIONES
     Route::get('/produccion', 'ProduccionController@listar'); //métodos generales
     Route::get('/produccion/getDetalles', 'ProduccionController@getDetalles');
     //RUTA PARA NOTIFICACIONES
     Route::post('/notification/get', 'NotificationController@get');
+
+    //RUTA PARA PDF
+    Route::get('/venta/generatePdfSpecific', 'VentaController@generatePdfSpecific');
+    Route::get('/vale/generatePdfSpecific', 'ValeController@generatePdfSpecific');
 
     Route::group(['middleware' => ['Administrador']], function (){
         
@@ -64,6 +87,12 @@ Route::group(['middleware' => ['auth']], function () {
         Route::put('/usuario/desactivar', 'UsuarioController@desactivar');
         Route::get('/usuario/comprobar', 'UsuarioController@comprobar'); //metodos secundarios
         Route::get('/usuario/selectRol', 'UsuarioController@selectRol');
+
+        //Rutas para PERSONA
+        Route::get('/persona', 'PersonaController@listar');
+        Route::post('/persona/agregar', 'PersonaController@agregar');
+        Route::put('/persona/editar', 'PersonaController@editar');
+        Route::put('/persona/setEstado', 'PersonaController@setEstado');
         
         //RUTAS PARA MATERIALES
         Route::get('/material', 'MaterialController@listar'); //métodos generales
@@ -101,6 +130,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/data/selectUnidad', 'DataController@selectUnidad'); //metodos secundarios
 
         Route::get('/centro/selectCentro', 'CentroController@selectCentro');
+        Route::put('/centro/editar', 'CentroController@editar');
 
         //RUTAS DETALLES DE PRODUCTOS
         Route::put('/detalle_producto/editar', 'Detalle_productoController@editar');
@@ -131,6 +161,9 @@ Route::group(['middleware' => ['auth']], function () {
 
         //Rutas de ENVIOS REALIZADOS
         Route::put('/envioRealizado/anular', 'EnvioController@anular');
+
+        //Ruta de reparación de detalles de producto
+        Route::put('/detalle_producto/reparar', 'Detalle_productoController@reparar');
 
     });
 

@@ -22,16 +22,15 @@
                     <div class="row">
                         <div class="col-md-4">
                             <div class="input-group"> 
-                                <select class="custom-select text-gray-900" v-model="Busqueda.estado">
+                                <select class="custom-select text-gray-900" v-model="Busqueda.estado" @change="listar()">
                                     <option value="3">Todos</option>
                                     <option value="0">Enviados</option>
-                                    <option value="1">Aceptados</option>
-                                    <option value="2">Rechazados</option>
+                                    <option value="1">Recibidos</option>
                                 </select>
                             </div>
                         </div>
                         <div class="col-md-8">
-                            <input type="search" class="form-control" v-model="Busqueda.texto" @keyup.enter="listar()" placeholder="Buscar por proveedor">
+                            <input type="search" class="form-control" v-model="Busqueda.texto" @keyup="Busqueda.texto.length >=5 || Busqueda.texto.length == 0 ? listar() : ''" placeholder="Buscar por proveedor">
                         </div>
                     </div>
                 </div>
@@ -42,28 +41,28 @@
                         </div>
                         <div class="col-md-2">
                             Dia
-                            <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.dia">
+                            <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.dia" @change="listar()">
                                 <option value="">Todos</option>
                                 <option v-for="item in getDia()" :key="item" :value="item" v-text="item"></option>
                             </select>
                         </div>
                         <div class="col-md-3">
                             Mes
-                            <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.mes">
+                            <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.mes" @change="listar()">
                                 <option value="">Todos</option>
                                 <option v-for="item in getMes()" :key="item.valor" :value="item.valor" v-text="item.nombre"></option>
                             </select>
                         </div>
                         <div class="col-md-2">
                             Año
-                            <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.year">
+                            <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.year" @change="listar()">
                                 <option value="">Todos</option>
                                 <option v-for="item in getYear(2016)" :key="item" :value="item" v-text="item"></option>
                             </select>
                         </div>
                         <div class="col-md-2">
                             N° filas:
-                            <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.filas">
+                            <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.filas" @change="listar()">
                                 <option v-for="item in Filas" :key="item" :value="item" v-text="item"></option>
                             </select>
                         </div>
@@ -105,10 +104,7 @@
                                         <span class="badge badge-primary">Enviado</span>
                                     </div>
                                     <div v-else-if="abasto.estado_envio == 1">
-                                        <span class="badge badge-success">Aceptado</span>
-                                    </div>
-                                    <div v-else>
-                                        <span class="badge badge-danger">Rechazado</span>
+                                        <span class="badge badge-success">Recibido</span>
                                     </div>
                                 </td>
                                 <td class="text-center">
@@ -252,9 +248,9 @@
                                         <div class="row">
                                             <div class="input-group"> 
                                                 <input type="search" class="form-control form-control-sm" v-model="BusquedaFiltro.texto" @keyup.enter="listarFiltro()" id="filtroProducto" placeholder="Producto,marca,modelo,tamaño,color">
-                                                <button type="button" class="btn btn-sm btn-primary" @click="listarFiltro()">
+                                                <!-- <button type="button" class="btn btn-sm btn-primary" @click="listarFiltro()">
                                                     <i class="fa fa-search"></i>&nbsp; Buscar
-                                                </button>
+                                                </button> -->
                                             </div>
                                         </div>
                                         <br>
@@ -614,11 +610,14 @@
                     <div class="modal-footer" v-if="permisoModalFooter">
                         <div class="row form-group col-md-12 d-flex justify-content-around">
                             <div v-if="Modal.accion">
-                                <button type="button" @click="accionar(Modal.accion)" :class="[Modal.accion == 'Generar comprobante' ? 'btn btn-danger' : 'btn btn-success']">
-                                    <div v-if="Modal.accion == 'Generar comprobante'">
-                                        <i class="far fa-file-pdf"></i>&nbsp; {{Modal.accion}}
+                                <button type="button" @click="accionar(Modal.accion)" :class="[Modal.accion == 'Generar comprobante' ? 'btn btn-danger' : 'btn btn-success']" :disabled="Button.press">
+                                    <div v-if="!Button.press">
+                                        <div v-if="Modal.accion == 'Generar comprobante'">
+                                            <i class="far fa-file-pdf"></i>&nbsp; {{Modal.accion}}
+                                        </div>
+                                        <div v-else>{{Modal.accion}}</div>
                                     </div>
-                                    <div v-else>{{Modal.accion}}</div>
+                                    <span v-else class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                                 </button>
                             </div>
                             <button type="button" @click="cerrarModal()" class="btn btn-secondary" v-text="Modal.cancelar"></button>
@@ -653,7 +652,8 @@
                     documento: '',
                     nombres: '',
                     apellidos: '',
-                    razon_social: ''
+                    razon_social: '',
+                    direccion: ''
                 },
                 //datos de busqueda y filtracion general
                 Busqueda: {
@@ -697,6 +697,10 @@
                 },
                 Carga: {
                     clase: ''
+                },
+                //Boton de accion
+                Button: {
+                    press: false
                 },
                 //DATOS PARA AGREGAR UNA PRODUCCION
                 BusquedaFiltro:{
@@ -948,9 +952,10 @@
                             me.DatosServicio.mensaje = '';
                             me.DatosServicio.tipo = 2;
                             me.DatosServicio.readonly = false;
-                            me.DatosProveedor.documento = empresa.result.ruc;
-                            me.DatosProveedor.razon_social = empresa.result.razon_social;
-                        }else{
+                            me.DatosProveedor.documento = empresa.RUC;
+                            me.DatosProveedor.razon_social = empresa.RazonSocial;
+                            me.DatosProveedor.direccion = empresa.Direccion;
+                        } else {
                             me.DatosServicio.alert = 'badge badge-primary';
                             me.DatosServicio.mensaje = 'El RUC no existe';
                         }
@@ -963,8 +968,8 @@
                 let me = this;
                 let dni = me.DatosServicio.documento;
                 $.ajax({
-                    type: 'GET',
-                    url: me.Ruta.serverApache + '/Reniec/demo.php',
+                    type: 'POST',
+                    url: me.Ruta.serverApache + '/Reniec/consulta_reniec.php',
                     data: 'dni=' + dni,
                     beforeSend(){
                         me.Carga.clase = 'spinner-border spinner-border-sm text-primary';
@@ -972,21 +977,26 @@
                         me.DatosServicio.mensaje = 'Consultado...';
                     },
                     success: function (data, textStatus, jqXHR) {
-                        let persona = JSON.parse(data);
-                        console.log(persona);
-                        if(persona.estado == true){
-                            me.DatosServicio.documento = '';
-                            me.DatosServicio.alert = '';
-                            me.DatosServicio.mensaje = '';
-                            me.DatosServicio.tipo = 1;
-                            me.DatosProveedor.documento = persona.dni;
-                            me.DatosProveedor.nombres = persona.nombres;
-                            me.DatosProveedor.apellidos = persona.apellidos;
-                        }else{
+                        // console.log(JSON.parse(data));
+                        try {
+                            let persona = JSON.parse(data);
+                            if(persona[2] != null ){
+                                me.DatosServicio.documento = '';
+                                me.DatosServicio.alert = '';
+                                me.DatosServicio.mensaje = '';
+                                me.DatosServicio.tipo = 1;
+                                me.DatosProveedor.documento = persona[0];
+                                me.DatosProveedor.nombres = persona[1];
+                                me.DatosProveedor.apellidos = persona[2] + ' ' + persona[3];
+                            }else{
+                                me.DatosServicio.alert = 'badge badge-primary';
+                                me.DatosServicio.mensaje = 'El DNI no existe';
+                            }
+                            me.Carga.clase = '';
+                        } catch (e) {
                             me.DatosServicio.alert = 'badge badge-primary';
-                            me.DatosServicio.mensaje = 'El DNI no existe';
+                            me.DatosServicio.mensaje = 'Vuelva a intentarlo porfavor =D';
                         }
-                        me.Carga.clase = '';
                     }
                 }).fail(function(){
                 });
@@ -1022,6 +1032,7 @@
                 this.Modal.size = size;
             },
             accionar(accion){
+                this.Button.press = true;
                 switch( accion ){
                     case 'Agregar': 
                         this.agregar();
@@ -1062,7 +1073,7 @@
                 }else{ //Modal editar
                     if (this.Pago.monto == '' || this.Pago.monto <= 0 || this.Pago.monto > (this.Abasto.total_ver - this.getSumaPagos)) this.Error.mensaje.push('Debe ingresar un monto válido');
                 }
-                if ( this.Error.mensaje.length ) this.Error.estado = 1;
+                if ( this.Error.mensaje.length ) {this.Error.estado = 1; this.Button.press = false;}
                 return this.Error.estado;
             },
             validarNegativos(){
@@ -1220,6 +1231,7 @@
                 this.ListaDetalleAbasto = [];
                 this.ListaDetalleAbastoVer = [];
                 this.BusquedaFiltro.texto = '';
+                this.Button.press = false;
             },
             anularAbasto(id){
                 Swal.fire({
@@ -1374,6 +1386,7 @@
             },
             generatePdfSpecific(){
                 window.open(this.Ruta.serverPhp + '/abasto/generatePdfSpecific?code=' + this.Abasto.id,'_blank');
+                this.Button.press = false;
             }
         },
         mounted() {

@@ -28,10 +28,10 @@ class EnvioController extends Controller
                         ->leftjoin('centro', 'centro.id', '=', 'envio.centro_from_id')
                         ->where(function ($query) use ($texto) {
                             if ( $texto != '' ) {
-                                if(strpos('administracion', $texto) === false){
-                                    $query->where('centro.nombre', 'like', '%'.$texto.'%');
-                                }else{
+                                if(strpos('administracion', $texto)){
                                     $query->where('envio.centro_from_id', '=', null);
+                                }else{
+                                    $query->where('centro.nombre', 'like', '%'.$texto.'%');
                                 }
                             }
                         })
@@ -158,6 +158,7 @@ class EnvioController extends Controller
             $envio = new Envio();
             $envio->centro_from_id = $request->idCentro;
             $envio->centro_to_id = $request->centro_to_id;
+            $envio->tipo = $request->tipo;
             $envio->created_at = $now;
             $envio->save();
 

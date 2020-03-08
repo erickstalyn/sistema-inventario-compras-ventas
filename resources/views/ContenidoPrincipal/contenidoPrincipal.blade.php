@@ -3,17 +3,17 @@
 @section('contenidoPrincipal')
 
     @if(Auth::check())
-        @if(Auth::user()->rol=='M')
-            <template v-if="menu==0">
+        @if(Auth::user()->getRol->id===1)
+            <template v-if="menu==1">
                 <adm_material></adm_material>
             </template>
-            <template v-if="menu==1">
+            <template v-if="menu==2">
                 <adm_superproducto></adm_superproducto>
             </template>
-            <template v-if="menu==2">
+            <template v-if="menu==3">
                 <adm_producto></adm_producto>
             </template>
-            <template v-if="menu==3">
+            <template v-if="menu==4">
                 <adm_abasto></adm_abasto>
             </template>
             <template v-if="menu==5">
@@ -23,42 +23,60 @@
                 <adm_veralmacen></adm_veralmacen>
             </template>
             <template v-if="menu==7">
-                <adm_usuario></adm_usuario>
+                <adm_cliente></adm_cliente>
             </template>
             <template v-if="menu==8">
+                <adm_proveedor></adm_proveedor>
+            </template>
+            <template v-if="menu==10">
+                <adm_usuario></adm_usuario>
+            </template>
+            <template v-if="menu==11">
                 <adm_estadistica></adm_estadistica>
                 {{-- <dashboard :num_mostrar="1"></dashboard> --}}
             </template>
 
-        @elseif(Auth::user()->rol=='P')
-            <template v-if="menu==0">
+        @elseif(Auth::user()->getRol->id===2)
+            <template v-if="menu==1">
                 <pue_producto></pue_producto>
             </template>
-            <template v-if="menu==1">
-                <pue_venta></pue_venta>
-            </template>
             <template v-if="menu==2">
-                <enviorealizado></enviorealizado>
+                <caja></caja>
             </template>
             <template v-if="menu==3">
+                <venta></venta>
+            </template>
+            <template v-if="menu==4">
+                <vale></vale>
+            </template>
+            <template v-if="menu==5">
+                <enviorealizado></enviorealizado>
+            </template>
+            <template v-if="menu==6">
                 <enviorecibido></enviorecibido>
             </template>
 
-        @elseif(Auth::user()->rol=='A')
-            <template v-if="menu==0">
+        @elseif(Auth::user()->getRol->id===3)
+            <template v-if="menu==1">
                 <alm_producto></alm_producto>
             </template>
-            <template v-if="menu==1">
+            <template v-if="menu==2">
                 <alm_produccion></alm_produccion>
             </template>
-            <template v-if="menu==2">
+            <template v-if="menu==3">
                 <enviorealizado></enviorealizado>
             </template>
-            <template v-if="menu==3">
+            <template v-if="menu==4">
                 <enviorecibido></enviorecibido>
             </template>
-            <template v-if="menu==4">
-                <pue_venta></pue_venta>
+            <template v-if="menu==5">
+                <caja></caja>
+            </template>
+            <template v-if="menu==6">
+                <venta></venta>
+            </template>
+            <template v-if="menu==7">
+                <vale></vale>
             </template>
         @else
 

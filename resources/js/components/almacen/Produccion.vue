@@ -20,7 +20,7 @@
             <div class="row form-group">
                 <div class="col-md-2">
                     <div class="input-group"> 
-                        <select class="custom-select text-gray-900" v-model="Busqueda.estado">
+                        <select class="custom-select text-gray-900" v-model="Busqueda.estado" @change="listar()">
                             <option value="3">Todos</option>
                             <option value="2">Sin iniciar</option>
                             <option value="1">En Proceso</option>
@@ -33,21 +33,21 @@
                 </div>
                 <div class="col-md-1">
                     Dia
-                    <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.dia">
+                    <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.dia" @change="listar()">
                         <option value="">Todos</option>
                         <option v-for="item in getDia()" :key="item" :value="item" v-text="item"></option>
                     </select>
                 </div>
                 <div class="col-md-2">
                     Mes
-                    <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.mes">
+                    <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.mes" @change="listar()">
                         <option value="">Todos</option>
                         <option v-for="item in getMes()" :key="item.valor" :value="item.valor" v-text="item.nombre"></option>
                     </select>
                 </div>
                 <div class="col-md-1">
                     Año
-                    <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.year">
+                    <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.year" @change="listar()">
                         <option value="">Todos</option>
                         <option v-for="item in getYear(2019)" :key="item" :value="item" v-text="item"></option>
                     </select>
@@ -55,7 +55,7 @@
                 <div class="col-md-1"></div>
                 <div class="col-md-1">
                     N° filas:
-                    <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.filas">
+                    <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.filas" @change="listar()">
                         <option v-for="item in Filas" :key="item" :value="item" v-text="item"></option>
                     </select>
                 </div>
@@ -185,9 +185,9 @@
                                         <div class="row">
                                             <div class="input-group"> 
                                                 <input type="search" class="form-control form-control-sm" v-model="BusquedaFiltro.texto" @keyup.enter="listarFiltro()" id="filtroProducto" autofocus placeholder="Producto,marca,modelo,tamaño,color">
-                                                <button type="button" class="btn btn-sm btn-primary" @click="listarFiltro()">
+                                                <!-- <button type="button" class="btn btn-sm btn-primary" @click="listarFiltro()">
                                                     <i class="fa fa-search"></i>&nbsp; Buscar
-                                                </button>
+                                                </button> -->
                                             </div>
                                         </div>
                                         <br>
@@ -325,12 +325,12 @@
                                 <div class="row">
                                     <div class="col-md-3"></div>
                                     <div class="col-md-4 form-inline">
-                                        Fecha de inicio&nbsp;<span class="text-danger">*</span>
-                                        <input type="date" class="form-control form-control-sm" v-model="Produccion.fecha_inicio">
+                                        Fecha de inicio&nbsp;
+                                        <input type="date" class="form-control" v-model="Produccion.fecha_inicio" readonly>
                                     </div>
                                     <div class="col-md-5 form-inline">
-                                        Fecha prog. finalización&nbsp;<span class="text-danger">*</span>
-                                        <input type="date" class="form-control form-control-sm" v-model="Produccion.fecha_programada">
+                                        Fecha prog. finalización&nbsp;
+                                        <input type="date" class="form-control" v-model="Produccion.fecha_programada" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -339,7 +339,10 @@
                     <div class="modal-footer" v-if="permisoModalFooter">
                         <div class="row form-group col-md-12 d-flex justify-content-around">
                             <div v-if="Modal.accion">
-                                <button type="button" @click="accionar(Modal.accion)" class="btn btn-success" v-text="Modal.accion"></button>
+                                <button type="button" @click="accionar(Modal.accion)" class="btn btn-success" :disabled="Button.press">
+                                    <div v-if="!Button.press">{{Modal.accion}}</div>
+                                    <span v-else class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                </button>
                             </div>
                             <button type="button" @click="cerrarModal()" class="btn btn-secondary" v-text="Modal.cancelar"></button>
                         </div>
@@ -417,11 +420,14 @@
                 ListaDetalleProduccionFiltrada: [],
                 //DATOS PARA ENVIAR UNA PRODUCCION
                 SelectAlmacen: [],
-
+                Button: {
+                    press : false
+                },
                 //datos de rutas
                 Ruta: {
                     produccion: '/produccion'
                 }
+
             }
         },
         computed: {
@@ -702,7 +708,7 @@
                         if(!found) this.Error.mensaje.push('No existe ningun detalle de producción');
                         break;
                 }
-                if ( this.Error.mensaje.length ) this.Error.estado = 1;
+                if ( this.Error.mensaje.length ) {this.Error.estado = 1; this.Button.press = false;}
                 return this.Error.estado;
             },
             finalizar(produccion = []){
@@ -828,11 +834,14 @@
                 this.Produccion.fecha_inicio = '';
                 this.Produccion.fecha_programada = '';
 
+                this.Button.press = false;
+
                 this.ListaDetalleProduccion = [];
                 this.BusquedaFiltro.texto = '';
 
             },
             accionar(accion){
+                this.Button.press = true;
                 switch( accion ){
                     case 'Agregar': {
                         this.agregar();

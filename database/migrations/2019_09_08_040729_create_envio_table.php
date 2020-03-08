@@ -14,12 +14,8 @@ class CreateEnvioTable extends Migration
     public function up () {
         Schema::create('envio', function (Blueprint $table) {
             $table->mediumIncrements('id'); // usa 3 bytes, Cantiada max: 8 388 607
-            $table->char('estado', 1)->default('0');
-            /*
-                0 -> Enviado
-                1 -> Aceptado
-                2 -> Rechazado (Cuando se rechace un envio, se mantendrá rechazado hasta que se reenvie nuevamente a otro centro)
-            */
+            $table->char('estado', 1)->default('0'); //0 -> Enviado, 1 -> Recibido
+            $table->char('tipo', 1); //1 -> Buena estado, 2 -> Fallidos
             $table->unsignedTinyInteger('centro_from_id')->nullable();
             $table->foreign('centro_from_id')->references('id')->on('centro');
             $table->unsignedTinyInteger('centro_to_id');

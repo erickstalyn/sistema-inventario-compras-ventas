@@ -20,7 +20,7 @@
             <div class="row form-group">
                 <div class="col-md-5">
                     <div class="input-group">
-                        <input type="search" class="form-control" v-model="Busqueda.texto" @keyup.enter="listar()">
+                        <input type="search" class="form-control" v-model="Busqueda.texto" placeholder="Buscar por NOMBRE o CÓDIGO" @keyup="Busqueda.texto.length >=5 || Busqueda.texto.length == 0 ? listar() : ''">
                         <button type="button" class="btn btn-primary" @click="listar()">
                             <i class="fa fa-search"></i>&nbsp; Buscar
                         </button>
@@ -31,7 +31,7 @@
                     <label>N° filas:</label>
                 </div>
                 <div class="col-md-1">
-                    <select class="form-control text-gray-900" v-model="Busqueda.filas">
+                    <select class="form-control text-gray-900" v-model="Busqueda.filas" @change="listar()">
                         <option v-for="fila in Filas" :key="fila" :value="fila" v-text="fila"></option>
                     </select>
                 </div>
@@ -53,7 +53,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="producto in ListaProducto" :key="producto.id" >
+                            <tr v-for="producto in ListaProducto" :key="producto.id" :class="{'table-danger': producto.stock <= 40, 'table-warning': producto.stock > 40 && producto.stock <= 60 }">
                                 <td v-text="producto.nombre"></td>
                                 <td v-text="producto.costo_produccion" class="text-right"></td>
                                 <td v-text="producto.precio_menor" class="text-right"></td>
@@ -342,7 +342,10 @@
                     <div class="modal-footer">
                         <div class="row form-group col-md-12 d-flex justify-content-around">
                             <div v-if="Modal.btnA">
-                                <button type="button" @click="accionar()" class="btn btn-success" v-text="Modal.btnA"></button>
+                                <button type="button" @click="accionar()" class="btn btn-success font-weight-bold" :disabled="Button.press">
+                                    <div v-if="!Button.press">{{Modal.btnA}}</div>
+                                    <span v-else class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                </button>
                             </div>
                             <div v-if="Modal.btnC">
                                 <button type="button" @click="cerrarModal()" class="btn btn-secondary" v-text="Modal.btnC"></button>
@@ -432,7 +435,9 @@
                     numero: 0,
                     mensaje: []
                 },
-
+                Button: {
+                    press: false
+                },
                 //datos de ruta de consultas
                 Ruta: {
                     superproducto: '/superproducto',
@@ -744,8 +749,11 @@
                 this.ProductoMaterial.costo_unitario = 0;
                 this.ProductoMaterial.cantidad = 0;
                 this.ProductoMaterial.subtotal = 0;
+                
+                this.Button.press = false;
             },
             accionar(){
+                this.Button.press = true;
                 switch( this.Modal.numero ){
                     case 1: this.agregar(); break;
                     case 3: this.editar(); break;
@@ -926,7 +934,7 @@
                         break;
                 }
 
-                if ( this.Error.mensaje.length ) this.Error.estado = 1;
+                if ( this.Error.mensaje.length ) {this.Error.estado = 1; this.Button.press = false;}
 
                 return this.Error.estado;
             },
@@ -942,6 +950,7 @@
             },
             generatePdf(){
                 window.open(this.Ruta.serverPhp + '/producto/generatePdf','_blank');
+                this.Button.press = false;
             }
         },
         mounted() {

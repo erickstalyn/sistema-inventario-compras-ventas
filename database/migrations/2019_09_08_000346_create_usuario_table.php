@@ -17,7 +17,7 @@ class CreateUsuarioTable extends Migration
             $table->tinyIncrements('id');// usa 1 byte , cantidad max: 127
             $table->string('usuario', 60);
             $table->string('password', 100);
-            $table->char('rol',1);
+            // $table->char('rol',1);
             /*
                 M: Administrador
                 P: Puesto
@@ -29,6 +29,9 @@ class CreateUsuarioTable extends Migration
             $table->foreign('persona_id')->references('id')->on('persona');
             $table->unsignedTinyInteger('centro_id')->nullable();
             $table->foreign('centro_id')->references('id')->on('centro');
+            $table->unsignedTinyInteger('rol_id')->nullable();
+            $table->foreign('rol_id')->references('id')->on('rol');
+
         });
     }
 

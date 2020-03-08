@@ -6,11 +6,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Exception;
+use App\Concepto;
+use App\Caja;
 use App\Abasto;
 use App\Persona;
 use App\Pago;
 use App\Envio;
 use App\Detalle_abasto;
+use App\Detalle_funcion;
 
 class AbastoController extends Controller
 {
@@ -23,6 +26,7 @@ class AbastoController extends Controller
         $ordenarPor = $request->ordenarPor;
         $orden = $request->orden;
         $hoy = Carbon::now('America/Lima')->toDateString();
+        
         //Fechas
         $dia = $request->dia;
         $mes = $request->mes;
@@ -88,6 +92,102 @@ class AbastoController extends Controller
         ];
     }
 
+    public function listByCenter(Request $request){
+        if ( !$request->ajax() ) return redirect('/');
+
+        $centro_id = $request->centro_id;
+        $paid = $request->paid;
+
+        $list = Abasto::select('abasto.id as a_id', 'proveedor_nombre', 'created_at',
+                                'da.id as da_id', 'nombre_producto', 'cantidad')
+                        ->join('detalle_abasto AS da', 'da.abasto_id', '=', 'abasto.id')
+                        ->where('total', '=', 0)
+                        ->where('tipo', '=', '1')
+                        ->where('centro_id', '=', $centro_id)
+                        ->where('administrador_id', '=', NULL)->get();
+
+        return $list;
+    }
+
+    public function pay(Request $request){
+        $state = 'transaction-validate';
+        $message = NULL;
+        $step = NULL;
+
+        {   // Validacion: que la consulta sea ajax
+            if ( !$request->ajax() ) return redirect('/');
+        }
+        {   // Validacion: que la caja chica este abierta
+            $now = Carbon::now('America/Lima')->toDateString();
+            $caja = Caja::where('centro_id', '=', $request->dataCentro['id'])
+                        ->where(DB::raw('CAST(start AS DATE)'), '=', $now)->first();
+            
+            if ( $caja == NULL ) {
+                return [
+                    'state' => $state,
+                    'validate' => 'box-no-exist'
+                ];
+            }
+            if ( $caja->state == 0 ) {
+                return [
+                    'state' => $state,
+                    'validate' => 'box-close'
+                ];
+            }
+        }
+
+        $now = Carbon::now('America/Lima')->toDateTimeString();
+        $dataListaAbasto = $request->dataListaAbasto;
+
+        try {
+            DB::beginTransaction();
+            $state = 'transacion-start';
+
+            foreach ($dataListaAbasto as $compra) {
+                if ( $compra['total'] != NULL ) {
+                    $abasto = Abasto::findOrFail($compra['id']);
+                    $abasto->total = $compra['total'];
+                    $abasto->save();
+
+                    $pago = new Pago();
+                    $pago->abasto_id = $abasto->id;
+                    $pago->monto = $abasto->total;
+                    $pago->created_at = $now;
+                    $pago->save();
+
+                    $concepto = new Concepto();
+                    $concepto->caja_id = $caja->id;
+                    $concepto->type = 0;
+                    $concepto->descripcion = 'Pago por compra de productos externos a "'.$abasto->proveedor_nombre.'"';
+                    $concepto->monto = $pago->monto;
+                    $concepto->created_at = $now;
+                    $concepto->save();
+                    
+                    foreach ( $compra['lista_detalle_abasto'] as $det ) {
+                        $detalle = Detalle_abasto::findOrFail($det['id']);
+                        $detalle->costo_abasto = $det['costo_abasto'];
+                        $detalle->subtotal = $det['subtotal'];
+                        $detalle->save();
+                    }
+                }
+            }
+
+            DB::commit();
+            $state = 'transaction-success';
+        } catch (Exception $e) {
+            DB::rollback();
+            $state = 'transaction-exception';
+            $message = $e;
+        }
+
+        return [
+            'state' => $state,
+            'step' => $step,
+            'exception' => $message,
+            'caja' => $caja
+        ];
+    }
+
     public function agregar(Request $request){
         if ( !$request->ajax() ) return redirect('/');
         try {
@@ -102,35 +202,42 @@ class AbastoController extends Controller
             $abasto->total_faltante = $request->total;
 
             $abasto->created_at = $now;
-            //Verifico si existe el proveedor
-            if($proveedor['id'] == 0){ //No existe el proveedor
+            //Verifico si existe la PERSONA
+            if($proveedor['id'] == 0){ //No existe la PERSONA
                 //Insertamos al proveedor
                 $persona = new Persona();
-                $persona->proveedor = 1;
+                // $persona->proveedor = 1;
                 if(strlen($proveedor['documento']) == 8){
                     //Convertimos los nombres y apellidos
-                    $newNombres = mb_convert_case($proveedor['nombres'], MB_CASE_TITLE, "UTF-8");
-                    $newApellidos = mb_convert_case($proveedor['apellidos'], MB_CASE_TITLE, "UTF-8");
-                    $persona->dni = $proveedor['documento'];
-                    $persona->nombres = $newNombres;
-                    $persona->apellidos = $newApellidos;
+                    $persona->dni = trim($proveedor['documento']);
+                    $persona->nombres = trim(mb_convert_case($proveedor['nombres'], MB_CASE_TITLE, "UTF-8"));
+                    $persona->apellidos = trim(mb_convert_case($proveedor['apellidos'], MB_CASE_TITLE, "UTF-8"));
                     $persona->tipo = 'P';
                     // $abasto->proveedor_nombre = $newNombres . ' ' . $newApellidos;
                 }else{
-                    $persona->ruc = $proveedor['documento'];
-                    $persona->razon_social = $proveedor['razon_social'];
+                    $persona->ruc = trim($proveedor['documento']);
+                    $persona->razon_social = trim($proveedor['razon_social']);
+                    $persona->direccion = mb_convert_case($proveedor['direccion'], MB_CASE_TITLE, "UTF-8");
                     $persona->tipo = 'E';
                     // $abasto->proveedor_nombre = $proveedor['razon_social'];
                 }
                 $persona->save();
                 $abasto->proveedor_id = $persona->id;
-            }else{ //Ya existe el proveedor
-                $persona = Persona::findOrFail($proveedor['id']);
-                $persona->proveedor = 1;
-                $persona->save();
 
+                //Asignamos su funcion PROVEEDOR
+                $detalle_funcion = new Detalle_funcion();
+                $detalle_funcion->persona_id = $persona->id;
+                $detalle_funcion->funcion_id = 2;
+                $detalle_funcion->save();
+            }else{ //Ya existe la PERSONA
                 $abasto->proveedor_id = $proveedor['id'];
-
+                try {
+                    $detalle_funcion = new Detalle_funcion();
+                    $detalle_funcion->persona_id = $proveedor['id'];
+                    $detalle_funcion->funcion_id = 2;
+                    $detalle_funcion->save();
+                } catch (Exception $e) {
+                }
             }
             $abasto->save();
 
@@ -143,6 +250,7 @@ class AbastoController extends Controller
             }
             //Registramos el ENVÍO
             $envio = new Envio();
+            $envio->tipo = 1;
             $envio->centro_to_id = $request->centro_to_id;
             $envio->abasto_id = $abasto->id;
             $envio->created_at = $now;
@@ -230,7 +338,15 @@ class AbastoController extends Controller
         $pagos = Abasto::findOrFail($request->code)->getPagos;
 
         $pdf = \PDF::loadView('pdf.comprobante_abasto', ['abasto'=>$abasto, 'detalles'=>$detalles, 'pagos' => $pagos]);
-        return $pdf->download('lista_abasto_silmar_' . $request->code . '.pdf');
+        return $pdf->download('abasto_silmar_' . $request->code . '.pdf');
             
+    }
+
+    public function pruebas(Request $request){
+        $persona = Persona::find(2);
+        $detalle_funcion = $persona->haveFunction(); 
+        return [
+            'detalle_funcion' => $detalle_funcion
+        ];
     }
 }

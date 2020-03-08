@@ -17,44 +17,43 @@
             <div class="row form-group">
                 <div style="width: 8rem;" class="mr-1">
                     <div class="input-group"> 
-                        <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.estado">
+                        <select class="custom-select text-gray-900" v-model="Busqueda.estado" @change="listar()">
                             <option value="3">Todos</option>
                             <option value="0">En espera</option>
-                            <option value="1">Aceptados</option>
-                            <option value="2">Rechazados</option>
+                            <option value="1">Recibidos</option>
                         </select>
                     </div>
                 </div>
                 <div style="width: 24rem;">
-                    <input type="search" class="form-control" v-model="Busqueda.texto" @keyup.enter="listar()" placeholder="Buscar por centro de origen">
+                    <input type="search" class="form-control" v-model="Busqueda.texto" @keyup="Busqueda.texto.length >=5 || Busqueda.texto.length == 0 ? listar() : ''" placeholder="Buscar por CENTRO DE ORIGEN">
                 </div>
                 <div class="col-md-1">
                     <label for="">Fecha de envío</label>
                 </div>
                 <div class="col-md-1">
                     Dia
-                    <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.dia">
+                    <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.dia" @change="listar()">
                         <option value="">Todos</option>
                         <option v-for="item in getDia()" :key="item" :value="item" v-text="item"></option>
                     </select>
                 </div>
                 <div style="width: 8rem;">
                     Mes
-                    <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.mes">
+                    <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.mes" @change="listar()">
                         <option value="">Todos</option>
                         <option v-for="item in getMes()" :key="item.valor" :value="item.valor" v-text="item.nombre"></option>
                     </select>
                 </div>
                 <div class="col-md-1">
                     Año
-                    <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.year">
+                    <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.year" @change="listar()">
                         <option value="">Todos</option>
                         <option v-for="item in getYear(2016)" :key="item" :value="item" v-text="item"></option>
                     </select>
                 </div>
                 <div class="col-md-1">
                     N° filas:
-                    <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.filas">
+                    <select class="custom-select custom-select-sm text-gray-900" v-model="Busqueda.filas" @change="listar()">
                         <option v-for="item in Filas" :key="item" :value="item" v-text="item"></option>
                     </select>
                 </div>
@@ -74,7 +73,7 @@
                             <tr class="table-info">
                                 <th>Origen</th>
                                 <th class="text-center">Fecha en que se envió</th>
-                                <th class="text-center">Fecha Aceptado/Rechazado</th>
+                                <th class="text-center">Fecha en que se recibó</th>
                                 <th>Estado</th>
                                 <th class="text-center">Opciones</th>
                             </tr>
@@ -83,24 +82,24 @@
                             <tr v-for="envio in ListaEnvioRecibido" :key="envio.id" >
                                 <td v-text="!envio.abasto_id? envio.centro_origen : 'Administración'"></td>
                                 <td v-text="formatearFecha(envio.fecha_envio)" class="text-center"></td>
-                                <td v-text="envio.fecha_cambio ? formatearFecha(envio.fecha_cambio) : '-------------'" class="text-center"></td>
+                                <td v-text="envio.fecha_cambio ? formatearFecha(envio.fecha_cambio) : '---'" class="text-center"></td>
                                 <td>
                                     <div v-if="envio.estado == 0">
                                         <span class="badge badge-primary">En espera</span>
                                     </div>
                                     <div v-else-if="envio.estado == 1">
-                                        <span class="badge badge-success">Aceptado</span>
+                                        <span class="badge badge-success">Recibido</span>
                                     </div>
-                                    <div v-else="">
+                                    <!-- <div v-else="">
                                         <span class="badge badge-danger">Rechazado</span>
-                                    </div>
+                                    </div> -->
                                 </td>
                                 <td class="text-center">
                                     <button type="button" title="Ver" class="btn btn-sm btn-primary" @click="abrirModalVer(envio)">
                                         <i class="far fa-eye"></i>
                                     </button>
                                     <template v-if="envio.estado == 0">
-                                        <button type="button"  title="Aceptar/Rechazar" class="btn btn-sm btn-outline-warning" @click="accion(envio)">
+                                        <button type="button"  title="Recibir" class="btn btn-sm btn-outline-warning" @click="recibir(envio)">
                                             <i class="fas fa-sort-amount-down-alt"></i>
                                         </button>
                                     </template>
@@ -184,7 +183,10 @@
                     <div class="modal-footer" v-if="permisoModalFooter">
                         <div class="row form-group col-md-12 d-flex justify-content-around">
                             <div v-if="Modal.accion">
-                                <button type="button" @click="accionar(Modal.accion)" class="btn btn-success" v-text="Modal.accion"></button>
+                                <button type="button" @click="accionar(Modal.accion)" class="btn btn-success" :disabled="Button.press">
+                                    <div v-if="!Button.press">{{Modal.accion}}</div>
+                                    <span v-else class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                </button>
                             </div>
                             <button type="button" @click="cerrarModal()" class="btn btn-secondary" v-text="Modal.cancelar"></button>
                         </div>
@@ -262,6 +264,9 @@
                 ListaDetalleEnvio: [],
                 //DATOS PARA ENVIAR UNA PRODUCCION
                 SelectAlmacen: [],
+                Button: {
+                    press: false
+                }
             }
         },
         computed: {
@@ -347,7 +352,7 @@
                 let newFecha = arrayFecha[2] + '-' + arrayFecha[1] + '-' + arrayFecha[0];
                 return newFecha;
             },
-            accion(envio = []){
+            recibir(envio = []){
                 this.EnvioRecibido.id = envio['id'];
                 const swalWithBootstrapButtons = Swal.mixin({
                     customClass: {
@@ -357,12 +362,12 @@
                     buttonsStyling: false
                 })
                 swalWithBootstrapButtons.fire({
-                title: '¿Qué ACCIÓN desea realizar?',
-                text: "Por favor elija con cuidado, que son acciones irreversibles",
+                title: '¿La mercadería LLEGÓ al centro?',
+                text: "Por favor, revise que toda la mercadería haya llegado completa",
                 type: 'warning',
                 showCancelButton: true,
-                confirmButtonText: 'Aceptar envío',
-                cancelButtonText: 'Rechazar envío',
+                confirmButtonText: 'SI, la mercadería llegó',
+                cancelButtonText: 'Cancelar',
                 }).then((result) => {
                 if (result.value) {
                     var me = this;
@@ -381,24 +386,22 @@
                         console.log('Soy el error: ' + error);
                     });
                     
-                } else if (
-                    result.dismiss === Swal.DismissReason.cancel
-                ) {
-                    var me = this;
-                    axios.put('/envioRecibido/setEstado', {
-                        'id' : me.EnvioRecibido.id,
-                        'estado' : 2
-                    }).then(function(response){
-                        me.cerrarModal();
-                        me.listar();
-                        swalWithBootstrapButtons.fire(
-                        'Rechazado!',
-                        'El envío ha sido rechazado, por favor infórmeselo al administrador',
-                        'danger'
-                        )
-                    }).catch(function(error){
-                        console.log('Soy el error: ' + error);
-                    });
+                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                    // var me = this;
+                    // axios.put('/envioRecibido/setEstado', {
+                    //     'id' : me.EnvioRecibido.id,
+                    //     'estado' : 2
+                    // }).then(function(response){
+                    //     me.cerrarModal();
+                    //     me.listar();
+                    //     swalWithBootstrapButtons.fire(
+                    //     'Rechazado!',
+                    //     'El envío ha sido rechazado, por favor infórmeselo al administrador',
+                    //     'danger'
+                    //     )
+                    // }).catch(function(error){
+                    //     console.log('Soy el error: ' + error);
+                    // });
                 }
                 })
             },
@@ -423,6 +426,7 @@
                 this.Modal.numero = 0;
                 this.Modal.estado = 0;
                 this.Modal.mensaje = [];
+                this.Button.press = false;
 
                 this.Error.estado = 0;
                 this.Error.mensaje = [];
@@ -464,16 +468,9 @@
                 }
             },
             accionar(accion){
-                switch( accion ){
-                    case 'Agregar': {
-                        this.agregar();
-                        break;
-                    }
-                    case 'Editar': {
-                        this.editar();
-                        break;
-                    }
-                }
+                this.Button.press = true;
+                // switch( accion ){
+                // }
             },
             cambiarPagina(page){
                 if ( page >= 1 && page <= this.Paginacion.lastPage) {

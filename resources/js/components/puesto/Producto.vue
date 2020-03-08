@@ -14,7 +14,7 @@
             <div class="row form-group">
                 <div class="col-md-5">
                     <div class="input-group">
-                        <input type="search" class="form-control" v-model="Busqueda.texto" @keyup.enter="listar()">
+                        <input type="search" class="form-control" v-model="Busqueda.texto" @keyup="Busqueda.texto.length >=10 || Busqueda.texto.length == 0 ? listar() : ''" placeholder="Buscar por CODIGO o NOMBRE">
                         <button type="button" class="btn btn-primary" @click="listar()">
                             <i class="fa fa-search"></i>&nbsp; Buscar
                         </button>
@@ -24,7 +24,7 @@
                 <div class="col-md-1 text-right">
                     <label>N° filas:</label>
                 </div>
-                <select class="col-md-1 form-control text-gray-900" v-model="Busqueda.filas">
+                <select class="col-md-1 form-control text-gray-900" v-model="Busqueda.filas" @change="listar()">
                     <option v-for="fila in Filas" :key="fila" :value="fila" v-text="fila"></option>
                 </select>
             </div>
@@ -40,13 +40,15 @@
                                 <th class="text-center">Codigo</th>
                                 <th class="text-center">Precio al por menor</th>
                                 <th class="text-center">Precio al por mayor</th>
-                                <th class="text-center">Stock</th>
+                                <th class="text-center">Disponible</th>
                                 <th class="text-center">Reservados</th>
                                 <th class="text-center">Fallidos</th>
+                                <th class="text-center">Traslado</th>
+                                <th class="text-center">Total</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="producto in ListaProducto" :key="producto.id" >
+                            <tr v-for="producto in ListaProducto" :key="producto.id" :class="{'table-danger': producto.detalle.substock === 1, 'table-warning': producto.detalle.substock===2}">
                                 <td v-text="producto.nombre"></td>
                                 <td v-text="producto.codigo" class="text-center"></td>
                                 <td v-text="producto.detalle.precio_menor" class="text-right"></td>
@@ -54,6 +56,8 @@
                                 <td v-text="producto.detalle.substock" class="text-right"></td>
                                 <td v-text="producto.detalle.reservados==0?'---':producto.detalle.reservados" class="text-right"></td>
                                 <td v-text="producto.detalle.fallidos==0?'---':producto.detalle.fallidos" class="text-right"></td>
+                                <td v-text="producto.detalle.traslado==0?'---':producto.detalle.traslado" class="text-right"></td>
+                                <td v-text="producto.detalle.substock + producto.detalle.reservados + producto.detalle.fallidos + producto.detalle.traslado" class="text-right"></td>
                             </tr>
                         </tbody>
                     </table>
