@@ -954,9 +954,9 @@
                             me.DatosServicio.mensaje = '';
                             me.DatosServicio.tipo = 2;
                             me.DatosServicio.readonly = false;
-                            me.DatosProveedor.documento = empresa.ruc;
-                            me.DatosProveedor.razon_social = empresa.razon_social;
-                            me.DatosProveedor.direccion = empresa.direccion;
+                            me.DatosProveedor.documento = empresa.result.ruc;
+                            me.DatosProveedor.razon_social = empresa.result.razon_social;
+                            me.DatosProveedor.direccion = empresa.result.direccion;
                         } else {
                             me.DatosServicio.alert = 'badge badge-primary';
                             me.DatosServicio.mensaje = 'El RUC no existe';
