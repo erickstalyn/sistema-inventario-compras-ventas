@@ -25,6 +25,14 @@ class DetalleVentaController extends Controller {
         return $list;
     }
 
+    public static function listForPdf($id){
+        //Este metodo me devuelve los detalle de una venta con los datos que necesito para MOSTRAR en el PDF
+
+        $list = Detalle_venta::where('detalle_venta.venta_id', '=', $id)->orderBy('detalle_venta.id', 'desc')->get();
+
+        return $list;
+    }
+
     public function listVer(Request $request) {
         if ( !$request->ajax() ) return redirect('/');
 

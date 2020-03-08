@@ -19,6 +19,7 @@ use App\Usuario;
 use App\Funcion;
 use App\Detalle_funcion;
 use App\Notifications\NotifyAdmin;
+use App\Http\Controllers\DetalleVentaController;
 
 class VentaController extends Controller {
     
@@ -419,15 +420,20 @@ class VentaController extends Controller {
                     ->leftJoin('vale as vu', 'vu.venta_usada_id', '=', 'venta.id')
                     ->where('venta.id', '=', $request->id)->take(1)->get();
 
-        $detalles = Venta::findOrFail($request->id)->getDetalleVenta;
+        // $detalles = Venta::findOrFail($request->id)->getDetalleVenta;
+        $detalles = DetalleVentaController::listForPdf($request->id);
         $pagos = Venta::findOrFail($request->id)->getPago;
+
+        // return [
+        //     'detalles' => $detalles
+        // ];
 
         $pdf = \PDF::loadView('pdf.comprobante_venta', ['venta'=>$venta, 'detalles'=>$detalles, 'pagos' => $pagos]);
         return $pdf->download('comprobante_venta_silmar_' . $venta[0]->codigo . '.pdf');
     }
     
     public function getVentaWithAll(Request $request){
-        // $venta = Venta::findOrFail($request->venta_id);
+        // Metodo para ver la VENTA DE ORIGEN de un vale
         $venta = Venta::select('venta.id', 'venta.codigo', 'venta.tipo', 'venta.total', 'venta.total_faltante', 'venta.total_descuento',
                         'venta.total_venta', 'venta.created_at', 
                         'persona.id as cliente_id', 'persona.dni', 'persona.ruc', 'persona.nombres', 'persona.apellidos', 'persona.razon_social', 'persona.tipo as cliente_tipo',
