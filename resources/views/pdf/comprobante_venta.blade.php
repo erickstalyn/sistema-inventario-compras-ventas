@@ -250,7 +250,7 @@
         @php
             $existFail = false;
             foreach ($detalles as $det) {
-                if($det->detalle->cantidad_fallido != null){ $existFail = true; break;}
+                if($det->detalle['cantidad_fallido'] != null){ $existFail = true; break;}
             }
         @endphp
         <section>
@@ -269,38 +269,37 @@
                     </thead>
                     <tbody>
                         @foreach($detalles as $det)
-                        @php
-                            $element = $det->detalle
-                        @endphp
                         <tr>
-                            <td >{{$element->nombre_producto}}</td>
+                            <td >{{$det['nombre_producto']}}</td>
                             @if($existFail)
-                            <td >{{$element->cantidad_fallido == null ? '---': $element->cantidad_fallido}}</td>
+                            <td >{{$det['cantidad_fallido'] == null ? '---': $det['cantidad_fallido']}}</td>
                             @endif
-                            <td >{{$element->cantidad}}</td>
-                            <td style="padding-right: 35px; text-align: right;">{{$element->precio}}</td>
-                            <td style="padding-right: 35px; text-align: right;">{{$element->subtotal}}</td>
+                            <td >{{$det['cantidad']}}</td>
+                            <td style="padding-right: 35px; text-align: right;">{{$det['precio']}}</td>
+                            <td style="padding-right: 35px; text-align: right;">{{$det['subtotal']}}</td>
                         </tr>
                         @endForeach
                     </tbody>
                     <tfoot>
                         @foreach($venta as $ven)
-                        <tr>
-                            <td></td>
-                            @if($existFail)
-                            <td></td>
-                            @endif
-                            <td colspan="2" style="padding-right: 35px; text-align: right;">TOTAL VENTA</td>
-                            <td style="padding-right: 35px; text-align: right;">s/ {{$ven->total_venta}}</td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            @if($existFail)
-                            <td></td>
-                            @endif
-                            <td colspan="2" style="padding-right: 35px; text-align: right;">TOTAL DESCUENTO</td>
-                            <td style="padding-right: 35px; text-align: right;">s/ {{$ven->total_descuento ? $ven->total_descuento : 0}}</td>
-                        </tr>
+                        @if($ven->total_descuento)
+                            <tr>
+                                <td></td>
+                                @if($existFail)
+                                <td></td>
+                                @endif
+                                <td colspan="2" style="padding-right: 35px; text-align: right;">TOTAL VENTA</td>
+                                <td style="padding-right: 35px; text-align: right;">s/ {{$ven->total_venta}}</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                @if($existFail)
+                                <td></td>
+                                @endif
+                                <td colspan="2" style="padding-right: 35px; text-align: right;">TOTAL DESCUENTO</td>
+                                <td style="padding-right: 35px; text-align: right;">s/ {{$ven->total_descuento}}</td>
+                            </tr>
+                        @endif
                         <tr>
                             <td></td>
                             @if($existFail)

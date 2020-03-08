@@ -1026,13 +1026,13 @@
                                 <div class="row form-group">
                                     <label class="col-md-3 font-weight-bold" id="nom">Nombre&nbsp;<span class="text-danger">*</span></label>
                                     <div class="col-md-9">
-                                        <input type="text" v-model="Puesto.nombre" class="form-control" id="nom">
+                                        <input type="text" v-model="PuestoForSettings.nombre" class="form-control" id="nom">
                                     </div>
                                 </div>
                                 <div class="row form-group">
                                     <label class="col-md-3 font-weight-bold" for="dir">Dirección&nbsp;</label>
                                     <div class="col-md-9">
-                                        <input type="text" v-model="Puesto.direccion" class="form-control" min="0" id="dir">
+                                        <input type="text" v-model="PuestoForSettings.direccion" class="form-control" min="0" id="dir">
                                     </div>
                                 </div>
                             </div>
@@ -1069,6 +1069,11 @@
                     quieroVer: 1, // 1: Ventas, 2: Inventario 3: Envios Realizados, 4: Envios Recibidos, 5: Vales
                     titulo: '',
                     mostrar: 0 // 1:Inventario, 2: Ventas, 3: Envios Realizados, 4: Envios Recibidos
+                },
+                PuestoForSettings:{
+                    id: 0,
+                    nombre:'',
+                    direccion:''
                 },
                 SelectPuesto: [],
                 ListaProducto: [],
@@ -1507,6 +1512,9 @@
                 }
             },
             abrirModalSettings(){
+                this.PuestoForSettings.id = this.Puesto.id;
+                this.PuestoForSettings.nombre = this.Puesto.nombre;
+                this.PuestoForSettings.direccion = this.Puesto.direccion;
 
                 this.abrirModal(5, 'Configurar Puesto', 'Guardar', 'Cerrar', '')
             },
@@ -1636,6 +1644,9 @@
                 this.Modal.numero = 0;
                 this.Modal.estado = 0;
                 this.Modal.mensaje = [];
+                this.PuestoForSettings.id = 0;
+                this.PuestoForSettings.nombre = '';
+                this.PuestoForSettings.direccion = '';
 
                 this.Error.estado = 0;
                 this.Error.mensaje = [];
@@ -1688,9 +1699,9 @@
                 var me = this;
                 var url = this.Ruta.centro +'/editar';
                 axios.put(url , {
-                    'id': this.Puesto.id,
-                    'nombre' : this.Puesto.nombre,
-                    'direccion' : this.Puesto.direccion
+                    'id': this.PuestoForSettings.id,
+                    'nombre' : this.PuestoForSettings.nombre,
+                    'direccion' : this.PuestoForSettings.direccion
                 }).then(function(response){
                     var estado = response.data.estado;
                     if ( estado == 1 ) {
