@@ -727,7 +727,9 @@
                 },
                 Ruta: {
                     serverApache: 'http://67.205.189.29:80',
-                    serverPhp: 'http://67.205.189.29:80'
+                    serverPhp: 'http://67.205.189.29:80',
+                    // serverApache: 'http://127.0.0.1:80',
+                    // serverPhp: 'http://127.0.0.1:8000'
                 }
             }
         },
@@ -936,7 +938,7 @@
                 let ruc = me.DatosServicio.documento;
                 $.ajax({
                     type: 'GET',
-                    url: me.Ruta.serverPhp +'/SunatPHP/demo.php',
+                    url: me.Ruta.serverPhp +'/misunat/src/consulta.php',
                     data: 'nruc=' +ruc,
                     beforeSend(){
                         me.Carga.clase = 'spinner-border spinner-border-sm text-primary';
@@ -952,9 +954,9 @@
                             me.DatosServicio.mensaje = '';
                             me.DatosServicio.tipo = 2;
                             me.DatosServicio.readonly = false;
-                            me.DatosProveedor.documento = empresa.RUC;
-                            me.DatosProveedor.razon_social = empresa.RazonSocial;
-                            me.DatosProveedor.direccion = empresa.Direccion;
+                            me.DatosProveedor.documento = empresa.ruc;
+                            me.DatosProveedor.razon_social = empresa.razon_social;
+                            me.DatosProveedor.direccion = empresa.direccion;
                         } else {
                             me.DatosServicio.alert = 'badge badge-primary';
                             me.DatosServicio.mensaje = 'El RUC no existe';
