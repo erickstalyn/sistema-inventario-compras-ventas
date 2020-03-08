@@ -18,6 +18,7 @@ use Exception;
 use App\Usuario;
 use App\Funcion;
 use App\Detalle_funcion;
+use App\Rol;
 use App\Notifications\NotifyAdmin;
 
 class VentaController extends Controller {
@@ -29,10 +30,10 @@ class VentaController extends Controller {
         $text = $request->text;
         $rows = $request->rows;
         $centro_id = $request->centro_id;
-        $dia = $request->dia;
-        $mes = $request->mes;
-        $year = $request->year;
-        $rol = $request->rol;
+        $dia = $request->dia==NULL?'':$request->dia;
+        $mes = $request->mes==NULL?'':$request->mes;
+        $year = $request->year==NULL?'':$request->year;
+        $rol = Rol::select('descripcion')->where('id', '=', $request->rol_id)->first();
 
         $ventas = Venta::select('venta.id', 'venta.codigo', 'venta.tipo', 'venta.total', 'venta.total_faltante', 'venta.total_descuento', 'venta.total_venta', 'venta.created_at', 
                                 'persona.id as cliente_id', 'persona.dni', 'persona.ruc', 'persona.nombres', 'persona.apellidos', 'persona.razon_social', 'persona.tipo as cliente_tipo',
@@ -45,18 +46,19 @@ class VentaController extends Controller {
                         if ( strlen($text) == 15 && is_numeric($text) ) {
                             $query->where('codigo', '=', $text);
                         } else {
-                            $query->where(function ($subquery) use ($text, $rol, $dia, $mes, $year) {
-                                    if ( $text != '' && $rol == 'M' ) {
-                                        $subquery->where('nombres', 'like', '%'.$text.'%')
+                            $query->where(function ($query) use ($text) {
+                                    if ( $text != '' ) {
+                                        $query->where('nombres', 'like', '%'.$text.'%')
                                                 ->orWhere('apellidos', 'like', '%'.$text.'%')
                                                 ->orWhere('razon_social', 'like', '%'.$text.'%')
-                                                ->orWhere('codigo', '=', $text);
+                                                ->orWhere('codigo', '=', '%'.$text.'%');
                                     }
                                 })
-                                ->where(function ($subquery) use ($dia, $mes, $year) {
-                                    if ( $dia != '' ) $subquery->whereDay('venta.created_at', $dia);
-                                    if ( $mes != '' ) $subquery->whereMonth('venta.created_at', $mes);
-                                    if ( $year != '' ) $subquery->whereYear('venta.created_at', $year);
+                                ->where(function ($query) use ($dia, $mes, $year, $rol) {
+                                    if ( $dia != '' ) $query->whereDay('venta.created_at', $dia);
+                                    if ( $mes != '' ) $query->whereMonth('venta.created_at', $mes);
+                                    if ( $year != '' ) $query->whereYear('venta.created_at', $year);
+                                    if ( $rol->descripcion != 'ADMINISTRADOR') $query->orWhere('venta.total_faltante', '!=', NULL);
                                 });
                         }
                     })
@@ -69,7 +71,7 @@ class VentaController extends Controller {
                     })
                     ->where('centro_id', '=', $centro_id)
                     ->orderBy('id', 'desc')->paginate($rows);
-        
+
         return [
             'pagination' => [
                 'total' => $ventas->total(),

@@ -1248,7 +1248,7 @@
                         +'&text='+this.Busqueda.text
                         +'&rows='+this.Busqueda.rows
                         +'&centro_id='+$('meta[name="idCentro"]').attr('content')
-                        +'&rol='+$('meta[name="rol"]').attr('content')
+                        +'&rol_id='+$('meta[name="rol_id"]').attr('content')
                         +'&dia='+this.fix('day')
                         +'&mes='+this.fix('month')
                         +'&year='+this.fix('year');
