@@ -109,7 +109,7 @@
 
         </div>
 
-        <div class="modal text-gray-900" :class="{'mostrar': Modal.estado}">
+        <div v-if="Modal.estado" class="modal text-gray-900 mostrar">
             <div class="modal-dialog modal-dialog-centered animated bounceIn fast">
                 <div class="modal-content modal-lg">
 
@@ -140,21 +140,21 @@
                                 <label class="col-md-3 font-weight-bold" for="des">Unid.Medida&nbsp;<span class="text-danger">*</span></label>
                                 <div class="col-md-4">
                                     <select v-model="Material.subtipo" class="custom-select">
-                                        <option value="" disabled>Tipo</option>
-                                        <option v-for="item in SelectTipoFiltrado" :key="item" :value="item" v-text="item"></option>
+                                        <option value="" disabled>tipo</option>
+                                        <option v-for="item in SelectTipoFiltrado" :key="item" :value="item" v-text="item" class="text-gray-900"></option>
                                     </select>
                                 </div>
                                 <div class="col-md-5">
                                     <select v-model="Material.unidad" class="custom-select" id="cat">
-                                        <option value="" disabled>Subtipo</option>
-                                        <option v-for="unidad in selectUnidadFiltrado" :key="unidad.id" :value="unidad.nombre" v-text="unidad.nombre"></option>
+                                        <option value="" disabled>subtipo</option>
+                                        <option v-for="unidad in selectUnidadFiltrado" :key="unidad.id" :value="unidad.nombre" v-text="unidad.nombre" class="text-gray-900"></option>
                                     </select>
                                 </div>
                             </div>
                             <div class="row form-group">
                                 <label class="col-md-3 font-weight-bold" for="nom">Costo por Unidad&nbsp;<span class="text-danger">*</span></label>
                                 <div class="col-md-4">
-                                    <input type="number" v-model="Material.costo" class="form-control" min="0">
+                                    <input type="number" v-model="Material.costo" min="0" class="form-control text-right">
                                 </div>
                             </div>
                         </div>
@@ -179,27 +179,27 @@
                                 <label class="col-md-3 font-weight-bold" for="des">Unid.Medida&nbsp;<span class="text-danger">*</span></label>
                                 <div class="col-md-4">
                                     <select v-model="Material.subtipo" class="custom-select" id="cat">
-                                        <option value="" disabled>Tipo</option>
-                                        <option v-for="item in SelectTipoFiltrado" :key="item" :value="item" v-text="item"></option>
+                                        <option value="" disabled>tipo</option>
+                                        <option v-for="item in SelectTipoFiltrado" :key="item" :value="item" v-text="item" class="text-gray-900"></option>
                                     </select>
                                 </div>
                                 <div class="col-md-5">
                                     <select v-model="Material.unidad" class="custom-select" id="cat">
-                                        <option value="" disabled>Subtipo</option>
-                                        <option v-for="unidad in selectUnidadFiltrado" :key="unidad.id" :value="unidad.nombre" v-text="unidad.nombre"></option>
+                                        <option value="" disabled>subtipo</option>
+                                        <option v-for="unidad in selectUnidadFiltrado" :key="unidad.id" :value="unidad.nombre" v-text="unidad.nombre" class="text-gray-900"></option>
                                     </select>
                                 </div>
                             </div>
                             <div class="row form-group">
                                 <label class="col-md-3 font-weight-bold" for="nom">Costo por Unidad&nbsp;<span class="text-danger">*</span></label>
                                 <div class="col-md-4">
-                                    <input type="number" v-model="Material.costo" class="form-control" min="0">
+                                    <input type="number" v-model="Material.costo" min="0" class="form-control text-right">
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="modal-footer" v-if="permisoModalFooter">
+                    <div class="modal-footer">
                         <div class="row form-group col-md-12 d-flex justify-content-around">
                             <button type="button" @click="accionar(Modal.accion)" class="btn btn-success" :disabled="Button.press">
                                 <div v-if="!Button.press">{{Modal.accion}}</div>
@@ -317,12 +317,6 @@
                 }
 
                 return filas;
-            },
-            permisoModalFooter: function(){
-                if ( this.Modal.numero == 1 ) return true;
-                if ( this.Modal.numero == 2 ) return true;
-
-                return false;
             },
             selectUnidadFiltrado: function(){
                 // console.log('Soy el computado selectUnidadFiltrado');

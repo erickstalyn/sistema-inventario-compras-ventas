@@ -16,9 +16,13 @@ class Puesto
      */
     public function handle($request, Closure $next){
         if($this->permiso()){
-            return $next($request);
+            // return $next($request);
+            return TRUE;
         }else{
-            return redirect('logout');
+            // return redirect('logout');
+            echo('entre al pinche middleware');
+            return FALSE;
+
         }
     }
 

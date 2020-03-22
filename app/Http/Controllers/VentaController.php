@@ -24,6 +24,23 @@ use App\Http\Controllers\DetalleVentaController;
 
 class VentaController extends Controller {
     
+    public function __construct(){
+        $this->middleware('auth');
+
+        // if ( $this->middleware('Almacen') == FALSE  ){
+        //     // && $this->middleware('Puesto') == FALSE
+        //     return redirect('logout');
+        // // } 
+        // if ( $this->middleware('Puesto') != FALSE  ){
+        //     echo('Es diferente de false');
+        // } else {
+        //     echo('La puta huevada es FALSE');
+        // }
+
+
+        // // echo($this->middleware('Puesto'));
+    }
+
     public function listar(Request $request) {
         if ( !$request->ajax() ) return redirect('/');
 

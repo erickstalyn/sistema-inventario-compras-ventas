@@ -19,6 +19,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/persona/getPersona', 'PersonaController@getPersona');
     Route::get('/centro/listProductos', 'CentroController@listProductos'); //metodos generales
     Route::get('/centro/selectCentroEnvio', 'CentroController@selectCentroEnvio');
+    
     //RUTAS DE ENVIOS
     Route::get('/envioRecibido', 'EnvioController@listarEnvioRecibido'); //metodos generales
     Route::get('/envioRealizado', 'EnvioController@listarEnvioRealizado');
@@ -36,28 +37,14 @@ Route::group(['middleware' => ['auth']], function () {
     //RUTAS PARA VENTAS
     Route::get('/venta', 'VentaController@listar');
     Route::get('/venta/getVentaWithAll', 'VentaController@getVentaWithAll');
-    Route::post('/venta/agregar', 'VentaController@agregar');
-    Route::put('/venta/editar', 'VentaController@editar');
 
     //RUTAS PARA DETALLES DE VENTAS
     Route::get('/detalle_venta/list', 'DetalleVentaController@list');
-    Route::get('/detalle_venta/listVer', 'DetalleVentaController@listVer');
-    Route::get('/detalle_venta/listEditar', 'DetalleVentaController@listEditar');
-
-    //RUTAS PARA ABASTO DE PRODUCTO EXTERNOS
-    Route::get('/abasto/listByCenter', 'AbastoController@listByCenter');
-    Route::post('/abasto/pay', 'AbastoController@pay');
+    // Route::get('/detalle_venta/listVer', 'DetalleVentaController@listVer');
+    // Route::get('/detalle_venta/listEditar', 'DetalleVentaController@listEditar');
 
     //RUTAS PARA CAJA
-    Route::get('/caja/state', 'CajaController@state');
-    Route::get('/caja/get', 'CajaController@get');
-    Route::put('/caja/open', 'CajaController@open');
-    Route::put('/caja/close', 'CajaController@close');
     Route::get('/caja/search', 'CajaController@search');
-
-    //RUTAS PARA CONCEPTOS
-    Route::post('/concepto/addIngreso', 'ConceptoController@addIngreso');
-    Route::post('/concepto/addEgreso', 'ConceptoController@addEgreso');
 
     //RUTAS PARA PAGOS
     Route::get('/pago/listVenta', 'PagoController@listVenta');
@@ -70,6 +57,7 @@ Route::group(['middleware' => ['auth']], function () {
     //RUTAS PARA PRODUCCIONES
     Route::get('/produccion', 'ProduccionController@listar'); //métodos generales
     Route::get('/produccion/getDetalles', 'ProduccionController@getDetalles');
+    
     //RUTA PARA NOTIFICACIONES
     Route::post('/notification/get', 'NotificationController@get');
 
@@ -145,26 +133,45 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/abasto/generatePdfSpecific', 'AbastoController@generatePdfSpecific');
 
     });
-    Route::group(['middleware' => ['Puesto']], function (){
-        
-        
-    });
-    Route::group(['middleware' => ['Almacen']], function (){
-        
-        // RUTAS PARA PRODUCCIONES
-        Route::post('/produccion/agregar', 'ProduccionController@agregar');
-        Route::put('/produccion/editar', 'ProduccionController@editar');
-        Route::put('/produccion/anular', 'ProduccionController@anular');
-        Route::get('/produccion/getProductoFiltrado', 'ProduccionController@getProductoFiltrado'); //metodos secundarios
-        
-        Route::put('/produccion/finalizar', 'ProduccionController@finalizar'); //metodos secundarios
 
-        //Rutas de ENVIOS REALIZADOS
-        Route::put('/envioRealizado/anular', 'EnvioController@anular');
+    Route::group(['middleware' => ['Centro']], function () {
 
-        //Ruta de reparación de detalles de producto
-        Route::put('/detalle_producto/reparar', 'Detalle_productoController@reparar');
+        //RUTAS PARA CONCEPTOS
+        Route::post('/concepto/addIngreso', 'ConceptoController@addIngreso');
+        Route::post('/concepto/addEgreso', 'ConceptoController@addEgreso');
 
+        //RUTAS PARA VENTAS
+        Route::post('/venta/agregar', 'VentaController@agregar');
+        Route::put('/venta/editar', 'VentaController@editar');
+
+        //RUTAS PARA CAJA
+        Route::get('/caja/state', 'CajaController@state');
+        Route::get('/caja/get', 'CajaController@get');
+        Route::put('/caja/open', 'CajaController@open');
+        Route::put('/caja/close', 'CajaController@close');
+
+        //RUTAS PARA ABASTO DE PRODUCTO EXTERNOS
+        Route::get('/abasto/listByCenter', 'AbastoController@listByCenter');
+        Route::post('/abasto/pay', 'AbastoController@pay');
+
+        Route::group(['middleware' => ['Puesto']], function (){
+        });
+
+        Route::group(['middleware' => ['Almacen']], function (){
+            // RUTAS PARA PRODUCCIONES
+            Route::post('/produccion/agregar', 'ProduccionController@agregar');
+            Route::put('/produccion/editar', 'ProduccionController@editar');
+            Route::put('/produccion/anular', 'ProduccionController@anular');
+            Route::get('/produccion/getProductoFiltrado', 'ProduccionController@getProductoFiltrado'); //metodos secundarios
+            
+            Route::put('/produccion/finalizar', 'ProduccionController@finalizar'); //metodos secundarios
+    
+            //Rutas de ENVIOS REALIZADOS
+            Route::put('/envioRealizado/anular', 'EnvioController@anular');
+    
+            //Ruta de reparación de detalles de producto
+            Route::put('/detalle_producto/reparar', 'Detalle_productoController@reparar');
+        });
     });
 
 });
