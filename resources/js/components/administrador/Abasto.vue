@@ -818,9 +818,9 @@
                 });
             },
             formatearFecha(fecha){
-                let arrayFecha = fecha.split('-');
-                let newFecha = arrayFecha[2] + '-' + arrayFecha[1] + '-' + arrayFecha[0];
-                return newFecha;
+                let arrayFecha = fecha.split(' ')[0].split('-');
+                let fecha_fixed = arrayFecha[2]+'/'+arrayFecha[1]+'/'+arrayFecha[0];
+                return fecha_fixed;
             },
             listarFiltro(){
                 if(this.BusquedaFiltro.texto != ''){
