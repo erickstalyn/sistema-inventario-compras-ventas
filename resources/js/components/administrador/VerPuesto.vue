@@ -1774,7 +1774,7 @@
                         fixed = fecha_fixed+' '+hora_fixed;
                         break;
                     case 'date':
-                        if ( data.length != 10 && data.lenth != 19){
+                        if ( data.length != 10 && data.length != 19){
                             fixed = 'lenght!=10&&length!=19'; break;
                         };
 
