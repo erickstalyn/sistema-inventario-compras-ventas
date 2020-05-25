@@ -16,11 +16,9 @@ class Almacen
      */
     public function handle($request, Closure $next){
         if($this->permiso()){
-            return TRUE;
-            // return $next($request);
+            return $next($request);
         }else{
-            // return redirect('logout');
-            return FALSE;
+            return redirect('logout');
         }
     }
 
