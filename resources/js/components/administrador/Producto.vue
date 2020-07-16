@@ -270,7 +270,7 @@
                                 </div>
                                 <div class="row form-group">
                                     <label class="col-md-4 font-weight-bold">Cantidad&nbsp;<span class="text-danger">*</span></label>
-                                    <input type="number" class="col-md-3 text-right form-control form-control-sm" v-model="ProductoMaterial.cantidad" @keyup="update(0)" @click="update(0)" placeholder="Ingrese la cantidad">
+                                    <input type="number" class="col-md-3 text-right form-control form-control-sm" v-model="ProductoMaterial.cantidad" @keyup="update(0)" @click="update(0)" placeholder="Ingrese la cantidad" min="1">
                                     <label class="col-md-5 text-info" v-text="ProductoMaterial.unidad"></label>
                                 </div>
                                 <div class="row form-group">
