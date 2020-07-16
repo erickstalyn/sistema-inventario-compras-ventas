@@ -149,12 +149,12 @@
                             <div class="row form-group">
                                 <label class="col-md-5 font-weight-bold">Precio al por menor&nbsp;<span class="text-danger">*</span></label>
                                 <label class="col-md-3 text-right">S/.</label>
-                                <input type="number" class="col-md-4 text-right form-control form-control-sm" v-model="Producto.precio_menor" placeholder="Ingrese el precio normal">
+                                <input type="number" class="col-md-4 text-right form-control form-control-sm" v-model="Producto.precio_menor">
                             </div>
                             <div class="row">
                                 <label class="col-md-5 font-weight-bold">Precio al por mayor&nbsp;<span class="text-danger">*</span></label>
                                 <label class="col-md-3 text-right">S/.</label>
-                                <input type="number" class="col-md-4 text-right form-control form-control-sm" v-model="Producto.precio_mayor" placeholder="Ingrese el precio normal">
+                                <input type="number" class="col-md-4 text-right form-control form-control-sm" v-model="Producto.precio_mayor">
                             </div>
                         </div>
                         <!-- Modal Numero 2 de VER-->
