@@ -154,7 +154,7 @@
                             <div class="row form-group">
                                 <label class="col-md-3 font-weight-bold" for="nom">Costo por Unidad&nbsp;<span class="text-danger">*</span></label>
                                 <div class="col-md-4">
-                                    <input type="number" v-model="Material.costo" min="0" class="form-control text-right">
+                                    <input type="number" v-model="Material.costo" min="1" class="form-control text-right">
                                 </div>
                             </div>
                         </div>
@@ -227,7 +227,7 @@
                     nombre: '',
                     subtipo: '',
                     unidad: '',
-                    costo: 0,
+                    costo: '',
                     estado: ''
                 },
                 MaterialOrigen: {
@@ -235,7 +235,7 @@
                     nombre: '',
                     subtipo: '',
                     unidad: '',
-                    costo: 0,
+                    costo: '',
                 },
                 SelectUnidad: [],
                 SelectTipoFiltrado: [],
@@ -568,7 +568,7 @@
                 this.Material.nombre = '';
                 this.Material.unidad = '';
                 this.Material.subtipo = '';
-                this.Material.costo = 0;
+                this.Material.costo = '';
 
                 this.Button.press = false;
 

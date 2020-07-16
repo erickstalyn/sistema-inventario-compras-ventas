@@ -149,12 +149,12 @@
                             <div class="row form-group">
                                 <label class="col-md-5 font-weight-bold">Precio al por menor&nbsp;<span class="text-danger">*</span></label>
                                 <label class="col-md-3 text-right">S/.</label>
-                                <input type="number" class="col-md-4 text-right form-control form-control-sm" v-model="Producto.precio_menor">
+                                <input type="number" class="col-md-4 text-right form-control form-control-sm" v-model="Producto.precio_menor" min="1">
                             </div>
                             <div class="row">
                                 <label class="col-md-5 font-weight-bold">Precio al por mayor&nbsp;<span class="text-danger">*</span></label>
                                 <label class="col-md-3 text-right">S/.</label>
-                                <input type="number" class="col-md-4 text-right form-control form-control-sm" v-model="Producto.precio_mayor">
+                                <input type="number" class="col-md-4 text-right form-control form-control-sm" v-model="Producto.precio_mayor" min="1">
                             </div>
                         </div>
                         <!-- Modal Numero 2 de VER-->
@@ -374,8 +374,8 @@
                     size: '',
                     color: '',
                     costo_produccion: 0,
-                    precio_menor: 0,
-                    precio_mayor: 0,
+                    precio_menor: '',
+                    precio_mayor: '',
                     stock: 0,
                     created_at: ''
                 },
@@ -658,8 +658,8 @@
                 this.Producto.codigo = '';
                 this.Producto.size = '';
                 this.Producto.color = '';
-                this.Producto.precio_menor = 0;
-                this.Producto.precio_mayor = 0;
+                this.Producto.precio_menor = '';
+                this.Producto.precio_mayor = '';
 
                 this.select(0);
                 this.select(1);
