@@ -13,7 +13,7 @@
                     <div class="input-group">
                         <select class="col-md-4 custom-select text-gray-900" v-model="Busqueda.numero">
                             <option value="1">Ver ventas totales mensuales</option>
-                            <option value="2">Ver ingresos totales mensuales</option>
+                            <!-- <option value="2">Ver ingresos totales mensuales</option> -->
                         </select>&nbsp;&nbsp;
                         <button type="button" class="btn btn-outline-warning" @click="listar()">
                             <i class="fa fa-search"></i>&nbsp; Ver estadistica
