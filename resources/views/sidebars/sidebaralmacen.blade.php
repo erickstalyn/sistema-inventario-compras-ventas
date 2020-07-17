@@ -59,20 +59,20 @@
         </li>
         <!-- Elemento de navegación - MENÚ CAJA -->
         <li class="nav-item">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#caja" aria-expanded="true" aria-controls="caja" @click="menu=5">
+            <a class="nav-link collapsed" href="#" @click="menu=5">
                 <i class="fas fa-box"></i>
                 <span >Caja chica</span>
             </a>
         </li>
         <!-- Elemento de navegación - MENÚ VENTAS -->
         <li class="nav-item">
-          <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#ventas" aria-expanded="true" aria-controls="ventas" @click="menu=6">
+          <a class="nav-link collapsed" href="#" @click="menu=6">
               <i class="fas fa-cart-arrow-down"></i><span >Ventas</span>
           </a>
         </li>
         <!-- Elemento de navegación - MENÚ VALES -->
         <li class="nav-item">
-          <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#vales" aria-expanded="true" aria-controls="vales" @click="menu=7">
+          <a class="nav-link collapsed" href="#" @click="menu=7">
               <i class="far fa-credit-card"></i>
               <span >Vales</span>
           </a>

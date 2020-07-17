@@ -38,21 +38,21 @@
 
     <!-- Elemento de navegación - MENÚ CAJA -->
     <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#caja" aria-expanded="true" aria-controls="caja" @click="menu=2">
+        <a class="nav-link collapsed" href="#" @click="menu=2">
             <i class="fas fa-box"></i>
             <span >Caja chica</span>
         </a>
     </li>
     <!-- Elemento de navegación - MENÚ VENTAS -->
     <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#ventas" aria-expanded="true" aria-controls="ventas" @click="menu=3">
+        <a class="nav-link collapsed" href="#" @click="menu=3">
             <i class="fas fa-cart-arrow-down"></i>
             <span >Ventas</span>
         </a>
     </li>
     <!-- Elemento de navegación - MENÚ VALES -->
     <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#vales" aria-expanded="true" aria-controls="vales" @click="menu=4">
+        <a class="nav-link collapsed" href="#" @click="menu=4">
             <i class="far fa-credit-card"></i>
             <span >Vales</span>
         </a>

@@ -96,10 +96,10 @@
 
     <!-- Elemento de navegación: MENÚ ESTADISTICAS -->
     <li class="nav-item">
-    <a class="nav-link collapsed" href="#" @click="menu=11">
-        <i class="fas fa-chart-pie"></i>
-        <span>Estadisticas</span>
-    </a>
+        <a class="nav-link collapsed" href="#" @click="menu=11">
+            <i class="fas fa-chart-pie"></i>
+            <span>Estadisticas</span>
+        </a>
     </li>
 
     <!-- Divisor -->

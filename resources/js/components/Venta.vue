@@ -29,7 +29,7 @@
                             <option value="1">Contado</option>
                             <option value="2">Credito</option>
                         </select>
-                        <input type="search" class="form-control" v-model="Busqueda.text" placeholder="Busca por CÓDIGO de venta" @keyup.enter="listar()">
+                        <input type="search" class="form-control" v-model="Busqueda.text" placeholder="Busca por CODIGO de venta" @keyup.enter="listar()">
                         <button type="button" class="btn btn-primary" @click="listar()">
                             <i class="fa fa-search"></i>&nbsp;Buscar
                         </button>
@@ -200,7 +200,7 @@
                                         </div>
                                         <div class="col-md-12 input-group form-group">
                                             <label class="col-md-4 font-weight-bold">Proveedor</label>
-                                            <input type="text" class="col-md-8 text-gray-900" v-model="Proveedor.nombres" placeholder="Ej: Jose Stalyn Pacherres Cespedes">
+                                            <input type="text" class="col-md-8 text-gray-900" v-model="Proveedor.nombres">
                                         </div>
                                         <div class="col-md-12 input-group form-group">
                                             <label class="col-md-4 font-weight-bold">Producto</label>
