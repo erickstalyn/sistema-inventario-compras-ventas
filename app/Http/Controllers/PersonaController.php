@@ -32,8 +32,8 @@ class PersonaController extends Controller
                         })
                         ->where(function ($query) use ($texto) {
                             if ( $texto != '' ) {
-                                $query->where('persona.nombres', 'like', '%'.$texto.'%')
-                                    ->orWhere('persona.apellidos', 'like', '%'.$texto.'%')
+                                $query->orWhere(DB::raw("concat(persona.apellidos , ' ', persona.nombres)"), 'like', $texto .'%')
+                                    ->orWhere(DB::raw("concat(persona.nombres , ' ', persona.apellidos)"), 'like', $texto .'%')
                                     ->orWhere('persona.dni', 'like', $texto . '%')
                                     ->orWhere('persona.razon_social', 'like', $texto.'%')
                                     ->orWhere('persona.ruc', 'like', $texto . '%');
