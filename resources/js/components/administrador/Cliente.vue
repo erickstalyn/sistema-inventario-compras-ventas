@@ -143,7 +143,7 @@
                                 <label class="col-md-2 font-weight-bold" for="nom">DNI/RUC</label>
                                 <div class="col-md-5">
                                     <div class="input-group">
-                                        <input type="text" v-model="DatosServicio.documento" class="form-control" autofocus placeholder="Consultar..." @keyup.enter="consultar()" :readonly="DatosServicio.readonly">
+                                        <input type="text" v-model="DatosServicio.documento" class="form-control" autofocus placeholder="Consultar..." @keyup.enter="consultar()" :readonly="DatosServicio.readonly" maxlength="8">
                                         <button class="btn btn-primary" title="CONSULTAR" @click="consultar()"><i class="fas fa-sync-alt"></i></button>
                                         <!-- <h5>
                                             <span role="status" :class="Carga.clase"></span>&nbsp;
