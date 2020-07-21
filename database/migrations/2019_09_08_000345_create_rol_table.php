@@ -14,8 +14,8 @@ class CreateRolTable extends Migration
     public function up()
     {
         Schema::create('rol', function (Blueprint $table) {
-            $table->tinyIncrements('id');// usa 1 byte , cantidad max: 127
-            $table->string('descripcion', 120);
+            $table->tinyIncrements('id');   // Por ser tinyint y unsigned tiene como valor maximo 255
+            $table->string('descripcion', 120); // Roles que los usuarios pueden cumplir. Por ejemplo: Administrador, Almacenero, Vendedor
         });
     }
 

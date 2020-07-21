@@ -14,14 +14,18 @@ class CreateCentroTable extends Migration
     public function up()
     {
         Schema::create('centro', function (Blueprint $table) {
-            $table->tinyIncrements('id'); // usa 1 byte , cantidad max: 127
-            $table->string('nombre', 60)->unique();
-            $table->string('direccion', 120)->nullable();
-            $table->char('telefono', 30)->nullable();
-            $table->char('tipo', 1); //P: Puesto, A: Almacén
-            
-            $table->date('created_at'); //Fecha de creacion manual
-            $table->softDeletes(); //Fecha de eliminación automatica
+            $table->tinyIncrements('id');   // Por ser tinyint y unsigned tiene 255 datos disponibles
+            $table->string('nombre', 100)->unique();
+            $table->string('direccion', 300)->nullable();
+            $table->longText('telefonos')->nullable();
+            $table->unsignedTinyInteger('numero_serie');    // Por ser tinyint y unsigned tiene como valor maximo 255
+            $table->longText('numero_correlativo'); // Aqui se guardaran los numeros correlativos de todos los comprobantes
+            $table->char('tipo', 1);    // Para saber que rol cumple este centro. Por ejemplo: (P: Puesto), (A: Almacén)
+            $table->unsignedTinyInteger('empresa_id');
+            $table->date('created_at'); // Fecha de creacion manual
+            $table->softDeletes();  // Fecha de eliminación automatica
+
+            $table->foreign('empresa_id')->references('id')->on('empresa');
         });
     }
 

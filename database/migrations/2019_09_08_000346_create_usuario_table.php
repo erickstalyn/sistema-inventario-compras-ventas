@@ -14,24 +14,19 @@ class CreateUsuarioTable extends Migration
     public function up()
     {
         Schema::create('usuario', function (Blueprint $table) {
-            $table->tinyIncrements('id');// usa 1 byte , cantidad max: 127
+            $table->smallIncrements('id');  // Por ser smallint y unsigned tiene como valor maximo 65,535
             $table->string('usuario', 60);
             $table->string('password', 100);
-            // $table->char('rol',1);
-            /*
-                M: Administrador
-                P: Puesto
-                A: Almacén
-            */
-            $table->boolean('estado')->default('1'); // 1: Activado, 0: Desactivado
+            $table->unsignedTinyInteger('rol'); // Define el rol que este usuario cumplira.
+            $table->boolean('estado')->default(1);    // Define si el usuario esta activo o no. Por ejemplo (1: activado), (0: desactivado)
 
-            $table->unsignedSmallInteger('persona_id')->nullable();
-            $table->foreign('persona_id')->references('id')->on('persona');
+            $table->unsignedSmallInteger('persona_id');
             $table->unsignedTinyInteger('centro_id')->nullable();
-            $table->foreign('centro_id')->references('id')->on('centro');
-            $table->unsignedTinyInteger('rol_id')->nullable();
-            $table->foreign('rol_id')->references('id')->on('rol');
+            $table->unsignedTinyInteger('rol_id');
 
+            $table->foreign('persona_id')->references('id')->on('persona');
+            $table->foreign('centro_id')->references('id')->on('centro');
+            $table->foreign('rol_id')->references('id')->on('rol');
         });
     }
 

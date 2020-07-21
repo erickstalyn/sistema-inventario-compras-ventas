@@ -14,12 +14,14 @@ class CreateDetalleFuncionTable extends Migration
     public function up()
     {
         Schema::create('detalle_funcion', function (Blueprint $table) {
-            $table->boolean('estado')->default(1);
-            $table->unsignedSmallInteger('persona_id');
+            $table->unsignedSmallInteger('persona_id'); // Por ser smallint y unsigned tiene como valor maximo 65,535
+            $table->unsignedTinyInteger('funcion_id');  // Por ser tinyint y unsigned tiene como valor maximo 255
+            $table->boolean('estado')->default(1);  // Significa que la persona puede tener o no esa funcion activada. Por ejemplo: (1: activado), (0: desactivado)
+            
+            $table->primary(['persona_id', 'funcion_id']);  // Se convierte a las 2 llaves foraneas en una llave primaria compuesta
+
             $table->foreign('persona_id')->references('id')->on('persona');
-            $table->unsignedTinyInteger('funcion_id');
             $table->foreign('funcion_id')->references('id')->on('funcion');
-            $table->primary(['persona_id', 'funcion_id']);
         });
     }
 

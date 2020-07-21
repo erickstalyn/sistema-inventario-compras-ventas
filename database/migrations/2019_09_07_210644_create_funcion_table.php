@@ -14,7 +14,7 @@ class CreateFuncionTable extends Migration
     public function up()
     {
         Schema::create('funcion', function (Blueprint $table) {
-            $table->tinyIncrements('id');// usa 1 byte , cantidad max: 127
+            $table->tinyIncrements('id');   // Por ser tinyint y unsigned tiene como valor maximo 255
             $table->string('descripcion', 120);
         });
     }
