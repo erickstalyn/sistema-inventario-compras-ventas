@@ -1676,39 +1676,7 @@
                 me.Carga.mensaje = 'Cargando...';
                 me.Carga.alert = 'badge badge-info';
                 switch (numero) {
-                    case 1:
-                        url = me.Ruta.envioRealizado + '/getDetalles';
-                        axios.get(url,{
-                            params: {
-                                'id': me.EnvioRealizado.id
-                            }
-                        }).then(function(response){
-                            me.ListaDetalleEnvio = response.data;
-                            me.Carga.mostrar = 0;
-                            me.Carga.clase = '';
-                            me.Carga.mensaje = '';
-                            me.Carga.alert = '';
-                        }).catch(function(error){
-                            console.log(error);
-                        });
-                        break;
-                    case 2:
-                        url = this.Ruta.abasto + '/getDetalles';
-                        axios.get(url,{
-                            params: {
-                                'id': me.EnvioRecibido.abasto_id
-                            }
-                        }).then(function(response){
-                            me.ListaDetalleEnvio = response.data;
-                            me.Carga.mostrar = 0;
-                            me.Carga.clase = '';
-                            me.Carga.mensaje = '';
-                            me.Carga.alert = '';
-                        }).catch(function(error){
-                            console.log(error);
-                        });
-                        break;
-                    case 3:
+                    case 1:// Listar detalles de envios
                         url = me.Ruta.envioRealizado + '/getDetalles';
                         axios.get(url,{
                             params: {
@@ -1724,6 +1692,38 @@
                             console.log(error);
                         });
                         break;
+                    case 2://Listar detalles de abastos
+                        url = this.Ruta.abasto + '/getDetalles';
+                        axios.get(url,{
+                            params: {
+                                'id': me.EnvioRecibido.abasto_id
+                            }
+                        }).then(function(response){
+                            me.ListaDetalleEnvio = response.data;
+                            me.Carga.mostrar = 0;
+                            me.Carga.clase = '';
+                            me.Carga.mensaje = '';
+                            me.Carga.alert = '';
+                        }).catch(function(error){
+                            console.log(error);
+                        });
+                        break;
+                    // case 3:
+                    //     url = me.Ruta.envioRealizado + '/getDetalles';
+                    //     axios.get(url,{
+                    //         params: {
+                    //             'id': me.EnvioRecibido.id
+                    //         }
+                    //     }).then(function(response){
+                    //         me.ListaDetalleEnvio = response.data;
+                    //         me.Carga.mostrar = 0;
+                    //         me.Carga.clase = '';
+                    //         me.Carga.mensaje = '';
+                    //         me.Carga.alert = '';
+                    //     }).catch(function(error){
+                    //         console.log(error);
+                    //     });
+                    //     break;
                     case 4:
                         url = this.Ruta.produccion +'/getDetalles';
                         axios.get(url,{
@@ -1801,11 +1801,11 @@
             },
             abrirModalVerEnvioRecibido(envio = []){
                 this.EnvioRecibido.id = envio['id'];
-                this.EnvioRecibido.centro_destino = envio['centro_destino'];
+                this.EnvioRecibido.centro_origen = envio['centro_origen'];
                 this.EnvioRecibido.estado = envio['estado'];
                 this.EnvioRecibido.abasto_id = envio['abasto_id'];
 
-                this.EnvioRecibido.abasto_id ? this.listarDetalles(2) : this.listarDetalles(3);
+                this.EnvioRecibido.abasto_id ? this.listarDetalles(2) : this.listarDetalles(1);
                 this.abrirModal(3, 'Ver Envio', '', 'Cerrar', '')
             },
             abrirModalVerProduccion(produccion = []){

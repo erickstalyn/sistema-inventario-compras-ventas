@@ -436,7 +436,7 @@
                 let me = this;
                 let url;
                 switch (numero) {
-                    case 1:
+                    case 1:// Listar detalles de envios
                         // let me = this;
                         url = '/envioRealizado/getDetalles';
 
@@ -450,7 +450,7 @@
                             console.log(error);
                         });
                         break;
-                    case 2:
+                    case 2://Listar detalles de abastos
                         console.log('soy el 2');
                         // let me = this;
                         url = '/abasto/getDetalles';

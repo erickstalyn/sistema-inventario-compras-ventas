@@ -1454,7 +1454,7 @@
                         url = me.Ruta.envioRealizado + '/getDetalles';
                         axios.get(url,{
                             params: {
-                                'id': me.EnvioRealizado.id
+                                'id': me.EnvioRecibido.id
                             }
                         }).then(function(response){
                             me.ListaDetalleEnvio = response.data;
@@ -1536,11 +1536,12 @@
             },
             abrirModalVerEnvioRecibido(envio = []){
                 this.EnvioRecibido.id = envio['id'];
-                this.EnvioRecibido.centro_destino = envio['centro_destino'];
+                this.EnvioRecibido.centro_origen = envio['centro_origen'];
                 this.EnvioRecibido.estado = envio['estado'];
                 this.EnvioRecibido.abasto_id = envio['abasto_id'];
 
-                this.EnvioRecibido.abasto_id ? this.listarDetalles(2) : this.listarDetalles(1);
+                this.listarDetalles(1)
+                // this.EnvioRecibido.abasto_id ? this.listarDetalles(2) : this.listarDetalles(1);
                 this.abrirModal(3, 'Ver Envio', '', 'Cerrar', '')
             },
             abrirModalVerVenta(numero, data){
