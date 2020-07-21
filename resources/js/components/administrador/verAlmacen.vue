@@ -1404,6 +1404,7 @@
                     centro: '/centro',
                     venta: '/venta',
                     vale: '/vale',
+                    envio: '/envio',
                     envioRealizado: '/envioRealizado',
                     envioRecibido: '/envioRecibido',
                     abasto: '/abasto',
@@ -1677,7 +1678,7 @@
                 me.Carga.alert = 'badge badge-info';
                 switch (numero) {
                     case 1:// Listar detalles de envios
-                        url = me.Ruta.envioRealizado + '/getDetalles';
+                        url = me.Ruta.envio + '/getDetalles';
                         axios.get(url,{
                             params: {
                                 'id': me.EnvioRecibido.id
@@ -1708,22 +1709,6 @@
                             console.log(error);
                         });
                         break;
-                    // case 3:
-                    //     url = me.Ruta.envioRealizado + '/getDetalles';
-                    //     axios.get(url,{
-                    //         params: {
-                    //             'id': me.EnvioRecibido.id
-                    //         }
-                    //     }).then(function(response){
-                    //         me.ListaDetalleEnvio = response.data;
-                    //         me.Carga.mostrar = 0;
-                    //         me.Carga.clase = '';
-                    //         me.Carga.mensaje = '';
-                    //         me.Carga.alert = '';
-                    //     }).catch(function(error){
-                    //         console.log(error);
-                    //     });
-                    //     break;
                     case 4:
                         url = this.Ruta.produccion +'/getDetalles';
                         axios.get(url,{

@@ -412,6 +412,10 @@
                 SelectCentro: [],
                 Button: {
                     press: false
+                },
+                Ruta: {
+                    envio: '/envio',
+                    envioRealizado: '/envioRealizado',
                 }
             }
         },
@@ -475,7 +479,7 @@
                 }
                 this.Paginacion.currentPage = page==1?1:page;
 
-                var url = '/envioRealizado?page='+this.Paginacion.currentPage
+                var url = this.Ruta.envioRealizado + '?page='+this.Paginacion.currentPage
                         +'&estado='+this.Busqueda.estado
                         +'&idCentro='+this.EnvioRealizado.idCentro
                         +'&texto='+this.Busqueda.texto
@@ -592,7 +596,7 @@
                 if ( this.validar(1) ) return;
                 
                 var me = this;
-                axios.post('/envioRealizado/agregar', {
+                axios.post(me.Ruta.envioRealizado + '/agregar', {
                     //Datos de la produccion
                     'idCentro': me.EnvioRealizado.idCentro,
                     'centro_to_id': me.EnvioRealizado.centro_to_id,
@@ -753,7 +757,7 @@
                 switch (numero) {
                     case 1:
                         let me = this;
-                        let url = '/envioRealizado/getDetalles';
+                        let url = this.Ruta.envio + '/getDetalles';
 
                         axios.get(url,{
                             params: {
@@ -784,7 +788,7 @@
                     if (result.value) {
                         var me = this;
                 
-                        axios.put('/envioRealizado/anular', {
+                        axios.put(me.Ruta.envioRealizado + '/anular', {
                             'id' : id
                         }).then(function (response) {
                             me.listar();

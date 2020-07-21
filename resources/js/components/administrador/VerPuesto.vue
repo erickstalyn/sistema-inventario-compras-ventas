@@ -1211,6 +1211,7 @@
                     centro: '/centro',
                     venta: '/venta',
                     vale: '/vale',
+                    envio: '/envio',
                     envioRealizado: '/envioRealizado',
                     envioRecibido: '/envioRecibido',
                     detalle_venta: '/detalle_venta',
@@ -1451,7 +1452,7 @@
                 let me = this;
                 switch (numero) {
                     case 1:// Listar detalles de envios
-                        url = me.Ruta.envioRealizado + '/getDetalles';
+                        url = me.Ruta.envio + '/getDetalles';
                         axios.get(url,{
                             params: {
                                 'id': me.EnvioRecibido.id
@@ -1462,18 +1463,18 @@
                             console.log(error);
                         });
                         break;
-                    case 2: //Listar detalles de abastos
-                        url = '/abasto/getDetalles';
-                        axios.get(url,{
-                            params: {
-                                'id': me.EnvioRecibido.abasto_id
-                            }
-                        }).then(function(response){
-                            me.ListaDetalleEnvio = response.data;
-                        }).catch(function(error){
-                            console.log(error);
-                        });
-                        break;
+                    // case 2: //Listar detalles de abastos
+                    //     url = '/abasto/getDetalles';
+                    //     axios.get(url,{
+                    //         params: {
+                    //             'id': me.EnvioRecibido.abasto_id
+                    //         }
+                    //     }).then(function(response){
+                    //         me.ListaDetalleEnvio = response.data;
+                    //     }).catch(function(error){
+                    //         console.log(error);
+                    //     });
+                    //     break;
                     case 3:
                         url = this.Ruta.detalle_venta+'/list?'
                                             +'venta_id='+this.Venta.id;
