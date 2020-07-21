@@ -1077,6 +1077,9 @@
                 },
                 SelectPuesto: [],
                 ListaProducto: [],
+                Envio: { //Este envio sirve para usarlo a la hora de listar los detaller de envios realizados o recibidos
+                    id: 0
+                },
                 EnvioRealizado: {
                     id: 0,
                     estado: 0,
@@ -1211,6 +1214,7 @@
                     centro: '/centro',
                     venta: '/venta',
                     vale: '/vale',
+                    envio: '/envio',
                     envioRealizado: '/envioRealizado',
                     envioRecibido: '/envioRecibido',
                     detalle_venta: '/detalle_venta',
@@ -1451,10 +1455,10 @@
                 let me = this;
                 switch (numero) {
                     case 1:// Listar detalles de envios
-                        url = me.Ruta.envioRealizado + '/getDetalles';
+                        url = me.Ruta.envio + '/getDetalles';
                         axios.get(url,{
                             params: {
-                                'id': me.EnvioRealizado.id
+                                'id': me.Envio.id
                             }
                         }).then(function(response){
                             me.ListaDetalleEnvio = response.data;
@@ -1462,22 +1466,23 @@
                             console.log(error);
                         });
                         break;
-                    case 2: //Listar detalles de abastos
-                        url = '/abasto/getDetalles';
-                        axios.get(url,{
-                            params: {
-                                'id': me.EnvioRecibido.abasto_id
-                            }
-                        }).then(function(response){
-                            me.ListaDetalleEnvio = response.data;
-                        }).catch(function(error){
-                            console.log(error);
-                        });
-                        break;
+                    // case 2: //Listar detalles de abastos
+                    //     url = '/abasto/getDetalles';
+                    //     axios.get(url,{
+                    //         params: {
+                    //             'id': me.EnvioRecibido.abasto_id
+                    //         }
+                    //     }).then(function(response){
+                    //         me.ListaDetalleEnvio = response.data;
+                    //     }).catch(function(error){
+                    //         console.log(error);
+                    //     });
+                    //     break;
                     case 3:
                         url = this.Ruta.detalle_venta+'/list?'
                                             +'venta_id='+this.Venta.id;
                         axios.get(url).then(function(response){
+                            // console.dir(response.data)
                             me.fix('detalle_venta', response.data);
                         }).catch(function(error){
                             console.log(error);
@@ -1528,6 +1533,7 @@
             },
             abrirModalVerEnvioRealizado(envio = []){
                 this.EnvioRealizado.id = envio['id'];
+                this.Envio.id = envio['id'];
                 this.EnvioRealizado.centro_destino = envio['centro_destino'];
                 this.EnvioRealizado.estado = envio['estado'];
 
@@ -1536,11 +1542,13 @@
             },
             abrirModalVerEnvioRecibido(envio = []){
                 this.EnvioRecibido.id = envio['id'];
-                this.EnvioRecibido.centro_destino = envio['centro_destino'];
+                this.Envio.id = envio['id'];
+                this.EnvioRecibido.centro_origen = envio['centro_origen'];
                 this.EnvioRecibido.estado = envio['estado'];
                 this.EnvioRecibido.abasto_id = envio['abasto_id'];
 
-                this.EnvioRecibido.abasto_id ? this.listarDetalles(2) : this.listarDetalles(1);
+                this.listarDetalles(1)
+                // this.EnvioRecibido.abasto_id ? this.listarDetalles(2) : this.listarDetalles(1);
                 this.abrirModal(3, 'Ver Envio', '', 'Cerrar', '')
             },
             abrirModalVerVenta(numero, data){
@@ -1800,14 +1808,16 @@
                         fixed = (data[0]-12>12?data[0]-12:data[0]).toString().padStart(2, '0')+':'+data[1]+' '+(data[0]>12?'pm':'am');
                         break;
                     case 'detalle_venta':
+                        console.log(data)
                         for (let i = 0; i < data.length; i++) {
+
                             this.ListaDetalle.push({
-                                detalle_producto_id: data[i].detalle.id,
-                                nombre_producto: data[i].detalle.nombre_producto,
-                                cantidad: data[i].detalle.cantidad,
-                                cantidad_fallido: data[i].detalle.cantidad_fallido,
-                                precio: data[i].detalle.precio,
-                                subtotal: data[i].detalle.subtotal
+                                detalle_producto_id: data[i].dp_id,
+                                nombre_producto: data[i].dv_nombre_producto,
+                                cantidad: data[i].dv_cantidad,
+                                cantidad_fallido: data[i].dv_cantidad_fallido,
+                                precio: data[i].dv_precio,
+                                subtotal: data[i].dv_subtotal
                             });
                         }
                         break;

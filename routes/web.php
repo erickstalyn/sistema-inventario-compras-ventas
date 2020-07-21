@@ -28,7 +28,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::put('/envioRecibido/setEstado', 'EnvioController@setEstado'); //metodos secundarios
 
     Route::get('/abasto/getDetalles', 'AbastoController@getDetalles');
-    Route::get('/envioRealizado/getDetalles', 'EnvioController@getDetalles');
+    Route::get('/envio/getDetalles', 'EnvioController@getDetalles');
 
     //RUTAS PARA LOS DETALLE_PRODUCTO
     Route::get('/detalle_producto/getDetalle_productoFiltrado', 'Detalle_productoController@getDetalle_productoFiltrado');

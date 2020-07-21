@@ -266,6 +266,10 @@
                 SelectAlmacen: [],
                 Button: {
                     press: false
+                },
+                Ruta: {
+                    envio: '/envio',
+                    envioRecibido: '/envioRecibido',
                 }
             }
         },
@@ -328,7 +332,7 @@
                 }
                 this.Paginacion.currentPage = page==1?1:page;
 
-                var url = '/envioRecibido?page='+this.Paginacion.currentPage
+                var url = this.Ruta.envioRecibido + '?page='+this.Paginacion.currentPage
                         +'&estado='+this.Busqueda.estado
                         +'&idCentro='+this.EnvioRecibido.idCentro
                         +'&texto='+this.Busqueda.texto
@@ -371,7 +375,7 @@
                 }).then((result) => {
                 if (result.value) {
                     var me = this;
-                    axios.put('/envioRecibido/setEstado', {
+                    axios.put(me.Ruta.envioRecibido + '/setEstado', {
                         'id' : me.EnvioRecibido.id,
                         'estado' : 1
                     }).then(function(response){
@@ -436,10 +440,8 @@
                 let me = this;
                 let url;
                 switch (numero) {
-                    case 1:
-                        // let me = this;
-                        url = '/envioRealizado/getDetalles';
-
+                    case 1:// Listar detalles de envios
+                        url = this.Ruta.envio + '/getDetalles';
                         axios.get(url,{
                             params: {
                                 'id': me.EnvioRecibido.id
@@ -450,11 +452,8 @@
                             console.log(error);
                         });
                         break;
-                    case 2:
-                        console.log('soy el 2');
-                        // let me = this;
+                    case 2://Listar detalles de abastos
                         url = '/abasto/getDetalles';
-
                         axios.get(url,{
                             params: {
                                 'id': me.EnvioRecibido.abasto_id
