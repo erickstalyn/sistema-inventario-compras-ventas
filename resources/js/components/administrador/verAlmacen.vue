@@ -1260,7 +1260,7 @@
                 SelectAlmacen: [],
                 ListaProducto: [],
                 ListaProduccion: [],
-                Envio: {
+                Envio: {//Este envio sirve para usarlo a la hora de listar los detaller de envios realizados o recibidos
                     id: 0
                 },
                 EnvioRealizado: {
@@ -1283,6 +1283,7 @@
                 },
                 ListaDetalleEnvio: [],
                 ListaDetalleProduccion: [],
+                ListaDetalle: null, //aqui van los detalles de venta
                 ListaEnvio: [],
                 ListaVale: [],
                 Producto: {
@@ -2065,16 +2066,17 @@
                         break;
                     case 'detalle_venta':
                         console.log('on fix(detalle_venta)');
-
+                        console.log(data)
                         for (let i = 0; i < data.length; i++) {
                             this.ListaDetalle.push({
-                                detalle_producto_id: data[i].detalle.id,
-                                nombre_producto: data[i].detalle.nombre_producto,
-                                cantidad: data[i].detalle.cantidad,
-                                cantidad_fallido: data[i].detalle.cantidad_fallido,
-                                precio: data[i].detalle.precio,
-                                subtotal: data[i].detalle.subtotal
+                                detalle_producto_id: data[i].dp_id,
+                                nombre_producto: data[i].dv_nombre_producto,
+                                cantidad: data[i].dv_cantidad,
+                                cantidad_fallido: data[i].dv_cantidad_fallido,
+                                precio: data[i].dv_precio,
+                                subtotal: data[i].dv_subtotal
                             });
+                            console.log(this.ListaDetalle)
                         }
                         break;
                     case 'found.box':

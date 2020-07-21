@@ -1077,7 +1077,7 @@
                 },
                 SelectPuesto: [],
                 ListaProducto: [],
-                Envio: {
+                Envio: { //Este envio sirve para usarlo a la hora de listar los detaller de envios realizados o recibidos
                     id: 0
                 },
                 EnvioRealizado: {
@@ -1482,6 +1482,7 @@
                         url = this.Ruta.detalle_venta+'/list?'
                                             +'venta_id='+this.Venta.id;
                         axios.get(url).then(function(response){
+                            // console.dir(response.data)
                             me.fix('detalle_venta', response.data);
                         }).catch(function(error){
                             console.log(error);
@@ -1807,14 +1808,16 @@
                         fixed = (data[0]-12>12?data[0]-12:data[0]).toString().padStart(2, '0')+':'+data[1]+' '+(data[0]>12?'pm':'am');
                         break;
                     case 'detalle_venta':
+                        console.log(data)
                         for (let i = 0; i < data.length; i++) {
+
                             this.ListaDetalle.push({
-                                detalle_producto_id: data[i].detalle.id,
-                                nombre_producto: data[i].detalle.nombre_producto,
-                                cantidad: data[i].detalle.cantidad,
-                                cantidad_fallido: data[i].detalle.cantidad_fallido,
-                                precio: data[i].detalle.precio,
-                                subtotal: data[i].detalle.subtotal
+                                detalle_producto_id: data[i].dp_id,
+                                nombre_producto: data[i].dv_nombre_producto,
+                                cantidad: data[i].dv_cantidad,
+                                cantidad_fallido: data[i].dv_cantidad_fallido,
+                                precio: data[i].dv_precio,
+                                subtotal: data[i].dv_subtotal
                             });
                         }
                         break;
