@@ -14,15 +14,15 @@ class CreateDetalleProduccionTable extends Migration
     public function up()
     {
         Schema::create('detalle_produccion', function (Blueprint $table) {
-            $table->mediumIncrements('id'); // usa 3 bytes, Cantiada max: 8 388 607
-            $table->string('nombre_producto',100);
-            $table->decimal('costo_produccion',8,2);
-            $table->smallInteger('cantidad'); // usa 2 bytes - máximo 32767 datos
-            $table->decimal('subtotal', 8,2);
-
-            $table->unsignedMediumInteger('producto_id');
-            $table->foreign('producto_id')->references('id')->on('producto');
+            $table->mediumIncrements('id'); // Por ser mediumint y unsigned tiene valor maximo 16'777,215
+            $table->unsignedMediumInteger('subproducto_id');
             $table->unsignedMediumInteger('produccion_id');
+            $table->string('nombre_producto', 500);
+            $table->decimal('costo_produccion', 11, 2);
+            $table->unsignedSmallInteger('cantidad');   // Por ser smallint y unsigned tiene valor maximo de 16'777,215
+            $table->decimal('subtotal', 11, 2);
+
+            $table->foreign('subproducto_id')->references('id')->on('subproducto');
             $table->foreign('produccion_id')->references('id')->on('produccion')->onDelete('cascade');
         });
     }

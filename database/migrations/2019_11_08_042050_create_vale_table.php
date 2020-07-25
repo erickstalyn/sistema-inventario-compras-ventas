@@ -14,17 +14,16 @@ class CreateValeTable extends Migration
     public function up()
     {
         Schema::create('vale', function (Blueprint $table) {
-            $table->smallIncrements('id'); //-32768 al 32767
-            $table->decimal('monto', 8, 2);
-
+            $table->smallIncrements('id');  // Por ser smallint y unsigned tiene como valor maximo 65,535
             $table->unsignedSmallInteger('persona_id');
-            $table->foreign('persona_id')->references('id')->on('persona');
-            $table->unsignedMediumInteger('venta_usada_id')->nullable();
-            $table->foreign('venta_usada_id')->references('id')->on('venta');
-            $table->unsignedMediumInteger('venta_generada_id');
-            $table->foreign('venta_generada_id')->references('id')->on('venta');
-
+            $table->unsignedInteger('venta_usada_id')->nullable();
+            $table->unsignedInteger('venta_generada_id');
+            $table->decimal('monto', 11, 2);
             $table->timestamps(); //hora y fecha automaticaS
+
+            $table->foreign('persona_id')->references('id')->on('persona');
+            $table->foreign('venta_usada_id')->references('id')->on('venta');
+            $table->foreign('venta_generada_id')->references('id')->on('venta');
         });
     }
 

@@ -15,18 +15,8 @@ class CreateDataTable extends Migration
     {
         Schema::create('data', function (Blueprint $table) {
             $table->smallIncrements('id'); // usa 2 bytes - máximo 32767 datos
-            $table->char('tipo',1);
-            /*
-                C -> color
-                T -> tamaño
-                U -> unidad
-            */
-            $table->string('subtipo',25)->nullable();
-            /*
-                Peso
-                Longitud
-                unidades propiamente dicha :v
-            */
+            $table->char('tipo', 1);    // Valores admitidos: (C) color, (T) tamaño, (U) unidad
+            $table->string('subtipo', 25)->nullable(); // Ejemplos: Peso, Longitud, unidades propiamente dicha :v
             $table->string('nombre', 20);
         });
     }

@@ -16,8 +16,8 @@ class CreateDetalleAbastoTable extends Migration
             $table->mediumIncrements('id'); // Por ser mediuminteger y unsigned tiene como valor maximo 16'777,215
             $table->string('nombre_producto', 500);
             $table->unsignedSmallInteger('cantidad');   // Por ser smallint y unsigned tiene como valor maximo 65,535
-            $table->decimal('costo_abasto', 8, 2);  // Aqui ira el valor del costo del producto por unidad, se ingresa manualmente
-            $table->decimal('subtotal', 8, 2);
+            $table->decimal('costo_abasto', 11, 2);  // Aqui ira el valor del costo del producto por unidad, se ingresa manualmente
+            $table->decimal('subtotal', 11, 2); // Por ser smallint y unsigned tiene como valor maximo 65,535
             $table->unsignedMediumInteger('subproducto_id')->nullable();
             $table->unsignedInteger('abasto_id');
 

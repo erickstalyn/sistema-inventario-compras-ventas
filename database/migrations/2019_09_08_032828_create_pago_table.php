@@ -13,16 +13,16 @@ class CreatePagoTable extends Migration
      */
     public function up(){
         Schema::create('pago', function (Blueprint $table) {
-            $table->mediumIncrements('id'); // usa 3 bytes, Cantiada max: 8 388 607
-            $table->decimal('monto', 8, 2);
-
-            $table->unsignedMediumInteger('venta_id')->nullable();
-            $table->foreign('venta_id')->references('id')->on('venta');
-            $table->unsignedMediumInteger('abasto_id')->nullable();
-            $table->foreign('abasto_id')->references('id')->on('abasto')->onDelete('cascade');
-            // $table->timestamps(); //Fecha y hora de creacion y actualiación manual
+            $table->mediumIncrements('id'); // Por ser mediuminteger y unsigned tiene como valor maximo 16'777,215
+            $table->unsignedInteger('abasto_id')->nullable();
+            $table->unsignedInteger('venta_id')->nullable();
+            $table->decimal('monto', 11, 2);
             $table->dateTime('created_at');
             $table->dateTime('updated_at')->nullable(); 
+
+            $table->foreign('venta_id')->references('id')->on('venta');
+            $table->foreign('abasto_id')->references('id')->on('abasto')->onDelete('cascade');
+            // $table->timestamps(); //Fecha y hora de creacion y actualiación manual
         });
     }
 

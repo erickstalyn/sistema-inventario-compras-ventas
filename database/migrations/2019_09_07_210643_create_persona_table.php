@@ -18,8 +18,8 @@ class CreatePersonaTable extends Migration
             $table->string('nombres', 100)->nullable();
             $table->string('apellidos', 100)->nullable();
             $table->string('razon_social', 350)->nullable();
-            $table->char('dni', 8)->unique()->nullable(); // charc(8) equivale a 8 byte
-            $table->char('ruc', 11)->unique()->nullable();
+            $table->string('tipo_documento', 20);
+            $table->string('numero_documento', 20)->unique();
             $table->longText('direcciones')->nullable();    // Aqui se guardaran todas las direcciones en formato JSON
             $table->longText('telefonos')->nullable();  // Aqui se guardaran todos los telefonos en formato JSON
             $table->longText('emails')->nullable(); // Aqui se guardaran todos los emails en formato JSON

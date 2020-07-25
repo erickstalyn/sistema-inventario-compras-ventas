@@ -13,16 +13,17 @@ class CreateDetalleVentaTable extends Migration
      */
     public function up(){
         Schema::create('detalle_venta', function (Blueprint $table) {
-            $table->increments('id'); // usa 4 bytes. Maximo valor: 2 147 483 647
-            $table->string('nombre_producto', 100);
-            $table->smallInteger('cantidad'); // usa 2 bytes - máximo 32767 datos
-            $table->decimal('precio', 10, 2);
-            $table->decimal('subtotal', 10, 2);
-            $table->smallInteger('cantidad_fallido')->nullable(); // usa 2 bytes - máximo 32767 datos
-
-            $table->unsignedMediumInteger('venta_id');
-            $table->foreign('venta_id')->references('id')->on('venta');
+            $table->increments('id');   // Por ser integer y unsigned tiene como valor maximo 4,294'967,295
+            $table->unsignedInteger('venta_id');
             $table->unsignedInteger('detalle_producto_id')->nullable();
+            $table->string('nombre_producto', 500);
+            $table->smallInteger('cantidad');   // Por ser smallint y unsigned tiene como valor maximo 65,535
+            $table->smallInteger('cantidad_fallido')->nullable();   // Por ser smallint y unsigned tiene como valor maximo 65,535
+            $table->char('tipo_precio', 1); // Valores admitidos: (U) al por menor o por unidad, (M) al por mayor
+            $table->decimal('precio', 11, 2);
+            $table->decimal('subtotal', 11, 2);
+
+            $table->foreign('venta_id')->references('id')->on('venta');
             $table->foreign('detalle_producto_id')->references('id')->on('detalle_producto');
         });
     }

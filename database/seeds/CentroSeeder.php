@@ -14,10 +14,12 @@ class CentroSeeder extends Seeder
     {
         $now = Carbon::now('America/Lima')->toDateString();
         DB::table('centro')->insert(array(//1
+            'empresa_id' => 1,
+            'numero_serie' => '0001',
             'nombre' => 'Mi Puesto A',
-            'direccion' => 'Chiclayo - Av. Tomas valle #754',
-            'telefono' => '74383898',
-            'tipo' => 'P',
+            'direccion' => 'CAMPO FERIAL AMAZONAS JR. AMAZONAS 299 Int 10',
+            'telefonos' => [],
+            'numeros_correlativos' => [],
             'created_at' => $now
         ));
         DB::table('centro')->insert(array(//2

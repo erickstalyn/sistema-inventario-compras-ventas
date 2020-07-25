@@ -13,18 +13,18 @@ class CreateEnvioTable extends Migration
      */
     public function up () {
         Schema::create('envio', function (Blueprint $table) {
-            $table->mediumIncrements('id'); // usa 3 bytes, Cantiada max: 8 388 607
-            $table->char('estado', 1)->default('0'); //0 -> Enviado, 1 -> Recibido
-            $table->char('tipo', 1); //1 -> Buena estado, 2 -> Fallidos
+            $table->mediumIncrements('id'); // Por ser mediuminteger y unsigned tiene como valor maximo 16'777,215
+            $table->char('estado', 1)->default('0');    // Valores admitidos: (0) enviado, (1) recibido
+            $table->char('tipo', 1);    // (1) producto normal, (2) producto fallido
             $table->unsignedTinyInteger('centro_from_id')->nullable();
-            $table->foreign('centro_from_id')->references('id')->on('centro');
             $table->unsignedTinyInteger('centro_to_id');
-            $table->foreign('centro_to_id')->references('id')->on('centro');
-            $table->unsignedMediumInteger('abasto_id')->nullable();
-            $table->foreign('abasto_id')->references('id')->on('abasto')->onDelete('cascade');
+            $table->unsignedInteger('abasto_id')->nullable();
             $table->date('created_at'); // Fecha de ENVIO manual
             $table->date('updated_at')->nullable(); // Fecha de ACEPTADO O RECHAZO manual (SE ACEPTARA CUANDO LA MERCADERÍA YA ESTÉ EN EL CENTRO)
-            // Tendrá un eliminado fisico
+
+            $table->foreign('centro_from_id')->references('id')->on('centro');
+            $table->foreign('centro_to_id')->references('id')->on('centro');
+            $table->foreign('abasto_id')->references('id')->on('abasto')->onDelete('cascade');
             // $table->date('deleted_at')->nullable(); // Fecha de ANULACION manual
         });
     }

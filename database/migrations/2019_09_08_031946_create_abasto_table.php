@@ -15,8 +15,8 @@ class CreateAbastoTable extends Migration
         Schema::create('abasto', function (Blueprint $table) {
             $table->increments('id'); // Por ser integer y unsigned tiene como valor maximo 4,294'967,295
             $table->string('proveedor_nombre', 120)->nullable();    // Nombre del proveedor
-            $table->decimal('total', 8, 2);
-            $table->decimal('total_faltante', 8, 2)->nullable();
+            $table->decimal('total', 11, 2);
+            $table->decimal('total_faltante', 11, 2)->nullable();
             $table->boolean('tipo');    // Tipo de pago que se realiza en este abasto. Por ejemplo: (0: contado), (1: credito)
             $table->unsignedTinyInteger('centro_id')->nullable();
             $table->unsignedSmallInteger('proveedor_id')->nullable();

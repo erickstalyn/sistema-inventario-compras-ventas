@@ -19,7 +19,6 @@ class CreateUsuarioTable extends Migration
             $table->string('password', 100);
             $table->unsignedTinyInteger('rol'); // Define el rol que este usuario cumplira.
             $table->boolean('estado')->default(1);    // Define si el usuario esta activo o no. Por ejemplo (1: activado), (0: desactivado)
-
             $table->unsignedSmallInteger('persona_id');
             $table->unsignedTinyInteger('centro_id')->nullable();
             $table->unsignedTinyInteger('rol_id');
