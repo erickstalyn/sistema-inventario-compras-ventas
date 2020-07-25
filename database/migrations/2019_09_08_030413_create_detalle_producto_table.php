@@ -22,10 +22,10 @@ class CreateDetalleProductoTable extends Migration
             $table->decimal('precio_menor', 11, 2);
             $table->decimal('precio_mayor', 11, 2);
             $table->unsignedTinyInteger('centro_id');
-            $table->unsignedMediumInteger('producto_id');
+            $table->unsignedMediumInteger('subproducto_id');
 
             $table->foreign('centro_id')->references('id')->on('centro');
-            $table->foreign('producto_id')->references('id')->on('producto');
+            $table->foreign('subproducto_id')->references('id')->on('subproducto');
         });
     }
 

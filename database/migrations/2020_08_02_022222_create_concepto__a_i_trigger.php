@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class TriggerConceptoAI extends Migration
+class CreateConceptoAITrigger extends Migration
 {
     /**
      * Run the migrations.
