@@ -89,7 +89,7 @@
     </div>
 
     <!-- Modales -->
-    <my-modal ref='modal' @action-modal="accionar" :the-modal.sync="Modal" :the-material="Material" :the-error="Error"></my-modal>
+    <my-modal @list="listar" :the-modal.sync="Modal" :the-material="Material"></my-modal>
     
   </main>
 </template>
@@ -152,10 +152,10 @@ export default {
         lastItem: 0,
       },
       //datos de errores
-      Error: {
-        estado: 0,
-        mensaje: [],
-      },
+      // Error: {
+      //   estado: 0,
+      //   mensaje: [],
+      // },
       Ruta: {
         material: "/material",
         data: "/data",
@@ -209,48 +209,48 @@ export default {
           console.log(error);
         });
     },
-    agregar() {
-      if (this.validar()) return;
+    // agregar() {
+    //   if (this.validar()) return;
 
-      const me = this;
-      axios
-        .post("/material/agregar", {
-          nombre: this.Material.nombre,
-          subtipo: this.Material.subtipo,
-          unidad: this.Material.unidad,
-          costo: this.Material.costo,
-        })
-        .then(function (response) {
-          if (response.data.estado) {
-            me.$refs.modal.cerrar();
+    //   const me = this;
+    //   axios
+    //     .post("/material/agregar", {
+    //       nombre: this.Material.nombre,
+    //       subtipo: this.Material.subtipo,
+    //       unidad: this.Material.unidad,
+    //       costo: this.Material.costo,
+    //     })
+    //     .then(function (response) {
+    //       if (response.data.estado) {
+    //         me.$refs.modal.cerrar();
 
-            me.listar();
-            Swal.fire({
-              position: "top-end",
-              toast: true,
-              type: "success",
-              title: "El material se ha AGREGADO correctamente",
-              showConfirmButton: false,
-              timer: 4500,
-              animation: false,
-              customClass: {
-                popup: "animated bounceIn fast",
-              },
-            });
-          } else {
-            me.Error.mensaje.push(
-              "El material '" +
-                me.Material.nombre +
-                "' ya se encuentra registrado"
-            );
-            me.Error.estado = 1;
-            console.log('hay errores')
-          }
-        })
-        .catch(function (error) {
-          console.log("soy el error" + error);
-        });
-    },
+    //         me.listar();
+    //         Swal.fire({
+    //           position: "top-end",
+    //           toast: true,
+    //           type: "success",
+    //           title: "El material se ha AGREGADO correctamente",
+    //           showConfirmButton: false,
+    //           timer: 4500,
+    //           animation: false,
+    //           customClass: {
+    //             popup: "animated bounceIn fast",
+    //           },
+    //         });
+    //       } else {
+    //         me.Error.mensaje.push(
+    //           "El material '" +
+    //             me.Material.nombre +
+    //             "' ya se encuentra registrado"
+    //         );
+    //         me.Error.estado = 1;
+    //         console.log('hay errores')
+    //       }
+    //     })
+    //     .catch(function (error) {
+    //       console.log("soy el error" + error);
+    //     });
+    // },
     editar() {
       if (this.validar()) return;
 
@@ -439,64 +439,64 @@ export default {
 
     //   this.YaIngrese = 0;
     // },
-    accionar(accion) {
-      switch (accion) {
-        case "Agregar": {
-          this.agregar();
-          break;
-        }
-        case "Editar": {
-          this.editar();
-          break;
-        }
-        case "Activar": {
-          this.activar();
-          break;
-        }
-        case "Desactivar": {
-          this.desactivar();
-          break;
-        }
-      }
-    },
-    validar() {
-      this.Error.estado = 0;
-      this.Error.mensaje = [];
+    // accionar(accion) {
+    //   switch (accion) {
+    //     case "Agregar": {
+    //       this.agregar();
+    //       break;
+    //     }
+    //     case "Editar": {
+    //       this.editar();
+    //       break;
+    //     }
+    //     case "Activar": {
+    //       this.activar();
+    //       break;
+    //     }
+    //     case "Desactivar": {
+    //       this.desactivar();
+    //       break;
+    //     }
+    //   }
+    // },
+    // validar() {
+    //   this.Error.estado = 0;
+    //   this.Error.mensaje = [];
 
-      //Recorrere la lista de Material
-      if (this.Modal.numero == 1) {
-        //Modal agregar
-        if (!this.Material.nombre)
-          this.Error.mensaje.push("Debe ingresar un nombre");
-        if (!this.Material.unidad)
-          this.Error.mensaje.push("Debe seleccionar una Unid. Medida");
-        if (this.Material.costo == 0 || this.Material.costo < 0)
-          this.Error.mensaje.push("Debe ingresar un costo válido");
-      } else {
-        //Modal editar
-        if (
-          this.Material.nombre == this.MaterialOrigen.nombre &&
-          this.Material.subtipo == this.MaterialOrigen.subtipo &&
-          this.Material.unidad == this.MaterialOrigen.unidad &&
-          this.Material.costo == this.MaterialOrigen.costo
-        ) {
-          this.Error.mensaje.push("Ningun cambio realizado");
-        } else {
-          if (!this.Material.nombre)
-            this.Error.mensaje.push("Debe ingresar un nombre");
-          if (!this.Material.unidad)
-            this.Error.mensaje.push("Debe seleccionar una Unid. Medida");
-          if (this.Material.costo == 0 || this.Material.costo < 0)
-            this.Error.mensaje.push("Debe ingresar un costo válido");
-        }
-      }
+    //   //Recorrere la lista de Material
+    //   if (this.Modal.numero == 1) {
+    //     //Modal agregar
+    //     if (!this.Material.nombre)
+    //       this.Error.mensaje.push("Debe ingresar un nombre");
+    //     if (!this.Material.unidad)
+    //       this.Error.mensaje.push("Debe seleccionar una Unid. Medida");
+    //     if (this.Material.costo == 0 || this.Material.costo < 0)
+    //       this.Error.mensaje.push("Debe ingresar un costo válido");
+    //   } else {
+    //     //Modal editar
+    //     if (
+    //       this.Material.nombre == this.MaterialOrigen.nombre &&
+    //       this.Material.subtipo == this.MaterialOrigen.subtipo &&
+    //       this.Material.unidad == this.MaterialOrigen.unidad &&
+    //       this.Material.costo == this.MaterialOrigen.costo
+    //     ) {
+    //       this.Error.mensaje.push("Ningun cambio realizado");
+    //     } else {
+    //       if (!this.Material.nombre)
+    //         this.Error.mensaje.push("Debe ingresar un nombre");
+    //       if (!this.Material.unidad)
+    //         this.Error.mensaje.push("Debe seleccionar una Unid. Medida");
+    //       if (this.Material.costo == 0 || this.Material.costo < 0)
+    //         this.Error.mensaje.push("Debe ingresar un costo válido");
+    //     }
+    //   }
 
-      if (this.Error.mensaje.length) {
-        this.Error.estado = 1;
-        this.Button.press = false;
-      }
-      return this.Error.estado;
-    },
+    //   if (this.Error.mensaje.length) {
+    //     this.Error.estado = 1;
+    //     this.Button.press = false;
+    //   }
+    //   return this.Error.estado;
+    // },
     cambiarPagina(page) {
       if (page >= 1 && page <= this.Paginacion.lastPage) {
         this.listar(page);

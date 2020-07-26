@@ -9,18 +9,18 @@
 
         <div class="modal-body">
           <div v-if="error.estado" class="row d-flex justify-content-center">
-              <div class="alert alert-danger">
-                <button
-                  type="button"
-                  @click="error.estado=0"
-                  class="close text-primary"
-                  data-dismiss="alert"
-                >×</button>
-                <strong>Corregir los siguentes errores:</strong>
-                <ul>
-                  <li v-for="(error, i) in error.mensaje" :key="i" v-text="error"></li>
-                </ul>
-              </div>
+            <div class="alert alert-danger">
+              <button
+                type="button"
+                @click="error.estado=0"
+                class="close text-primary"
+                data-dismiss="alert"
+              >×</button>
+              <strong>Corregir los siguentes errores:</strong>
+              <ul>
+                <li v-for="(error, i) in error.mensaje" :key="i" v-text="error"></li>
+              </ul>
+            </div>
           </div>
           <div class="row form-group">
             <label class="col-md-3 font-weight-bold" for="nom">
@@ -89,19 +89,23 @@
 
 <script>
 // Components
-import LoadButton from './Load-button'
+import LoadButton from "./Load-button";
 
 export default {
   components: {
-    LoadButton
+    LoadButton,
   },
-  props: ["the-modal", "the-material", "the-error"],
+  props: ["the-modal", "the-material"],
   data() {
     return {
       modal: this.theModal,
-      error: this.theError,
       material: this.theMaterial,
-    }
+      //datos de errores
+      error: {
+        estado: 0,
+        mensaje: [],
+      },
+    };
   },
   methods: {
     cerrar() {
@@ -115,16 +119,112 @@ export default {
 
       // this.YaIngrese = 0;
     },
-    clearInputs(){
+    clearInputs() {
       this.material.id = 0;
       this.material.nombre = "";
       this.material.unidad = "";
       this.material.subtipo = "";
       this.material.costo = "";
     },
-    action(action) {
-      this.$emit('action-modal', action)
-    }
+    action(act) {
+      switch (act) {
+        case "Agregar": {
+          this.agregar();
+          break;
+        }
+        case "Editar": {
+          this.editar();
+          break;
+        }
+        case "Activar": {
+          this.activar();
+          break;
+        }
+        case "Desactivar": {
+          this.desactivar();
+          break;
+        }
+      }
+    },
+    validar() {
+      this.error.estado = 0;
+      this.error.mensaje = [];
+
+      //Recorrere la lista de material
+      if (this.modal.numero == 1) {
+        //Modal agregar
+        if (!this.material.nombre)
+          this.error.mensaje.push("Debe ingresar un nombre");
+        if (!this.material.unidad)
+          this.error.mensaje.push("Debe seleccionar una Unid. Medida");
+        if (this.material.costo == 0 || this.material.costo < 0)
+          this.error.mensaje.push("Debe ingresar un costo válido");
+      } else {
+        //Modal editar
+        if (
+          this.material.nombre == this.MaterialOrigen.nombre &&
+          this.material.subtipo == this.MaterialOrigen.subtipo &&
+          this.material.unidad == this.MaterialOrigen.unidad &&
+          this.material.costo == this.MaterialOrigen.costo
+        ) {
+          this.error.mensaje.push("Ningun cambio realizado");
+        } else {
+          if (!this.material.nombre)
+            this.error.mensaje.push("Debe ingresar un nombre");
+          if (!this.material.unidad)
+            this.error.mensaje.push("Debe seleccionar una Unid. Medida");
+          if (this.material.costo == 0 || this.material.costo < 0)
+            this.error.mensaje.push("Debe ingresar un costo válido");
+        }
+      }
+
+      if (this.error.mensaje.length) {
+        this.error.estado = 1;
+        // this.button.press = false;
+      }
+      return this.error.estado;
+    },
+    agregar() {
+      if (this.validar()) return;
+
+      const me = this;
+      axios
+        .post("/material/agregar", {
+          nombre: this.material.nombre,
+          subtipo: this.material.subtipo,
+          unidad: this.material.unidad,
+          costo: this.material.costo,
+        })
+        .then(function (response) {
+          if (response.data.estado) {
+            me.cerrar();
+            me.$emit('list'); //emito el evento de listar al PADRE
+            Swal.fire({
+              position: "top-end",
+              toast: true,
+              type: "success",
+              title: "El material se ha AGREGADO correctamente",
+              showConfirmButton: false,
+              timer: 4500,
+              animation: false,
+              customClass: {
+                popup: "animated bounceIn fast",
+              },
+            });
+          } else {
+            me.error.mensaje.push(
+              "El material '" +
+                me.material.nombre +
+                "' ya se encuentra registrado"
+            );
+            me.error.estado = 1;
+            console.log("hay errores");
+          }
+        })
+        .catch(function (error) {
+          console.log("soy el error" + error);
+        });
+    },
   },
 };
 </script>
