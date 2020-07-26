@@ -16,8 +16,6 @@ class MaterialController extends Controller
         $estado = $request->estado;
         $texto = $request->texto;
         $filas = $request->filas;
-        $ordenarPor = $request->ordenarPor;
-        $orden = $request->orden;
 
         $materiales = Material::select('id', 'nombre','subtipo', 'unidad', 'costo', 'estado')
                             ->where(function ($query) use ($estado) {
@@ -30,7 +28,7 @@ class MaterialController extends Controller
                                     $query->where('nombre', 'like', '%'.$texto.'%');
                                 }
                             })
-                            ->orderBy($ordenarPor, $orden)->paginate($filas);
+                            ->orderBy('nombre', 'asc')->paginate($filas);
 
         return [
             'paginacion' => [
