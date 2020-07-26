@@ -26,7 +26,7 @@ class CreateSubproductoTable extends Migration
             $table->unsignedMediumInteger('stock')->default(0); // Por ser mediumint y unsigned tiene como valor maximo 16'777,215
             $table->boolean('estado')->default(1);  // Define si el producto esta activo o no. Por ejemplo (1: activado), (0: desactivado)
             $table->unsignedMediumInteger('producto_id');
-            $table->dateTime('created_at');
+            $table->timestamps();
             $table->softDeletes();
 
             $table->unique('producto_id', 'code_unique');

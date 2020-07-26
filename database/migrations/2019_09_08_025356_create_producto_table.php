@@ -22,7 +22,7 @@ class CreateProductoTable extends Migration
             $table->boolean('estado')->default(1);  // Define si el producto esta activo o no. Por ejemplo (1: activado), (0: desactivado)
             $table->unsignedSmallInteger('marca_id')->nullable();
             $table->unsignedSmallInteger('categoria_id');
-            $table->date('created_at');
+            $table->timestamps();
             $table->softDeletes();
 
             $table->unique(['modelo', 'marca_id', 'categoria_id']);

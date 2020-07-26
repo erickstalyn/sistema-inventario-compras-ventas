@@ -14,7 +14,7 @@ class CreateDataTable extends Migration
     public function up()
     {
         Schema::create('data', function (Blueprint $table) {
-            $table->smallIncrements('id'); // usa 2 bytes - máximo 32767 datos
+            $table->smallIncrements('id');  // Por ser smallint y unsigned tiene como valor maximo 65'535
             $table->char('tipo', 1);    // Valores admitidos: (C) color, (T) tamaño, (U) unidad
             $table->string('subtipo', 25)->nullable(); // Ejemplos: Peso, Longitud, unidades propiamente dicha :v
             $table->string('nombre', 20);

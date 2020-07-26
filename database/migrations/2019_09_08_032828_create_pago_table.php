@@ -17,8 +17,7 @@ class CreatePagoTable extends Migration
             $table->unsignedInteger('abasto_id')->nullable();
             $table->unsignedInteger('venta_id')->nullable();
             $table->decimal('monto', 11, 2);
-            $table->dateTime('created_at');
-            $table->dateTime('updated_at')->nullable(); 
+            $table->timestamps(); 
 
             $table->foreign('venta_id')->references('id')->on('venta');
             $table->foreign('abasto_id')->references('id')->on('abasto')->onDelete('cascade');

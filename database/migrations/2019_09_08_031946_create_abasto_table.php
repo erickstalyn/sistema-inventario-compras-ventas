@@ -21,7 +21,7 @@ class CreateAbastoTable extends Migration
             $table->unsignedTinyInteger('centro_id')->nullable();
             $table->unsignedSmallInteger('proveedor_id')->nullable();
             $table->unsignedSmallInteger('trabajador_id')->nullable();  // Para saber que usuario hizo esta accion
-            $table->dateTime('created_at');
+            $table->timestamps();
             //Abasto tiene una eliminación física, y solo se puede eliminar un abasto si tiene su estado de envio en ENVIADO
 
             $table->foreign('proveedor_id')->references('id')->on('persona');

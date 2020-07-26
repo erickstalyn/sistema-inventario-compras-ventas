@@ -8,6 +8,7 @@ class Produccion extends Model
 {
     protected $table = 'produccion';
     protected $fillable = ['total', 'fecha_inicio', 'fecha_programada', 'fecha_fin', 'almacen_id'];
+    
     public $timestamps = false;
 
     public function getDetalles(){

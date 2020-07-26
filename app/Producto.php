@@ -4,24 +4,13 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Producto extends Model
-{
+class Producto extends Model{
+
     protected $table = 'producto';
-    protected $fillable = [
-        'superproducto_id','nombre', 'codigo', 'size', 'color', 'costo_produccion', 'precio_menor', 'precio_mayor', 'stock', 'created_at'
-    ];
-    public $timestamps = false;
+    protected $fillable = ['nombre', 'modelo', 'descripcion', 'stock', 'estado', 'marca_id', 'categoria_id'];
     
-    //Relación de muchos a muchos con Abasto
-    public function getEnvios(){
-        return $this->belongsToMany('App\Envio', 'detalle_envio')->withPivot('cantidad')->as('detalle_envio');
-    }
-    //Relación de muchos a muchos con Abasto
-    public function getAbastos(){
-        return $this->belongsToMany('App\Abasto', 'detalle_abasto')->withPivot('cantidad', 'precio', 'subtotal')->as('detalle_abasto');
-    }
-    public function getVentas(){
-        return $this->belongsToMany('App\Venta', 'detalle_venta')->withPivot('cantidad', 'precio', 'subtotal')->as('detalle_venta');
+    public function getSubproductos() {
+        return $this->hasMany('App\Subproducto');
     }
 
 }

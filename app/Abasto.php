@@ -6,12 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Abasto extends Model
 {
-    protected $table= 'abasto';
+    protected $table = 'abasto';
     protected $fillable = [
-        'total', 'tipo', 'proveedor_id', 'administrador_id', 'centro_id', 'created_at'
+        'proveedor_nombre', 'total', 'total_faltante', 'tipo', 'proveedor_id', 'centro_id'
     ];
-
-    public $timestamps = false;
 
     //Relación inversa de uno a muchos con proveedor
     public function getProveedor()
