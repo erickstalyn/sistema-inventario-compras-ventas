@@ -46,7 +46,7 @@
             @change="listar()"
           >
             <option
-              v-for="item in [5,6,7,8,9,10,11,12,13,14,15,16,17]"
+              v-for="item in [3,4,5,6,7,8,9,10,11,12,13,14,15,16,17]"
               :key="item"
               :value="item"
               v-text="item"
@@ -75,224 +75,22 @@
                 :key="i"
                 is="material-row"
                 :material="material"
+                @edit-material="abrirModalEditar"
               ></tr>
             </tbody>
           </table>
         </div>
         <!-- Barra de navegacion -->
-        <!-- <nav class="d-flex justify-content-center">
-          <ul class="pagination">
-            <li class="page-item">
-              <a
-                href="#"
-                @click="cambiarPagina(Paginacion.currentPage-1)"
-                class="page-link"
-              >Anterior</a>
-            </li>
-            <li
-              class="page-item"
-              v-for="page in Paginas"
-              :key="page"
-              :class="[page==Paginacion.currentPage?'active':'']"
-            >
-              <a href="#" @click="cambiarPagina(page)" v-text="page" class="page-link"></a>
-            </li>
-            <li class="page-item">
-              <a
-                href="#"
-                @click="cambiarPagina(Paginacion.currentPage+1)"
-                class="page-link"
-              >Siguiente</a>
-            </li>
-          </ul>
-        </nav> -->
-        <pagination-bar @change-page="cambiarPagina" :paginacion="Paginacion" :paginas="Paginas"></pagination-bar>
-
+        <pagination-bar @change-page="cambiarPagina" :paginacion="Paginacion"></pagination-bar>
       </div>
       <div v-else>
         <h5>No se han encontrado resultados</h5>
       </div>
     </div>
 
-    <div v-if="Modal.estado" class="modal text-gray-900 mostrar">
-      <div class="modal-dialog modal-dialog-centered animated bounceIn fast">
-        <div class="modal-content modal-lg">
-          <div class="modal-header">
-            <h3 v-text="Modal.titulo" class="modal-title"></h3>
-            <button type="button" @click="cerrarModal()" class="close">X</button>
-          </div>
-
-          <div class="modal-body">
-            <!-- Modal Numero 1 de AGREGAR-->
-            <div v-if="Modal.numero==1">
-              <div v-if="Error.estado" class="row d-flex justify-content-center">
-                <div class="alert alert-danger">
-                  <button
-                    type="button"
-                    @click="Error.estado=0"
-                    class="close text-primary"
-                    data-dismiss="alert"
-                  >×</button>
-                  <strong>Corregir los siguentes errores:</strong>
-                  <ul>
-                    <li v-for="error in Error.mensaje" :key="error" v-text="error"></li>
-                  </ul>
-                </div>
-              </div>
-              <div class="row form-group">
-                <label class="col-md-3 font-weight-bold" for="nom">
-                  Nombre&nbsp;
-                  <span class="text-danger">*</span>
-                </label>
-                <div class="col-md-9">
-                  <input
-                    type="text"
-                    v-model="Material.nombre"
-                    class="form-control"
-                    placeholder="ingrese el nombre"
-                    autofocus
-                  />
-                </div>
-              </div>
-              <div class="row form-group">
-                <label class="col-md-3 font-weight-bold" for="des">
-                  Unid.Medida&nbsp;
-                  <span class="text-danger">*</span>
-                </label>
-                <div class="col-md-4">
-                  <select v-model="Material.subtipo" class="custom-select">
-                    <option value disabled>tipo</option>
-                    <option
-                      v-for="item in SelectTipoFiltrado"
-                      :key="item"
-                      :value="item"
-                      v-text="item"
-                      class="text-gray-900"
-                    ></option>
-                  </select>
-                </div>
-                <div class="col-md-5">
-                  <select v-model="Material.unidad" class="custom-select" id="cat">
-                    <option value disabled>subtipo</option>
-                    <option
-                      v-for="unidad in selectUnidadFiltrado"
-                      :key="unidad.id"
-                      :value="unidad.nombre"
-                      v-text="unidad.nombre"
-                      class="text-gray-900"
-                    ></option>
-                  </select>
-                </div>
-              </div>
-              <div class="row form-group">
-                <label class="col-md-3 font-weight-bold" for="nom">
-                  Costo por Unidad&nbsp;
-                  <span class="text-danger">*</span>
-                </label>
-                <div class="col-md-4">
-                  <input
-                    type="number"
-                    v-model="Material.costo"
-                    min="1"
-                    class="form-control text-right"
-                  />
-                </div>
-              </div>
-            </div>
-            <!-- Modal Numero 2 de EDITAR-->
-            <div v-if="Modal.numero==2">
-              <div v-if="Error.estado" class="row d-flex justify-content-center">
-                <div class="alert alert-danger">
-                  <button type="button" @click="Error.estado=0" class="close" data-dismiss="alert">×</button>
-                  <strong>Corregir los siguentes errores:</strong>
-                  <ul>
-                    <li v-for="error in Error.mensaje" :key="error" v-text="error"></li>
-                  </ul>
-                </div>
-              </div>
-              <div class="row form-group">
-                <label class="col-md-3 font-weight-bold" for="nom">
-                  Nombre&nbsp;
-                  <span class="text-danger">*</span>
-                </label>
-                <div class="col-md-9">
-                  <input
-                    type="text"
-                    v-model="Material.nombre"
-                    class="form-control"
-                    placeholder="ingrese el nombre"
-                  />
-                </div>
-              </div>
-              <div class="row form-group">
-                <label class="col-md-3 font-weight-bold" for="des">
-                  Unid.Medida&nbsp;
-                  <span class="text-danger">*</span>
-                </label>
-                <div class="col-md-4">
-                  <select v-model="Material.subtipo" class="custom-select" id="cat">
-                    <option value disabled>tipo</option>
-                    <option
-                      v-for="item in SelectTipoFiltrado"
-                      :key="item"
-                      :value="item"
-                      v-text="item"
-                      class="text-gray-900"
-                    ></option>
-                  </select>
-                </div>
-                <div class="col-md-5">
-                  <select v-model="Material.unidad" class="custom-select" id="cat">
-                    <option value disabled>subtipo</option>
-                    <option
-                      v-for="unidad in selectUnidadFiltrado"
-                      :key="unidad.id"
-                      :value="unidad.nombre"
-                      v-text="unidad.nombre"
-                      class="text-gray-900"
-                    ></option>
-                  </select>
-                </div>
-              </div>
-              <div class="row form-group">
-                <label class="col-md-3 font-weight-bold" for="nom">
-                  Costo por Unidad&nbsp;
-                  <span class="text-danger">*</span>
-                </label>
-                <div class="col-md-4">
-                  <input
-                    type="number"
-                    v-model="Material.costo"
-                    min="0"
-                    class="form-control text-right"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="modal-footer">
-            <div class="row form-group col-md-12 d-flex justify-content-around">
-              <button
-                type="button"
-                @click="accionar(Modal.accion)"
-                class="btn btn-success"
-                :disabled="Button.press"
-              >
-                <div v-if="!Button.press">{{Modal.accion}}</div>
-                <span
-                  v-else
-                  class="spinner-border spinner-border-sm"
-                  role="status"
-                  aria-hidden="true"
-                ></span>
-              </button>
-              <button type="button" @click="cerrarModal()" class="btn btn-secondary">Cancelar</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <!-- Modales -->
+    <my-modal :the-modal.sync="Modal" :the-material="Material" :the-error="Error"></my-modal>
+    
   </main>
 </template>
 
@@ -300,11 +98,13 @@
 /** Components */
 import MaterialRow from "./subcomponents/Material-row";
 import PaginationBar from "./subcomponents/Pagination-bar";
+import myModal from "./subcomponents/modal";
 
 export default {
   components: {
     MaterialRow,
-    PaginationBar
+    PaginationBar,
+    myModal
   },
   data() {
     return {
@@ -354,12 +154,6 @@ export default {
         firstItem: 0,
         lastItem: 0,
       },
-      Navegacion: {
-        offset: 3,
-        ordenarPor: "id",
-        orden: "desc",
-      },
-
       //datos de errores
       Error: {
         estado: 0,
@@ -367,34 +161,12 @@ export default {
       },
       Ruta: {
         material: "/material",
+        data: "/data",
         serverPhp: "http://127.0.0.1:8000",
       },
     };
   },
   computed: {
-    Paginas: function () {
-      if (!this.Paginacion.lastItem) {
-        return [];
-      }
-
-      var from = this.Paginacion.currentPage - this.Navegacion.offset;
-      if (from < 1) {
-        from = 1;
-      }
-
-      var to = this.Paginacion.currentPage + this.Navegacion.offset * 2;
-      if (to > this.Paginacion.lastPage) {
-        to = this.Paginacion.lastPage;
-      }
-
-      var pagesArray = [];
-      while (from <= to) {
-        pagesArray.push(from);
-        from++;
-      }
-
-      return pagesArray;
-    },
     selectUnidadFiltrado: function () {
       // console.log('Soy el computado selectUnidadFiltrado');
       let selectUnidadFiltrado = [];
@@ -417,7 +189,7 @@ export default {
     },
   },
   methods: {
-    listar(page = 1, ordenarPor = "") {
+    listar(page = 1) {
       this.Paginacion.currentPage = page;
       const url =
         this.Ruta.material +
@@ -650,24 +422,24 @@ export default {
       this.Modal.titulo = titulo;
       this.Modal.accion = accion;
     },
-    cerrarModal() {
-      this.Modal.numero = 0;
-      this.Modal.estado = 0;
-      this.Modal.mensaje = [];
+    // cerrarModal() {
+    //   this.Modal.numero = 0;
+    //   this.Modal.estado = 0;
+    //   this.Modal.mensaje = [];
 
-      this.Error.estado = 0;
-      this.Error.mensaje = [];
+    //   this.Error.estado = 0;
+    //   this.Error.mensaje = [];
 
-      this.Material.id = 0;
-      this.Material.nombre = "";
-      this.Material.unidad = "";
-      this.Material.subtipo = "";
-      this.Material.costo = "";
+    //   this.Material.id = 0;
+    //   this.Material.nombre = "";
+    //   this.Material.unidad = "";
+    //   this.Material.subtipo = "";
+    //   this.Material.costo = "";
 
-      this.Button.press = false;
+    //   this.Button.press = false;
 
-      this.YaIngrese = 0;
-    },
+    //   this.YaIngrese = 0;
+    // },
     accionar(accion) {
       this.Button.press = true;
       switch (accion) {
@@ -688,29 +460,6 @@ export default {
           break;
         }
       }
-    },
-    getTitulo(titulo) {
-      var seleccionada = 0;
-
-      for (let i = 0; i < this.Headers.length; i++) {
-        if (
-          titulo == this.Headers[i].titulo &&
-          this.Navegacion.ordenarPor == this.Headers[i].nombre
-        ) {
-          seleccionada = 1;
-          break;
-        }
-      }
-
-      if (seleccionada == 1) {
-        if (this.Navegacion.orden == "asc") {
-          titulo = titulo + " ^";
-        } else {
-          titulo = titulo + " v";
-        }
-      }
-
-      return titulo;
     },
     validar() {
       this.Error.estado = 0;
@@ -756,8 +505,8 @@ export default {
       }
     },
     selectUnidad() {
-      var me = this;
-      var url = "/data/selectUnidad";
+      const me = this;
+      const url = this.Ruta.data + "/selectUnidad";
       axios
         .get(url)
         .then(function (response) {

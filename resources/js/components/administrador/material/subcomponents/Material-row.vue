@@ -20,8 +20,8 @@
 export default {
   props: ["material"],
   methods: {
-    edit() {
-
+    edit(material) {
+      this.$emit('edit-material', material)
     }
   },
 };
