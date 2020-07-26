@@ -30,22 +30,20 @@ class CreateEnvioBUTrigger extends Migration
                         END IF;
                         IF ( OLD.tipo = '2' ) THEN
                             UPDATE detalle_producto dproducto
-                                JOIN detalle_envio denvio ON denvio.subproducto_id = dproducto.producto_id
+                                JOIN detalle_envio denvio ON denvio.subproducto_id = dproducto.subproducto_id
                                     AND denvio.envio_id = NEW.id
                                     AND dproducto.centro_id = NEW.centro_to_id
                             SET dproducto.fallidos = dproducto.fallidos + denvio.cantidad;
                         END IF;
                         
                         UPDATE detalle_producto dproducto
-                        JOIN detalle_envio denvio		
-                            ON denvio.subproducto_id = dproducto.producto_id
-                            AND denvio.envio_id = NEW.id
-                            AND dproducto.centro_id = NEW.centro_from_id
+                            JOIN detalle_envio denvio ON denvio.subproducto_id = dproducto.subproducto_id
+                                AND denvio.envio_id = NEW.id
+                                AND dproducto.centro_id = NEW.centro_from_id
                         SET dproducto.traslado = dproducto.traslado - denvio.cantidad;
                     ELSE
                         UPDATE detalle_producto dproducto
-                        JOIN detalle_abasto dabasto 
-                            ON dabasto.producto_id = dproducto.producto_id
+                            JOIN detalle_abasto dabasto ON dabasto.producto_id = dproducto.subproducto_id
                                 AND dabasto.abasto_id = NEW.abasto_id
                                 AND dproducto.centro_id = NEW.centro_to_id
                         SET dproducto.stock = dproducto.stock + dabasto.cantidad;

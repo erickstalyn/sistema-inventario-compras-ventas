@@ -14,20 +14,20 @@ class CreateProduccionBUTrigger extends Migration
     public function up()
     {
         DB::unprepared("
-        CREATE TRIGGER produccion_BU
-        BEFORE UPDATE 
-        ON produccion
-        FOR EACH ROW
-        BEGIN
-            IF ( NEW.fecha_fin is not NULL ) THEN
-            UPDATE detalle_producto dproducto
-            JOIN detalle_produccion dproduccion
-                ON dproduccion.producto_id = dproducto.producto_id
-                    AND dproduccion.produccion_id = NEW.id
-                    AND dproducto.centro_id = NEW.almacen_id
-            SET dproducto.substock = dproducto.substock + dproduccion.cantidad;
-            END IF;
-        END
+            CREATE TRIGGER produccion_BU
+            BEFORE UPDATE 
+            ON produccion
+            FOR EACH ROW
+            BEGIN
+                IF ( NEW.fecha_fin IS NOT NULL ) THEN
+                    UPDATE detalle_producto dproducto
+                    JOIN detalle_produccion dproduccion
+                        ON dproduccion.subproducto_id = dproducto.subproducto_id
+                            AND dproduccion.produccion_id = NEW.id
+                            AND dproducto.centro_id = NEW.almacen_id
+                    SET dproducto.stock = dproducto.stock + dproduccion.cantidad;
+                END IF;
+            END
         ");
     }
 
