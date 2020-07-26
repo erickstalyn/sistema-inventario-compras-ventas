@@ -8,7 +8,6 @@
         </div>
 
         <div class="modal-body">
-          <!-- Modal Numero 1 de AGREGAR-->
           <div v-if="error.estado" class="row d-flex justify-content-center">
               <div class="alert alert-danger">
                 <button
@@ -19,7 +18,7 @@
                 >×</button>
                 <strong>Corregir los siguentes errores:</strong>
                 <ul>
-                  <li v-for="error in error.mensaje" :key="error" v-text="error"></li>
+                  <li v-for="(error, i) in error.mensaje" :key="i" v-text="error"></li>
                 </ul>
               </div>
           </div>
@@ -77,16 +76,15 @@
             </div>
           </div>
         </div>
-
-        <!-- <div class="modal-footer">
+        /**TODO: REVISAR LO DEL DATO Button */
+        <div class="modal-footer">
           <div class="row form-group col-md-12 d-flex justify-content-around">
             <button
-              type="button"
-              @click="accionar(Modal.accion)"
+              @click="action(modal.accion)"
               class="btn btn-success"
               :disabled="Button.press"
             >
-              <div v-if="!Button.press">{{Modal.accion}}</div>
+              <div v-if="!Button.press">{{modal.accion}}</div>
               <span
                 v-else
                 class="spinner-border spinner-border-sm"
@@ -94,9 +92,9 @@
                 aria-hidden="true"
               ></span>
             </button>
-            <button type="button" @click="cerrarModal()" class="btn btn-secondary">Cancelar</button>
+            <button type="button" @click="cerrar()" class="btn btn-secondary">Cancelar</button>
           </div>
-        </div>-->
+        </div>
       </div>
     </div>
   </div>
@@ -120,16 +118,21 @@ export default {
 
       this.error.estado = 0;
       this.error.mensaje = [];
+      this.clearInputs();
 
+      // this.Button.press = false;
+      // this.YaIngrese = 0;
+    },
+    clearInputs(){
       this.material.id = 0;
       this.material.nombre = "";
       this.material.unidad = "";
       this.material.subtipo = "";
       this.material.costo = "";
-
-      // this.Button.press = false;
-      // this.YaIngrese = 0;
     },
+    action() {
+
+    }
   },
 };
 </script>
