@@ -76,22 +76,9 @@
             </div>
           </div>
         </div>
-        /**TODO: REVISAR LO DEL DATO Button */
         <div class="modal-footer">
           <div class="row form-group col-md-12 d-flex justify-content-around">
-            <button
-              @click="action(modal.accion)"
-              class="btn btn-success"
-              :disabled="Button.press"
-            >
-              <div v-if="!Button.press">{{modal.accion}}</div>
-              <span
-                v-else
-                class="spinner-border spinner-border-sm"
-                role="status"
-                aria-hidden="true"
-              ></span>
-            </button>
+            <load-button @confirm-button="action" :action="modal.accion"></load-button>
             <button type="button" @click="cerrar()" class="btn btn-secondary">Cancelar</button>
           </div>
         </div>
@@ -101,14 +88,20 @@
 </template>
 
 <script>
+// Components
+import LoadButton from './Load-button'
+
 export default {
+  components: {
+    LoadButton
+  },
   props: ["the-modal", "the-material", "the-error"],
   data() {
     return {
       modal: this.theModal,
       error: this.theError,
-      material: this.theMaterial
-    };
+      material: this.theMaterial,
+    }
   },
   methods: {
     cerrar() {
@@ -120,7 +113,6 @@ export default {
       this.error.mensaje = [];
       this.clearInputs();
 
-      // this.Button.press = false;
       // this.YaIngrese = 0;
     },
     clearInputs(){
@@ -130,8 +122,8 @@ export default {
       this.material.subtipo = "";
       this.material.costo = "";
     },
-    action() {
-
+    action(action) {
+      this.$emit('action-modal', action)
     }
   },
 };

@@ -89,7 +89,7 @@
     </div>
 
     <!-- Modales -->
-    <my-modal :the-modal.sync="Modal" :the-material="Material" :the-error="Error"></my-modal>
+    <my-modal ref='modal' @action-modal="accionar" :the-modal.sync="Modal" :the-material="Material" :the-error="Error"></my-modal>
     
   </main>
 </template>
@@ -141,9 +141,6 @@ export default {
         estado: 0,
         titulo: "",
         accion: "",
-      },
-      Button: {
-        press: false,
       },
       //datos de paginacion
       Paginacion: {
@@ -215,7 +212,7 @@ export default {
     agregar() {
       if (this.validar()) return;
 
-      var me = this;
+      const me = this;
       axios
         .post("/material/agregar", {
           nombre: this.Material.nombre,
@@ -225,7 +222,8 @@ export default {
         })
         .then(function (response) {
           if (response.data.estado) {
-            me.cerrarModal();
+            me.$refs.modal.cerrar();
+
             me.listar();
             Swal.fire({
               position: "top-end",
@@ -246,6 +244,7 @@ export default {
                 "' ya se encuentra registrado"
             );
             me.Error.estado = 1;
+            console.log('hay errores')
           }
         })
         .catch(function (error) {
@@ -441,7 +440,6 @@ export default {
     //   this.YaIngrese = 0;
     // },
     accionar(accion) {
-      this.Button.press = true;
       switch (accion) {
         case "Agregar": {
           this.agregar();
