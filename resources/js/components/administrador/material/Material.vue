@@ -45,8 +45,12 @@
             v-model="Busqueda.filas"
             @change="listar()"
           >
-            <!-- <option v-for="item in Filas" :key="item" :value="item" v-text="item"></option> -->
-            <option v-for="item in [1,2,3,4,5,6,7]" :key="item" :value="item" v-text="item"></option>
+            <option
+              v-for="item in [5,6,7,8,9,10,11,12,13,14,15,16,17]"
+              :key="item"
+              :value="item"
+              v-text="item"
+            ></option>
           </select>
         </div>
       </div>
@@ -58,11 +62,11 @@
           <table class="table table-borderless table-sm text-gray-900">
             <thead>
               <tr class="table-info">
-                <th>Nombre</th>
-                <th>Unid. Medida</th>
-                <th>Costo Unit.</th>
-                <!-- <th>Estado</th> -->
-                <th>Opciones</th>
+                <th
+                  v-for="head in ['Nombre', 'Unid. Medida', 'Costo Unit.', 'Opciones']"
+                  :key="head"
+                  v-text="head"
+                ></th>
               </tr>
             </thead>
             <tbody>
@@ -76,7 +80,7 @@
           </table>
         </div>
         <!-- Barra de navegacion -->
-        <nav class="d-flex justify-content-center">
+        <!-- <nav class="d-flex justify-content-center">
           <ul class="pagination">
             <li class="page-item">
               <a
@@ -101,7 +105,9 @@
               >Siguiente</a>
             </li>
           </ul>
-        </nav>
+        </nav> -->
+        <pagination-bar @change-page="cambiarPagina" :paginacion="Paginacion" :paginas="Paginas"></pagination-bar>
+
       </div>
       <div v-else>
         <h5>No se han encontrado resultados</h5>
@@ -291,10 +297,14 @@
 </template>
 
 <script>
+/** Components */
 import MaterialRow from "./subcomponents/Material-row";
+import PaginationBar from "./subcomponents/Pagination-bar";
+
 export default {
   components: {
     MaterialRow,
+    PaginationBar
   },
   data() {
     return {
@@ -384,18 +394,6 @@ export default {
       }
 
       return pagesArray;
-    },
-    Filas: function () {
-      var min = 3;
-      var max = 20;
-      var filas = [];
-
-      while (min <= max) {
-        filas.push(min);
-        min++;
-      }
-
-      return filas;
     },
     selectUnidadFiltrado: function () {
       // console.log('Soy el computado selectUnidadFiltrado');
