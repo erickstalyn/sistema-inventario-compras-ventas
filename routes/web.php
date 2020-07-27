@@ -175,3 +175,11 @@ Route::group(['middleware' => ['auth']], function () {
     });
 
 });
+
+Route::get('/prueba', function () {
+    return view('prueba');
+});
+
+Route::get('/tipo_unidad/getAll', 'ConvertidorController@getTipoUnidadAll');
+Route::get('/unidad/getAll', 'ConvertidorController@getUnidadAll');
+Route::get('/calcular', 'ConvertidorController@calcular');

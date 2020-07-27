@@ -50,6 +50,14 @@ class ConversionController extends Controller
 
     private static function findConver($ruta, $conversiones, $unidad_to) {
         $etapa = $ruta[count($ruta)-1];
+
+        if ( $etapa['nombre'] == $unidad_to ) {
+            return [
+                'ruta' => $ruta,
+                'found' => true
+            ];
+        }
+
         $found = false;
 
         for ($i=0; $i < count($conversiones); $i++) { 
