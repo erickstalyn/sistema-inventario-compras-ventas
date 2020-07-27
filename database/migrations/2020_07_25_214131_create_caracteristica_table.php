@@ -15,7 +15,7 @@ class CreateCaracteristicaTable extends Migration
     {
         Schema::create('caracteristica', function (Blueprint $table) {
             $table->smallIncrements('id');
-            $table->string('descripcion', 100);
+            $table->string('nombre', 100);
             $table->unsignedTinyInteger('tipo_caracteristica_id');
 
             $table->foreign('tipo_caracteristica_id')->references('id')->on('tipo_caracteristica');

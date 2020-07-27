@@ -15,11 +15,12 @@ class Usuario extends Authenticatable
     protected $fillable = [
         'persona_id', 'centro_id', 'usuario', 'password', 'estado', 'rol_id'
     ];
-
     protected $hidden = [
         'password'
     ];
 
+    public $timestamps = false;
+    
     public function getPersona() {
         return $this->belongsTo('App\Persona', 'persona_id');
     }

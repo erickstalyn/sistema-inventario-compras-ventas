@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTipoCaracteristicaTable extends Migration
+class CreateUnidadTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,12 @@ class CreateTipoCaracteristicaTable extends Migration
      */
     public function up()
     {
-        Schema::create('tipo_caracteristica', function (Blueprint $table) {
+        Schema::create('unidad', function (Blueprint $table) {
             $table->tinyIncrements('id');
             $table->string('nombre', 100);
+            $table->unsignedTinyInteger('tipo_unidad_id');
+
+            $table->foreign('tipo_unidad_id')->references('id')->on('tipo_unidad');
         });
     }
 
@@ -26,6 +29,6 @@ class CreateTipoCaracteristicaTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tipo_caracteristica');
+        Schema::dropIfExists('unidad');
     }
 }

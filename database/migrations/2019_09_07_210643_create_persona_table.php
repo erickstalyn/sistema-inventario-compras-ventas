@@ -26,7 +26,9 @@ class CreatePersonaTable extends Migration
             $table->date('birthday', 30)->nullable();
             $table->char('tipo', 1);    // Que tipo de cliente es. Por ejemplo: (P: persona), (E: empresa)
             $table->unsignedSmallInteger('persona_id')->nullable();
-            
+            $table->boolean('estado')->default(1);
+            $table->timestamps();
+            $table->softDeletes();
 
             $table->foreign('persona_id')->references('id')->on('persona');
         });

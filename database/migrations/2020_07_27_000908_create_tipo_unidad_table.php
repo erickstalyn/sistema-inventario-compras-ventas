@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTipoCaracteristicaTable extends Migration
+class CreateTipoUnidadTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateTipoCaracteristicaTable extends Migration
      */
     public function up()
     {
-        Schema::create('tipo_caracteristica', function (Blueprint $table) {
+        Schema::create('tipo_unidad', function (Blueprint $table) {
             $table->tinyIncrements('id');
             $table->string('nombre', 100);
         });
@@ -26,6 +26,6 @@ class CreateTipoCaracteristicaTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tipo_caracteristica');
+        Schema::dropIfExists('tipo_unidad');
     }
 }

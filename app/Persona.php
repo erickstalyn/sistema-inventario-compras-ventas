@@ -10,11 +10,11 @@ class Persona extends Model
     protected $table = 'persona';
 
     protected $fillable = [
-        'persona_id', 'nombres', 'apellidos', 'razon_social', 'tipo_documento', 'numero_documento', 'direcciones', 'telefonos', 'emails', 'birthday', 'tipo'
+        'persona_id', 'nombres', 'apellidos', 'razon_social', 'tipo_documento', 'numero_documento', 'direcciones', 'telefonos', 'emails', 'birthday', 'tipo', 'estado'
     ];
 
     public $timestamps = false;
-
+    
     public function getUsuario(){
         return $this->hasOne('App\Usuario', 'persona_id');
     }

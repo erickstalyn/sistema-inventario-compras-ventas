@@ -15,7 +15,7 @@ class CreateCentroTable extends Migration
     {
         Schema::create('centro', function (Blueprint $table) {
             $table->tinyIncrements('id');   // Por ser tinyint y unsigned tiene como valor maximo 255
-            $table->unsignedTinyInteger('numero_serie');    // Por ser tinyint y unsigned tiene como valor maximo 255
+            $table->char('numero_serie', 4);    // Por ser tinyint y unsigned tiene como valor maximo 255
             $table->char('tipo', 1);    // Para saber que rol cumple este centro. Por ejemplo: (P: Puesto), (A: Almacén)
             $table->longText('numeros_correlativos'); // Aqui se guardaran los numeros correlativos de todos los comprobantes
             $table->string('nombre', 100)->unique();
