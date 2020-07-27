@@ -115,8 +115,7 @@ export default {
         nombre: "",
         subtipo: "",
         unidad: "",
-        costo: "",
-        estado: "",
+        costo: ""
       },
       MaterialOrigen: {
         id: 0,
@@ -347,7 +346,7 @@ export default {
       this.abrirModal(1, "Nuevo Material", "Agregar");
 
       //Verifico si el arreglo SelectUnidad esta vacia
-      if (!this.SelectUnidad.length) this.selectUnidad();
+      // if (!this.SelectUnidad.length) this.selectUnidad();
       //Verifico si el arreglo SelectTipoFiltro esta vacia
       // if(!this.SelectTipoFiltrado.length) this.selectTipoFiltrado();
       // this.selectTipoFiltrado();
@@ -369,7 +368,7 @@ export default {
       this.MaterialOrigen.costo = data["costo"];
 
       //Verifico si el arreglo SelectUnidad esta vacia
-      if (!this.SelectUnidad.length) this.selectUnidad();
+      // if (!this.SelectUnidad.length) this.selectUnidad();
       //Verifico si el arreglo SelectTipoFiltro esta vacia
       // if(!this.SelectTipoFiltrado.length) this.selectTipoFiltrado();
     },
@@ -460,34 +459,34 @@ export default {
         this.listar(page);
       }
     },
-    selectUnidad() {
-      const me = this;
-      const url = this.Ruta.data + "/selectUnidad";
-      axios
-        .get(url)
-        .then(function (response) {
-          me.SelectUnidad = response.data;
-        })
-        .then(function () {
-          me.selectTipoFiltrado();
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    },
-    selectTipoFiltrado() {
-      // let selectTipoFiltrado = [];
-      console.log("Ingrese al metodo selectTipoFiltrado");
-      // console.log("tamaño del SelectUnidad " + this.SelectUnidad.length);
-      this.SelectUnidad.forEach((unidad) => {
-        // console.log('Ingrese el foreach');
-        if (!this.SelectTipoFiltrado.includes(unidad.subtipo)) {
-          // console.log('ingrese al if del metodo selectTipoFiltrado');
-          this.SelectTipoFiltrado.push(unidad.subtipo);
-        }
-      });
-      // return selectTipoFiltrado;
-    },
+    // selectUnidad() {
+    //   const me = this;
+    //   const url = this.Ruta.data + "/selectUnidad";
+    //   axios
+    //     .get(url)
+    //     .then(function (response) {
+    //       me.SelectUnidad = response.data;
+    //     })
+    //     .then(function () {
+    //       me.selectTipoFiltrado();
+    //     })
+    //     .catch(function (error) {
+    //       console.log(error);
+    //     });
+    // },
+    // selectTipoFiltrado() {
+    //   // let selectTipoFiltrado = [];
+    //   // console.log("Ingrese al metodo selectTipoFiltrado");
+    //   // console.log("tamaño del SelectUnidad " + this.SelectUnidad.length);
+    //   this.SelectUnidad.forEach((unidad) => {
+    //     // console.log('Ingrese el foreach');
+    //     if (!this.SelectTipoFiltrado.includes(unidad.subtipo)) {
+    //       // console.log('ingrese al if del metodo selectTipoFiltrado');
+    //       this.SelectTipoFiltrado.push(unidad.subtipo);
+    //     }
+    //   });
+    //   // return selectTipoFiltrado;
+    // },
     generatePdf() {
       window.open(this.Ruta.serverPhp + "/material/generatePdf", "_blank");
       this.Button.press = false;

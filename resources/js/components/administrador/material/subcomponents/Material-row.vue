@@ -21,6 +21,7 @@ export default {
   props: ["material"],
   methods: {
     edit(material) {
+      console.log(material)
       this.$emit('edit-material', material)
     }
   },
