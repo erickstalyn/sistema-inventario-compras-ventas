@@ -81,7 +81,7 @@
           </table>
         </div>
         <!-- Barra de navegacion -->
-        <pagination-bar @change-page="cambiarPagina" :paginacion="Paginacion"></pagination-bar>
+        <pagination-bar @list="listar" :paginacion="Paginacion"></pagination-bar>
       </div>
       <div v-else>
         <h5>No se han encontrado resultados</h5>
@@ -454,11 +454,11 @@ export default {
     //   }
     //   return this.Error.estado;
     // },
-    cambiarPagina(page) {
-      if (page >= 1 && page <= this.Paginacion.lastPage) {
-        this.listar(page);
-      }
-    },
+    // cambiarPagina(page) {
+    //   if (page >= 1 && page <= this.Paginacion.lastPage) {
+    //     this.listar(page);
+    //   }
+    // },
     // selectUnidad() {
     //   const me = this;
     //   const url = this.Ruta.data + "/selectUnidad";

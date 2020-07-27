@@ -106,7 +106,8 @@ export default {
         estado: 0,
         mensaje: [],
       },
-      Ruta: {
+      ruta: {
+        material: '/material',
         data: "/data",
       },
     };
@@ -154,7 +155,7 @@ export default {
       this.error.estado = 0;
       this.error.mensaje = [];
 
-      //Recorrere la lista de material
+      //Recorrer la lista de material
       if (this.modal.numero == 1) {
         //Modal agregar
         if (!this.material.nombre)
@@ -190,17 +191,16 @@ export default {
     },
     agregar() {
       if (this.validar()) return;
-
       const me = this;
       axios
-        .post("/material/agregar", {
+        .post(this.ruta.material + "/agregar", {
           nombre: this.material.nombre,
           subtipo: this.material.subtipo,
           unidad: this.material.unidad,
           costo: this.material.costo,
         })
-        .then(function (response) {
-          if (response.data.estado) {
+        .then(function (res) {
+          if (res.data.estado) {
             me.cerrar();
             me.$emit("list"); //emito el evento de listar al PADRE
             Swal.fire({
@@ -231,7 +231,7 @@ export default {
     },
     selectUnidad() {
       const me = this;
-      const url = this.Ruta.data + "/selectUnidad";
+      const url = this.ruta.data + "/selectUnidad";
       axios
         .get(url)
         .then(function (res) {

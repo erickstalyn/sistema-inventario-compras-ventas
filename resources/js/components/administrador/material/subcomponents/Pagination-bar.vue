@@ -25,12 +25,14 @@ export default {
   data() {
     return {
       pagination: this.paginacion,
+      //TODO: Revisar el objecto navegation
       navegation: {
         offset: 3,
       },
     };
   },
   computed: {
+    //TODO: Revisar la funcion paginas, para ver si optimizo codigo
     paginas() {
       if (!this.pagination.lastItem) return [];
 
@@ -50,7 +52,7 @@ export default {
   },
   methods: {
     changePage(page) {
-      this.$emit("change-page", page);
+      if(page >= 1 && page <= this.pagination.lastPage) this.$emit('list', page)
     },
   },
 };
