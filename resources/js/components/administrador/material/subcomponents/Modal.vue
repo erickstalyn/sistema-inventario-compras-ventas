@@ -44,25 +44,25 @@
             <div class="col-md-4">
               <select v-model="material.subtipo" class="custom-select">
                 <option value disabled>tipo</option>
-                <!-- <option
+                <option
                     v-for="item in SelectTipoFiltrado"
                     :key="item"
                     :value="item"
                     v-text="item"
                     class="text-gray-900"
-                ></option>-->
+                ></option>
               </select>
             </div>
             <div class="col-md-5">
               <select v-model="material.unidad" class="custom-select" id="cat">
                 <option value disabled>subtipo</option>
-                <!-- <option
+                <option
                     v-for="unidad in selectUnidadFiltrado"
                     :key="unidad.id"
                     :value="unidad.nombre"
                     v-text="unidad.nombre"
                     class="text-gray-900"
-                ></option>-->
+                ></option>
               </select>
             </div>
           </div>
@@ -105,7 +105,37 @@ export default {
         estado: 0,
         mensaje: [],
       },
+
+      SelectUnidad: [],
+      SelectTipoFiltrado: [],
+      YaIngrese: 0,
+      Ruta: {
+        data: "/data",
+      },
     };
+  },
+  computed: {
+    //TODO: crear el filtro para los tipos y unidades
+    selectUnidadFiltrado: function () {
+      // console.log('Soy el computado selectUnidadFiltrado');
+      let selectUnidadFiltrado = [];
+      // console.log('tamaño de SelectUnidad: ' + this.SelectUnidad.length);
+      if (this.SelectUnidad.length) {
+        this.SelectUnidad.forEach((unidad) => {
+          if (unidad.subtipo == this.material.subtipo) {
+            selectUnidadFiltrado.push(unidad);
+          }
+        });
+
+        if (this.modal.numero == 1 || this.YaIngrese) {
+          //Es modal nuevo o ya ingrese
+          this.material.unidad = "";
+        } else {
+          this.YaIngrese = 1;
+        }
+        return selectUnidadFiltrado;
+      }
+    }
   },
   methods: {
     cerrar() {
@@ -198,7 +228,7 @@ export default {
         .then(function (response) {
           if (response.data.estado) {
             me.cerrar();
-            me.$emit('list'); //emito el evento de listar al PADRE
+            me.$emit("list"); //emito el evento de listar al PADRE
             Swal.fire({
               position: "top-end",
               toast: true,
@@ -225,6 +255,37 @@ export default {
           console.log("soy el error" + error);
         });
     },
+    selectUnidad() {
+      const me = this;
+      const url = this.Ruta.data + "/selectUnidad";
+      axios
+        .get(url)
+        .then(function (response) {
+          me.SelectUnidad = response.data;
+        })
+        .then(function () {
+          me.selectTipoFiltrado();
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
+    selectTipoFiltrado() {
+      // let selectTipoFiltrado = [];
+      console.log("Ingrese al metodo selectTipoFiltrado");
+      // console.log("tamaño del SelectUnidad " + this.SelectUnidad.length);
+      this.SelectUnidad.forEach((unidad) => {
+        // console.log('Ingrese el foreach');
+        if (!this.SelectTipoFiltrado.includes(unidad.subtipo)) {
+          // console.log('ingrese al if del metodo selectTipoFiltrado');
+          this.SelectTipoFiltrado.push(unidad.subtipo);
+        }
+      });
+      // return selectTipoFiltrado;
+    },
+  },
+  mounted() {
+    this.selectUnidad();
   },
 };
 </script>

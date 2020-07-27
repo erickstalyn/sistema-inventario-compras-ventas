@@ -209,48 +209,6 @@ export default {
           console.log(error);
         });
     },
-    // agregar() {
-    //   if (this.validar()) return;
-
-    //   const me = this;
-    //   axios
-    //     .post("/material/agregar", {
-    //       nombre: this.Material.nombre,
-    //       subtipo: this.Material.subtipo,
-    //       unidad: this.Material.unidad,
-    //       costo: this.Material.costo,
-    //     })
-    //     .then(function (response) {
-    //       if (response.data.estado) {
-    //         me.$refs.modal.cerrar();
-
-    //         me.listar();
-    //         Swal.fire({
-    //           position: "top-end",
-    //           toast: true,
-    //           type: "success",
-    //           title: "El material se ha AGREGADO correctamente",
-    //           showConfirmButton: false,
-    //           timer: 4500,
-    //           animation: false,
-    //           customClass: {
-    //             popup: "animated bounceIn fast",
-    //           },
-    //         });
-    //       } else {
-    //         me.Error.mensaje.push(
-    //           "El material '" +
-    //             me.Material.nombre +
-    //             "' ya se encuentra registrado"
-    //         );
-    //         me.Error.estado = 1;
-    //         console.log('hay errores')
-    //       }
-    //     })
-    //     .catch(function (error) {
-    //       console.log("soy el error" + error);
-    //     });
-    // },
     editar() {
       if (this.validar()) return;
 
