@@ -25,5 +25,7 @@ class CaracteristicaSeeder extends Seeder
         Caracteristica::create(['tipo_caracteristica_id' => $tipo_caracteristica_id, 'nombre' => 'celeste']);
         Caracteristica::create(['tipo_caracteristica_id' => $tipo_caracteristica_id, 'nombre' => 'verde']);
         Caracteristica::create(['tipo_caracteristica_id' => $tipo_caracteristica_id, 'nombre' => 'naranja']);
+        Caracteristica::create(['tipo_caracteristica_id' => $tipo_caracteristica_id, 'nombre' => 'amarillo']);
+        Caracteristica::create(['tipo_caracteristica_id' => $tipo_caracteristica_id, 'nombre' => 'violeta']);
     }
 }

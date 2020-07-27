@@ -10,7 +10,12 @@ class Subproducto extends Model
     protected $fillable = [
         'producto_id', 'nombre', 'code_unique', 'codigo', 'descripcion', 'caracteristicas', 'caracteristicas_json', 'costo_produccion', 'precio_menor', 'precio_mayor', 'stock', 'estado'
     ];
+    protected $casts = [
+        'caracteristicas_json' => 'array'
+    ];
 
+    protected $timestamps = false;
+    
     //Relación de muchos a muchos con Abasto
     public function getEnvios(){
         return $this->belongsToMany('App\Envio', 'detalle_envio')->withPivot('cantidad')->as('detalle_envio');

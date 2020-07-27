@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Unidad extends Model
 {
     protected $table = 'unidad';
-    protected $fillable = ['nombre', 'tipo_unidad_id'];
+    protected $fillable = ['nombre', 'estado', 'tipo_unidad_id'];
 
     public $timestamps = false;
 }

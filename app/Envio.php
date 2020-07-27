@@ -11,6 +11,8 @@ class Envio extends Model
         'centro_from_id','centro_to_id', 'abasto_id', 'estado', 'tipo'
     ];
 
+    protected $timestamps = false;
+
     //Relación inversa de uno a muchos con Usuario
     public function getCentroEnvio()
     {

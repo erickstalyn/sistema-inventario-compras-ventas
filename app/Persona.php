@@ -8,9 +8,13 @@ class Persona extends Model
 {
 
     protected $table = 'persona';
-
     protected $fillable = [
         'persona_id', 'nombres', 'apellidos', 'razon_social', 'tipo_documento', 'numero_documento', 'direcciones', 'telefonos', 'emails', 'birthday', 'tipo', 'estado'
+    ];
+    protected $casts = [
+        'direcciones' => 'array',
+        'telefonos' => 'array',
+        'emails' => 'array'
     ];
 
     public $timestamps = false;
