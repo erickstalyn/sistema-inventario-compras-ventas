@@ -40,31 +40,63 @@ class ConversionController extends Controller
                 'valor' => $cantidad
             ]
         ];
-        $ruta = findConver($ruta, $conversiones, $unidad_to);
+        $resultado = findConver($ruta, $conversiones, $unidad_to);
+        if ( $resultado['found'] == false ) return NULL;
 
+        $ruta = $resultado['ruta'];
+
+        return $ruta[count($ruta)-1]['valor'];
     }
 
     private static function findConver($ruta, $conversiones, $unidad_to) {
         $etapa = $ruta[count($ruta)-1];
-        
+        $found = false;
+
         for ($i=0; $i < count($conversiones); $i++) { 
             if ( $conversiones[$i]['revisado'] == false ) {
                 // ida
                 if ( $conversiones[$i]['nombre_unidad_from'] == $etapa['nombre'] ) {
+                    $conversiones[$i]['revisado'] = true;
+                    $ruta[] = [
+                        'nombre' => $conversiones[$i]['nombre_unidad_to'],
+                        'valor' => $etapa['valor'] * $conversiones[$i]['factor']
+                    ];
+
                     if ( $conversiones[$i]['nombre_unidad_to'] == $unidad_to ) {
-                        $ruta[] = [
-                            'nombre' => $conversiones[$i]['nombre_unidad_to'],
-                            'no'
-                        ];
+                        $found = true;
+                        break;
                     } else {
-                        findConver($ruta, $conversiones, $unidad_to);
+                        $resultado = findConver($ruta, $conversiones, $unidad_to);
+                        if ( $resultado['found'] == true ) {
+                            $found = true; break;
+                        }
                     }
                 }
                 // vuelta
+                if ( $conversiones[$i]['nombre_unidad_to'] == $etapa['nombre'] ) {
+                    $conversiones[$i]['revisado'] = true;
+                    $ruta[] = [
+                        'nombre' => $conversiones[$i]['nombre_unidad_to'],
+                        'valor' => $etapa['valor'] / $conversiones[$i]['factor']
+                    ];
+
+                    if ( $conversiones[$i]['nombre_unidad_from'] == $unidad_to ) {
+                        $found = true;
+                        break;
+                    } else {
+                        $resultado = findConver($ruta, $conversiones, $unidad_to);
+                        if ( $resultado['found'] == true ) {
+                            $found = true; break;
+                        }
+                    }
+                }
             }
             
         }
 
-        return $ruta;
+        return [
+            'ruta' => $ruta,
+            'found' => $found
+        ];
     }
 }
