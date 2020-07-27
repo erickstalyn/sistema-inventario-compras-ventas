@@ -352,7 +352,6 @@ export default {
       // this.selectTipoFiltrado();
     },
     abrirModalEditar(data = []) {
-      this.abrirModal(2, "Editar Material", "Editar");
 
       this.Material.id = data["id"];
       this.Material.nombre = data["nombre"];
@@ -366,6 +365,8 @@ export default {
       this.MaterialOrigen.subtipo = data["subtipo"];
       this.MaterialOrigen.unidad = data["unidad"];
       this.MaterialOrigen.costo = data["costo"];
+
+      this.abrirModal(2, "Editar Material", "Editar");
 
       //Verifico si el arreglo SelectUnidad esta vacia
       // if (!this.SelectUnidad.length) this.selectUnidad();

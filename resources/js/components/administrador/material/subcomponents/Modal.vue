@@ -42,10 +42,10 @@
               <span class="text-danger">*</span>
             </label>
             <div class="col-md-4">
-              <select v-model="material.subtipo" class="custom-select">
+              <select @change="changeNames()" v-model="material.subtipo" class="custom-select">
                 <option value disabled>tipo</option>
                 <option
-                  v-for="(unit, i) in onlyUnits"
+                  v-for="(unit, i) in selectUnits"
                   :key="i"
                   :value="unit"
                   v-text="unit"
@@ -55,9 +55,9 @@
             </div>
             <div class="col-md-5">
               <select v-model="material.unidad" class="custom-select" id="cat">
-                <option value="" disabled>subtipo</option>
+                <option value disabled>subtipo</option>
                 <option
-                  v-for="unidad in namesUnits"
+                  v-for="unidad in selectNames"
                   :key="unidad"
                   :value="unidad"
                   v-text="unidad"
@@ -100,14 +100,16 @@ export default {
     return {
       modal: this.theModal,
       material: this.theMaterial,
-      units: [],
+      unitsRaw: [],
+      selectUnits: [],
+      selectNames: [],
       //datos de errores
       error: {
         estado: 0,
         mensaje: [],
       },
       ruta: {
-        material: '/material',
+        material: "/material",
         data: "/data",
       },
     };
@@ -229,34 +231,62 @@ export default {
           console.log("soy el error" + error);
         });
     },
-    selectUnidad() {
+    getUnitsRaw() {
       const me = this;
       const url = this.ruta.data + "/selectUnidad";
-      axios
+      return axios
         .get(url)
         .then(function (res) {
-          me.units = res.data;
+          me.unitsRaw = res.data;
+          me.initialSelect();
         })
         .catch(function (error) {
           console.log(error);
         });
     },
-  },
-  computed: {
-    onlyUnits() {
-      const arr = this.units.map((el) => el.subtipo);
-      return arr.filter((el, index, self) => self.indexOf(el) === index);
-    },
-    namesUnits() {
-      //FIXME: Debo hacer que la unidad se queda "" cuando se cambia de Unidad ( OnlyUnits)
-      // if(this.modal.numero == 1) this.material.unidad = ''; //Si es el modal de agregar...
-      return this.units
+    changeNames() {
+      console.log("run changeNames");
+      this.material.unidad = "";
+      this.selectNames = this.unitsRaw
         .filter((el) => el.subtipo == this.material.subtipo)
         .map((el) => el.nombre);
     },
+    initialSelect() {
+      console.log("run initialSelect");
+      this.onlyUnits();
+      if (this.modal.numero == 2) {
+        //Editar
+        this.material.unidad = "";
+        this.selectNames = this.unitsRaw
+          .filter((el) => el.subtipo == this.material.subtipo)
+          .map((el) => el.nombre);
+      }
+    },
+    onlyUnits() {
+      console.log("run onlyUnits");
+      const arr = this.unitsRaw.map((el) => el.subtipo);
+      this.selectUnits = arr.filter(
+        (el, index, self) => self.indexOf(el) === index
+      );
+    },
+  },
+  computed: {
+    // onlyUnits() {
+    //   console.log('run onlyUnits')
+    //   const arr = this.unitsRaw.map((el) => el.subtipo);
+    //   return arr.filter((el, index, self) => self.indexOf(el) === index);
+    // },
+    // namesUnits() {
+    //   console.log("run namesUnits");
+    //   //FIXME: Debo hacer que la unidad se queda "" cuando se cambia de Unidad ( OnlyUnits)
+    //   this.material.unidad = "";
+    //   return this.units
+    //     .filter((el) => el.subtipo == this.material.subtipo)
+    //     .map((el) => el.nombre);
+    // },
   },
   mounted() {
-    this.selectUnidad();
+    this.getUnitsRaw();
   },
 };
 </script>
