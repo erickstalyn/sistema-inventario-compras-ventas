@@ -36,7 +36,7 @@
               />
             </div>
           </div>
-          <div class="row form-group">
+          <!-- <div class="row form-group">
             <label class="col-md-3 font-weight-bold" for="des">
               Unid.Medida&nbsp;
               <span class="text-danger">*</span>
@@ -65,7 +65,9 @@
                 ></option>
               </select>
             </div>
-          </div>
+          </div> -->
+          <select-unit :the-subtipo.sync="material.subtipo" :the-unit.sync="material.unidad" :the-number-modal="modal.numero"></select-unit>
+
           <div class="row form-group">
             <label class="col-md-3 font-weight-bold" for="nom">
               Costo por Unidad&nbsp;
@@ -90,19 +92,21 @@
 <script>
 // Components
 import LoadButton from "./Load-button";
+import selectUnit from './Select-unit'
 
 export default {
   components: {
     LoadButton,
+    selectUnit
   },
   props: ["the-modal", "the-material"],
   data() {
     return {
       modal: this.theModal,
       material: this.theMaterial,
-      unitsRaw: [],
-      selectUnits: [],
-      selectNames: [],
+      // unitsRaw: [],
+      // selectUnits: [],
+      // selectNames: [],
       //datos de errores
       error: {
         estado: 0,
@@ -231,62 +235,45 @@ export default {
           console.log("soy el error" + error);
         });
     },
-    getUnitsRaw() {
-      const me = this;
-      const url = this.ruta.data + "/selectUnidad";
-      return axios
-        .get(url)
-        .then(function (res) {
-          me.unitsRaw = res.data;
-          me.initialSelect();
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    },
-    changeNames() {
-      console.log("run changeNames");
-      this.material.unidad = "";
-      this.selectNames = this.unitsRaw
-        .filter((el) => el.subtipo == this.material.subtipo)
-        .map((el) => el.nombre);
-    },
-    initialSelect() {
-      console.log("run initialSelect");
-      this.onlyUnits();
-      if (this.modal.numero == 2) {
-        //Editar
-        this.material.unidad = "";
-        this.selectNames = this.unitsRaw
-          .filter((el) => el.subtipo == this.material.subtipo)
-          .map((el) => el.nombre);
-      }
-    },
-    onlyUnits() {
-      console.log("run onlyUnits");
-      const arr = this.unitsRaw.map((el) => el.subtipo);
-      this.selectUnits = arr.filter(
-        (el, index, self) => self.indexOf(el) === index
-      );
-    },
-  },
-  computed: {
-    // onlyUnits() {
-    //   console.log('run onlyUnits')
-    //   const arr = this.unitsRaw.map((el) => el.subtipo);
-    //   return arr.filter((el, index, self) => self.indexOf(el) === index);
+    // getUnitsRaw() {
+    //   const me = this;
+    //   const url = this.ruta.data + "/selectUnidad";
+    //   axios
+    //     .get(url)
+    //     .then(function (res) {
+    //       me.unitsRaw = res.data;
+    //       me.onlyUnits();
+    //       if (me.modal.numero == 2) me.initialNames();
+    //     })
+    //     .catch(function (error) {
+    //       console.log(error);
+    //     });
     // },
-    // namesUnits() {
-    //   console.log("run namesUnits");
-    //   //FIXME: Debo hacer que la unidad se queda "" cuando se cambia de Unidad ( OnlyUnits)
+    // changeNames() {
+    //   console.log("run changeNames");
     //   this.material.unidad = "";
-    //   return this.units
+    //   this.selectNames = this.unitsRaw
     //     .filter((el) => el.subtipo == this.material.subtipo)
     //     .map((el) => el.nombre);
     // },
+    // initialNames() {
+    //   console.log("run initialNames");
+    //   this.selectNames = this.unitsRaw
+    //     .filter((el) => el.subtipo == this.material.subtipo)
+    //     .map((el) => el.nombre);
+    // },
+    // onlyUnits() {
+    //   console.log("run onlyUnits");
+    //   const arr = this.unitsRaw.map((el) => el.subtipo);
+    //   this.selectUnits = arr.filter(
+    //     (el, index, self) => self.indexOf(el) === index
+    //   );
+    // },
+  },
+  computed: {
   },
   mounted() {
-    this.getUnitsRaw();
+    // this.getUnitsRaw();
   },
 };
 </script>
