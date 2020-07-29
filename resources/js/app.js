@@ -19,8 +19,6 @@ window.Vue = require('vue');
 // const files = require.context('./', true, /\.vue$/i);
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default));
 
-Vue.component('prueba', require('./components/Prueba.vue').default);
-
 Vue.component('adm_usuario', require('./components/administrador/Usuario.vue').default);
 Vue.component('adm_superproducto', require('./components/administrador/SuperProducto.vue').default);
 Vue.component('adm_producto', require('./components/administrador/Producto.vue').default);
@@ -55,28 +53,24 @@ Vue.component('noti_venta_alm', require('./components/Notificacion/Notification_
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-// const app = new Vue({
-//     el: '#app',
-//     data: {
-//         menu: 6,
-//         notifications:[],
-//     },
-    // created(){
-    //     let me = this;
-    //     axios.post('notification/get').then(function(response){
-    //         // console.log(response.data);
-    //         me.notifications = response.data;
-    //     }).catch(function(error){
-    //         console.log(error);
-    //     });
-    //     var userId = $('meta[name="userId"]').attr('content');
-    //     Echo.private('App.Usuario.' + userId).notification((notification) =>{
-    //         console.log(notification);
-    //         me.notifications.unshift(notification);
-    //     });
-    // }
-// });
-
-const test = new Vue({
-    el: '#testid'
+const app = new Vue({
+    el: '#app',
+    data: {
+        menu: 6,
+        notifications:[],
+    },
+    created(){
+        let me = this;
+        axios.post('notification/get').then(function(response){
+            // console.log(response.data);
+            me.notifications = response.data;
+        }).catch(function(error){
+            console.log(error);
+        });
+        var userId = $('meta[name="userId"]').attr('content');
+        Echo.private('App.Usuario.' + userId).notification((notification) =>{
+            console.log(notification);
+            me.notifications.unshift(notification);
+        });
+    }
 });

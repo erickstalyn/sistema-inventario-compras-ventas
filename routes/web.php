@@ -176,10 +176,9 @@ Route::group(['middleware' => ['auth']], function () {
 
 });
 
-Route::get('/prueba', function () {
-    return view('prueba');
-});
+// Rutas para realizar el calculo de conversiones tanto en el back como en el front
+Route::get('/unidad/getConvertidorData', 'UnidadController@getConvertidorData');
+Route::get('/unidad/getUnidades', 'UnidadController@getUnidades');
+Route::get('/unidad/getTiposUnidad', 'UnidadController@getTiposUnidad');
 
-Route::get('/tipo_unidad/getAll', 'ConvertidorController@getTipoUnidadAll');
-Route::get('/unidad/getAll', 'ConvertidorController@getUnidadAll');
-Route::get('/calcular', 'ConvertidorController@calcular');
+Route::get('/unidad/calculateConversion', 'UnidadController@calculateConversion');
