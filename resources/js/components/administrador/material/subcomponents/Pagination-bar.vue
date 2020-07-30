@@ -21,10 +21,17 @@
 
 <script>
 export default {
-  props: ["paginacion"],
+  // props: ["paginacion"],
+  props: {
+    paginacion: {
+      type: Object,
+      default: () => {},
+      required: true
+    }
+  },
   data() {
     return {
-      pagination: this.paginacion,
+      // pagination: this.paginacion,
       //TODO: Revisar el objecto navegation
       navegation: {
         offset: 3,
@@ -34,13 +41,13 @@ export default {
   computed: {
     //TODO: Revisar la funcion paginas, para ver si optimizo codigo
     paginas() {
-      if (!this.pagination.lastItem) return [];
+      if (!this.paginacion.lastItem) return [];
 
-      let from = this.pagination.currentPage - this.navegation.offset;
+      let from = this.paginacion.currentPage - this.navegation.offset;
       if (from < 1) from = 1;
 
-      let to = this.pagination.currentPage + this.navegation.offset * 2;
-      if (to > this.pagination.lastPage) to = this.pagination.lastPage;
+      let to = this.paginacion.currentPage + this.navegation.offset * 2;
+      if (to > this.paginacion.lastPage) to = this.paginacion.lastPage;
 
       let pagesArray = [];
       while (from <= to) {
@@ -52,7 +59,7 @@ export default {
   },
   methods: {
     changePage(page) {
-      if(page >= 1 && page <= this.pagination.lastPage) this.$emit('list', page)
+      if(page >= 1 && page <= this.paginacion.lastPage) this.$emit('list', page)
     },
   },
 };

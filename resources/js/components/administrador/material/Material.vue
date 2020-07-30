@@ -89,7 +89,7 @@
     </div>
 
     <!-- Modales -->
-    <my-modal @list="listar" :the-modal.sync="Modal" :the-material="Material"></my-modal>
+    <my-modal @list="listar"  :modal="modal" @clearModal="onClearModal" :initMaterial="Material" @clearMaterial="onClearMaterial"></my-modal>
     
   </main>
 </template>
@@ -115,14 +115,8 @@ export default {
         nombre: "",
         subtipo: "",
         unidad: "",
-        costo: ""
-      },
-      MaterialOrigen: {
-        id: 0,
-        nombre: "",
-        subtipo: "",
-        unidad: "",
         costo: "",
+        estado: 0
       },
       SelectUnidad: [],
       SelectTipoFiltrado: [],
@@ -135,11 +129,11 @@ export default {
       },
 
       //datos de modales
-      Modal: {
-        numero: 0,
-        estado: 0,
-        titulo: "",
+      modal: {
         accion: "",
+        estado: 0,
+        numero: 0,
+        titulo: "",
       },
       //datos de paginacion
       Paginacion: {
@@ -150,11 +144,6 @@ export default {
         firstItem: 0,
         lastItem: 0,
       },
-      //datos de errores
-      // Error: {
-      //   estado: 0,
-      //   mensaje: [],
-      // },
       Ruta: {
         material: "/material",
         data: "/data",
@@ -163,26 +152,6 @@ export default {
     };
   },
   computed: {
-    selectUnidadFiltrado: function () {
-      // console.log('Soy el computado selectUnidadFiltrado');
-      let selectUnidadFiltrado = [];
-      // console.log('tamaño de SelectUnidad: ' + this.SelectUnidad.length);
-      if (this.SelectUnidad.length) {
-        this.SelectUnidad.forEach((unidad) => {
-          if (unidad.subtipo == this.Material.subtipo) {
-            selectUnidadFiltrado.push(unidad);
-          }
-        });
-
-        if (this.Modal.numero == 1 || this.YaIngrese) {
-          //Es moda nuevo o ya ingrese
-          this.Material.unidad = "";
-        } else {
-          this.YaIngrese = 1;
-        }
-        return selectUnidadFiltrado;
-      }
-    },
   },
   methods: {
     listar(page = 1) {
@@ -351,38 +320,27 @@ export default {
       // if(!this.SelectTipoFiltrado.length) this.selectTipoFiltrado();
       // this.selectTipoFiltrado();
     },
-    abrirModalEditar(data = []) {
-
-      this.Material.id = data["id"];
-      this.Material.nombre = data["nombre"];
-      this.Material.subtipo = data["subtipo"];
-      this.Material.unidad = data["unidad"];
-      this.Material.costo = data["costo"];
-
-      //Lleno los campos de mi Material Original
-      this.MaterialOrigen.id = data["id"];
-      this.MaterialOrigen.nombre = data["nombre"];
-      this.MaterialOrigen.subtipo = data["subtipo"];
-      this.MaterialOrigen.unidad = data["unidad"];
-      this.MaterialOrigen.costo = data["costo"];
-
+    abrirModalEditar(material) {
+      this.Material = material;
       this.abrirModal(2, "Editar Material", "Editar");
 
-      //Verifico si el arreglo SelectUnidad esta vacia
-      // if (!this.SelectUnidad.length) this.selectUnidad();
-      //Verifico si el arreglo SelectTipoFiltro esta vacia
-      // if(!this.SelectTipoFiltrado.length) this.selectTipoFiltrado();
     },
     abrirModal(numero, titulo, accion) {
-      this.Modal.estado = 1;
-      this.Modal.numero = numero;
-      this.Modal.titulo = titulo;
-      this.Modal.accion = accion;
+      this.modal.estado = 1;
+      this.modal.numero = numero;
+      this.modal.titulo = titulo;
+      this.modal.accion = accion;
+    },
+    onClearModal(){
+      this.modal = {accion: '',estado: 0, numero: 0, titulo: ''};
+    },
+    onClearMaterial(){
+      this.Material = {id: 0, nombre: "", subtipo: "", unidad: "", costo: "", estado: 0};
     },
     // cerrarModal() {
-    //   this.Modal.numero = 0;
-    //   this.Modal.estado = 0;
-    //   this.Modal.mensaje = [];
+    //   this.modal.numero = 0;
+    //   this.modal.estado = 0;
+    //   this.modal.mensaje = [];
 
     //   this.Error.estado = 0;
     //   this.Error.mensaje = [];
@@ -422,8 +380,8 @@ export default {
     //   this.Error.mensaje = [];
 
     //   //Recorrere la lista de Material
-    //   if (this.Modal.numero == 1) {
-    //     //Modal agregar
+    //   if (this.modal.numero == 1) {
+    //     //modal agregar
     //     if (!this.Material.nombre)
     //       this.Error.mensaje.push("Debe ingresar un nombre");
     //     if (!this.Material.unidad)
@@ -431,7 +389,7 @@ export default {
     //     if (this.Material.costo == 0 || this.Material.costo < 0)
     //       this.Error.mensaje.push("Debe ingresar un costo válido");
     //   } else {
-    //     //Modal editar
+    //     //modal editar
     //     if (
     //       this.Material.nombre == this.MaterialOrigen.nombre &&
     //       this.Material.subtipo == this.MaterialOrigen.subtipo &&

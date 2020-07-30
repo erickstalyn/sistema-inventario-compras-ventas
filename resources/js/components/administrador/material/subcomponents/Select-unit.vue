@@ -1,6 +1,6 @@
 <template>
   <div class="row form-group">
-    <label class="col-md-3 font-weight-bold" for="des">
+    <label class="col-md-3 font-weight-bold">
       Unid.Medida&nbsp;
       <span class="text-danger">*</span>
     </label>
@@ -8,16 +8,16 @@
       <select @change="changeNames()" v-model="subtipo" class="custom-select">
         <option value disabled>tipo</option>
         <option
-          v-for="(unit, i) in selectUnits"
+          v-for="(u, i) in selectUnits"
           :key="i"
-          :value="unit"
-          v-text="unit"
+          :value="u"
+          v-text="u"
           class="text-gray-900"
         ></option>
       </select>
     </div>
     <div class="col-md-5">
-      <select v-model="unit" class="custom-select" id="cat">
+      <select v-model="unit" class="custom-select">
         <option value disabled>subtipo</option>
         <option
           v-for="unidad in selectNames"
@@ -34,19 +34,49 @@
 <script>
 export default {
   //TODO: Seguir creando este componente
-  props: ['the-subtipo', 'the-unit', 'the-number-modal'],
+  props: {
+    subtipo: {
+      type: String,
+      default: () => '',
+      required: true
+    },
+    unit: {
+      type: String,
+      default: () => '',
+      required: true
+    },
+    numberModal: {
+      type: Number,
+      default: () => 0,
+      required: true
+    }
+  },
   data() {
     return {
-      subtipo: this.theSubtipo,
-      unit: this.theUnit,
-      numberModal: this.theNumberModal,
+      // subtipo: this.theSubtipo,
+      // unit: this.theUnit,
+      // numberModal: this.theNumberModal,
       unitsRaw: [],
       selectUnits: [],
       selectNames: [],
       ruta: {
         data: "/data",
       },
+      ticketCounter: 0
     }
+  },
+  computed: {
+    getNames() {
+      console.log("run getNames");
+      this.ticketCounter++;
+      if(this.numberModal == 2 && this.ticketCounter == 1) { //Modal editar && ticketCounter es 1
+      }else {
+        this.unit = "";
+      }
+      this.selectNames = this.unitsRaw
+        .filter((el) => el.subtipo == this.subtipo)
+        .map((el) => el.nombre);
+    },
   },
   methods: {
     getUnitsRaw() {
@@ -58,40 +88,38 @@ export default {
         .then(function (res) {
           me.unitsRaw = res.data;
           me.onlyUnits();
-          if (me.numberModal == 2) me.initialNames();
+          // me.initialNames();
+          // if (me.numberModal == 2) me.initialNames();
         })
         .catch(function (error) {
           console.log(error);
         });
     },
-    changeNames() {
-      // console.log("run changeNames");
-      this.unit = "";
-      this.selectNames = this.unitsRaw
-        .filter((el) => el.subtipo == this.subtipo)
-        .map((el) => el.nombre);
-    },
+    // changeNames() {
+    //   console.log("run changeNames");
+    //   this.unit = "";
+    //   this.selectNames = this.unitsRaw
+    //     .filter((el) => el.subtipo == this.subtipo)
+    //     .map((el) => el.nombre);
+    // },
     initialNames() {
-      // console.log("run initialNames");
-      // this.unit = "";
+      console.log("run initialNames");
       this.selectNames = this.unitsRaw
         .filter((el) => el.subtipo == this.subtipo)
         .map((el) => el.nombre);
     },
     onlyUnits() {
-      // console.log("run onlyUnits");
+      console.log("run onlyUnits");
       const arr = this.unitsRaw.map((el) => el.subtipo);
       this.selectUnits = arr.filter(
         (el, index, self) => self.indexOf(el) === index
       );
     },
   },
-  computed: {
-    
-  },
-  created() {
-    this.getUnitsRaw();
-  },
+  mounted() {
+    // console.log(this.$props)
+    this.getUnitsRaw()
+  }
 };
 </script>
 

@@ -6,7 +6,7 @@
     <td>
       <button
         type="button"
-        @click="edit(material)"
+        @click="edit()"
         title="Editar"
         class="btn btn-outline-warning btn-sm"
       >
@@ -18,11 +18,17 @@
 
 <script>
 export default {
-  props: ["material"],
+  // props: ["material"],
+  props: {
+    material: {
+      type: Object,
+      default: () => {},
+      required: true
+    }
+  },
   methods: {
-    edit(material) {
-      console.log(material)
-      this.$emit('edit-material', material)
+    edit() {
+      this.$emit('edit-material', this.material)
     }
   },
 };

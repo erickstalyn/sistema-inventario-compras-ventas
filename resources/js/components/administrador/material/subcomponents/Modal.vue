@@ -1,5 +1,6 @@
 <template>
-  <div v-if="modal.estado" class="modal text-gray-900 mostrar">
+  <!-- <div v-if="modal.estado" class="modal text-gray-900 mostrar"> -->
+  <div :class="{'modal text-gray-900': true, 'mostrar': modal.estado}">
     <div class="modal-dialog modal-dialog-centered animated bounceIn fast">
       <div class="modal-content modal-lg">
         <div class="modal-header">
@@ -36,37 +37,8 @@
               />
             </div>
           </div>
-          <!-- <div class="row form-group">
-            <label class="col-md-3 font-weight-bold" for="des">
-              Unid.Medida&nbsp;
-              <span class="text-danger">*</span>
-            </label>
-            <div class="col-md-4">
-              <select @change="changeNames()" v-model="material.subtipo" class="custom-select">
-                <option value disabled>tipo</option>
-                <option
-                  v-for="(unit, i) in selectUnits"
-                  :key="i"
-                  :value="unit"
-                  v-text="unit"
-                  class="text-gray-900"
-                ></option>
-              </select>
-            </div>
-            <div class="col-md-5">
-              <select v-model="material.unidad" class="custom-select" id="cat">
-                <option value disabled>subtipo</option>
-                <option
-                  v-for="unidad in selectNames"
-                  :key="unidad"
-                  :value="unidad"
-                  v-text="unidad"
-                  class="text-gray-900"
-                ></option>
-              </select>
-            </div>
-          </div> -->
-          <select-unit :the-subtipo.sync="material.subtipo" :the-unit.sync="material.unidad" :the-number-modal="modal.numero"></select-unit>
+
+          <select-unit :subtipo.sync="material.subtipo" :unit.sync="material.unidad" :numberModal="modal.numero"></select-unit>
 
           <div class="row form-group">
             <label class="col-md-3 font-weight-bold" for="nom">
@@ -99,11 +71,21 @@ export default {
     LoadButton,
     selectUnit
   },
-  props: ["the-modal", "the-material"],
+  props: {
+    modal: {
+      type: Object,
+      default: () => {},
+      required: true
+    },
+    initMaterial: {
+      type: Object,
+      default: () => {},
+      required: true
+    }
+  },
   data() {
     return {
-      modal: this.theModal,
-      material: this.theMaterial,
+      material: {},
       // unitsRaw: [],
       // selectUnits: [],
       // selectNames: [],
@@ -118,17 +100,28 @@ export default {
       },
     };
   },
+  computed: {
+    // material: function() {
+    //   return this.material;
+    // }
+  },
+  updated(){
+    if(this.modal.estado) { //Si el modal se muestra
+      this.material.id = this.initMaterial.id;
+      this.material.nombre = this.initMaterial.nombre;
+      this.material.unidad = this.initMaterial.unidad;
+      this.material.subtipo = this.initMaterial.subtipo;
+      this.material.costo = this.initMaterial.costo;
+    }
+  },
   methods: {
     cerrar() {
-      this.modal.numero = 0;
-      this.modal.estado = 0;
-      this.modal.mensaje = [];
+      this.$emit('clearModal');
+      this.$emit('clearMaterial');
 
       this.error.estado = 0;
       this.error.mensaje = [];
       this.clearInputs();
-
-      // this.YaIngrese = 0;
     },
     clearInputs() {
       this.material.id = 0;
@@ -269,12 +262,7 @@ export default {
     //     (el, index, self) => self.indexOf(el) === index
     //   );
     // },
-  },
-  computed: {
-  },
-  mounted() {
-    // this.getUnitsRaw();
-  },
+  }
 };
 </script>
 
