@@ -85,7 +85,14 @@ export default {
   },
   data() {
     return {
-      material: {},
+      material: {
+        id: 0,
+        nombre: "",
+        subtipo: "",
+        unidad: "",
+        costo: "",
+        estado: 0
+      },
       // unitsRaw: [],
       // selectUnits: [],
       // selectNames: [],
@@ -106,24 +113,15 @@ export default {
     // }
   },
   watch: {
-    // modal: function() {
-    //   console.log('modal watched')
-    //   if(this.modal.estado == 1) { //Si el modal se muestra
-    //     this.material.id = this.initMaterial.id;
-    //     this.material.nombre = this.initMaterial.nombre;
-    //     this.material.unidad = this.initMaterial.unidad;
-    //     this.material.subtipo = this.initMaterial.subtipo;
-    //     this.material.costo = this.initMaterial.costo;
-    //   }
-    // }
-  },
-  updated(){
-    if(this.modal.estado) { //Si el modal se muestra
-      this.material.id = this.initMaterial.id;
-      this.material.nombre = this.initMaterial.nombre;
-      this.material.unidad = this.initMaterial.unidad;
-      this.material.subtipo = this.initMaterial.subtipo;
-      this.material.costo = this.initMaterial.costo;
+    initMaterial: {
+      deep: true,
+      handler: function(newVal) {
+        this.material.id = newVal.id;
+        this.material.nombre = newVal.nombre;
+        this.material.unidad = newVal.unidad;
+        this.material.subtipo = newVal.subtipo;
+        this.material.costo = newVal.costo;
+      }
     }
   },
   methods: {
