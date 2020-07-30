@@ -5,25 +5,25 @@
       <span class="text-danger">*</span>
     </label>
     <div class="col-md-4">
-      <select @change="changeNames()" v-model="subtipo" class="custom-select">
-        <option value disabled>tipo</option>
+      <select @change="changeTipo()" v-model="tipo" class="custom-select">
+        <option value="" disabled>tipo</option>
         <option
-          v-for="(u, i) in selectUnits"
+          v-for="(tipo, i) in selectTipoUnidad"
           :key="i"
-          :value="u"
-          v-text="u"
+          :value="tipo"
+          v-text="tipo"
           class="text-gray-900"
         ></option>
       </select>
     </div>
     <div class="col-md-5">
-      <select v-model="unit" class="custom-select">
-        <option value disabled>subtipo</option>
+      <select v-model="unit" @change="changeUnit()" class="custom-select">
+        <option value="" disabled>seleccione</option>
         <option
-          v-for="unidad in selectNames"
-          :key="unidad"
-          :value="unidad"
-          v-text="unidad"
+          v-for="unidad in selectUnidad"
+          :key="unidad.unidad_nombre"
+          :value="unidad.unidad_nombre"
+          v-text="unidad.unidad_nombre"
           class="text-gray-900"
         ></option>
       </select>
@@ -35,17 +35,17 @@
 export default {
   //TODO: Seguir creando este componente
   props: {
-    subtipo: {
+    initTipo: {
       type: String,
       default: () => '',
       required: true
     },
-    unit: {
+    initUnit: {
       type: String,
       default: () => '',
       required: true
     },
-    numberModal: {
+    estadoModal: {
       type: Number,
       default: () => 0,
       required: true
@@ -53,72 +53,61 @@ export default {
   },
   data() {
     return {
-      // subtipo: this.theSubtipo,
-      // unit: this.theUnit,
-      // numberModal: this.theNumberModal,
-      unitsRaw: [],
-      selectUnits: [],
-      selectNames: [],
+      tipo: '',
+      unit: '',
+      
+      selectTipoUnidad: [],
+      unidadesRaw: [],
       ruta: {
-        data: "/data",
+        unidad: "/unidad",
       },
-      ticketCounter: 0
+      // ticketCounter: 0
     }
   },
   computed: {
-    getNames() {
-      console.log("run getNames");
-      this.ticketCounter++;
-      if(this.numberModal == 2 && this.ticketCounter == 1) { //Modal editar && ticketCounter es 1
-      }else {
-        this.unit = "";
-      }
-      this.selectNames = this.unitsRaw
-        .filter((el) => el.subtipo == this.subtipo)
-        .map((el) => el.nombre);
+    selectUnidad: function() {
+      return this.unidadesRaw.filter((e,i,self) => e.tipo_unidad_nombre == this.tipo)
     },
+  },
+  watch: {
+    estadoModal: function() {
+      if(this.estadoModal == 0){ this.tipo = ''; this.unit = ''};
+    }
   },
   methods: {
     getUnitsRaw() {
       console.log('Obteniendo datos...')
       const me = this;
-      const url = this.ruta.data + "/selectUnidad";
+      const url = this.ruta.unidad + "/getUnidades";
       axios
         .get(url)
         .then(function (res) {
-          me.unitsRaw = res.data;
-          me.onlyUnits();
-          // me.initialNames();
-          // if (me.numberModal == 2) me.initialNames();
+          const data = res.data.unidades;
+          console.log(data)
+          const arrTipoUnidadRaw = data.map(e => e.tipo_unidad_nombre);
+          me.selectTipoUnidad = arrTipoUnidadRaw.filter((e, i, self) => self.indexOf(e) == i);
+
+          me.unidadesRaw = data;
         })
         .catch(function (error) {
           console.log(error);
         });
     },
-    // changeNames() {
-    //   console.log("run changeNames");
-    //   this.unit = "";
-    //   this.selectNames = this.unitsRaw
-    //     .filter((el) => el.subtipo == this.subtipo)
-    //     .map((el) => el.nombre);
-    // },
-    initialNames() {
-      console.log("run initialNames");
-      this.selectNames = this.unitsRaw
-        .filter((el) => el.subtipo == this.subtipo)
-        .map((el) => el.nombre);
+    changeTipo() {
+      this.$emit('update:initTipo', this.tipo);
+      this.$emit('update:initUnit', this.unit);
+      this.unit = '';
     },
-    onlyUnits() {
-      console.log("run onlyUnits");
-      const arr = this.unitsRaw.map((el) => el.subtipo);
-      this.selectUnits = arr.filter(
-        (el, index, self) => self.indexOf(el) === index
-      );
+    changeUnit() {
+      this.$emit('update:initUnit', this.unit);
     },
   },
   mounted() {
-    // console.log(this.$props)
-    this.getUnitsRaw()
+    this.getUnitsRaw();
+  },
+  updated() {
+  //   console.log(this.estadoModal)
+  //   if(this.estadoModal == 0){ this.tipo = ''; this.unit = ''};
   }
 };
 </script>

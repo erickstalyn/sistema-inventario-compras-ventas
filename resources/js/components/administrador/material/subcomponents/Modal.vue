@@ -38,7 +38,7 @@
             </div>
           </div>
 
-          <select-unit :subtipo.sync="material.subtipo" :unit.sync="material.unidad" :numberModal="modal.numero"></select-unit>
+          <select-unit :initTipo.sync="material.subtipo" :initUnit.sync="material.unidad" :estadoModal="modal.estado"></select-unit>
 
           <div class="row form-group">
             <label class="col-md-3 font-weight-bold" for="nom">
@@ -105,6 +105,18 @@ export default {
     //   return this.material;
     // }
   },
+  watch: {
+    // modal: function() {
+    //   console.log('modal watched')
+    //   if(this.modal.estado == 1) { //Si el modal se muestra
+    //     this.material.id = this.initMaterial.id;
+    //     this.material.nombre = this.initMaterial.nombre;
+    //     this.material.unidad = this.initMaterial.unidad;
+    //     this.material.subtipo = this.initMaterial.subtipo;
+    //     this.material.costo = this.initMaterial.costo;
+    //   }
+    // }
+  },
   updated(){
     if(this.modal.estado) { //Si el modal se muestra
       this.material.id = this.initMaterial.id;
@@ -165,21 +177,6 @@ export default {
           this.error.mensaje.push("Debe ingresar un costo válido");
       } else {
         //Modal editar
-        if (
-          this.material.nombre == this.MaterialOrigen.nombre &&
-          this.material.subtipo == this.MaterialOrigen.subtipo &&
-          this.material.unidad == this.MaterialOrigen.unidad &&
-          this.material.costo == this.MaterialOrigen.costo
-        ) {
-          this.error.mensaje.push("Ningun cambio realizado");
-        } else {
-          if (!this.material.nombre)
-            this.error.mensaje.push("Debe ingresar un nombre");
-          if (!this.material.unidad)
-            this.error.mensaje.push("Debe seleccionar una Unid. Medida");
-          if (this.material.costo == 0 || this.material.costo < 0)
-            this.error.mensaje.push("Debe ingresar un costo válido");
-        }
       }
 
       if (this.error.mensaje.length) {

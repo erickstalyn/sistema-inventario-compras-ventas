@@ -28,7 +28,7 @@ class MaterialController extends Controller
                                     $query->where('nombre', 'like', '%'.$texto.'%');
                                 }
                             })
-                            ->orderBy('nombre', 'asc')->paginate($filas);
+                            ->orderBy('id', 'desc')->paginate($filas);
 
         return [
             'paginacion' => [
