@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateProductoMaterialTable extends Migration
+class CreateDetalleMaterialTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateProductoMaterialTable extends Migration
      */
     public function up()
     {
-        Schema::create('producto_material', function (Blueprint $table) {
+        Schema::create('detalle_material', function (Blueprint $table) {
             $table->smallIncrements('id');  // Por ser smallint y unsigned tiene como valor maximo 65,535
             $table->unsignedMediumInteger('subproducto_id');
             $table->unsignedSmallInteger('material_id');
@@ -35,6 +35,6 @@ class CreateProductoMaterialTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('producto_material');
+        Schema::dropIfExists('detalle_material');
     }
 }

@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use Carbon\Carbon;
+use App\Persona;
 
 class PersonaSeeder extends Seeder {
     /**
@@ -11,49 +11,31 @@ class PersonaSeeder extends Seeder {
      */
     public function run()
     {
-        $now = Carbon::now('America/Lima')->toDateString();
+        $now = Carbon\Carbon::now('America/Lima')->toDateTimeString();
 
-        DB::table('persona')->insert(array(
+        Persona::create([
             'nombres'=>'Jose Guzman',
             'apellidos'=> 'Silva Tello',
-            'tipo' => 'P'
-        ));
-
-        //Proveedores
-        DB::table('persona')->insert(array(
+            'tipo_documento' => 'dni',
+            'numero_documento' => '12345678',
+            'tipo' => 'P',
+            'created_at' => $now
+        ]);
+        Persona::create(array(
             'nombres' => 'Jose Anderson',
             'apellidos' => 'Cespedes Diaz',
-            'dni' => '71736657',
-            // 'proveedor' => 1,
-            'tipo' => 'P'
+            'tipo_documento' => 'dni',
+            'numero_documento' => '71736657',
+            'tipo' => 'P',
+            'created_at' => $now
         ));
-        DB::table('persona')->insert(array(
-            'nombres' => 'Amelia Sofía',
-            'apellidos' => 'Rojas Cordova',
-            'dni' => '12345678',
-            // 'proveedor' => 1,
-            'tipo' => 'P'
-        ));
-        DB::table('persona')->insert(array(
+        Persona::create(array(
             'nombres' => 'Erick Stalyn',
             'apellidos' => 'Pacherrez Puyén',
-            'dni' => '74757559',
-            // 'proveedor' => 1,
-            'tipo' => 'P'
+            'tipo_documento' => 'dni',
+            'numero_documento' => '74757559',
+            'tipo' => 'P',
+            'created_at' => $now
         ));
-        
-        DB::table('persona')->insert(array(
-            'razon_social' => 'Gloria SAA',
-            'ruc' => '27136842916',
-            // 'proveedor' => 1,
-            'tipo' => 'E'
-        ));
-        DB::table('persona')->insert(array(
-            'razon_social' => 'EasyCode SAC',
-            'ruc' => '85721696932',
-            // 'proveedor' => 1,
-            'tipo' => 'E'
-        ));
-
     }
 }

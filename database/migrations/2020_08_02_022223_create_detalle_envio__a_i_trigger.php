@@ -21,16 +21,17 @@ class CreateDetalleEnvioAITrigger extends Migration
             BEGIN
                 DECLARE envio_tipo CHAR(1);
                 DECLARE envio_centro_from_id INTEGER;
-                SELECT tipo INTO envio_tipo, centro_from_id INTO envio_centro_from_id FROM envio WHERE id = NEW.envio_id;
+                SELECT tipo INTO envio_tipo FROM envio WHERE id = NEW.envio_id;
+                SELECT centro_from_id INTO envio_centro_from_id FROM envio WHERE id = NEW.envio_id;
                 IF ( envio_tipo = '1') THEN
                     UPDATE detalle_producto dproducto
                     SET dproducto.stock = dproducto.stock - NEW.cantidad, dproducto.traslado = dproducto.traslado + NEW.cantidad
-                    WHERE dproducto.producto_id = NEW.producto_id AND dproducto.centro_id = envio_centro_from_id;
+                    WHERE dproducto.subproducto_id = NEW.subproducto_id AND dproducto.centro_id = envio_centro_from_id;
                 END IF;
                 IF( envio_tipo = '2') THEN
                     UPDATE detalle_producto dproducto
                     SET dproducto.fallidos = dproducto.fallidos - NEW.cantidad, dproducto.traslado = dproducto.traslado + NEW.cantidad
-                    WHERE dproducto.producto_id = NEW.producto_id AND dproducto.centro_id = envio_centro_from_id;
+                    WHERE dproducto.subproducto_id = NEW.subproducto_id AND dproducto.centro_id = envio_centro_from_id;
                 END IF;
             END
         ");

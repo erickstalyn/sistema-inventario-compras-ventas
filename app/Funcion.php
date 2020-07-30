@@ -9,4 +9,6 @@ class Funcion extends Model {
     protected $table = 'funcion';
     protected $fillable = ['descripcion'];
     
+    public $timestamps = false;
+
 }

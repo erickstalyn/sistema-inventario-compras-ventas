@@ -8,9 +8,10 @@ class Envio extends Model
 {
     protected $table = 'envio';
     protected $fillable = [
-        'centro_from_id','centro_to_id', 'abasto_id', 'estado', 'tipo', 'created_at', 'updated_at'
+        'centro_from_id','centro_to_id', 'abasto_id', 'estado', 'tipo'
     ];
-    public $timestamps = false;
+
+    protected $timestamps = false;
 
     //Relación inversa de uno a muchos con Usuario
     public function getCentroEnvio()

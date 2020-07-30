@@ -6,11 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Detalle_abasto extends Model
 {
-    public $timestamps = false;
-    protected $table= 'detalle_abasto';
+    protected $table = 'detalle_abasto';
     protected $fillable = [
-        'nombre_producto','cantidad', 'costo_abasto', 'subtotal','producto_id','abasto_id'
+        'nombre_producto','cantidad', 'costo_abasto', 'subtotal','subproducto_id','abasto_id'
     ];
+
+    public $timestamps = false;
 
     public function getAbasto(){
         return $this->belongsTo('App\Abasto');

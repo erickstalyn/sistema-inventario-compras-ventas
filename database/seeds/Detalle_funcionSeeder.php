@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use App\Detalle_funcion;
 
 class Detalle_funcionSeeder extends Seeder
 {
@@ -11,29 +12,9 @@ class Detalle_funcionSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('detalle_funcion')->insert(array(
-            'persona_id'=> 1,
-            'funcion_id'=> 3,
-        ));
-        DB::table('detalle_funcion')->insert(array(
-            'persona_id'=> 2,
-            'funcion_id'=> 2,
-        ));
-        DB::table('detalle_funcion')->insert(array(
-            'persona_id'=> 3,
-            'funcion_id'=> 2,
-        ));
-        DB::table('detalle_funcion')->insert(array(
-            'persona_id'=> 4,
-            'funcion_id'=> 1,
-        ));
-        DB::table('detalle_funcion')->insert(array(
-            'persona_id'=> 5,
-            'funcion_id'=> 2,
-        ));
-        DB::table('detalle_funcion')->insert(array(
-            'persona_id'=> 6,
-            'funcion_id'=> 1,
+        Detalle_funcion::create(array(
+            'persona_id' => App\Persona::select('id')->where('nombres', '=', 'Jose Guzman')->first()['id'],
+            'funcion_id' => App\Funcion::select('id')->where('descripcion', '=', 'TRABAJADOR')->first()['id']
         ));
     }
 }

@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use Carbon\Carbon;
+use App\Usuario;
 
 class UsuarioSeeder extends Seeder
 {
@@ -12,50 +12,43 @@ class UsuarioSeeder extends Seeder
      */
     public function run()
     {
-        $now = Carbon::now('America/Lima')->toDateString();
-        DB::table('usuario')->insert(array(
-            'persona_id'=>1 ,
-            'usuario'=>'silmar',
-            'password'=>bcrypt('silmar'),
-            'rol_id' => 1,
+        $now = Carbon\Carbon::now('America/Lima')->toDateTimeString();
+
+        $persona_id = App\Persona::select('id')->where('nombres', '=', 'Jose Guzman')->first()['id'];
+        $rol_id = App\Rol::select('id')->where('descripcion', '=', 'ADMINISTRADOR')->first()['id'];
+
+        Usuario::create(array(
+            'persona_id' => $persona_id,
+            'usuario' => 'silmar',
+            'password' => bcrypt('silmar'),
+            'rol_id' => $rol_id,
+            'created_at' => $now
         ));
-        DB::table('usuario')->insert(array(
-            'centro_id'=>1 ,
-            'usuario'=>'puestoa',
-            'password'=>bcrypt('puestoa'),
-            'rol_id' => 2,
-        ));
-        DB::table('usuario')->insert(array(
-            'centro_id'=>2 ,
-            'usuario'=>'puestob',
-            'password'=>bcrypt('puestob'),
-            'rol_id' => 2,
-        ));
-        DB::table('usuario')->insert(array(
-            'centro_id'=>3 ,
-            'usuario'=>'puestoc',
-            'password'=>bcrypt('puestoc'),
-            'rol_id' => 2,
-        ));
-        DB::table('usuario')->insert(array(
-            'centro_id'=> 4,
-            'usuario'=>'almacen1',
-            'password'=>bcrypt('almacen1'),
-            'rol_id' => 3,
-        ));
-        DB::table('usuario')->insert(array(
-            'centro_id'=> 5,
-            'usuario'=>'almacen2',
-            'password'=>bcrypt('almacen2'),
-            'rol_id' => 3,
-            // 'estado' => false,
-        ));
-        DB::table('usuario')->insert(array(
-            'centro_id'=> 6,
-            'usuario'=>'almacen3',
-            'password'=>bcrypt('almacen3'),
-            'rol_id' => 3,
-            // 'estado' => false,
-        ));
+
+        $rol_id = App\Rol::select('id')->where('descripcion', '=', 'PUESTO')->first()['id'];
+        $centros = App\Centro::select('id', 'numero_serie')->where('tipo', '=', 'P')->get();
+        foreach ($centros as $centro) {
+            Usuario::create(array(
+                'persona_id' => $persona_id,
+                'centro_id' => $centro['id'],
+                'usuario' => 'puesto'.$centro['numero_serie'],
+                'password' => bcrypt('puesto'),
+                'rol_id' => $rol_id,
+                'created_at' => $now
+            ));
+        }
+
+        $rol_id = App\Rol::select('id')->where('descripcion', '=', 'ALMACÉN')->first()['id'];
+        $centros = App\Centro::select('id', 'numero_serie')->where('tipo', '=', 'A')->get();
+        foreach ($centros as $centro) {
+            Usuario::create(array(
+                'persona_id' => $persona_id,
+                'centro_id' => $centro['id'],
+                'usuario' => 'almacen'.$centro['numero_serie'],
+                'password' => bcrypt('almacen'),
+                'rol_id' => $rol_id,
+                'created_at' => $now
+            ));
+        }
     }
 }

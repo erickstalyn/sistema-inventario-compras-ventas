@@ -175,3 +175,10 @@ Route::group(['middleware' => ['auth']], function () {
     });
 
 });
+
+// Rutas para realizar el calculo de conversiones tanto en el back como en el front
+Route::get('/unidad/getConvertidorData', 'UnidadController@getConvertidorData');
+Route::get('/unidad/getUnidades', 'UnidadController@getUnidades');
+Route::get('/unidad/getTiposUnidad', 'UnidadController@getTiposUnidad');
+
+Route::get('/unidad/calculateConversion', 'UnidadController@calculateConversion');

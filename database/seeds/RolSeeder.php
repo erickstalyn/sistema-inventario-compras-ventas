@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use App\Rol;
 
 class RolSeeder extends Seeder
 {
@@ -11,13 +12,13 @@ class RolSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('rol')->insert(array(
+        Rol::create(array(
             'descripcion' => 'ADMINISTRADOR',
         ));
-        DB::table('rol')->insert(array(
+        Rol::create(array(
             'descripcion' => 'PUESTO',
         ));
-        DB::table('rol')->insert(array(
+        Rol::create(array(
             'descripcion' => 'ALMACÉN',
         ));
     }

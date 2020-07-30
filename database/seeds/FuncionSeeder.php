@@ -11,13 +11,13 @@ class FuncionSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('funcion')->insert(array(//id = 1
+        DB::table('funcion')->insert(array(
             'descripcion' => 'CLIENTE',
         ));
-        DB::table('funcion')->insert(array(//id = 2
+        DB::table('funcion')->insert(array(
             'descripcion' => 'PROVEEDOR',
         ));
-        DB::table('funcion')->insert(array(//id = 3
+        DB::table('funcion')->insert(array(
             'descripcion' => 'TRABAJADOR',
         ));
     }

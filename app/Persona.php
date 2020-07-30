@@ -8,13 +8,17 @@ class Persona extends Model
 {
 
     protected $table = 'persona';
-
     protected $fillable = [
-        'nombres', 'apellidos', 'razon_social', 'dni', 'ruc', 'direccion', 'telefono', 'email', 'birthday', 'observacion', 'tipo', 'cliente', 'proveedor', 'persona_id'
+        'persona_id', 'nombres', 'apellidos', 'razon_social', 'tipo_documento', 'numero_documento', 'direcciones', 'telefonos', 'emails', 'birthday', 'tipo', 'estado'
+    ];
+    protected $casts = [
+        'direcciones' => 'array',
+        'telefonos' => 'array',
+        'emails' => 'array'
     ];
 
     public $timestamps = false;
-
+    
     public function getUsuario(){
         return $this->hasOne('App\Usuario', 'persona_id');
     }
