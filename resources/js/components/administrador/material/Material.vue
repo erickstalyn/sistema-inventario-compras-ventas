@@ -192,7 +192,7 @@ export default {
       this.modal = {accion: '',estado: 0, numero: 0, titulo: ''};
     },
     onClearMaterial(){
-      this.Material = {id: 0, nombre: "", subtipo: "", unidad: "", costo: "", estado: 0};
+      this.Material = {id: 0, nombre: "", subtipo: "", unidad: "", costo: ""};
     },
     // validar() {
     //   this.Error.estado = 0;

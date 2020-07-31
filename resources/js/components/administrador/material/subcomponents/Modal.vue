@@ -167,25 +167,12 @@ export default {
       this.error.estado = 0;
       this.error.mensaje = [];
 
-      //Recorrer la lista de material
-      if (this.modal.numero == 1) {
-        //Modal agregar
-        if (!this.material.nombre)
-          this.error.mensaje.push("Debe ingresar un nombre");
-        if (!this.material.unidad)
-          this.error.mensaje.push("Debe seleccionar una Unid. Medida");
-        if (this.material.costo == 0 || this.material.costo < 0)
-          this.error.mensaje.push("Debe ingresar un costo válido");
-      } else {
-        //Modal editar
-        if (compareObj(this.initMaterial, this.material)) {
-          this.error.mensaje.push('No ha realizado ninguna modificación');
-        }
-      }
+      if (!this.material.nombre) this.error.mensaje.push("Debe ingresar un nombre");
+      if (!this.material.unidad) this.error.mensaje.push("Debe seleccionar una Unid. Medida");
+      if (this.material.costo == 0 || this.material.costo < 0) this.error.mensaje.push("Debe ingresar un costo válido");
 
-      if (this.error.mensaje.length) {
-        this.error.estado = 1;
-      }
+      if (this.error.mensaje.length) this.error.estado = 1;
+      
       return this.error.estado;
     },
     agregar() {
@@ -220,6 +207,15 @@ export default {
     },
     editar() {
       if (this.validar()) return;
+      if (compareObj(this.initMaterial, this.material)) {
+        console.log('No ha realizado ninguna modificación');
+        this.cerrar();
+        mainAlert.fire({
+          icon: "success",
+          title: "El Material se ha EDITADO correctamente",
+        });
+        return
+      }
       const material = {
         id: this.material.id,
         nombre: this.material.nombre,
