@@ -1,7 +1,7 @@
 <template>
   <!-- <div v-if="modal.estado" class="modal text-gray-900 mostrar"> -->
   <div :class="{'modal text-gray-900': true, 'mostrar': modal.estado}">
-    <div class="modal-dialog modal-dialog-centered animated bounceIn fast">
+    <div class="modal-dialog modal-dialog-centered animate__animated animate__bounceIn animate__fast">
       <div class="modal-content modal-lg">
         <div class="modal-header">
           <h3 v-text="modal.titulo" class="modal-title"></h3>
@@ -62,6 +62,10 @@
 </template>
 
 <script>
+//import sweetalert
+import mainAlert from './Main-alert'
+//import animate css
+import 'animate.css'
 // Components
 import LoadButton from "./Load-button";
 import selectUnit from './Select-unit'
@@ -69,7 +73,7 @@ import selectUnit from './Select-unit'
 export default {
   components: {
     LoadButton,
-    selectUnit
+    selectUnit,
   },
   props: {
     modal: {
@@ -108,9 +112,6 @@ export default {
     };
   },
   computed: {
-    // material: function() {
-    //   return this.material;
-    // }
   },
   watch: {
     initMaterial: {
@@ -197,18 +198,10 @@ export default {
           if (res.data.estado) {
             me.cerrar();
             me.$emit("list"); //emito el evento de listar al PADRE
-            Swal.fire({
-              position: "top-end",
-              toast: true,
-              type: "success",
-              title: "El material se ha AGREGADO correctamente",
-              showConfirmButton: false,
-              timer: 4500,
-              animation: false,
-              customClass: {
-                popup: "animated bounceIn fast",
-              },
-            });
+            mainAlert.fire({
+              icon: 'success',
+              title: 'El material se ha AGREGADO correctamente'
+            })
           } else {
             me.error.mensaje.push(
               "El material '" +
@@ -223,40 +216,6 @@ export default {
           console.log("soy el error" + error);
         });
     },
-    // getUnitsRaw() {
-    //   const me = this;
-    //   const url = this.ruta.data + "/selectUnidad";
-    //   axios
-    //     .get(url)
-    //     .then(function (res) {
-    //       me.unitsRaw = res.data;
-    //       me.onlyUnits();
-    //       if (me.modal.numero == 2) me.initialNames();
-    //     })
-    //     .catch(function (error) {
-    //       console.log(error);
-    //     });
-    // },
-    // changeNames() {
-    //   console.log("run changeNames");
-    //   this.material.unidad = "";
-    //   this.selectNames = this.unitsRaw
-    //     .filter((el) => el.subtipo == this.material.subtipo)
-    //     .map((el) => el.nombre);
-    // },
-    // initialNames() {
-    //   console.log("run initialNames");
-    //   this.selectNames = this.unitsRaw
-    //     .filter((el) => el.subtipo == this.material.subtipo)
-    //     .map((el) => el.nombre);
-    // },
-    // onlyUnits() {
-    //   console.log("run onlyUnits");
-    //   const arr = this.unitsRaw.map((el) => el.subtipo);
-    //   this.selectUnits = arr.filter(
-    //     (el, index, self) => self.indexOf(el) === index
-    //   );
-    // },
   }
 };
 </script>
