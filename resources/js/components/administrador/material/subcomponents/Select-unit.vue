@@ -33,7 +33,6 @@
 
 <script>
 export default {
-  //TODO: Seguir creando este componente
   props: {
     initTipo: {
       type: String,

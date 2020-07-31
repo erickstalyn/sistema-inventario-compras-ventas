@@ -7,20 +7,8 @@
           <button type="button" @click="cerrar()" class="close">X</button>
         </div>
         <div class="modal-body">
-          <div v-if="error.estado" class="row d-flex justify-content-center">
-            <div class="alert alert-danger">
-              <button
-                type="button"
-                @click="error.estado=0"
-                class="close text-primary"
-                data-dismiss="alert"
-              >×</button>
-              <strong>Corregir los siguentes errores:</strong>
-              <ul>
-                <li v-for="(error, i) in error.mensaje" :key="i" v-text="error"></li>
-              </ul>
-            </div>
-          </div>
+          <error-modal :error.sync="error"></error-modal>
+
           <div class="row form-group">
             <label class="col-md-3 font-weight-bold" for="nom">
               Nombre&nbsp;
@@ -64,7 +52,7 @@
 </template>
 
 <script>
-/** import: sweetalert, animate, compare-obj*/
+/** import: sweetalert, animate, compare-obj */
 import mainAlert from "../../../globals/Main-alert";
 import "animate.css";
 import compareObj from "../../../globals/Compare-obj";
@@ -72,22 +60,32 @@ import compareObj from "../../../globals/Compare-obj";
 // Components
 import loadButton from "./Load-button";
 import selectUnit from "./Select-unit";
+import errorModal from "../../../globals/Error-modal";
 
 export default {
   components: {
     loadButton,
     selectUnit,
+    errorModal,
   },
   props: {
     modal: {
       type: Object,
-      default: () => {},
-      required: true,
+      default: () => {
+        return { estado: 0, numero: 0 };
+      },
     },
     initMaterial: {
       type: Object,
-      default: () => {},
-      required: true,
+      default: () => {
+        return {
+          id: 0,
+          nombre: "",
+          subtipo: "",
+          unidad: "",
+          costo: "",
+        }
+      }
     },
   },
   data() {
@@ -114,17 +112,17 @@ export default {
     classObject: function () {
       return {
         "modal-dialog modal-dialog-centered": true,
-        "animate__animated animate__zoomIn animate__faster": this.modal.estado
+        "animate__animated animate__zoomIn animate__faster": this.modal.estado,
       };
     },
-    getTitle: function() {
-      if(this.modal.numero == 1) return 'Nuevo material';
-      if(this.modal.numero == 2) return 'Editar material';
+    getTitle: function () {
+      if (this.modal.numero == 1) return "Nuevo material";
+      if (this.modal.numero == 2) return "Editar material";
     },
-    getAccion: function() {
-      if(this.modal.numero == 1) return 'Agregar';
-      if(this.modal.numero == 2) return 'Editar';
-    }
+    getAccion: function () {
+      if (this.modal.numero == 1) return "Agregar";
+      if (this.modal.numero == 2) return "Editar";
+    },
   },
   watch: {
     initMaterial: {
