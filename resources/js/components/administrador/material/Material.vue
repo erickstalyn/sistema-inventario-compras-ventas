@@ -81,7 +81,7 @@
           </table>
         </div>
         <!-- Barra de navegacion -->
-        <pagination-bar @list="listar" :paginacion="Paginacion"></pagination-bar>
+        <pagination-bar @list="listar" :paginacion="paginacion"></pagination-bar>
       </div>
       <div v-else>
         <h5>No se han encontrado resultados</h5>
@@ -136,7 +136,7 @@ export default {
         titulo: "",
       },
       //datos de paginacion
-      Paginacion: {
+      paginacion: {
         total: 0,
         currentPage: 0,
         lastPage: 0,
@@ -144,7 +144,7 @@ export default {
         firstItem: 0,
         lastItem: 0,
       },
-      Ruta: {
+      ruta: {
         material: "/material",
         data: "/data",
         serverPhp: "http://127.0.0.1:8000",
@@ -155,11 +155,11 @@ export default {
   },
   methods: {
     listar(page = 1) {
-      this.Paginacion.currentPage = page;
+      this.paginacion.currentPage = page;
       const url =
-        this.Ruta.material +
+        this.ruta.material +
         "?page=" +
-        this.Paginacion.currentPage +
+        this.paginacion.currentPage +
         "&estado=" +
         this.Busqueda.estado +
         "&texto=" +
@@ -171,7 +171,7 @@ export default {
         .get(url)
         .then(function (response) {
           me.ListaMaterial = response.data.materiales.data;
-          me.Paginacion = response.data.paginacion;
+          me.paginacion = response.data.paginacion;
         })
         .catch(function (error) {
           console.log(error);
@@ -312,13 +312,13 @@ export default {
     //   return this.Error.estado;
     // },
     // cambiarPagina(page) {
-    //   if (page >= 1 && page <= this.Paginacion.lastPage) {
+    //   if (page >= 1 && page <= this.paginacion.lastPage) {
     //     this.listar(page);
     //   }
     // },
     // selectUnidad() {
     //   const me = this;
-    //   const url = this.Ruta.data + "/selectUnidad";
+    //   const url = this.ruta.data + "/selectUnidad";
     //   axios
     //     .get(url)
     //     .then(function (response) {
@@ -345,7 +345,7 @@ export default {
     //   // return selectTipoFiltrado;
     // },
     generatePdf() {
-      window.open(this.Ruta.serverPhp + "/material/generatePdf", "_blank");
+      window.open(this.ruta.serverPhp + "/material/generatePdf", "_blank");
       this.Button.press = false;
     },
   },
