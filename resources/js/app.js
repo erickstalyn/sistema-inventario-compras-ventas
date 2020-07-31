@@ -53,25 +53,25 @@ Vue.component('noti_venta_alm', require('./components/Notificacion/Notification_
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
-
+import '../css/styles.css'
 const app = new Vue({
-    el: '#app',
-    data: {
-        menu: 1,
-        notifications:[],
-    },
-    created(){
-        let me = this;
-        axios.post('notification/get').then(function(response){
-            // console.log(response.data);
-            me.notifications = response.data;
-        }).catch(function(error){
-            console.log(error);
-        });
-        var userId = $('meta[name="userId"]').attr('content');
-        Echo.private('App.Usuario.' + userId).notification((notification) =>{
-            console.log(notification);
-            me.notifications.unshift(notification);
-        });
-    }
+  el: '#app',
+  data: {
+    menu: 1,
+    notifications:[],
+  },
+  created(){
+    let me = this;
+    axios.post('notification/get').then(function(response){
+      // console.log(response.data);
+      me.notifications = response.data;
+    }).catch(function(error){
+      console.log(error);
+    });
+    var userId = $('meta[name="userId"]').attr('content');
+    Echo.private('App.Usuario.' + userId).notification((notification) =>{
+      console.log(notification);
+      me.notifications.unshift(notification);
+    });
+  }
 });

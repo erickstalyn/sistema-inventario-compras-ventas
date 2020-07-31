@@ -1,5 +1,5 @@
 <template>
-  <div :class="{'modal text-gray-900': true, 'mostrar': modal.estado}">
+  <div :class="{'modal text-gray-900': true, 'show-modal': modal.estado }">
     <div :class="classObject">
       <div class="modal-content modal-lg">
         <div class="modal-header">
@@ -116,7 +116,7 @@ export default {
       return {
         "modal-dialog modal-dialog-centered": true,
         "animate__animated animate__zoomIn animate__faster": this.modal.estado,
-        "animate__animated animate__zoomOut animate__faster": this.modal.estado == false
+        "animate__animated animate__slideInLeft animate__faster": this.modal.estado == false
       };
     },
   },
