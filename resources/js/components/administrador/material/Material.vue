@@ -118,16 +118,12 @@ export default {
         costo: "",
         estado: 0
       },
-      SelectUnidad: [],
-      SelectTipoFiltrado: [],
-      YaIngrese: 0,
       //datos de busqueda y filtracion
       Busqueda: {
         texto: "",
         estado: 2,
         filas: 5,
       },
-
       //datos de modales
       modal: {
         accion: "",
@@ -235,44 +231,6 @@ export default {
     onClearMaterial(){
       this.Material = {id: 0, nombre: "", subtipo: "", unidad: "", costo: "", estado: 0};
     },
-    // cerrarModal() {
-    //   this.modal.numero = 0;
-    //   this.modal.estado = 0;
-    //   this.modal.mensaje = [];
-
-    //   this.Error.estado = 0;
-    //   this.Error.mensaje = [];
-
-    //   this.Material.id = 0;
-    //   this.Material.nombre = "";
-    //   this.Material.unidad = "";
-    //   this.Material.subtipo = "";
-    //   this.Material.costo = "";
-
-    //   this.Button.press = false;
-
-    //   this.YaIngrese = 0;
-    // },
-    // accionar(accion) {
-    //   switch (accion) {
-    //     case "Agregar": {
-    //       this.agregar();
-    //       break;
-    //     }
-    //     case "Editar": {
-    //       this.editar();
-    //       break;
-    //     }
-    //     case "Activar": {
-    //       this.activar();
-    //       break;
-    //     }
-    //     case "Desactivar": {
-    //       this.desactivar();
-    //       break;
-    //     }
-    //   }
-    // },
     // validar() {
     //   this.Error.estado = 0;
     //   this.Error.mensaje = [];
@@ -310,39 +268,6 @@ export default {
     //     this.Button.press = false;
     //   }
     //   return this.Error.estado;
-    // },
-    // cambiarPagina(page) {
-    //   if (page >= 1 && page <= this.paginacion.lastPage) {
-    //     this.listar(page);
-    //   }
-    // },
-    // selectUnidad() {
-    //   const me = this;
-    //   const url = this.ruta.data + "/selectUnidad";
-    //   axios
-    //     .get(url)
-    //     .then(function (response) {
-    //       me.SelectUnidad = response.data;
-    //     })
-    //     .then(function () {
-    //       me.selectTipoFiltrado();
-    //     })
-    //     .catch(function (error) {
-    //       console.log(error);
-    //     });
-    // },
-    // selectTipoFiltrado() {
-    //   // let selectTipoFiltrado = [];
-    //   // console.log("Ingrese al metodo selectTipoFiltrado");
-    //   // console.log("tamaño del SelectUnidad " + this.SelectUnidad.length);
-    //   this.SelectUnidad.forEach((unidad) => {
-    //     // console.log('Ingrese el foreach');
-    //     if (!this.SelectTipoFiltrado.includes(unidad.subtipo)) {
-    //       // console.log('ingrese al if del metodo selectTipoFiltrado');
-    //       this.SelectTipoFiltrado.push(unidad.subtipo);
-    //     }
-    //   });
-    //   // return selectTipoFiltrado;
     // },
     generatePdf() {
       window.open(this.ruta.serverPhp + "/material/generatePdf", "_blank");
