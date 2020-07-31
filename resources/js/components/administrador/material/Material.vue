@@ -97,7 +97,7 @@
 <script>
 /** Components */
 import MaterialRow from "./subcomponents/Material-row";
-import PaginationBar from "./subcomponents/Pagination-bar";
+import PaginationBar from "../../globals/Pagination-bar";
 import myModal from "./subcomponents/modal";
 
 export default {

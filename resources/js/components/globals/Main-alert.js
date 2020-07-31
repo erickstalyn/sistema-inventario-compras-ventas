@@ -15,7 +15,7 @@ const mainAlert = Swal.mixin({
       backdrop: ''
     },
     hideClass: {
-      popup: 'animate__animated animate__bounceOutRight animate__fast',
+      popup: 'animate__animated animate__bounceOutRight',
     }
 });
 

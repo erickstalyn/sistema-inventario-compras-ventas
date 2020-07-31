@@ -63,7 +63,7 @@
 
 <script>
 //import sweetalert
-import mainAlert from './Main-alert'
+import mainAlert from '../../../globals/Main-alert'
 //import animate css
 import 'animate.css'
 // Components
