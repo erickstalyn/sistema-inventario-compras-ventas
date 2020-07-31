@@ -18,7 +18,7 @@
       <div class="row form-group">
         <div class="col-md-8">
           <div class="input-group">
-            <!-- <select class="col-md-3 custom-select text-gray-900" v-model="Busqueda.estado" @change="listar()">
+            <!-- <select class="col-md-3 custom-select text-gray-900" v-model="busqueda.estado" @change="listar()">
                             <option value="2">Todos</option>
                             <option value="1">Activados</option>
                             <option value="0">Desactivados</option>
@@ -26,7 +26,7 @@
             <input
               type="search"
               class="form-control"
-              v-model="Busqueda.texto"
+              v-model="busqueda.texto"
               placeholder="Buscar por NOMBRE"
               @keyup.enter="listar()"
             />
@@ -42,7 +42,7 @@
         <div class="col-md-1">
           <select
             class="custom-select custom-select-sm text-gray-900"
-            v-model="Busqueda.filas"
+            v-model="busqueda.filas"
             @change="listar()"
           >
             <option
@@ -56,7 +56,7 @@
       </div>
 
       <!-- Listado -->
-      <div v-if="ListaMaterial.length" class="table-responsive">
+      <div v-if="listaMaterial.length" class="table-responsive">
         <!-- Tabla -->
         <div class="ec-table overflow-auto">
           <table class="table table-borderless table-sm text-gray-900">
@@ -71,7 +71,7 @@
             </thead>
             <tbody>
               <tr
-                v-for="(material, i) in ListaMaterial"
+                v-for="(material, i) in listaMaterial"
                 :key="i"
                 is="material-row"
                 :material="material"
@@ -89,7 +89,7 @@
     </div>
 
     <!-- Modales -->
-    <my-modal @list="listar"  :modal="modal" @clearModal="onClearModal" :initMaterial="Material" @clearMaterial="onClearMaterial"></my-modal>
+    <my-modal @list="listar"  :modal="modal" @clearModal="onClearModal" :initMaterial="material" @clearMaterial="onClearMaterial"></my-modal>
     
   </main>
 </template>
@@ -109,17 +109,16 @@ export default {
   data() {
     return {
       //datos generales
-      ListaMaterial: [],
-      Material: {
+      listaMaterial: [],
+      material: {
         id: 0,
         nombre: "",
         subtipo: "",
         unidad: "",
         costo: "",
-        // estado: 0
       },
       //datos de busqueda y filtracion
-      Busqueda: {
+      busqueda: {
         texto: "",
         estado: 2,
         filas: 5,
@@ -157,16 +156,16 @@ export default {
         "?page=" +
         this.paginacion.currentPage +
         "&estado=" +
-        this.Busqueda.estado +
+        this.busqueda.estado +
         "&texto=" +
-        this.Busqueda.texto +
+        this.busqueda.texto +
         "&filas=" +
-        this.Busqueda.filas;
+        this.busqueda.filas;
       const me = this;
       axios
         .get(url)
         .then(function (response) {
-          me.ListaMaterial = response.data.materiales.data;
+          me.listaMaterial = response.data.materiales.data;
           me.paginacion = response.data.paginacion;
         })
         .catch(function (error) {
@@ -174,13 +173,11 @@ export default {
         });
     },
     abrirModalAgregar() {
-      this.abrirModal(1, "Nuevo Material", "Agregar");
-
+      this.abrirModal(1, "Nuevo material", "Agregar");
     },
     abrirModalEditar(material) {
-      this.Material = material;
-      this.abrirModal(2, "Editar Material", "Editar");
-
+      this.material = material;
+      this.abrirModal(2, "Editar material", "Editar");
     },
     abrirModal(numero, titulo, accion) {
       this.modal.estado = 1;
@@ -192,46 +189,8 @@ export default {
       this.modal = {accion: '',estado: 0, numero: 0, titulo: ''};
     },
     onClearMaterial(){
-      this.Material = {id: 0, nombre: "", subtipo: "", unidad: "", costo: ""};
+      this.material = {id: 0, nombre: "", subtipo: "", unidad: "", costo: ""};
     },
-    // validar() {
-    //   this.Error.estado = 0;
-    //   this.Error.mensaje = [];
-
-    //   //Recorrere la lista de Material
-    //   if (this.modal.numero == 1) {
-    //     //modal agregar
-    //     if (!this.Material.nombre)
-    //       this.Error.mensaje.push("Debe ingresar un nombre");
-    //     if (!this.Material.unidad)
-    //       this.Error.mensaje.push("Debe seleccionar una Unid. Medida");
-    //     if (this.Material.costo == 0 || this.Material.costo < 0)
-    //       this.Error.mensaje.push("Debe ingresar un costo válido");
-    //   } else {
-    //     //modal editar
-    //     if (
-    //       this.Material.nombre == this.MaterialOrigen.nombre &&
-    //       this.Material.subtipo == this.MaterialOrigen.subtipo &&
-    //       this.Material.unidad == this.MaterialOrigen.unidad &&
-    //       this.Material.costo == this.MaterialOrigen.costo
-    //     ) {
-    //       this.Error.mensaje.push("Ningun cambio realizado");
-    //     } else {
-    //       if (!this.Material.nombre)
-    //         this.Error.mensaje.push("Debe ingresar un nombre");
-    //       if (!this.Material.unidad)
-    //         this.Error.mensaje.push("Debe seleccionar una Unid. Medida");
-    //       if (this.Material.costo == 0 || this.Material.costo < 0)
-    //         this.Error.mensaje.push("Debe ingresar un costo válido");
-    //     }
-    //   }
-
-    //   if (this.Error.mensaje.length) {
-    //     this.Error.estado = 1;
-    //     this.Button.press = false;
-    //   }
-    //   return this.Error.estado;
-    // },
     generatePdf() {
       window.open(this.ruta.serverPhp + "/material/generatePdf", "_blank");
       this.Button.press = false;
@@ -245,7 +204,7 @@ export default {
 
 <style>
 .mostrar {
-  display: list-item !important;
+  /* display: list-item !important; */
   opacity: 1 !important;
   position: absolute !important;
   background-color: #3c29297a !important;

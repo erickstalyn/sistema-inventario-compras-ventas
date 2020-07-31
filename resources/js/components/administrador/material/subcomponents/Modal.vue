@@ -1,9 +1,6 @@
 <template>
-  <!-- <div v-if="modal.estado" class="modal text-gray-900 mostrar"> -->
   <div :class="{'modal text-gray-900': true, 'mostrar': modal.estado}">
-    <div
-      class="modal-dialog modal-dialog-centered animate__animated animate__bounceIn animate__fast"
-    >
+    <div :class="classObject">
       <div class="modal-content modal-lg">
         <div class="modal-header">
           <h3 v-text="modal.titulo" class="modal-title"></h3>
@@ -71,7 +68,7 @@
 /** import: sweetalert, animate, compare-obj*/
 import mainAlert from "../../../globals/Main-alert";
 import "animate.css";
-import compareObj from '../../../globals/Compare-obj'
+import compareObj from "../../../globals/Compare-obj";
 
 // Components
 import loadButton from "./Load-button";
@@ -114,7 +111,15 @@ export default {
       },
     };
   },
-  computed: {},
+  computed: {
+    classObject: function () {
+      return {
+        "modal-dialog modal-dialog-centered": true,
+        "animate__animated animate__zoomIn animate__faster": this.modal.estado,
+        "animate__animated animate__zoomOut animate__faster": this.modal.estado == false
+      };
+    },
+  },
   watch: {
     initMaterial: {
       deep: true,
@@ -167,12 +172,15 @@ export default {
       this.error.estado = 0;
       this.error.mensaje = [];
 
-      if (!this.material.nombre) this.error.mensaje.push("Debe ingresar un nombre");
-      if (!this.material.unidad) this.error.mensaje.push("Debe seleccionar una Unid. Medida");
-      if (this.material.costo == 0 || this.material.costo < 0) this.error.mensaje.push("Debe ingresar un costo válido");
+      if (!this.material.nombre)
+        this.error.mensaje.push("Debe ingresar un nombre");
+      if (!this.material.unidad)
+        this.error.mensaje.push("Debe seleccionar una Unid. Medida");
+      if (this.material.costo == 0 || this.material.costo < 0)
+        this.error.mensaje.push("Debe ingresar un costo válido");
 
       if (this.error.mensaje.length) this.error.estado = 1;
-      
+
       return this.error.estado;
     },
     agregar() {
@@ -208,13 +216,13 @@ export default {
     editar() {
       if (this.validar()) return;
       if (compareObj(this.initMaterial, this.material)) {
-        console.log('No ha realizado ninguna modificación');
+        console.log("No ha realizado ninguna modificación");
         this.cerrar();
         mainAlert.fire({
           icon: "success",
           title: "El Material se ha EDITADO correctamente",
         });
-        return
+        return;
       }
       const material = {
         id: this.material.id,
