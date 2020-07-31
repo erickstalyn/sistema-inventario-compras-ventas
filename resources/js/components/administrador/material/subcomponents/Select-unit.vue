@@ -106,9 +106,9 @@ export default {
         });
     },
     changeTipo() {
+      this.unit = "";
       this.$emit("update:initTipo", this.tipo);
       this.$emit("update:initUnit", this.unit);
-      this.unit = "";
     },
     changeUnit() {
       this.$emit("update:initUnit", this.unit);

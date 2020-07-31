@@ -3,7 +3,7 @@
     <div :class="classObject">
       <div class="modal-content modal-lg">
         <div class="modal-header">
-          <h3 v-text="modal.titulo" class="modal-title"></h3>
+          <h3 v-text="getTitle" class="modal-title"></h3>
           <button type="button" @click="cerrar()" class="close">X</button>
         </div>
         <div class="modal-body">
@@ -54,7 +54,7 @@
         </div>
         <div class="modal-footer">
           <div class="row form-group col-md-12 d-flex justify-content-around">
-            <load-button @confirm-button="action" :action="modal.accion"></load-button>
+            <load-button @confirm-button="action" :action="getAccion"></load-button>
             <button type="button" @click="cerrar()" class="btn btn-secondary">Cancelar</button>
           </div>
         </div>
@@ -117,6 +117,14 @@ export default {
         "animate__animated animate__zoomIn animate__faster": this.modal.estado
       };
     },
+    getTitle: function() {
+      if(this.modal.numero == 1) return 'Nuevo material';
+      if(this.modal.numero == 2) return 'Editar material';
+    },
+    getAccion: function() {
+      if(this.modal.numero == 1) return 'Agregar';
+      if(this.modal.numero == 2) return 'Editar';
+    }
   },
   watch: {
     initMaterial: {
@@ -154,14 +162,6 @@ export default {
         }
         case "Editar": {
           this.editar();
-          break;
-        }
-        case "Activar": {
-          this.activar();
-          break;
-        }
-        case "Desactivar": {
-          this.desactivar();
           break;
         }
       }

@@ -125,10 +125,8 @@ export default {
       },
       //datos de modales
       modal: {
-        accion: "",
         estado: 0,
         numero: 0,
-        titulo: "",
       },
       //datos de paginacion
       paginacion: {
@@ -173,20 +171,18 @@ export default {
         });
     },
     abrirModalAgregar() {
-      this.abrirModal(1, "Nuevo material", "Agregar");
+      this.abrirModal(1);
     },
     abrirModalEditar(material) {
       this.material = material;
-      this.abrirModal(2, "Editar material", "Editar");
+      this.abrirModal(2);
     },
     abrirModal(numero, titulo, accion) {
       this.modal.estado = 1;
       this.modal.numero = numero;
-      this.modal.titulo = titulo;
-      this.modal.accion = accion;
     },
     onClearModal(){
-      this.modal = {accion: '',estado: 0, numero: 0, titulo: ''};
+      this.modal = {estado: 0, numero: 0};
     },
     onClearMaterial(){
       this.material = {id: 0, nombre: "", subtipo: "", unidad: "", costo: ""};
