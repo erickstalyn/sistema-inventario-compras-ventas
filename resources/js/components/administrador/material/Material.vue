@@ -58,7 +58,7 @@
       <!-- Listado -->
       <div v-if="listaMaterial.length" class="table-responsive">
         <!-- Tabla -->
-        <div class="ec-table overflow-auto">
+        <div class="overflow-auto">
           <table class="table table-borderless table-sm text-gray-900">
             <thead>
               <tr class="table-info">
@@ -203,15 +203,5 @@ export default {
 </script>
 
 <style>
-.ec-cursor {
-  cursor: pointer;
-}
-.ec-table {
-  overflow: scroll;
-  height: 20rem;
-}
-.ec-th {
-  background-color: skyblue;
-}
 </style>
 

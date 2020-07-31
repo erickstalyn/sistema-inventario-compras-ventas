@@ -6,7 +6,6 @@
           <h3 v-text="modal.titulo" class="modal-title"></h3>
           <button type="button" @click="cerrar()" class="close">X</button>
         </div>
-
         <div class="modal-body">
           <div v-if="error.estado" class="row d-flex justify-content-center">
             <div class="alert alert-danger">
@@ -115,8 +114,7 @@ export default {
     classObject: function () {
       return {
         "modal-dialog modal-dialog-centered": true,
-        "animate__animated animate__zoomIn animate__faster": this.modal.estado,
-        "animate__animated animate__slideInLeft animate__faster": this.modal.estado == false
+        "animate__animated animate__zoomIn animate__faster": this.modal.estado
       };
     },
   },
