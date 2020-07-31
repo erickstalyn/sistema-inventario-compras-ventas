@@ -116,7 +116,7 @@ export default {
         subtipo: "",
         unidad: "",
         costo: "",
-        estado: 0
+        // estado: 0
       },
       //datos de busqueda y filtracion
       Busqueda: {
@@ -168,43 +168,6 @@ export default {
         .then(function (response) {
           me.ListaMaterial = response.data.materiales.data;
           me.paginacion = response.data.paginacion;
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    },
-    editar() {
-      if (this.validar()) return;
-
-      var me = this;
-      axios
-        .put("/material/editar", {
-          id: this.Material.id,
-          nombre: this.Material.nombre,
-          subtipo: this.Material.subtipo,
-          unidad: this.Material.unidad,
-          costo: this.Material.costo,
-        })
-        .then(function (response) {
-          if (response.data.estado) {
-            me.cerrarModal();
-            me.listar();
-            Swal.fire({
-              position: "top-end",
-              toast: true,
-              type: "success",
-              title: "El Material se ha EDITADO correctamente",
-              showConfirmButton: false,
-              timer: 4500,
-              animation: false,
-              customClass: {
-                popup: "animated bounceIn fast",
-              },
-            });
-          } else {
-            me.Error.mensaje.push("Este material ya está registrado");
-            me.Error.estado = 1;
-          }
         })
         .catch(function (error) {
           console.log(error);

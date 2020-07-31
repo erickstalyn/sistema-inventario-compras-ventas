@@ -17,7 +17,7 @@ class MaterialController extends Controller
         $texto = $request->texto;
         $filas = $request->filas;
 
-        $materiales = Material::select('id', 'nombre','subtipo', 'unidad', 'costo', 'estado')
+        $materiales = Material::select('id', 'nombre','subtipo', 'unidad', 'costo')
                             ->where(function ($query) use ($estado) {
                                 if ( $estado != 2 ) {
                                     $query->where('estado', '=', $estado);

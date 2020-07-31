@@ -1,7 +1,9 @@
 <template>
   <!-- <div v-if="modal.estado" class="modal text-gray-900 mostrar"> -->
   <div :class="{'modal text-gray-900': true, 'mostrar': modal.estado}">
-    <div class="modal-dialog modal-dialog-centered animate__animated animate__bounceIn animate__fast">
+    <div
+      class="modal-dialog modal-dialog-centered animate__animated animate__bounceIn animate__fast"
+    >
       <div class="modal-content modal-lg">
         <div class="modal-header">
           <h3 v-text="modal.titulo" class="modal-title"></h3>
@@ -38,7 +40,11 @@
             </div>
           </div>
 
-          <select-unit :initTipo.sync="material.subtipo" :initUnit.sync="material.unidad" :estadoModal="modal.estado"></select-unit>
+          <select-unit
+            :initTipo.sync="material.subtipo"
+            :initUnit.sync="material.unidad"
+            :estadoModal="modal.estado"
+          ></select-unit>
 
           <div class="row form-group">
             <label class="col-md-3 font-weight-bold" for="nom">
@@ -62,30 +68,31 @@
 </template>
 
 <script>
-//import sweetalert
-import mainAlert from '../../../globals/Main-alert'
-//import animate css
-import 'animate.css'
+/** import: sweetalert, animate, compare-obj*/
+import mainAlert from "../../../globals/Main-alert";
+import "animate.css";
+import compareObj from '../../../globals/Compare-obj'
+
 // Components
-import LoadButton from "./Load-button";
-import selectUnit from './Select-unit'
+import loadButton from "./Load-button";
+import selectUnit from "./Select-unit";
 
 export default {
   components: {
-    LoadButton,
+    loadButton,
     selectUnit,
   },
   props: {
     modal: {
       type: Object,
       default: () => {},
-      required: true
+      required: true,
     },
     initMaterial: {
       type: Object,
       default: () => {},
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
     return {
@@ -95,11 +102,7 @@ export default {
         subtipo: "",
         unidad: "",
         costo: "",
-        estado: 0
       },
-      // unitsRaw: [],
-      // selectUnits: [],
-      // selectNames: [],
       //datos de errores
       error: {
         estado: 0,
@@ -111,24 +114,23 @@ export default {
       },
     };
   },
-  computed: {
-  },
+  computed: {},
   watch: {
     initMaterial: {
       deep: true,
-      handler: function(newVal) {
+      handler: function (newVal) {
         this.material.id = newVal.id;
         this.material.nombre = newVal.nombre;
         this.material.unidad = newVal.unidad;
         this.material.subtipo = newVal.subtipo;
         this.material.costo = newVal.costo;
-      }
-    }
+      },
+    },
   },
   methods: {
     cerrar() {
-      this.$emit('clearModal');
-      this.$emit('clearMaterial');
+      this.$emit("clearModal");
+      this.$emit("clearMaterial");
 
       this.error.estado = 0;
       this.error.mensaje = [];
@@ -176,47 +178,76 @@ export default {
           this.error.mensaje.push("Debe ingresar un costo válido");
       } else {
         //Modal editar
+        if (compareObj(this.initMaterial, this.material)) {
+          this.error.mensaje.push('No ha realizado ninguna modificación');
+        }
       }
 
       if (this.error.mensaje.length) {
         this.error.estado = 1;
-        // this.button.press = false;
       }
       return this.error.estado;
     },
     agregar() {
       if (this.validar()) return;
+      const material = {
+        nombre: this.material.nombre,
+        subtipo: this.material.subtipo,
+        unidad: this.material.unidad,
+        costo: this.material.costo,
+      };
       const me = this;
       axios
-        .post(this.ruta.material + "/agregar", {
-          nombre: this.material.nombre,
-          subtipo: this.material.subtipo,
-          unidad: this.material.unidad,
-          costo: this.material.costo,
-        })
+        .post(this.ruta.material + "/agregar", material)
         .then(function (res) {
           if (res.data.estado) {
             me.cerrar();
             me.$emit("list"); //emito el evento de listar al PADRE
             mainAlert.fire({
-              icon: 'success',
-              title: 'El material se ha AGREGADO correctamente'
-            })
+              icon: "success",
+              title: "El material se ha AGREGADO correctamente",
+            });
           } else {
             me.error.mensaje.push(
-              "El material '" +
-                me.material.nombre +
-                "' ya se encuentra registrado"
+              `${material.nombre} ya se encuentra registrado`
             );
             me.error.estado = 1;
-            console.log("hay errores");
           }
         })
         .catch(function (error) {
-          console.log("soy el error" + error);
+          console.log("Error in method agregar() - Modal.vue" + error);
         });
     },
-  }
+    editar() {
+      if (this.validar()) return;
+      const material = {
+        id: this.material.id,
+        nombre: this.material.nombre,
+        subtipo: this.material.subtipo,
+        unidad: this.material.unidad,
+        costo: this.material.costo,
+      };
+      const me = this;
+      axios
+        .put(me.ruta.material + "/editar", material)
+        .then(function (response) {
+          if (response.data.estado) {
+            me.cerrar();
+            me.$emit("list");
+            mainAlert.fire({
+              icon: "success",
+              title: "El Material se ha EDITADO correctamente",
+            });
+          } else {
+            me.error.mensaje.push(`${material.nombre} ya está registrado`);
+            me.error.estado = 1;
+          }
+        })
+        .catch(function (error) {
+          console.log("Error in method editar() - Modal.vue" + error);
+        });
+    },
+  },
 };
 </script>
 

@@ -55,13 +55,11 @@ export default {
     return {
       tipo: "",
       unit: "",
-
       selectTipoUnidad: [],
       unidadesRaw: [],
       ruta: {
         unidad: "/unidad",
       },
-      // ticketCounter: 0
     };
   },
   computed: {
@@ -74,7 +72,6 @@ export default {
   watch: {
     estadoModal: function (newEstado, oldEstado) {
       if (newEstado == 0) {
-        // console.log("run watch estadoModal = 0");
         this.tipo = "";
         this.unit = "";
       }
