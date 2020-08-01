@@ -145,7 +145,7 @@
 
 
         <!-- Modales de Ver -->
-        <div class="modal text-gray-900 mostrar" v-if="Modal.visible">
+        <div class="modal text-gray-900 show-modal" v-if="Modal.visible">
             <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable animated bounceIn fast" :class="Modal.class">
                 <div class="modal-content">
 
@@ -1039,12 +1039,6 @@ import { join } from 'path';
 
 
 <style>
-    .mostrar{
-        display: list-item !important;
-        opacity: 1 !important;
-        position: absolute !important;
-        background-color: #3c29297a !important;
-    }
     .ec-cursor{
         cursor: pointer;
     }

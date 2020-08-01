@@ -160,7 +160,7 @@
         </div>
 
         <!-- Modales de Agregar/Editar -->
-        <div class="modal text-gray-900" :class="{'mostrar': Modal.estado}">
+        <div class="modal text-gray-900" :class="{'show-modal': Modal.estado}">
             <div class="modal-dialog modal-dialog-centered animated bounceIn fast" :class="Modal.size">
                 <div class="modal-content">
 
@@ -1395,12 +1395,6 @@
 </script>
 
 <style>
-    .mostrar{
-        display: list-item !important;
-        opacity: 1 !important;
-        position: absolute !important;
-        background-color: #3c29297a !important;
-    }
     .ec-cursor{
         cursor: pointer;
     }

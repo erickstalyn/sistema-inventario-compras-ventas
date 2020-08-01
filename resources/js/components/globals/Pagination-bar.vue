@@ -21,7 +21,6 @@
 
 <script>
 export default {
-  // props: ["paginacion"],
   props: {
     paginacion: {
       type: Object,
@@ -31,7 +30,6 @@ export default {
   },
   data() {
     return {
-      // pagination: this.paginacion,
       //TODO: Revisar el objecto navegation
       navegation: {
         offset: 3,

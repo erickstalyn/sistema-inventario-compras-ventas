@@ -22,8 +22,15 @@ export default {
   props: {
     material: {
       type: Object,
-      default: () => {},
-      required: true
+      default: () => {
+        return {
+          id: 0,
+          nombre: "",
+          subtipo: "",
+          unidad: "",
+          costo: "",
+        }
+      },
     }
   },
   methods: {

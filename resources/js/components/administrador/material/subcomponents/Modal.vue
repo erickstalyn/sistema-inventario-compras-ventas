@@ -1,28 +1,14 @@
 <template>
-  <!-- <div v-if="modal.estado" class="modal text-gray-900 mostrar"> -->
-  <div :class="{'modal text-gray-900': true, 'mostrar': modal.estado}">
-    <div class="modal-dialog modal-dialog-centered animated bounceIn fast">
+  <div :class="{'modal text-gray-900': true, 'show-modal': modal.estado }">
+    <div :class="classObject">
       <div class="modal-content modal-lg">
         <div class="modal-header">
-          <h3 v-text="modal.titulo" class="modal-title"></h3>
+          <h3 v-text="getTitle" class="modal-title"></h3>
           <button type="button" @click="cerrar()" class="close">X</button>
         </div>
-
         <div class="modal-body">
-          <div v-if="error.estado" class="row d-flex justify-content-center">
-            <div class="alert alert-danger">
-              <button
-                type="button"
-                @click="error.estado=0"
-                class="close text-primary"
-                data-dismiss="alert"
-              >×</button>
-              <strong>Corregir los siguentes errores:</strong>
-              <ul>
-                <li v-for="(error, i) in error.mensaje" :key="i" v-text="error"></li>
-              </ul>
-            </div>
-          </div>
+          <error-modal :error.sync="error"></error-modal>
+
           <div class="row form-group">
             <label class="col-md-3 font-weight-bold" for="nom">
               Nombre&nbsp;
@@ -38,7 +24,11 @@
             </div>
           </div>
 
-          <select-unit :initTipo.sync="material.subtipo" :initUnit.sync="material.unidad" :estadoModal="modal.estado"></select-unit>
+          <select-unit
+            :initTipo.sync="material.subtipo"
+            :initUnit.sync="material.unidad"
+            :estadoModal="modal.estado"
+          ></select-unit>
 
           <div class="row form-group">
             <label class="col-md-3 font-weight-bold" for="nom">
@@ -52,7 +42,7 @@
         </div>
         <div class="modal-footer">
           <div class="row form-group col-md-12 d-flex justify-content-around">
-            <load-button @confirm-button="action" :action="modal.accion"></load-button>
+            <load-button @confirm-button="action" :btnCharge.sync="btnCharge"></load-button>
             <button type="button" @click="cerrar()" class="btn btn-secondary">Cancelar</button>
           </div>
         </div>
@@ -62,33 +52,55 @@
 </template>
 
 <script>
+/** import: sweetalert, animate, compare-obj */
+import mainAlert from "../../../globals/Main-alert";
+import "animate.css";
+import compareObj from "../../../globals/Compare-obj";
+
 // Components
-import LoadButton from "./Load-button";
-import selectUnit from './Select-unit'
+import loadButton from "./Load-button";
+import selectUnit from "./Select-unit";
+import errorModal from "../../../globals/Error-modal";
 
 export default {
   components: {
-    LoadButton,
-    selectUnit
+    loadButton,
+    selectUnit,
+    errorModal,
   },
   props: {
     modal: {
       type: Object,
-      default: () => {},
-      required: true
+      default: () => {
+        return { estado: 0, numero: 0 };
+      },
     },
     initMaterial: {
       type: Object,
-      default: () => {},
-      required: true
-    }
+      default: () => {
+        return {
+          id: 0,
+          nombre: "",
+          subtipo: "",
+          unidad: "",
+          costo: "",
+        }
+      }
+    },
   },
   data() {
     return {
-      material: {},
-      // unitsRaw: [],
-      // selectUnits: [],
-      // selectNames: [],
+      material: {
+        id: 0,
+        nombre: "",
+        subtipo: "",
+        unidad: "",
+        costo: "",
+      },
+      btnCharge: {
+        title: '',
+        isPress: false
+      },
       //datos de errores
       error: {
         estado: 0,
@@ -101,35 +113,51 @@ export default {
     };
   },
   computed: {
-    // material: function() {
-    //   return this.material;
-    // }
+    classObject: function () {
+      return {
+        "modal-dialog modal-dialog-centered": true,
+        "animate__animated animate__zoomIn animate__faster": this.modal.estado,
+      };
+    },
+    getTitle: function () {
+      if (this.modal.numero == 1) return "Nuevo material";
+      if (this.modal.numero == 2) return "Editar material";
+    },
+    // getAccion: function () {
+    //   if (this.modal.numero == 1) return {title: "Agregar", isPress: false};
+    //   if (this.modal.numero == 2) return {title: "Editar", isPress: false};
+    // },
   },
   watch: {
-    // modal: function() {
-    //   console.log('modal watched')
-    //   if(this.modal.estado == 1) { //Si el modal se muestra
-    //     this.material.id = this.initMaterial.id;
-    //     this.material.nombre = this.initMaterial.nombre;
-    //     this.material.unidad = this.initMaterial.unidad;
-    //     this.material.subtipo = this.initMaterial.subtipo;
-    //     this.material.costo = this.initMaterial.costo;
-    //   }
-    // }
-  },
-  updated(){
-    if(this.modal.estado) { //Si el modal se muestra
-      this.material.id = this.initMaterial.id;
-      this.material.nombre = this.initMaterial.nombre;
-      this.material.unidad = this.initMaterial.unidad;
-      this.material.subtipo = this.initMaterial.subtipo;
-      this.material.costo = this.initMaterial.costo;
+    initMaterial: {
+      deep: true,
+      handler: function (newVal) {
+        this.material.id = newVal.id;
+        this.material.nombre = newVal.nombre;
+        this.material.unidad = newVal.unidad;
+        this.material.subtipo = newVal.subtipo;
+        this.material.costo = newVal.costo;
+      },
+    },
+    modal: {
+      deep: true,
+      handler: function (newVal) {
+        console.log('modal se actualizó')
+        if(newVal.estado == 1){
+         this.btnCharge.title = "Agregar";
+         this.btnCharge.isPress = false; 
+        }
+        if(newVal.estado == 2){
+          this.btnCharge.title = "Editar";
+          this.btnCharge.isPress = false;
+        }
+      }
     }
   },
   methods: {
     cerrar() {
-      this.$emit('clearModal');
-      this.$emit('clearMaterial');
+      this.$emit("clearModal");
+      this.$emit("clearMaterial");
 
       this.error.estado = 0;
       this.error.mensaje = [];
@@ -152,114 +180,100 @@ export default {
           this.editar();
           break;
         }
-        case "Activar": {
-          this.activar();
-          break;
-        }
-        case "Desactivar": {
-          this.desactivar();
-          break;
-        }
       }
     },
     validar() {
       this.error.estado = 0;
       this.error.mensaje = [];
 
-      //Recorrer la lista de material
-      if (this.modal.numero == 1) {
-        //Modal agregar
-        if (!this.material.nombre)
-          this.error.mensaje.push("Debe ingresar un nombre");
-        if (!this.material.unidad)
-          this.error.mensaje.push("Debe seleccionar una Unid. Medida");
-        if (this.material.costo == 0 || this.material.costo < 0)
-          this.error.mensaje.push("Debe ingresar un costo válido");
-      } else {
-        //Modal editar
-      }
+      if (!this.material.nombre)
+        this.error.mensaje.push("Debe ingresar un nombre");
+      if (!this.material.unidad)
+        this.error.mensaje.push("Debe seleccionar una Unid. Medida");
+      if (this.material.costo == 0 || this.material.costo < 0)
+        this.error.mensaje.push("Debe ingresar un costo válido");
 
       if (this.error.mensaje.length) {
         this.error.estado = 1;
-        // this.button.press = false;
+        
+        //TODO:Tengo que corregir lo del btnCharge
+        // this.btnCharge.title = 
+        this.btnCharge.isPress = false;
+        if(this.modal.numero == 1) this.btnCharge.title = 'Agregar';
+        if(this.modal.numero == 2) this.btnCharge.title = 'Editar';
       }
       return this.error.estado;
     },
     agregar() {
       if (this.validar()) return;
+      const material = {
+        nombre: this.material.nombre,
+        subtipo: this.material.subtipo,
+        unidad: this.material.unidad,
+        costo: this.material.costo,
+      };
       const me = this;
       axios
-        .post(this.ruta.material + "/agregar", {
-          nombre: this.material.nombre,
-          subtipo: this.material.subtipo,
-          unidad: this.material.unidad,
-          costo: this.material.costo,
-        })
+        .post(this.ruta.material + "/agregar", material)
         .then(function (res) {
           if (res.data.estado) {
             me.cerrar();
             me.$emit("list"); //emito el evento de listar al PADRE
-            Swal.fire({
-              position: "top-end",
-              toast: true,
-              type: "success",
+            mainAlert.fire({
+              icon: "success",
               title: "El material se ha AGREGADO correctamente",
-              showConfirmButton: false,
-              timer: 4500,
-              animation: false,
-              customClass: {
-                popup: "animated bounceIn fast",
-              },
             });
           } else {
             me.error.mensaje.push(
-              "El material '" +
-                me.material.nombre +
-                "' ya se encuentra registrado"
+              `${material.nombre} ya se encuentra registrado`
             );
             me.error.estado = 1;
-            console.log("hay errores");
+          }
+          this.btnCharge.isPress = false;
+        })
+        .catch(function (error) {
+          console.log("Error in method agregar() - Modal.vue" + error);
+        });
+    },
+    editar() {
+      if (this.validar()) return;
+      if (compareObj(this.initMaterial, this.material)) {
+        console.log("No ha realizado ninguna modificación");
+        this.cerrar();
+        mainAlert.fire({
+          icon: "success",
+          title: "El Material se ha EDITADO correctamente",
+        });
+        return;
+      }
+      const material = {
+        id: this.material.id,
+        nombre: this.material.nombre,
+        subtipo: this.material.subtipo,
+        unidad: this.material.unidad,
+        costo: this.material.costo,
+      };
+      const me = this;
+      axios
+        .put(me.ruta.material + "/editar", material)
+        .then(function (response) {
+          if (response.data.estado) {
+            me.cerrar();
+            me.$emit("list");
+            mainAlert.fire({
+              icon: "success",
+              title: "El Material se ha EDITADO correctamente",
+            });
+          } else {
+            me.error.mensaje.push(`${material.nombre} ya está registrado`);
+            me.error.estado = 1;
           }
         })
         .catch(function (error) {
-          console.log("soy el error" + error);
+          console.log("Error in method editar() - Modal.vue" + error);
         });
     },
-    // getUnitsRaw() {
-    //   const me = this;
-    //   const url = this.ruta.data + "/selectUnidad";
-    //   axios
-    //     .get(url)
-    //     .then(function (res) {
-    //       me.unitsRaw = res.data;
-    //       me.onlyUnits();
-    //       if (me.modal.numero == 2) me.initialNames();
-    //     })
-    //     .catch(function (error) {
-    //       console.log(error);
-    //     });
-    // },
-    // changeNames() {
-    //   console.log("run changeNames");
-    //   this.material.unidad = "";
-    //   this.selectNames = this.unitsRaw
-    //     .filter((el) => el.subtipo == this.material.subtipo)
-    //     .map((el) => el.nombre);
-    // },
-    // initialNames() {
-    //   console.log("run initialNames");
-    //   this.selectNames = this.unitsRaw
-    //     .filter((el) => el.subtipo == this.material.subtipo)
-    //     .map((el) => el.nombre);
-    // },
-    // onlyUnits() {
-    //   console.log("run onlyUnits");
-    //   const arr = this.unitsRaw.map((el) => el.subtipo);
-    //   this.selectUnits = arr.filter(
-    //     (el, index, self) => self.indexOf(el) === index
-    //   );
-    // },
-  }
+  },
 };
 </script>
 
