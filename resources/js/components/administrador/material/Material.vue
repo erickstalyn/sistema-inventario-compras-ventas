@@ -4,19 +4,23 @@
     <div class="container-small">
       <!-- Encabezado principal -->
       <div class="row form-group">
-        <i class="fas fa-map-signs"></i>&nbsp;&nbsp;
-        <span class="h3 mb-0 text-gray-900">Materiales&nbsp;</span>
-        <button type="button" class="btn btn-success" @click="abrirModalAgregar()">
-          <i class="fas fa-hammer"></i>&nbsp; Nuevo
-        </button>&nbsp;
-        <button type="button" class="btn btn-danger" @click="generatePdf()">
-          <i class="far fa-file-pdf"></i>&nbsp; PDF
-        </button>
+        <div class="col-12 col-sm-6 col-md-4 mb-2">
+          <i class="fas fa-map-signs mr-1"></i>
+          <span class="h3 mb-0 text-gray-900">Materiales</span>
+        </div>
+        <div class="col-12 col-sm-6 col-md-8">
+          <button type="button" class="btn btn-success" @click="abrirModalAgregar()">
+            <i class="fas fa-hammer mr-2"></i>Nuevo
+          </button>
+          <button type="button" class="btn btn-danger" @click="generatePdf()">
+            <i class="far fa-file-pdf mr-2"></i>PDF
+          </button>
+        </div>
       </div>
 
       <!-- Inputs de busqueda -->
-      <div class="row form-group">
-        <div class="col-md-8">
+      <div class="row mb-3">
+        <div class="col-12 col-sm-8">
           <div class="input-group">
             <input
               type="search"
@@ -30,27 +34,27 @@
             </button>
           </div>
         </div>
-        <div class="col-md-2"></div>
-        <div class="col-md-1" align="right">
-          <label>N° filas:</label>
-        </div>
-        <div class="col-md-1">
-          <select
-            class="custom-select custom-select-sm text-gray-900"
-            v-model="busqueda.filas"
-            @change="listar()"
-          >
-            <option
-              v-for="item in [3,4,5,6,7,8,9,10,11,12,13,14,15,16,17]"
-              :key="item"
-              :value="item"
-              v-text="item"
-            ></option>
-          </select>
+        <div class="col-12 col-sm-4 d-flex justify-content-end">
+          <div class="form-inline">
+            <label class="mr-2">N° filas</label>
+            <select
+              class="custom-select mr-sm-2 text-gray-900"
+              v-model="busqueda.filas"
+              @change="listar()"
+            >
+              <option
+                v-for="item in [3,4,5,6,7,8,9,10,11,12,13,14,15,16,17]"
+                :key="item"
+                :value="item"
+                v-text="item"
+              ></option>
+            </select>
+          </div>
         </div>
       </div>
 
-      <my-table :listaMaterial="listaMaterial" @edit="abrirModalEditar"></my-table>
+      <my-table :listaMaterial="listaMaterial" :paginacion="paginacion" @edit="abrirModalEditar" @list="listar"></my-table>
+
     </div>
 
     <!-- Modales -->
@@ -61,15 +65,12 @@
 
 <script>
 /** Components */
-// import materialRow from "./subcomponents/Material-row";
 import myTable from './subcomponents/Table'
-import paginationBar from "../../globals/Pagination-bar";
 import myModal from "./subcomponents/modal";
 
 export default {
   components: {
     myTable,
-    paginationBar,
     myModal
   },
   data() {
