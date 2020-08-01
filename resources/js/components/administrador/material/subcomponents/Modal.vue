@@ -52,10 +52,9 @@
 </template>
 
 <script>
-/** import: sweetalert, animate, compare-obj */
+/** import: sweetalert, animate*/
 import mainAlert from "../../../globals/Main-alert";
 import "animate.css";
-import compareObj from "../../../globals/Compare-obj";
 
 // Components
 import loadButton from "./Load-button";

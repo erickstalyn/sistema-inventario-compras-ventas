@@ -19,5 +19,6 @@ mix.styles([
    'resources/assets/plantilla/js/jquery.easing.min.js',
    'resources/assets/plantilla/js/Chart.min.js',
    'resources/assets/plantilla/js/sb-admin-2.min.js',
+   'resources/js/library.js',
 ], 'public/js/plantilla.js')
 .js(['resources/js/app.js'], 'public/js/app.js');

@@ -1,3 +1,4 @@
+//Comparador de objectos basicos
 const compareObj = (a, b) => {
   const aKeys = Object.keys(a).sort();
   const bKeys = Object.keys(b).sort();
@@ -14,4 +15,3 @@ const compareObj = (a, b) => {
   }
   return true;
 };
-export default compareObj;
