@@ -19,7 +19,7 @@ window.Vue = require('vue');
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default));
 
 Vue.component('adm_usuario', require('./components/administrador/Usuario.vue').default);
-Vue.component('adm_superproducto', require('./components/administrador/SuperProducto.vue').default);
+Vue.component('producto', require('./components/Producto/Producto.vue').default);
 Vue.component('adm_producto', require('./components/administrador/Producto.vue').default);
 
 Vue.component('adm_material', require('./components/administrador/material/Material.vue').default);
@@ -55,23 +55,23 @@ Vue.component('noti_venta_alm', require('./components/Notificacion/Notification_
  */
 import '../css/styles.css'
 const app = new Vue({
-  el: '#app',
-  data: {
-    menu: 1,
-    notifications:[],
-  },
-  created(){
-    let me = this;
-    axios.post('notification/get').then(function(response){
-      // console.log(response.data);
-      me.notifications = response.data;
-    }).catch(function(error){
-      console.log(error);
-    });
-    var userId = $('meta[name="userId"]').attr('content');
-    Echo.private('App.Usuario.' + userId).notification((notification) =>{
-      console.log(notification);
-      me.notifications.unshift(notification);
-    });
-  }
+    el: '#app',
+    data: {
+        menu: 2,
+        notifications:[],
+    },
+    created(){
+        let me = this;
+        axios.post('notification/get').then(function(response){
+            // console.log(response.data);
+            me.notifications = response.data;
+        }).catch(function(error){
+            console.log(error);
+        });
+        var userId = $('meta[name="userId"]').attr('content');
+        Echo.private('App.Usuario.' + userId).notification((notification) =>{
+            console.log(notification);
+            me.notifications.unshift(notification);
+        });
+    }
 });

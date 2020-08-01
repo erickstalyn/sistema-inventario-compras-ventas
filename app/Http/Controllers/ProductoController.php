@@ -6,25 +6,32 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use App\Producto;
-use App\SuperProducto;
-use App\Data;
-use App\Material;
+use App\SubProducto;
+use App\Categoria;
+use App\Marca;
 use Exception;
 
-class ProductoController extends Controller {
-    
+class ProductoController extends Controller{
+
     public function listar(Request $request){
         if ( !$request->ajax() ) return redirect('/') ;
         
         $texto = $request->texto;
+        $filas = $request->filas;
 
-        $productos = Producto::where(function ($query) use ($texto) {
+        $productos = Producto::leftJoin('categoria', 'categoria.id', '=', 'producto.categoria_id')
+                            ->leftJoin('marca', 'marca.id', '=', 'producto.marca_id')
+                            ->select('producto.id', 'categoria.nombre AS categoria', 'marca.nombre AS marca', 'modelo', 'producto.nombre', 'descripcion', 'stock', 'created_at')
+                            ->where('producto.estado', '=', 1)
+                            ->where(function ($query) use ($texto) {
                                 if ( $texto != '' ) {
-                                    $query->where('nombre', 'like', $texto.'%')
-                                        ->orWhere('codigo', 'like', '%'.$texto.'%');
+                                    $query->where('categoria.nombre', 'like', '%'.$texto.'%')
+                                        ->orWhere('marca.nombre', 'like', '%'.$texto.'%')
+                                        ->orWhere('modelo', 'like', '%'.$texto.'%')
+                                        ->orWhere('producto.nombre', 'like', '%'.$texto.'%');
                                 }
                             })
-                            ->orderBy('stock', 'asc')->paginate($request->filas);
+                            ->orderBy('id', 'desc')->paginate($filas);
 
         return [
             'paginacion' => [
@@ -42,19 +49,43 @@ class ProductoController extends Controller {
     public function agregar(Request $request){
         if ( !$request->ajax() ) return redirect('/');
 
+        $dataProducto = $request->producto;
+        $dataSubproductos = $request->Subproductos;
+
         try {
             DB::beginTransaction();
-            
+
+            $now = Carbon::now('America/Lima')->toDateTimeString();
+
             $producto = new Producto();
-            $producto->superproducto_id = $request->superproducto_id;
-            $producto->nombre = $request->nombre;
-            $producto->codigo = $request->codigo;
-            $producto->size = $request->size;
-            $producto->color = $request->color;
-            $producto->precio_menor = $request->precio_menor;
-            $producto->precio_mayor = $request->precio_mayor;
-            $producto->created_at = Carbon::now('America/Lima')->toDateTimeString();
+            // $producto->nombre = ucfirst($request->nombre);
+            $producto->categoria_id = $dataProducto['categoria_id'];
+            $producto->marca_id = $dataProducto['marca_id']!=0?$dataProducto['marca_id']:NULL;
+            if ( $dataProducto->nombre == '' ) {
+                $categoria = Categoria::select('nombre')->where('id', '=', $dataProducto['categoria_id'])->first()['nombre'];
+                $marca = $dataProducto['marca_id']!=0?' '.Marca::select('nombre')->where('id', '=', $dataProducto['marca_id'])->first()['nombre']:'';
+                $modelo = $dataProducto['modelo'];
+                $producto->nombre = strtr($categoria . $marca . $modelo,"àèìòùáéíóúçñäëïöü","ÀÈÌÒÙÁÉÍÓÚÇÑÄËÏÖÜ");
+            }
+            $producto->descripcion = $request->descripcion!=''?$request->descripcion:NULL;
+            $producto->created_at = $now;
             $producto->save();
+
+            $subproductos = $requet->subproductos;
+            for ($i = 0; $i < sizeof($subproductos); $i++) {
+                $subproducto = new Subproducto();
+                $subproducto->producto_id = $producto->id;
+                $nombre = $producto->nombre;
+                foreach ($subproducto['caracteristicas'] as $caracteristica) {
+                    $nombre .= ' ' . $caracteristica['caracteristica'];
+                }
+                $codigo = $now
+                $subproducto->nombre = $nombre;
+                $subproducto->precio_menor = $request->subproductos[$i]['precio_menor'];
+                $subproducto->precio_mayor = $request->subproductos[$i]['precio_mayor'];
+                $subproducto->created_at = $now;
+                $subproducto->save();
+            }
 
             DB::commit();
             $error = NULL;
@@ -62,7 +93,7 @@ class ProductoController extends Controller {
             DB::rollback();
             $error = $e;
         }
-
+        
         return [
             'estado' => $error==NULL?1:0,
             'error' => $error
@@ -75,16 +106,12 @@ class ProductoController extends Controller {
         try {
             DB::beginTransaction();
 
-            $producto = Producto::findOrFail($request->id);
-            $producto->superproducto_id = $request->superproducto_id;
-            $producto->nombre = $request->nombre;
-            $producto->codigo = $request->codigo;
-            $producto->size = $request->size;
-            $producto->color = $request->color;
-            $producto->precio_menor = $request->precio_menor;
-            $producto->precio_mayor = $request->precio_mayor;
-            $producto->save();
-
+            $superproducto = SuperProducto::findOrFail($request->id);
+            // $superproducto->nombre = ucfirst($request->nombre);
+            $superproducto->nombre = strtr(strtoupper($request->nombre),"àèìòùáéíóúçñäëïöü","ÀÈÌÒÙÁÉÍÓÚÇÑÄËÏÖÜ");
+            $superproducto->descripcion = $request->descripcion==''?NULL:$request->descripcion;
+            $superproducto->save();
+            
             DB::commit();
             $error = NULL;
         } catch(Exception $e) {
@@ -97,38 +124,34 @@ class ProductoController extends Controller {
             'error' => $error
         ];
     }
-
-    public function listaProducto(Request $request){
-        $productos = Producto::select('size', 'color', 'costo_produccion', 'precio_menor', 'precio_mayor', 'stock')
-                            ->where('superproducto_id', '=', $request->id)
-                            ->orderBy('id', 'desc')->get();
-        
-        return $productos;
-    }
     
-    public function getProductoFiltrado(Request $request){
-        if ( !$request->ajax() ) return redirect('/');
-        $texto = $request->texto;
-
-        $productos = Producto::select('id','nombre', 'stock', 'costo_produccion', 'codigo')
-                            ->where(function ($query) use ($texto) {
-                                if ( $texto != '' ) {
-                                    $query->where('nombre', 'like', $texto . '%')
-                                        ->orWhere('codigo', '=', $texto);
-                                }
-                            })
-                            ->orderBy('nombre', 'asc')->get();
-        return [
-            'productos' => $productos
-        ];
+    public function selectSuperProducto(Request $request){
+        $superproductos = SuperProducto::select('id', 'nombre')
+                                    ->orderBy('nombre', 'desc')->get();
+        return $superproductos;
     }
 
     public function generatePdf(){
-        $producto = Producto::orderBy('id', 'asc')->get();
+        $superproducto = SuperProducto::select('id', 'nombre', 'descripcion', 'superstock', 'created_at')
+                        ->orderBy('id', 'asc')->get();
 
-        $cont = Producto::count();
+        $cont = SuperProducto::count();
         
-        $pdf = \PDF::loadView('pdf.productopdf', ['producto'=>$producto, 'cont'=>$cont]);
-        return $pdf->download('lista_productos_silmar.pdf');
+        $pdf = \PDF::loadView('pdf.superproductopdf', ['superproducto'=>$superproducto, 'cont'=>$cont]);
+        return $pdf->download('lista_superproductos_silmar.pdf');
     }
+
+    public function getCategorias(Request $request){
+        if ( !$request->ajax() ) return redirect('/');
+        
+        return Categoria::all();
+    }
+    
+    public function getMarcas(Request $request){
+        if ( !$request->ajax() ) return redirect('/');
+
+        return Marca::all();
+    }
+
 }
+

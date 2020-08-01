@@ -14,6 +14,9 @@ Route::group(['middleware' => ['auth']], function () {
         return view('ContenidoPrincipal.contenidoPrincipal');
     })->name('main');
 
+    // RUTAS para datos del usuario
+    Route::get('/usuario/getRol', 'UsuarioController@getRol');
+    
     //RUTAS PARA FUNCIONES COMUNES
     Route::get('/producto/getProductoFiltrado', 'ProductoController@getProductoFiltrado');
     Route::get('/persona/getPersona', 'PersonaController@getPersona');
@@ -91,16 +94,19 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/material/selectMaterial', 'MaterialController@selectMaterial'); 
 
         //RUTAS PARA SUPERPRODUCTO
-        Route::get('/superproducto', 'SuperProductoController@listar'); //metodos generales
-        Route::post('/superproducto/agregar', 'SuperProductoController@agregar');
-        Route::put('/superproducto/editar', 'SuperProductoController@editar');
-        Route::get('/superproducto/selectSuperProducto', 'SuperProductoController@selectSuperProducto'); //metodos secundarios
-
-        //RUTAS PARA PRODUCTO
         Route::get('/producto', 'ProductoController@listar'); //metodos generales
         Route::post('/producto/agregar', 'ProductoController@agregar');
         Route::put('/producto/editar', 'ProductoController@editar');
-        Route::get('/producto/listaProducto', 'ProductoController@listaProducto');  //metodos secundarios
+        Route::get('/producto/selectProducto', 'ProductoController@selectProducto'); //metodos secundarios
+        Route::get('/producto/getCategorias', 'ProductoController@getCategorias');
+        Route::get('/producto/getMarcas', 'ProductoController@getMarcas');
+
+        //RUTAS PARA SUBPRODUCTO
+        Route::get('/subproducto/getTiposCaracteristica', 'SubproductoController@getTiposCaracteristica');
+        // Route::get('/producto', 'ProductoController@listar'); //metodos generales
+        // Route::post('/producto/agregar', 'ProductoController@agregar');
+        // Route::put('/producto/editar', 'ProductoController@editar');
+        // Route::get('/producto/listaProducto', 'ProductoController@listaProducto');  //metodos secundarios
 
         //RUTAS PARA PRODUCTO MATERIAL
         Route::post('/productomaterial/agregar', 'ProductoMaterialController@agregar');
