@@ -154,4 +154,10 @@ class UsuarioController extends Controller
 
         return $roles;
     }
+
+    public function getRol(Request $request){
+        if ( !$request->ajax() ) return redirect('/');
+
+        return strtolower(Rol::select('descripcion')->where('id', '=', Auth::user()->getRol->id)->first()['descripcion']);
+    }
 }

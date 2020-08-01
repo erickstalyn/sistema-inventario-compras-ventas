@@ -16,6 +16,8 @@ class CreateTipoCaracteristicaTable extends Migration
         Schema::create('tipo_caracteristica', function (Blueprint $table) {
             $table->tinyIncrements('id');
             $table->string('nombre', 100);
+            $table->boolean('required')->default(1);
+            $table->boolean('estado')->default(1);
         });
     }
 

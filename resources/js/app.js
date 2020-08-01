@@ -20,7 +20,7 @@ window.Vue = require('vue');
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default));
 
 Vue.component('adm_usuario', require('./components/administrador/Usuario.vue').default);
-Vue.component('adm_superproducto', require('./components/administrador/SuperProducto.vue').default);
+Vue.component('producto', require('./components/Producto/Producto.vue').default);
 Vue.component('adm_producto', require('./components/administrador/Producto.vue').default);
 
 Vue.component('adm_material', require('./components/administrador/material/Material.vue').default);
@@ -58,7 +58,7 @@ Vue.component('noti_venta_alm', require('./components/Notificacion/Notification_
 const app = new Vue({
     el: '#app',
     data: {
-        menu: 1,
+        menu: 2,
         notifications:[],
     },
     created(){

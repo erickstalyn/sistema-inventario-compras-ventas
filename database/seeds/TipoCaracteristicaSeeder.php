@@ -13,10 +13,10 @@ class TipoCaracteristicaSeeder extends Seeder
     public function run()
     {
         TipoCaracteristica::create([
-            'nombre' => 'tamaño'
+            'nombre' => 'Tamaño'
         ]);
         TipoCaracteristica::create([
-            'nombre' => 'color'
+            'nombre' => 'Color'
         ]);
     }
 }
