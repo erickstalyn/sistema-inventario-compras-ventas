@@ -42,7 +42,7 @@
         </div>
         <div class="modal-footer">
           <div class="row form-group col-md-12 d-flex justify-content-around">
-            <load-button @confirm-button="action" :action="getAccion"></load-button>
+            <load-button @confirm-button="action" :btnCharge.sync="btnCharge"></load-button>
             <button type="button" @click="cerrar()" class="btn btn-secondary">Cancelar</button>
           </div>
         </div>
@@ -97,6 +97,10 @@ export default {
         unidad: "",
         costo: "",
       },
+      btnCharge: {
+        title: '',
+        isPress: false
+      },
       //datos de errores
       error: {
         estado: 0,
@@ -119,10 +123,10 @@ export default {
       if (this.modal.numero == 1) return "Nuevo material";
       if (this.modal.numero == 2) return "Editar material";
     },
-    getAccion: function () {
-      if (this.modal.numero == 1) return "Agregar";
-      if (this.modal.numero == 2) return "Editar";
-    },
+    // getAccion: function () {
+    //   if (this.modal.numero == 1) return {title: "Agregar", isPress: false};
+    //   if (this.modal.numero == 2) return {title: "Editar", isPress: false};
+    // },
   },
   watch: {
     initMaterial: {
@@ -135,6 +139,20 @@ export default {
         this.material.costo = newVal.costo;
       },
     },
+    modal: {
+      deep: true,
+      handler: function (newVal) {
+        console.log('modal se actualizó')
+        if(newVal.estado == 1){
+         this.btnCharge.title = "Agregar";
+         this.btnCharge.isPress = false; 
+        }
+        if(newVal.estado == 2){
+          this.btnCharge.title = "Editar";
+          this.btnCharge.isPress = false;
+        }
+      }
+    }
   },
   methods: {
     cerrar() {
@@ -175,8 +193,15 @@ export default {
       if (this.material.costo == 0 || this.material.costo < 0)
         this.error.mensaje.push("Debe ingresar un costo válido");
 
-      if (this.error.mensaje.length) this.error.estado = 1;
-
+      if (this.error.mensaje.length) {
+        this.error.estado = 1;
+        
+        //TODO:Tengo que corregir lo del btnCharge
+        // this.btnCharge.title = 
+        this.btnCharge.isPress = false;
+        if(this.modal.numero == 1) this.btnCharge.title = 'Agregar';
+        if(this.modal.numero == 2) this.btnCharge.title = 'Editar';
+      }
       return this.error.estado;
     },
     agregar() {
@@ -204,6 +229,7 @@ export default {
             );
             me.error.estado = 1;
           }
+          this.btnCharge.isPress = false;
         })
         .catch(function (error) {
           console.log("Error in method agregar() - Modal.vue" + error);

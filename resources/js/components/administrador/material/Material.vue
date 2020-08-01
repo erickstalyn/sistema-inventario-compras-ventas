@@ -96,14 +96,14 @@
 
 <script>
 /** Components */
-import MaterialRow from "./subcomponents/Material-row";
-import PaginationBar from "../../globals/Pagination-bar";
+import materialRow from "./subcomponents/Material-row";
+import paginationBar from "../../globals/Pagination-bar";
 import myModal from "./subcomponents/modal";
 
 export default {
   components: {
-    MaterialRow,
-    PaginationBar,
+    materialRow,
+    paginationBar,
     myModal
   },
   data() {
