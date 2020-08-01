@@ -75,11 +75,13 @@ class ProductoController extends Controller{
             for ($i = 0; $i < sizeof($subproductos); $i++) {
                 $subproducto = new Subproducto();
                 $subproducto->producto_id = $producto->id;
-                $nombre = $producto->nombre;
+                $subproducto->nombre = $producto->nombre;
+                $caracteristicas = "";
                 foreach ($subproducto['caracteristicas'] as $caracteristica) {
-                    $nombre .= ' ' . $caracteristica['caracteristica'];
+                    if ( $caracteristica->caracteristica != '' ) $subproducto->nombre .= ' ' . $caracteristica['caracteristica'];
                 }
-                $codigo = $now
+                $subproducto->nombre = $producto->nombre . $caracteristicas;
+                $subproducto->codigo = implode("", array_merge(explode('-', explode(' ', $now)[0]), explode(':', explode(' ', $now)[1]))).rand(0, 9);
                 $subproducto->nombre = $nombre;
                 $subproducto->precio_menor = $request->subproductos[$i]['precio_menor'];
                 $subproducto->precio_mayor = $request->subproductos[$i]['precio_mayor'];
