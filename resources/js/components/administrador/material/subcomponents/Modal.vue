@@ -31,12 +31,12 @@
           ></select-unit>
 
           <div class="row form-group">
-            <label class="col-md-3 font-weight-bold" for="nom">
-              Costo por Unidad&nbsp;
+            <label class="col-6 col-sm-3 font-weight-bold">
+              Costo por Unidad
               <span class="text-danger">*</span>
             </label>
-            <div class="col-md-4">
-              <input type="number" v-model="material.costo" min="1" class="form-control text-right" />
+            <div class="col-6 col-sm-4">
+              <input type="number" v-model="material.costo" min="1" class="form-control text-right">
             </div>
           </div>
         </div>

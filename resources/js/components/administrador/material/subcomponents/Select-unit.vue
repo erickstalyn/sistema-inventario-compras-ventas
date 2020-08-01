@@ -1,11 +1,11 @@
 <template>
   <div class="row form-group">
-    <label class="col-md-3 font-weight-bold">
-      Unid.Medida&nbsp;
+    <label class="col-12 col-md-3 font-weight-bold mb-2">
+      Unid.Med.
       <span class="text-danger">*</span>
     </label>
-    <div class="col-md-4">
-      <select v-model="tipo" @change="changeTipo()"  class="custom-select">
+    <div class="col-6 col-md-4">
+      <select v-model="tipo" @change="changeTipo()" class="custom-select">
         <option value disabled>tipo</option>
         <option
           v-for="(tipo, i) in selectTipoUnidad"
@@ -16,7 +16,7 @@
         ></option>
       </select>
     </div>
-    <div class="col-md-5">
+    <div class="col-6 col-md-5">
       <select v-model="unit" @change="changeUnit()" class="custom-select">
         <option value disabled>seleccione</option>
         <option
@@ -63,7 +63,7 @@ export default {
       return this.unidadesRaw.filter(
         (e, i, self) => e.tipo_unidad_nombre == this.tipo
       );
-    }
+    },
   },
   watch: {
     estadoModal: function (newEstado, oldEstado) {
@@ -72,12 +72,12 @@ export default {
         this.unit = "";
       }
     },
-    initTipo: function(newVal) {
+    initTipo: function (newVal) {
       this.tipo = newVal;
     },
-    initUnit: function(newVal) {
+    initUnit: function (newVal) {
       this.unit = newVal;
-    }
+    },
   },
   methods: {
     getUnitsRaw() {
