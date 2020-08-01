@@ -9,6 +9,8 @@ use App\Producto;
 use App\SubProducto;
 use App\Categoria;
 use App\Marca;
+use App\TipoCaracteristica;
+use App\Caracteristica;
 use Exception;
 
 class ProductoController extends Controller{
@@ -71,35 +73,44 @@ class ProductoController extends Controller{
             $producto->created_at = $now;
             $producto->save();
 
-            $subproductos = $requet->subproductos;
-            for ($i = 0; $i < sizeof($subproductos); $i++) {
+            foreach ($requet->subproductos as $dataSubproducto) {
                 $subproducto = new Subproducto();
                 $subproducto->producto_id = $producto->id;
                 $subproducto->nombre = $producto->nombre;
-                $caracteristicas = "";
-                foreach ($subproducto['caracteristicas'] as $caracteristica) {
-                    if ( $caracteristica->caracteristica != '' ) $subproducto->nombre .= ' ' . $caracteristica['caracteristica'];
+                $subproducto->code_unique = "";
+                $subproducto->caracteristicas = "";
+                $subproducto->caracteristicas_json = [];
+                foreach ($dataSubproducto['caracteristicas'] as $caracteristica) {
+                    if ( $caracteristica['caracteristica'] != '' ) $subproducto->nombre .= ' ' . $caracteristica['caracteristica'];
+
+                    $subproducto->code_unique .= base_convert(TipoCaracteristica::where('nombre', '=', $caracteristica['tipo_caracteristica'])->first()['id'], 10, 36);
+                    $subproducto->code_unique .= str_pad(base_convert(Caracteristica::where('nombre', '=', $caracteristica['caracteristica'])->first()['id'], 10, 36), 2, '0', STR_PAD_LEFT);
+                    
+                    $subproducto->caracteristicas .= ($subproducto->caracteristicas==''?'':' ').$caracteristica['caracteristica'];
+                    $subproducto->caracteristicas_json[] = [
+                        'tipo_caracteristica' => $caracteristica['tipo_caracteristica'],
+                        'caracteristica' => $caracteristica['caracteristica']
+                    ];
                 }
-                $subproducto->nombre = $producto->nombre . $caracteristicas;
                 $subproducto->codigo = implode("", array_merge(explode('-', explode(' ', $now)[0]), explode(':', explode(' ', $now)[1]))).rand(0, 9);
-                $subproducto->nombre = $nombre;
-                $subproducto->precio_menor = $request->subproductos[$i]['precio_menor'];
-                $subproducto->precio_mayor = $request->subproductos[$i]['precio_mayor'];
+                $subproducto->precio_menor = $dataSubproducto['precio_menor'];
+                $subproducto->precio_mayor = $dataSubproducto['precio_mayor'];
                 $subproducto->created_at = $now;
                 $subproducto->save();
             }
 
             DB::commit();
-            $error = NULL;
+            return [
+                'success' => true
+            ];
         } catch(Exception $e) {
             DB::rollback();
-            $error = $e;
+            return [
+                'success' => false,
+                'status' => 'exception',
+                'exception' => $e
+            ];
         }
-        
-        return [
-            'estado' => $error==NULL?1:0,
-            'error' => $error
-        ];
     }
 
     public function editar(Request $request){

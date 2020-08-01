@@ -43,7 +43,7 @@
         </div>
 
         <!-- Modal -->
-        <modal :tipoModal="Modal.tipo" :initProducto="Producto" @cerrarModal="cerrarModal"></modal>
+        <modal :tipoModal="Modal.tipo" :initProducto="Producto" @cerrarModal="cerrarModal" @listar="listar"></modal>
 
     </main>
 </template>
