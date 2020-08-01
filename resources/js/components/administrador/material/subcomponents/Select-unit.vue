@@ -5,7 +5,7 @@
       <span class="text-danger">*</span>
     </label>
     <div class="col-md-4">
-      <select @change="changeTipo()" v-model="tipo" class="custom-select">
+      <select v-model="tipo" @change="changeTipo()"  class="custom-select">
         <option value disabled>tipo</option>
         <option
           v-for="(tipo, i) in selectTipoUnidad"
@@ -78,7 +78,6 @@ export default {
     initUnit: function(newVal) {
       this.unit = newVal;
     }
-
   },
   methods: {
     getUnitsRaw() {
@@ -112,8 +111,6 @@ export default {
   },
   mounted() {
     this.getUnitsRaw();
-  },
-  updated() {
   },
 };
 </script>
