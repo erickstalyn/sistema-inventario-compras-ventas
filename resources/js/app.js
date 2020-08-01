@@ -57,7 +57,7 @@ import '../css/styles.css'
 const app = new Vue({
     el: '#app',
     data: {
-        menu: 2,
+        menu: 1,
         notifications:[],
     },
     created(){

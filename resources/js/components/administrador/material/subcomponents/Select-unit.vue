@@ -37,17 +37,14 @@ export default {
     initTipo: {
       type: String,
       default: "",
-      required: true,
     },
     initUnit: {
       type: String,
       default: "",
-      required: true,
     },
     estadoModal: {
-      type: Number,
+      type: Boolean,
       default: 0,
-      required: true,
     },
   },
   data() {

@@ -18,11 +18,6 @@
       <div class="row form-group">
         <div class="col-md-8">
           <div class="input-group">
-            <!-- <select class="col-md-3 custom-select text-gray-900" v-model="busqueda.estado" @change="listar()">
-                            <option value="2">Todos</option>
-                            <option value="1">Activados</option>
-                            <option value="0">Desactivados</option>
-            </select>-->
             <input
               type="search"
               class="form-control"
@@ -55,54 +50,25 @@
         </div>
       </div>
 
-      <!-- Listado -->
-      <div v-if="listaMaterial.length" class="table-responsive">
-        <!-- Tabla -->
-        <div class="overflow-auto">
-          <table class="table table-borderless table-sm text-gray-900">
-            <thead>
-              <tr class="table-info">
-                <th
-                  v-for="head in ['Nombre', 'Unid. Medida', 'Costo Unit.', 'Opciones']"
-                  :key="head"
-                  v-text="head"
-                ></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                v-for="(material, i) in listaMaterial"
-                :key="i"
-                is="material-row"
-                :material="material"
-                @edit-material="abrirModalEditar"
-              ></tr>
-            </tbody>
-          </table>
-        </div>
-        <!-- Barra de navegacion -->
-        <pagination-bar @list="listar" :paginacion="paginacion"></pagination-bar>
-      </div>
-      <div v-else>
-        <h5>No se han encontrado resultados</h5>
-      </div>
+      <my-table :listaMaterial="listaMaterial" @edit="abrirModalEditar"></my-table>
     </div>
 
     <!-- Modales -->
-    <my-modal @list="listar"  :modal="modal" @clearModal="onClearModal" :initMaterial="material" @clearMaterial="onClearMaterial"></my-modal>
+    <my-modal @list="listar"></my-modal>
     
   </main>
 </template>
 
 <script>
 /** Components */
-import materialRow from "./subcomponents/Material-row";
+// import materialRow from "./subcomponents/Material-row";
+import myTable from './subcomponents/Table'
 import paginationBar from "../../globals/Pagination-bar";
 import myModal from "./subcomponents/modal";
 
 export default {
   components: {
-    materialRow,
+    myTable,
     paginationBar,
     myModal
   },
@@ -110,23 +76,11 @@ export default {
     return {
       //datos generales
       listaMaterial: [],
-      material: {
-        id: 0,
-        nombre: "",
-        subtipo: "",
-        unidad: "",
-        costo: "",
-      },
       //datos de busqueda y filtracion
       busqueda: {
         texto: "",
         estado: 2,
         filas: 5,
-      },
-      //datos de modales
-      modal: {
-        estado: 0,
-        numero: 0,
       },
       //datos de paginacion
       paginacion: {
@@ -171,25 +125,21 @@ export default {
         });
     },
     abrirModalAgregar() {
-      this.abrirModal(1);
+      const data = {
+        numModal: 1,
+        material: {}
+      }
+      this.$emit('abrir-modal', data);
     },
     abrirModalEditar(material) {
-      this.material = material;
-      this.abrirModal(2);
-    },
-    abrirModal(numero, titulo, accion) {
-      this.modal.estado = 1;
-      this.modal.numero = numero;
-    },
-    onClearModal(){
-      this.modal = {estado: 0, numero: 0};
-    },
-    onClearMaterial(){
-      this.material = {id: 0, nombre: "", subtipo: "", unidad: "", costo: ""};
+      const data = {
+        numModal: 2,
+        material: material
+      }
+      this.$emit('abrir-modal', data);
     },
     generatePdf() {
       window.open(this.ruta.serverPhp + "/material/generatePdf", "_blank");
-      this.Button.press = false;
     },
   },
   mounted() {
