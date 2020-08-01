@@ -197,7 +197,6 @@ export default {
         this.error.estado = 1;
         
         //TODO:Tengo que corregir lo del btnCharge
-        // this.btnCharge.title = 
         this.btnCharge.isPress = false;
         if(this.modal.numero == 1) this.btnCharge.title = 'Agregar';
         if(this.modal.numero == 2) this.btnCharge.title = 'Editar';
@@ -229,11 +228,11 @@ export default {
             );
             me.error.estado = 1;
           }
-          this.btnCharge.isPress = false;
         })
         .catch(function (error) {
           console.log("Error in method agregar() - Modal.vue" + error);
-        });
+        })
+        .then((res) => this.btnCharge.isPress = false);
     },
     editar() {
       if (this.validar()) return;
