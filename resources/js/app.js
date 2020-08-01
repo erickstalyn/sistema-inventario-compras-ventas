@@ -53,7 +53,6 @@ Vue.component('noti_venta_alm', require('./components/Notificacion/Notification_
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
-// import '../css/styles.css'
 const app = new Vue({
     el: '#app',
     data: {
