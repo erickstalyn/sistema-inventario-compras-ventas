@@ -26,7 +26,7 @@
               type="search"
               class="form-control"
               v-model="busqueda.texto"
-              placeholder="Buscar por NOMBRE"
+              placeholder="Buscar por nombre"
               @keyup.enter="listar()"
             />
             <button type="button" class="btn btn-primary" @click="listar()">

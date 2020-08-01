@@ -4,18 +4,19 @@
       <thead>
         <tr class="table-info">
           <th
-            v-for="head in ['Nombre', 'Unid. Medida', 'Costo Unit.', 'Opciones']"
+            v-for="head in ['Nombre', 'Unid. Medida', 'Costo Unit.']"
             :key="head"
             v-text="head"
           ></th>
+          <th class="text-center">Opciones</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="material in listaMaterial" :key="material.id">
+        <tr class="row-table" v-for="material in listaMaterial" :key="material.id">
           <td v-text="material.nombre"></td>
           <td v-text="material.unidad"></td>
           <td v-text="material.costo"></td>
-          <td>
+          <td class="text-center">
             <button
               type="button"
               @click="edit(material)"
@@ -74,5 +75,5 @@ export default {
 </script>
 
 <style>
-
+  
 </style>
