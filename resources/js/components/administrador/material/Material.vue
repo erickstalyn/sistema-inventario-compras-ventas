@@ -127,7 +127,9 @@ export default {
     },
     abrirModalAgregar() {
       const data = {
-        numModal: 1,
+        modal: {
+          tipo: 'agregar',
+        },
         material: {}
       }
       this.$emit('abrir-modal', data);

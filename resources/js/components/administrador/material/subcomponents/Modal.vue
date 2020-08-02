@@ -1,9 +1,9 @@
 <template>
   <div :class="{'modal text-gray-900': true, 'show-modal': modal.estado }">
     <div :class="classObject">
-      <div class="modal-content modal-lg">
+      <div class="modal-content" :class="modal.size">
         <div class="modal-header">
-          <h3 v-text="getTitle" class="modal-title"></h3>
+          <h3 v-text="modal.titulo" class="modal-title"></h3>
           <button type="button" @click="cerrar()" class="close">X</button>
         </div>
         <div class="modal-body">
@@ -36,16 +36,34 @@
               <span class="text-danger">*</span>
             </label>
             <div class="col-6 col-sm-4">
-              <input type="number" v-model="material.costo" min="1" class="form-control text-right">
+              <input type="number" v-model="material.costo" min="1" class="form-control text-right" />
             </div>
           </div>
         </div>
-        <div class="modal-footer">
+        <!-- <div class="modal-footer">
           <div class="row form-group col-md-12 d-flex justify-content-around">
-            <load-button @confirm-button="action" :btnCharge.sync="btnCharge"></load-button>
-            <button type="button" @click="cerrar()" class="btn btn-secondary">Cancelar</button>
+            <load-button @confirm-button="accionar" :btnCharge.sync="btnCharge"></load-button>
+            <button type="button" @click="cerrarModal()" class="btn btn-secondary">Cancelar</button>
+          </div>
+        </div>-->
+        <div class="modal-footer justify-content-around">
+          <div v-if="modal.btnSuccess!=null">
+            <button
+              class="btn btn-success"
+              @click="accionar()"
+              :disabled="modal.loading"
+            >
+              <span v-if="!modal.loading" class="" v-text="modal.btnSuccess"></span>
+              <span v-else class="fas fa-spinner fa-spin fa-lg" role="status" aria-hidden="true"></span>
+            </button>
+          </div>
+          <div v-if="modal.btnCancel!=null" >
+            <button class="btn btn-secondary" @click="cerrarModal()">
+              <span class="" v-text="modal.btnCancel"></span>
+            </button>
           </div>
         </div>
+        
       </div>
     </div>
   </div>
@@ -66,13 +84,17 @@ export default {
     selectUnit,
     errorModal,
   },
-  props: {
-  },
+  props: {},
   data() {
     return {
       modal: {
         estado: false,
-        numero: 0,
+        tipo: "",
+        titulo: "",
+        size: "",
+        loading: false,
+        btnSuccess: "",
+        btnCancel: "",
       },
       initMaterial: {
         id: 0,
@@ -89,8 +111,8 @@ export default {
         costo: "",
       },
       btnCharge: {
-        title: '',
-        isPress: false
+        title: "",
+        isPress: false,
       },
       //datos de errores
       error: {
@@ -110,63 +132,114 @@ export default {
         "animate__animated animate__zoomIn animate__faster": this.modal.estado,
       };
     },
-    getTitle: function () {
-      if (this.numero == 1) return "Nuevo material";
-      if (this.numero == 2) return "Editar material";
-    },
+    // getTitle: function () {
+    //   if (this.numero == 1) return "Nuevo material";
+    //   if (this.numero == 2) return "Editar material";
+    // },
   },
-  watch: {
-  },
+  watch: {},
   methods: {
-    abrir({numModal, material}) {
+    abrirModal({ modal, material }) {
       this.modal.estado = true;
-      this.numero = numModal;
-
-      if(this.numero == 1) {
-        this.btnCharge.title = "Agregar";
-        this.btnCharge.isPress = false;
+      this.modal.tipo = modal.tipo;
+      switch (this.modal.tipo) {
+        case "agregar":
+          this.abrirModalAgregar();
+          break;
+        case "editar":
+          this.abrirModalEditar(material);
+        default:
+          console.error(
+            'Tried to open a diferent modal type. (type = "' + modal.tipo + '")'
+          );
+          break;
       }
-      if(this.numero == 2){
-        this.initMaterial.id = material.id;
-        this.initMaterial.nombre = material.nombre;
-        this.initMaterial.unidad = material.unidad;
-        this.initMaterial.subtipo = material.subtipo;
-        this.initMaterial.costo = material.costo;
 
-        this.material.id = material.id;
-        this.material.nombre = material.nombre;
-        this.material.unidad = material.unidad;
-        this.material.subtipo = material.subtipo;
-        this.material.costo = material.costo;
+      // if(this.modal.tipo == 'agregar') {
+      //   this.btnCharge.title = "Agregar";
+      //   this.btnCharge.isPress = false;
+      // }
+      // if(this.modal.tipo == 'editar'){
+      //   this.initMaterial.id = material.id;
+      //   this.initMaterial.nombre = material.nombre;
+      //   this.initMaterial.unidad = material.unidad;
+      //   this.initMaterial.subtipo = material.subtipo;
+      //   this.initMaterial.costo = material.costo;
 
-        this.btnCharge.title = "Editar";
-        this.btnCharge.isPress = false;
-      }
+      //   this.material.id = material.id;
+      //   this.material.nombre = material.nombre;
+      //   this.material.unidad = material.unidad;
+      //   this.material.subtipo = material.subtipo;
+      //   this.material.costo = material.costo;
+
+      //   this.btnCharge.title = "Editar";
+      //   this.btnCharge.isPress = false;
+      // }
     },
-    cerrar() {
+    prepararModal(modal = {}) {
+      this.modal.titulo = modal.titulo;
+      this.modal.size = modal.size != undefined ? modal.size : "";
+      this.modal.loading = false;
+      this.modal.btnSuccess =
+        modal.btnSuccess != undefined ? modal.btnSuccess : null;
+      this.modal.btnCancel =
+        modal.btnCancel != undefined ? modal.btnCancel : null;
+    },
+    abrirModalAgregar() {
+      this.prepararModal({
+        titulo: "Nuevo material",
+        size: "modal-lg",
+        btnSuccess: "Agregar",
+        btnCancel: "Cancelar",
+      });
+      this.btnCharge.title = "Agregar";
+      this.btnCharge.isPress = false;
+    },
+    abrirModalEditar(material) {
+      this.prepararModal({
+        titulo: "Editar material",
+        size: "modal-lg",
+        btnSuccess: "Editar",
+        btnCancel: "Cancelar",
+      });
+      this.initMaterial.id = material.id;
+      this.initMaterial.nombre = material.nombre;
+      this.initMaterial.unidad = material.unidad;
+      this.initMaterial.subtipo = material.subtipo;
+      this.initMaterial.costo = material.costo;
+
+      this.material.id = material.id;
+      this.material.nombre = material.nombre;
+      this.material.unidad = material.unidad;
+      this.material.subtipo = material.subtipo;
+      this.material.costo = material.costo;
+
+      this.btnCharge.title = "Editar";
+      this.btnCharge.isPress = false;
+    },
+    cerrarModal() {
       this.modal.estado = false;
-      this.numero = 0;
+      this.modal.tipo = "";
       this.$emit("clearMaterial");
       //TODO: Hacer que el componente Select-unit tenga su propio ESTADO
 
-      this.error.estado = 0;
-      this.error.mensaje = [];
-      this.clearInputs();
-    },
-    clearInputs() {
       this.material.id = 0;
       this.material.nombre = "";
       this.material.unidad = "";
       this.material.subtipo = "";
       this.material.costo = "";
+
+      this.error.estado = 0;
+      this.error.mensaje = [];
     },
-    action(act) {
-      switch (act) {
-        case "Agregar": {
+    accionar() {
+      this.modal.loading = true;
+      switch (this.modal.tipo) {
+        case "agregar": {
           this.agregar();
           break;
         }
-        case "Editar": {
+        case "editar": {
           this.editar();
           break;
         }
@@ -185,11 +258,11 @@ export default {
 
       if (this.error.mensaje.length) {
         this.error.estado = 1;
-        
+
         //TODO:Tengo que corregir lo del btnCharge
         this.btnCharge.isPress = false;
-        if(this.numero == 1) this.btnCharge.title = 'Agregar';
-        if(this.numero == 2) this.btnCharge.title = 'Editar';
+        if (this.modal.tipo == "agregar") this.btnCharge.title = "Agregar";
+        if (this.modal.tipo == "editar") this.btnCharge.title = "Editar";
       }
       return this.error.estado;
     },
@@ -222,7 +295,7 @@ export default {
         .catch(function (error) {
           console.log("Error in method agregar() - Modal.vue" + error);
         })
-        .then((res) => this.btnCharge.isPress = false);
+        .then((res) => (this.btnCharge.isPress = false));
     },
     editar() {
       if (this.validar()) return;
@@ -263,9 +336,9 @@ export default {
         });
     },
   },
-  mounted(){
-    this.$parent.$on('abrir-modal', this.abrir);
-  }
+  mounted() {
+    this.$parent.$on("abrir-modal", this.abrirModal);
+  },
 };
 </script>
 
