@@ -1,5 +1,5 @@
 <template>
-  <div :class="{'modal text-gray-900': true, 'show-modal': estado }">
+  <div :class="{'modal text-gray-900': true, 'show-modal': modal.estado }">
     <div :class="classObject">
       <div class="modal-content modal-lg">
         <div class="modal-header">
@@ -27,7 +27,7 @@
           <select-unit
             :initTipo.sync="material.subtipo"
             :initUnit.sync="material.unidad"
-            :estadoModal="estado"
+            :estadoModal="modal.estado"
           ></select-unit>
 
           <div class="row form-group">
@@ -70,8 +70,10 @@ export default {
   },
   data() {
     return {
-      estado: false,
-      numero: 0,
+      modal: {
+        estado: false,
+        numero: 0,
+      },
       initMaterial: {
         id: 0,
         nombre: "",
@@ -105,7 +107,7 @@ export default {
     classObject: function () {
       return {
         "modal-dialog modal-dialog-centered": true,
-        "animate__animated animate__zoomIn animate__faster": this.estado,
+        "animate__animated animate__zoomIn animate__faster": this.modal.estado,
       };
     },
     getTitle: function () {
@@ -117,7 +119,7 @@ export default {
   },
   methods: {
     abrir({numModal, material}) {
-      this.estado = true;
+      this.modal.estado = true;
       this.numero = numModal;
 
       if(this.numero == 1) {
@@ -142,7 +144,7 @@ export default {
       }
     },
     cerrar() {
-      this.estado = false;
+      this.modal.estado = false;
       this.numero = 0;
       this.$emit("clearMaterial");
       //TODO: Hacer que el componente Select-unit tenga su propio ESTADO
