@@ -13,6 +13,7 @@ const mix = require('laravel-mix');
 
 mix.styles([
     'resources/assets/plantilla/css/sb-admin-2.min.css',
+    'resources/css/animate.min.css',
     'resources/css/styles.css',
 ], 'public/css/plantilla.css')
 .scripts([

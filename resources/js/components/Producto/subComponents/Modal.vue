@@ -1,7 +1,7 @@
 <template>
 
-    <div  v-if="estadoModal" class="modal text-gray-900 mostrar">
-        <div v-if="Modal.estado" class="modal-dialog modal-dialog-centered modal-dialog-scrollable animated bounceIn fast" :class="Modal.tamaño">
+    <div  v-if="estadoModal" class="modal text-gray-900 show-modal">
+        <div v-if="Modal.estado" class="modal-dialog modal-dialog-centered modal-dialog-scrollable animate__animated animate__zoomIn animate__faster" :class="Modal.tamaño">
             <div class="modal-content">
 
                 <div class="modal-header">
@@ -204,19 +204,17 @@
                     </div>
                 </div>
 
-                <div class="modal-footer">
-                    <div class="col-md-12 form-group d-flex justify-content-around m-0">
-                        <div v-if="Modal.btnSuccess!=null" class="col-md-3">
-                            <button type="button" class="col-md-12 btn btn-success" @click="accionar()" :disabled="Modal.loading">
-                                <span v-if="!Modal.loading" class="h5 m-2 mt-2 mb-2" v-text="Modal.btnSuccess"></span>
-                                <span v-else class="fas fa-spinner fa-spin fa-lg" role="status" aria-hidden="true"></span>
-                            </button>
-                        </div>
-                        <div v-if="Modal.btnCancel!=null" class="col-md-3">
-                            <button type="button" class="col-md-12 btn btn-secondary" @click="cerrarModal()">
-                                <span class="h5 m-2" v-text="Modal.btnCancel"></span>
-                            </button>
-                        </div>
+                <div class="modal-footer justify-content-around">
+                    <div v-if="Modal.btnSuccess!=null" >
+                        <button type="button" class="btn btn-success" @click="accionar()" :disabled="Modal.loading">
+                            <span v-if="!Modal.loading"  v-text="Modal.btnSuccess"></span>
+                            <span v-else class="fas fa-spinner fa-spin fa-lg" role="status" aria-hidden="true"></span>
+                        </button>
+                    </div>
+                    <div v-if="Modal.btnCancel!=null" >
+                        <button type="button" class="btn btn-secondary" @click="cerrarModal()">
+                            <span  v-text="Modal.btnCancel"></span>
+                        </button>
                     </div>
                 </div>
             

@@ -127,14 +127,18 @@ export default {
     },
     abrirModalAgregar() {
       const data = {
-        numModal: 1,
+        modal: {
+          tipo: 'agregar',
+        },
         material: {}
       }
       this.$emit('abrir-modal', data);
     },
     abrirModalEditar(material) {
       const data = {
-        numModal: 2,
+        modal: {
+          tipo: 'editar',
+        },
         material: material
       }
       this.$emit('abrir-modal', data);
