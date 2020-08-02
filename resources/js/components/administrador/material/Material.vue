@@ -136,7 +136,9 @@ export default {
     },
     abrirModalEditar(material) {
       const data = {
-        numModal: 2,
+        modal: {
+          tipo: 'editar',
+        },
         material: material
       }
       this.$emit('abrir-modal', data);

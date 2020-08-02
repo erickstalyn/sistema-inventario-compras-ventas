@@ -81,14 +81,12 @@ export default {
   },
   methods: {
     getUnitsRaw() {
-      console.log("Obteniendo datos...");
       const me = this;
       const url = this.ruta.unidad + "/getUnidades";
       axios
         .get(url)
         .then(function (res) {
           const data = res.data.unidades;
-          console.log(data);
           const arrTipoUnidadRaw = data.map((e) => e.tipo_unidad_nombre);
           me.selectTipoUnidad = arrTipoUnidadRaw.filter(
             (e, i, self) => self.indexOf(e) == i

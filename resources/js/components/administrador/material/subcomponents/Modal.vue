@@ -102,10 +102,6 @@ export default {
         unidad: "",
         costo: "",
       },
-      btnCharge: {
-        title: "",
-        isPress: false,
-      },
       //datos de errores
       error: {
         estado: 0,
@@ -130,10 +126,9 @@ export default {
           break;
         case "editar":
           this.abrirModalEditar(material);
+          break;
         default:
-          console.error(
-            'Tried to open a diferent modal type. (type = "' + modal.tipo + '")'
-          );
+          console.error(`Tried to open a diferent modal type. (type = "${modal.tipo}")`);
           break;
       }
     },
@@ -153,8 +148,6 @@ export default {
         btnSuccess: "Agregar",
         btnCancel: "Cancelar",
       });
-      this.btnCharge.title = "Agregar";
-      this.btnCharge.isPress = false;
     },
     abrirModalEditar(material) {
       this.prepararModal({
@@ -174,15 +167,12 @@ export default {
       this.material.unidad = material.unidad;
       this.material.subtipo = material.subtipo;
       this.material.costo = material.costo;
-
-      this.btnCharge.title = "Editar";
-      this.btnCharge.isPress = false;
     },
     cerrarModal() {
+      this.$emit("clearMaterial");
+
       this.modal.estado = false;
       this.modal.tipo = "";
-      this.$emit("clearMaterial");
-      //TODO: Hacer que el componente Select-unit tenga su propio ESTADO
 
       this.material.id = 0;
       this.material.nombre = "";
@@ -219,11 +209,7 @@ export default {
 
       if (this.error.mensaje.length) {
         this.error.estado = 1;
-
-        //TODO:Tengo que corregir lo del btnCharge
-        this.btnCharge.isPress = false;
-        if (this.modal.tipo == "agregar") this.btnCharge.title = "Agregar";
-        if (this.modal.tipo == "editar") this.btnCharge.title = "Editar";
+        this.modal.loading = false;
       }
       return this.error.estado;
     },
@@ -240,7 +226,7 @@ export default {
         .post(this.ruta.material + "/agregar", material)
         .then(function (res) {
           if (res.data.estado) {
-            me.cerrar();
+            me.cerrarModal();
             me.$emit("list"); //emito el evento de listar al PADRE
             mainAlert.fire({
               icon: "success",
@@ -254,9 +240,8 @@ export default {
           }
         })
         .catch(function (error) {
-          console.log("Error in method agregar() - Modal.vue" + error);
+          console.log(`Error in method agregar() - Modal.vue: "${error}`);
         })
-        .then((res) => (this.btnCharge.isPress = false));
     },
     editar() {
       if (this.validar()) return;
@@ -281,7 +266,7 @@ export default {
         .put(me.ruta.material + "/editar", material)
         .then(function (response) {
           if (response.data.estado) {
-            me.cerrar();
+            me.cerrarModal();
             me.$emit("list");
             mainAlert.fire({
               icon: "success",
