@@ -1,6 +1,6 @@
 <template>
-  <div :class="{'modal text-gray-900': true, 'show-modal': modal.estado }">
-    <div :class="classObject">
+  <div :class="{'show-modal': modal.estado}" class="modal text-gray-900">
+    <div :class="{'animate__animated animate__zoomIn animate__faster': modal.estado}" class="modal-dialog modal-dialog-centered">
       <div class="modal-content" :class="modal.size">
         <div class="modal-header">
           <h3 v-text="modal.titulo" class="modal-title"></h3>
@@ -63,7 +63,7 @@
             </button>
           </div>
         </div>
-        
+
       </div>
     </div>
   </div>
@@ -126,16 +126,6 @@ export default {
     };
   },
   computed: {
-    classObject: function () {
-      return {
-        "modal-dialog modal-dialog-centered": true,
-        "animate__animated animate__zoomIn animate__faster": this.modal.estado,
-      };
-    },
-    // getTitle: function () {
-    //   if (this.numero == 1) return "Nuevo material";
-    //   if (this.numero == 2) return "Editar material";
-    // },
   },
   watch: {},
   methods: {
@@ -154,27 +144,6 @@ export default {
           );
           break;
       }
-
-      // if(this.modal.tipo == 'agregar') {
-      //   this.btnCharge.title = "Agregar";
-      //   this.btnCharge.isPress = false;
-      // }
-      // if(this.modal.tipo == 'editar'){
-      //   this.initMaterial.id = material.id;
-      //   this.initMaterial.nombre = material.nombre;
-      //   this.initMaterial.unidad = material.unidad;
-      //   this.initMaterial.subtipo = material.subtipo;
-      //   this.initMaterial.costo = material.costo;
-
-      //   this.material.id = material.id;
-      //   this.material.nombre = material.nombre;
-      //   this.material.unidad = material.unidad;
-      //   this.material.subtipo = material.subtipo;
-      //   this.material.costo = material.costo;
-
-      //   this.btnCharge.title = "Editar";
-      //   this.btnCharge.isPress = false;
-      // }
     },
     prepararModal(modal = {}) {
       this.modal.titulo = modal.titulo;
