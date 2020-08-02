@@ -4,7 +4,7 @@
       <div class="modal-content" :class="modal.size">
         <div class="modal-header">
           <h3 v-text="modal.titulo" class="modal-title"></h3>
-          <button type="button" @click="cerrar()" class="close">X</button>
+          <button @click="cerrarModal()" class="close">X</button>
         </div>
         <div class="modal-body">
           <error-modal :error.sync="error"></error-modal>
@@ -40,12 +40,6 @@
             </div>
           </div>
         </div>
-        <!-- <div class="modal-footer">
-          <div class="row form-group col-md-12 d-flex justify-content-around">
-            <load-button @confirm-button="accionar" :btnCharge.sync="btnCharge"></load-button>
-            <button type="button" @click="cerrarModal()" class="btn btn-secondary">Cancelar</button>
-          </div>
-        </div>-->
         <div class="modal-footer justify-content-around">
           <div v-if="modal.btnSuccess!=null">
             <button
@@ -74,13 +68,11 @@
 import mainAlert from "../../../globals/Main-alert";
 
 // Components
-import loadButton from "./Load-button";
 import selectUnit from "./Select-unit";
 import errorModal from "../../../globals/Error-modal";
 
 export default {
   components: {
-    loadButton,
     selectUnit,
     errorModal,
   },
