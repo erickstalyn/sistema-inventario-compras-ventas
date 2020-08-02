@@ -1,6 +1,9 @@
 <template>
   <div :class="{'show-modal': modal.estado}" class="modal text-gray-900">
-    <div :class="{'animate__animated animate__zoomIn animate__faster': modal.estado}" class="modal-dialog modal-dialog-centered">
+    <div
+      :class="{'animate__animated animate__zoomIn animate__faster': modal.estado}"
+      class="modal-dialog modal-dialog-centered"
+    >
       <div class="modal-content" :class="modal.size">
         <div class="modal-header">
           <h3 v-text="modal.titulo" class="modal-title"></h3>
@@ -40,24 +43,14 @@
             </div>
           </div>
         </div>
-        <div class="modal-footer justify-content-around">
-          <div v-if="modal.btnSuccess!=null">
-            <button
-              class="btn btn-success"
-              @click="accionar()"
-              :disabled="modal.loading"
-            >
-              <span v-if="!modal.loading" class="" v-text="modal.btnSuccess"></span>
-              <span v-else class="fas fa-spinner fa-spin fa-lg" role="status" aria-hidden="true"></span>
-            </button>
-          </div>
-          <div v-if="modal.btnCancel!=null" >
-            <button class="btn btn-secondary" @click="cerrarModal()">
-              <span class="" v-text="modal.btnCancel"></span>
-            </button>
-          </div>
-        </div>
 
+        <footer-modal
+          :modalLoading.sync="modal.loading"
+          :btnSuccess="modal.btnSuccess"
+          :btnCancel="modal.btnCancel"
+          @cerrar-modal="cerrarModal"
+          @accionar="accionar"
+        ></footer-modal>
       </div>
     </div>
   </div>
@@ -68,13 +61,15 @@
 import mainAlert from "../../../globals/Main-alert";
 
 // Components
-import selectUnit from "./Select-unit";
 import errorModal from "../../../globals/Error-modal";
+import selectUnit from "./Select-unit";
+import footerModal from "../../../globals/Footer-modal";
 
 export default {
   components: {
-    selectUnit,
     errorModal,
+    selectUnit,
+    footerModal,
   },
   props: {},
   data() {
@@ -113,8 +108,7 @@ export default {
       },
     };
   },
-  computed: {
-  },
+  computed: {},
   watch: {},
   methods: {
     abrirModal({ modal, material }) {
@@ -128,7 +122,9 @@ export default {
           this.abrirModalEditar(material);
           break;
         default:
-          console.error(`Tried to open a diferent modal type. (type = "${modal.tipo}")`);
+          console.error(
+            `Tried to open a diferent modal type. (type = "${modal.tipo}")`
+          );
           break;
       }
     },
@@ -184,7 +180,6 @@ export default {
       this.error.mensaje = [];
     },
     accionar() {
-      this.modal.loading = true;
       switch (this.modal.tipo) {
         case "agregar": {
           this.agregar();
@@ -221,33 +216,33 @@ export default {
         unidad: this.material.unidad,
         costo: this.material.costo,
       };
-      const me = this;
       axios
         .post(this.ruta.material + "/agregar", material)
-        .then(function (res) {
-          if (res.data.estado) {
-            me.cerrarModal();
-            me.$emit("list"); //emito el evento de listar al PADRE
+        .then((res) => {
+          if (res.data.success) {
+            this.cerrarModal();
+            this.$emit("list");
             mainAlert.fire({
               icon: "success",
               title: "El material se ha AGREGADO correctamente",
             });
           } else {
-            me.error.mensaje.push(
+            this.error.mensaje.push(
               `${material.nombre} ya se encuentra registrado`
             );
-            me.error.estado = 1;
+            this.error.estado = 1;
           }
         })
-        .catch(function (error) {
-          console.log(`Error in method agregar() - Modal.vue: "${error}`);
-        })
+        .catch((error) =>
+          console.log(`Error in method agregar() - Modal.vue: "${error}`)
+        )
+        .then((res) => (this.modal.loading = false));
     },
     editar() {
       if (this.validar()) return;
       if (compareObj(this.initMaterial, this.material)) {
         console.log("No ha realizado ninguna modificación");
-        this.cerrar();
+        this.cerrarModal();
         mainAlert.fire({
           icon: "success",
           title: "El Material se ha EDITADO correctamente",
@@ -261,25 +256,25 @@ export default {
         unidad: this.material.unidad,
         costo: this.material.costo,
       };
-      const me = this;
       axios
-        .put(me.ruta.material + "/editar", material)
-        .then(function (response) {
-          if (response.data.estado) {
-            me.cerrarModal();
-            me.$emit("list");
+        .put(this.ruta.material + "/editar", material)
+        .then((res) => {
+          if (res.data.success) {
+            this.cerrarModal();
+            this.$emit("list");
             mainAlert.fire({
               icon: "success",
               title: "El Material se ha EDITADO correctamente",
             });
           } else {
-            me.error.mensaje.push(`${material.nombre} ya está registrado`);
-            me.error.estado = 1;
+            this.error.mensaje.push(`${material.nombre} ya está registrado`);
+            this.error.estado = 1;
           }
         })
-        .catch(function (error) {
+        .catch((error) => {
           console.log("Error in method editar() - Modal.vue" + error);
-        });
+        })
+        .then((res) => (this.modal.loading = false));
     },
   },
   mounted() {

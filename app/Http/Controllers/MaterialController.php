@@ -46,7 +46,6 @@ class MaterialController extends Controller
     public function agregar(Request $request){
         if ( !$request->ajax() ) return redirect('/');
 
-        $estado = 1;
         try {
             DB::beginTransaction();
 
@@ -58,18 +57,21 @@ class MaterialController extends Controller
             $material->save();
 
             DB::commit();
+            return [
+                'success' => true
+            ];
         } catch(Exception $e) {
             DB::rollback();
-            if($e != null) $estado = 0;
+            return [
+                'success' => false,
+                'exception' => $e
+            ];
         }
-        // echo($estado);
-        return ['estado' => $estado];
 
     }
     
     public function editar(Request $request){
         if ( !$request->ajax() ) return redirect('/');
-        $estado = 1;
         try {
             DB::beginTransaction();
 
@@ -81,11 +83,16 @@ class MaterialController extends Controller
             $material->save();
 
             DB::commit();
+            return [
+                'success' => true
+            ];
         } catch(Exception $e) {
             DB::rollback();
-            if($e != null) $estado = 0;
+            return [
+                'success' => false,
+                'exception' => $e
+            ];
         }
-        return ['estado' => $estado];
     }
 
     public function activar(Request $request){
