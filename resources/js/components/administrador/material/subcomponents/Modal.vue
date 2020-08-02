@@ -123,7 +123,7 @@ export default {
 
       if(this.numero == 1) {
         this.btnCharge.title = "Agregar";
-        this.btnCharge.isPress = false; 
+        this.btnCharge.isPress = false;
       }
       if(this.numero == 2){
         this.initMaterial.id = material.id;
