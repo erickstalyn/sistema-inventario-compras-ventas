@@ -52,9 +52,8 @@
 </template>
 
 <script>
-/** import: sweetalert, animate*/
+/** import: sweetalert*/
 import mainAlert from "../../../globals/Main-alert";
-import "animate.css";
 
 // Components
 import loadButton from "./Load-button";
