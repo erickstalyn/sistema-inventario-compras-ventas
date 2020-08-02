@@ -45,6 +45,9 @@ export default {
       this.$emit('accionar');
     },
     cerrarModal(){
+      this.$emit('update:modalLoading', false);
+      this.$emit('update:btnSuccess', '');
+      this.$emit('update:btnCancel', '');
       this.$emit('cerrar-modal');
     }
   }
