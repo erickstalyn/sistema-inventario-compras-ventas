@@ -4,3 +4,7 @@
   display: block;
   background-color: #3c29297a;
 }
+/* Estilos de Table */
+.row-table:hover {
+  background-color: #eee;
+}

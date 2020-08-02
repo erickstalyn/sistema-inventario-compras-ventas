@@ -60,45 +60,58 @@ class ProductoController extends Controller{
             $now = Carbon::now('America/Lima')->toDateTimeString();
 
             $producto = new Producto();
-            // $producto->nombre = ucfirst($request->nombre);
             $producto->categoria_id = $dataProducto['categoria_id'];
             $producto->marca_id = $dataProducto['marca_id']!=0?$dataProducto['marca_id']:NULL;
-            if ( $dataProducto->nombre == '' ) {
+            $producto->modelo = $dataProducto['modelo'];
+
+            if ( $dataProducto['nombre'] == '' ) {
                 $categoria = Categoria::select('nombre')->where('id', '=', $dataProducto['categoria_id'])->first()['nombre'];
                 $marca = $dataProducto['marca_id']!=0?' '.Marca::select('nombre')->where('id', '=', $dataProducto['marca_id'])->first()['nombre']:'';
-                $modelo = $dataProducto['modelo'];
+                $modelo = ' ' . $producto->modelo;
                 $producto->nombre = strtr($categoria . $marca . $modelo,"àèìòùáéíóúçñäëïöü","ÀÈÌÒÙÁÉÍÓÚÇÑÄËÏÖÜ");
+            } else {
+                $producto->nombre = $dataProducto['nombre'];
             }
+
             $producto->descripcion = $request->descripcion!=''?$request->descripcion:NULL;
             $producto->created_at = $now;
             $producto->save();
 
-            foreach ($requet->subproductos as $dataSubproducto) {
+            $index = 0;
+            foreach ($request->subproductos as $dataSubproducto) {
+                $index++;
+
                 $subproducto = new Subproducto();
                 $subproducto->producto_id = $producto->id;
                 $subproducto->nombre = $producto->nombre;
                 $subproducto->code_unique = "";
                 $subproducto->caracteristicas = "";
                 $subproducto->caracteristicas_json = [];
+                
                 foreach ($dataSubproducto['caracteristicas'] as $caracteristica) {
-                    if ( $caracteristica['caracteristica'] != '' ) $subproducto->nombre .= ' ' . $caracteristica['caracteristica'];
-
-                    $subproducto->code_unique .= base_convert(TipoCaracteristica::where('nombre', '=', $caracteristica['tipo_caracteristica'])->first()['id'], 10, 36);
-                    $subproducto->code_unique .= str_pad(base_convert(Caracteristica::where('nombre', '=', $caracteristica['caracteristica'])->first()['id'], 10, 36), 2, '0', STR_PAD_LEFT);
-                    
-                    $subproducto->caracteristicas .= ($subproducto->caracteristicas==''?'':' ').$caracteristica['caracteristica'];
-                    $subproducto->caracteristicas_json[] = [
-                        'tipo_caracteristica' => $caracteristica['tipo_caracteristica'],
-                        'caracteristica' => $caracteristica['caracteristica']
-                    ];
+                    if ( $caracteristica['caracteristica'] != '' ) {
+                        $subproducto->nombre .= ' ' . $caracteristica['caracteristica'];
+                        
+                        $subproducto->code_unique .= strval(base_convert(TipoCaracteristica::where('nombre', '=', $caracteristica['tipo_caracteristica'])->first()['id'], 10, 36));
+                        $subproducto->code_unique .= str_pad(base_convert(Caracteristica::where('nombre', '=', $caracteristica['caracteristica'])->first()['id'], 10, 36), 2, '0', STR_PAD_LEFT);
+                        
+                        $subproducto->caracteristicas .= ($subproducto->caracteristicas==''?'':' ').$caracteristica['caracteristica'];
+                        $subproducto->caracteristicas_json[] = [
+                            'tipo_caracteristica' => $caracteristica['tipo_caracteristica'],
+                            'caracteristica' => $caracteristica['caracteristica']
+                        ];
+                    }
                 }
-                $subproducto->codigo = implode("", array_merge(explode('-', explode(' ', $now)[0]), explode(':', explode(' ', $now)[1]))).rand(0, 9);
+                unset($caracteristica);
+
+                $subproducto->caracteristicas_json = $caracteristicas;
+                $subproducto->codigo = implode("", array_merge(explode('-', explode(' ', $now)[0]), explode(':', explode(' ', $now)[1]))) . $index;
                 $subproducto->precio_menor = $dataSubproducto['precio_menor'];
                 $subproducto->precio_mayor = $dataSubproducto['precio_mayor'];
                 $subproducto->created_at = $now;
                 $subproducto->save();
             }
-
+            unset($dataSubproducto);
             DB::commit();
             return [
                 'success' => true

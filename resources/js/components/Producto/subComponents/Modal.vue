@@ -13,7 +13,7 @@
                     <!-- Modal Numero 1 de AGREGAR-->
                     <div v-if="Modal.tipo == 'agregar'">
                         <div v-if="Error.estado && (Error.numero==1 || Error.numero==3)" class="col-md-12 d-flex justify-content-center mb-3">
-                            <div class="alert alert-danger">
+                            <div class="alert alert-danger m-0">
                                 <button type="button" @click="closeError()" class="close text-primary" data-dismiss="alert">×</button>
                                 <strong>Corregir los siguentes errores:</strong>
                                 <ul class="m-0 pl-5"> 
@@ -63,7 +63,7 @@
                         <div class="col-md-12 input-group mt-3">
                             <div class="container-small col-md-4 pl-0">
                                 <div class="col-md-12 shadow rounded bg-white pt-3 pb-3">
-                                    <div v-if="Error.estado && Error.numero==2" class="col-md-12 d-flex justify-content-center mb-3">
+                                    <div v-if="Error.estado && (Error.numero==2 || Error.numero==5)" class="col-md-12 d-flex justify-content-center mb-3">
                                         <div class="alert alert-danger m-0">
                                             <button type="button" @click="closeError()" class="close text-primary" data-dismiss="alert">×</button>
                                             <strong>Corregir los siguentes errores:</strong>
@@ -115,9 +115,9 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr v-for="(subproducto, indice) in Subproductos" :key="indice">
+                                                    <tr v-for="(subproducto, index) in Subproductos" :key="index">
                                                         <td class="text-center">
-                                                            <button type="button" class="btn btn-circle btn-outline-danger btn-sm" @click="eliminarSubproducto(indice)" title="QUITAR">
+                                                            <button type="button" class="btn btn-circle btn-outline-danger btn-sm" @click="eliminarSubproducto(index)" title="QUITAR">
                                                                 <i class="fas fa-minus"></i>
                                                             </button>
                                                         </td>
@@ -256,6 +256,7 @@
                 },
 
                 //datos de los subproductos
+                maxSubproductos: 9,
                 Subproductos: [],
                 Subproducto : {
                     id: 0,
@@ -269,7 +270,7 @@
                 //datos de modales
                 Modal: {
                     estado: 0,
-                    tipo: 0,
+                    tipo: null,
                     titulo: 0,
                     tamaño: '',
                     loading: false,
@@ -306,16 +307,15 @@
                 if ( this.validar(1) ) return;
                 
                 var me = this;
-                var url = this.Ruta.dproducto+'/agregar';
+                var url = this.Ruta.producto+'/agregar';
                 
                 axios.post(url, {
                     'producto' : this.Producto,
                     'subproductos' : this.Subproductos
                 }).then(response => {
-                    var estado = response.data.estado;
-                    if ( estado ) {
+                    if ( response.data.success ) {
                         me.cerrarModal();
-                        me.listar();
+                        me.$emit('listar');
                         Swal.fire({
                             position: 'top-end',
                             toast: true,
@@ -335,7 +335,7 @@
                 }).catch(error => {
                     console.log(error);
                 }).then(reponse => {
-
+                    me.Modal.loading = false;
                 });
             },
             editar(){
@@ -374,6 +374,7 @@
                 });
             },
             agregarSubproducto(){
+                if ( this.validar(5) ) return;
                 if ( this.validar(2) ) return;
                 
                 var caracteristicas = [];
@@ -397,8 +398,8 @@
                 this.Subproducto.precio_menor = '';
                 this.Subproducto.precio_mayor = '';
             },
-            eliminarProducto(indice){
-                this.ListaProducto.splice(indice, 1);
+            eliminarSubproducto(index){
+                this.Subproductos.splice(index, 1);
             },
             // setEstado(){
             //     var me = this;
@@ -472,7 +473,7 @@
                 this.Subproducto.precio_menor = '';
                 this.Subproducto.precio_mayor = '';
 
-                this.ListaSubproducto = [];
+                this.Subproductos = [];
 
                 this.ejecutarModal();
             },
@@ -546,14 +547,14 @@
                 this.Producto.stock = 0;
                 this.Producto.created_at = '';
 
-                this.Producto.id = 0;
+                this.Subproducto.id = 0;
                 for (let i = 0; i < this.Subproducto.caracteristicas.length; i++) {
                     this.Subproducto.caracteristicas[i].caracteristica = ''
                 }
-                this.Producto.precio_menor = '';
-                this.Producto.precio_mayor = '';
+                this.Subproducto.precio_menor = '';
+                this.Subproducto.precio_mayor = '';
 
-                this.ListaSubproducto = [];
+                this.Subproductos = [];
             },
             actualizarNombre(){
                 var nombre = '';
@@ -632,7 +633,7 @@
                     case 1: // Se validan los campos del formulario de producto
                         if ( this.Producto.categoria_id == 0 ) this.Error.mensaje.push("Debe seleccionar una categoria");   //categoria
                         if ( this.Producto.modelo.trim() == '' ) this.Error.mensaje.push("Debe ingresar un modelo");    //nombre
-                        var pMenorEmtpy = false; pMenorNotNumber = false; pMayorEmtpy = false; pMayorNotNumber = false;
+                        var pMenorEmpty = false; var pMenorNotNumber = false; var pMayorEmtpy = false; var pMayorNotNumber = false;
                         for (let i = 0; i < this.Subproductos.length; i++) {
                             if ( this.Subproductos[i].precio_menor == '' ) {    // precio al por menor
                                 pMenorEmpty = true;
@@ -646,10 +647,10 @@
                             }
                             if ( pMenorEmpty && pMenorNotNumber && pMayorEmtpy && pMayorNotNumber ) break;
                         }
-                        if ( pMenorEmpty ) this.Error.mensaje.push("Debe ingresar un precio por unidad");
-                        if ( pMenorNotNumber ) this.Error.mensaje.push("El precio por unidad ingresado es incorrecto");
-                        if ( pMayorEmtpy ) this.Error.mensaje.push("Debe ingresar un precio por mayor");
-                        if ( pMayorNotNumber ) this.Error.mensaje.push("El precio por mayor ingresado es incorrecto");
+                        if ( pMenorEmpty ) this.Error.mensaje.push("Debe ingresar un precio por unidad en la lista");
+                        if ( pMenorNotNumber ) this.Error.mensaje.push("El precio por unidad ingresado en la lista es incorrecto");
+                        if ( pMayorEmtpy ) this.Error.mensaje.push("Debe ingresar un precio por mayor en la lista");
+                        if ( pMayorNotNumber ) this.Error.mensaje.push("El precio por mayor ingresado en la lista es incorrecto");
                         break;
                     case 2: // Se validan los campos del formulario de agregar subproducto
                         var found = false;
@@ -677,19 +678,19 @@
                                 }
                             });
                             if ( this.Subproducto.precio_menor == '' ) {    // precio al por menor
-                                this.Error.mensaje.push("Debe ingresar un precio por unidad")
+                                this.Error.mensaje.push("Debe ingresar un precio por unidad en el formulario")
                             } else if ( isNaN(parseInt(this.Subproducto.precio_menor)) || parseInt(this.Subproducto.precio_menor) <= 0 ) {
-                                this.Error.mensaje.push("El precio por unidad ingresado es incorrecto");
+                                this.Error.mensaje.push("El precio por unidad ingresado en el formulario es incorrecto");
                             }
                             if ( this.Subproducto.precio_mayor == '' ) {    // precio al por mayor
-                                this.Error.mensaje.push("Debe ingresar un precio por mayor")
+                                this.Error.mensaje.push("Debe ingresar un precio por mayor en el formulario")
                             } else if ( isNaN(parseInt(this.Subproducto.precio_mayor)) || parseInt(this.Subproducto.precio_mayor) <= 0 ) {
-                                this.Error.mensaje.push("El precio por mayor ingresado es incorrecto");
+                                this.Error.mensaje.push("El precio por mayor ingresado en el formulario es incorrecto");
                             }
                         }
                         break;
                     case 3: // El producto ya existe
-                        this.Error.mensaje.push("El Super Producto ya esta registrado");    //superproducto existente
+                        this.Error.mensaje.push("El Producto ya esta registrado o ha ocurrido un error");    //error o producto existente
                         break;
                     case 4:
                         for (let i = 0; i < this.ListaSuperProducto.length; i++) {
@@ -699,6 +700,11 @@
                                 }
                                 break;
                             }
+                        }
+                        break;
+                    case 5:
+                        if ( this.Subproductos.length >= this.maxSubproductos ) {
+                            this.Error.mensaje.push('Por ahora no se pueden registrar mas subproductos, registre el producto y luego siga agregando mas subproductos');
                         }
                         break;
                 }

@@ -4,30 +4,29 @@
     <div class="container-small">
       <!-- Encabezado principal -->
       <div class="row form-group">
-        <i class="fas fa-map-signs"></i>&nbsp;&nbsp;
-        <span class="h3 mb-0 text-gray-900">Materiales&nbsp;</span>
-        <button type="button" class="btn btn-success" @click="abrirModalAgregar()">
-          <i class="fas fa-hammer"></i>&nbsp; Nuevo
-        </button>&nbsp;
-        <button type="button" class="btn btn-danger" @click="generatePdf()">
-          <i class="far fa-file-pdf"></i>&nbsp; PDF
-        </button>
+        <div class="col-12 col-sm-6 col-md-4 mb-2">
+          <i class="fas fa-map-signs mr-1"></i>
+          <span class="h3 mb-0 text-gray-900">Materiales</span>
+        </div>
+        <div class="col-12 col-sm-6 col-md-8">
+          <button type="button" class="btn btn-success" @click="abrirModalAgregar()">
+            <i class="fas fa-hammer mr-2"></i>Nuevo
+          </button>
+          <button type="button" class="btn btn-danger" @click="generatePdf()">
+            <i class="far fa-file-pdf mr-2"></i>PDF
+          </button>
+        </div>
       </div>
 
       <!-- Inputs de busqueda -->
-      <div class="row form-group">
-        <div class="col-md-8">
+      <div class="row mb-3">
+        <div class="col-12 col-sm-8">
           <div class="input-group">
-            <!-- <select class="col-md-3 custom-select text-gray-900" v-model="busqueda.estado" @change="listar()">
-                            <option value="2">Todos</option>
-                            <option value="1">Activados</option>
-                            <option value="0">Desactivados</option>
-            </select>-->
             <input
               type="search"
               class="form-control"
               v-model="busqueda.texto"
-              placeholder="Buscar por NOMBRE"
+              placeholder="Buscar por nombre"
               @keyup.enter="listar()"
             />
             <button type="button" class="btn btn-primary" @click="listar()">
@@ -35,98 +34,54 @@
             </button>
           </div>
         </div>
-        <div class="col-md-2"></div>
-        <div class="col-md-1" align="right">
-          <label>N° filas:</label>
-        </div>
-        <div class="col-md-1">
-          <select
-            class="custom-select custom-select-sm text-gray-900"
-            v-model="busqueda.filas"
-            @change="listar()"
-          >
-            <option
-              v-for="item in [3,4,5,6,7,8,9,10,11,12,13,14,15,16,17]"
-              :key="item"
-              :value="item"
-              v-text="item"
-            ></option>
-          </select>
+        <div class="col-12 col-sm-4 d-flex justify-content-end">
+          <div class="form-inline">
+            <label class="mr-2">N° filas</label>
+            <select
+              class="custom-select mr-sm-2 text-gray-900"
+              v-model="busqueda.filas"
+              @change="listar()"
+            >
+              <option
+                v-for="item in [3,4,5,6,7,8,9,10,11,12,13,14,15,16,17]"
+                :key="item"
+                :value="item"
+                v-text="item"
+              ></option>
+            </select>
+          </div>
         </div>
       </div>
 
-      <!-- Listado -->
-      <div v-if="listaMaterial.length" class="table-responsive">
-        <!-- Tabla -->
-        <div class="overflow-auto">
-          <table class="table table-borderless table-sm text-gray-900">
-            <thead>
-              <tr class="table-info">
-                <th
-                  v-for="head in ['Nombre', 'Unid. Medida', 'Costo Unit.', 'Opciones']"
-                  :key="head"
-                  v-text="head"
-                ></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                v-for="(material, i) in listaMaterial"
-                :key="i"
-                is="material-row"
-                :material="material"
-                @edit-material="abrirModalEditar"
-              ></tr>
-            </tbody>
-          </table>
-        </div>
-        <!-- Barra de navegacion -->
-        <pagination-bar @list="listar" :paginacion="paginacion"></pagination-bar>
-      </div>
-      <div v-else>
-        <h5>No se han encontrado resultados</h5>
-      </div>
+      <my-table :listaMaterial="listaMaterial" :paginacion="paginacion" @edit="abrirModalEditar" @list="listar"></my-table>
+
     </div>
 
     <!-- Modales -->
-    <my-modal @list="listar"  :modal="modal" @clearModal="onClearModal" :initMaterial="material" @clearMaterial="onClearMaterial"></my-modal>
+    <my-modal @list="listar"></my-modal>
     
   </main>
 </template>
 
 <script>
 /** Components */
-import materialRow from "./subcomponents/Material-row";
-import paginationBar from "../../globals/Pagination-bar";
+import myTable from './subcomponents/Table'
 import myModal from "./subcomponents/modal";
 
 export default {
   components: {
-    materialRow,
-    paginationBar,
+    myTable,
     myModal
   },
   data() {
     return {
       //datos generales
       listaMaterial: [],
-      material: {
-        id: 0,
-        nombre: "",
-        subtipo: "",
-        unidad: "",
-        costo: "",
-      },
       //datos de busqueda y filtracion
       busqueda: {
         texto: "",
         estado: 2,
         filas: 5,
-      },
-      //datos de modales
-      modal: {
-        estado: 0,
-        numero: 0,
       },
       //datos de paginacion
       paginacion: {
@@ -171,25 +126,21 @@ export default {
         });
     },
     abrirModalAgregar() {
-      this.abrirModal(1);
+      const data = {
+        numModal: 1,
+        material: {}
+      }
+      this.$emit('abrir-modal', data);
     },
     abrirModalEditar(material) {
-      this.material = material;
-      this.abrirModal(2);
-    },
-    abrirModal(numero, titulo, accion) {
-      this.modal.estado = 1;
-      this.modal.numero = numero;
-    },
-    onClearModal(){
-      this.modal = {estado: 0, numero: 0};
-    },
-    onClearMaterial(){
-      this.material = {id: 0, nombre: "", subtipo: "", unidad: "", costo: ""};
+      const data = {
+        numModal: 2,
+        material: material
+      }
+      this.$emit('abrir-modal', data);
     },
     generatePdf() {
       window.open(this.ruta.serverPhp + "/material/generatePdf", "_blank");
-      this.Button.press = false;
     },
   },
   mounted() {

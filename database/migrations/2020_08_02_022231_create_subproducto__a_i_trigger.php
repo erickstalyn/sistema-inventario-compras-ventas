@@ -20,12 +20,15 @@ class CreateSubproductoAITrigger extends Migration
             FOR EACH ROW
             BEGIN
                 INSERT INTO detalle_producto(precio_menor, precio_mayor, centro_id, subproducto_id)
-                VALUES  (NEW.precio_menor, NEW.precio_mayor, 1, NEW.id),
-                        (NEW.precio_menor, NEW.precio_mayor, 2, NEW.id),
-                        (NEW.precio_menor, NEW.precio_mayor, 3, NEW.id),
-                        (NEW.precio_menor, NEW.precio_mayor, 4, NEW.id),
-                        (NEW.precio_menor, NEW.precio_mayor, 5, NEW.id),
-                        (NEW.precio_menor, NEW.precio_mayor, 6, NEW.id);
+                VALUES  (NEW.precio_menor, NEW.precio_mayor, 1, NEW.id);
+                INSERT INTO detalle_producto(precio_menor, precio_mayor, centro_id, subproducto_id)
+                VALUES  (NEW.precio_menor, NEW.precio_mayor, 2, NEW.id);
+                INSERT INTO detalle_producto(precio_menor, precio_mayor, centro_id, subproducto_id)
+                VALUES  (NEW.precio_menor, NEW.precio_mayor, 3, NEW.id);
+                INSERT INTO detalle_producto(precio_menor, precio_mayor, centro_id, subproducto_id)
+                VALUES  (NEW.precio_menor, NEW.precio_mayor, 4, NEW.id);
+                INSERT INTO detalle_producto(precio_menor, precio_mayor, centro_id, subproducto_id)
+                VALUES  (NEW.precio_menor, NEW.precio_mayor, 5, NEW.id);
             END
         ");
     }

@@ -17,7 +17,7 @@ class CreateSubproductoTable extends Migration
             $table->string('nombre', 500);  // Se obtendrá uniendo el nombre del superproducto, el tamaño y el color
             $table->string('caracteristicas', 300);
             $table->string('code_unique', 20);  // Codigo cifrado en base hexadecimal para diferenciar los subproductos. Schema: [product_id|4]-[var1|1]-[var1_value|1]-[var2|1]-[var2_value|1]
-            $table->char('codigo', 13); // Estructura: [fecha-hora|12]-[numero aleatorio|1]
+            $table->char('codigo', 15); // Estructura: [fecha-hora|12]-[numero aleatorio|1]
             $table->string('descripcion', 100)->nullable();
             $table->longText('caracteristicas_json');    // Aqui se guardaran las caracteristicas de este subproductos. Por ejemplo: tamaño, color
             $table->decimal('costo_produccion', 11, 2)->default(0);
@@ -29,7 +29,7 @@ class CreateSubproductoTable extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->unique('producto_id', 'code_unique');
+            $table->unique(['producto_id', 'code_unique']);
             $table->foreign('producto_id')->references('id')->on('producto');
         });
     }

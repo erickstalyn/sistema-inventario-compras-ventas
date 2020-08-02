@@ -14,7 +14,7 @@ class Subproducto extends Model
         'caracteristicas_json' => 'array'
     ];
 
-    protected $timestamps = false;
+    public $timestamps = false;
     
     //Relación de muchos a muchos con Abasto
     public function getEnvios(){

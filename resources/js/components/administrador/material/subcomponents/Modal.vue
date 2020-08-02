@@ -1,5 +1,5 @@
 <template>
-  <div :class="{'modal text-gray-900': true, 'show-modal': modal.estado }">
+  <div :class="{'modal text-gray-900': true, 'show-modal': estado }">
     <div :class="classObject">
       <div class="modal-content modal-lg">
         <div class="modal-header">
@@ -27,16 +27,16 @@
           <select-unit
             :initTipo.sync="material.subtipo"
             :initUnit.sync="material.unidad"
-            :estadoModal="modal.estado"
+            :estadoModal="estado"
           ></select-unit>
 
           <div class="row form-group">
-            <label class="col-md-3 font-weight-bold" for="nom">
-              Costo por Unidad&nbsp;
+            <label class="col-6 col-sm-3 font-weight-bold">
+              Costo por Unidad
               <span class="text-danger">*</span>
             </label>
-            <div class="col-md-4">
-              <input type="number" v-model="material.costo" min="1" class="form-control text-right" />
+            <div class="col-6 col-sm-4">
+              <input type="number" v-model="material.costo" min="1" class="form-control text-right">
             </div>
           </div>
         </div>
@@ -52,10 +52,9 @@
 </template>
 
 <script>
-/** import: sweetalert, animate, compare-obj */
+/** import: sweetalert, animate*/
 import mainAlert from "../../../globals/Main-alert";
 import "animate.css";
-import compareObj from "../../../globals/Compare-obj";
 
 // Components
 import loadButton from "./Load-button";
@@ -69,27 +68,18 @@ export default {
     errorModal,
   },
   props: {
-    modal: {
-      type: Object,
-      default: () => {
-        return { estado: 0, numero: 0 };
-      },
-    },
-    initMaterial: {
-      type: Object,
-      default: () => {
-        return {
-          id: 0,
-          nombre: "",
-          subtipo: "",
-          unidad: "",
-          costo: "",
-        }
-      }
-    },
   },
   data() {
     return {
+      estado: false,
+      numero: 0,
+      initMaterial: {
+        id: 0,
+        nombre: "",
+        subtipo: "",
+        unidad: "",
+        costo: "",
+      },
       material: {
         id: 0,
         nombre: "",
@@ -116,48 +106,47 @@ export default {
     classObject: function () {
       return {
         "modal-dialog modal-dialog-centered": true,
-        "animate__animated animate__zoomIn animate__faster": this.modal.estado,
+        "animate__animated animate__zoomIn animate__faster": this.estado,
       };
     },
     getTitle: function () {
-      if (this.modal.numero == 1) return "Nuevo material";
-      if (this.modal.numero == 2) return "Editar material";
+      if (this.numero == 1) return "Nuevo material";
+      if (this.numero == 2) return "Editar material";
     },
-    // getAccion: function () {
-    //   if (this.modal.numero == 1) return {title: "Agregar", isPress: false};
-    //   if (this.modal.numero == 2) return {title: "Editar", isPress: false};
-    // },
   },
   watch: {
-    initMaterial: {
-      deep: true,
-      handler: function (newVal) {
-        this.material.id = newVal.id;
-        this.material.nombre = newVal.nombre;
-        this.material.unidad = newVal.unidad;
-        this.material.subtipo = newVal.subtipo;
-        this.material.costo = newVal.costo;
-      },
-    },
-    modal: {
-      deep: true,
-      handler: function (newVal) {
-        console.log('modal se actualizó')
-        if(newVal.estado == 1){
-         this.btnCharge.title = "Agregar";
-         this.btnCharge.isPress = false; 
-        }
-        if(newVal.estado == 2){
-          this.btnCharge.title = "Editar";
-          this.btnCharge.isPress = false;
-        }
-      }
-    }
   },
   methods: {
+    abrir({numModal, material}) {
+      this.estado = true;
+      this.numero = numModal;
+
+      if(this.numero == 1) {
+        this.btnCharge.title = "Agregar";
+        this.btnCharge.isPress = false; 
+      }
+      if(this.numero == 2){
+        this.initMaterial.id = material.id;
+        this.initMaterial.nombre = material.nombre;
+        this.initMaterial.unidad = material.unidad;
+        this.initMaterial.subtipo = material.subtipo;
+        this.initMaterial.costo = material.costo;
+
+        this.material.id = material.id;
+        this.material.nombre = material.nombre;
+        this.material.unidad = material.unidad;
+        this.material.subtipo = material.subtipo;
+        this.material.costo = material.costo;
+
+        this.btnCharge.title = "Editar";
+        this.btnCharge.isPress = false;
+      }
+    },
     cerrar() {
-      this.$emit("clearModal");
+      this.estado = false;
+      this.numero = 0;
       this.$emit("clearMaterial");
+      //TODO: Hacer que el componente Select-unit tenga su propio ESTADO
 
       this.error.estado = 0;
       this.error.mensaje = [];
@@ -197,10 +186,9 @@ export default {
         this.error.estado = 1;
         
         //TODO:Tengo que corregir lo del btnCharge
-        // this.btnCharge.title = 
         this.btnCharge.isPress = false;
-        if(this.modal.numero == 1) this.btnCharge.title = 'Agregar';
-        if(this.modal.numero == 2) this.btnCharge.title = 'Editar';
+        if(this.numero == 1) this.btnCharge.title = 'Agregar';
+        if(this.numero == 2) this.btnCharge.title = 'Editar';
       }
       return this.error.estado;
     },
@@ -229,11 +217,11 @@ export default {
             );
             me.error.estado = 1;
           }
-          this.btnCharge.isPress = false;
         })
         .catch(function (error) {
           console.log("Error in method agregar() - Modal.vue" + error);
-        });
+        })
+        .then((res) => this.btnCharge.isPress = false);
     },
     editar() {
       if (this.validar()) return;
@@ -274,6 +262,9 @@ export default {
         });
     },
   },
+  mounted(){
+    this.$parent.$on('abrir-modal', this.abrir);
+  }
 };
 </script>
 
