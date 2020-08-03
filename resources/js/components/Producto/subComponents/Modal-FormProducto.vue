@@ -71,20 +71,11 @@
             }
         },
         watch: {
-            'Producto.categoria_id': function (newCategoriaId, oldCategoriaId) {
-                if ( newCategoriaId !== oldCategoriaId ) this.$emit('changeValue', 'producto.categoria_id', newCategoriaId);
-            },
-            'Producto.marca_id': function (newMarcaId, oldMarcaId) {
-                if ( newMarcaId !== oldMarcaId ) this.$emit('changeValue', 'producto.marca_id', newMarcaId);
-            },
-            'Producto.modelo': function (newModelo, oldModelo) {
-                if ( newModelo !== oldModelo ) this.$emit('changeValue', 'producto.modelo', newModelo);
-            },
-            'Producto.nombre': function (newNombre, oldNombre) {
-                if ( newNombre !== oldNombre ) this.$emit('changeValue', 'producto.nombre', newNombre);
-            },
-            'Producto.descripcion': function (newDescripcion, oldDescripcion) {
-                if ( newDescripcion !== oldDescripcion ) this.$emit('changeValue', 'producto.descripcion', newDescripcion);
+            Producto: {
+                deep: true,
+                handler (newProducto, oldProducto) {
+                    this.$emit('changeValue', 'producto', newProducto);
+                }
             }
         },
         methods: {
@@ -109,12 +100,6 @@
                 this.Producto.modelo = '';
                 this.Producto.nombre = '';
                 this.Producto.descripcion = '';
-                
-                // this.$emit('changeValue', 'producto.categoria_id', this.Producto.categoria_id);
-                // this.$emit('changeValue', 'producto.marca_id', this.Producto.marca_id);
-                // this.$emit('changeValue', 'producto.modelo', this.Producto.modelo);
-                // this.$emit('changeValue', 'producto.nombre', this.Producto.nombre);
-                // this.$emit('changeValue', 'producto.descripcion', this.Producto.descripcion);
             },
             abrirModalVer(data = []){
                 this.abrirModal(2, 'Ver Super Producto', 'modal-lg', '', 'Cerrar');
@@ -140,7 +125,7 @@
             cerrarModal(){
                 this.Modal.tipo = null;
 
-                this.Producto.id = 0;
+                this.Producto.id = null;
                 this.Producto.categoria_id = 0;
                 this.Producto.marca_id = 0;
                 this.Producto.modelo = '';
@@ -148,6 +133,35 @@
                 this.Producto.descripcion = '';
                 this.Producto.stock = 0;
                 this.Producto.created_at = '';
+            },
+            validate(component, type){
+                if ( component != 'form-producto' ) return;
+
+                const errors = [];
+
+                if ( this.Producto.categoria_id == 0 ) errors.push("Debe seleccionar una categoria");   //categoria
+                if ( this.Producto.modelo.trim() == '' ) errors.push("Debe ingresar un modelo");    //nombre
+                
+                var pMenorEmpty = false; var pMenorNotNumber = false; var pMayorEmtpy = false; var pMayorNotNumber = false;
+                for (let i = 0; i < this.Subproductos.length; i++) {
+                    if ( this.Subproductos[i].precio_menor == '' ) {    // precio al por menor
+                        pMenorEmpty = true;
+                    } else if ( isNaN(parseInt(this.Subproductos[i].precio_menor)) || parseInt(this.Subproductos[i].precio_menor) <= 0 ) {
+                        pMenorNotNumber = true;
+                    }
+                    if ( this.Subproductos[i].precio_mayor == '' ) {    // precio al por mayor
+                        pMayorEmtpy = true;
+                    } else if ( isNaN(parseInt(this.Subproductos[i].precio_mayor)) || parseInt(this.Subproductos[i].precio_mayor) <= 0 ) {
+                        pMayorNotNumber = true;
+                    }
+                    if ( pMenorEmpty && pMenorNotNumber && pMayorEmtpy && pMayorNotNumber ) break;
+                }
+                if ( pMenorEmpty ) errors.push("Debe ingresar un precio por unidad en la lista");
+                if ( pMenorNotNumber ) errors.push("El precio por unidad ingresado en la lista es incorrecto");
+                if ( pMayorEmtpy ) errors.push("Debe ingresar un precio por mayor en la lista");
+                if ( pMayorNotNumber ) errors.push("El precio por mayor ingresado en la lista es incorrecto");
+
+                this.$emit('addError', errors, 'unique');
             },
             actualizarNombre(){
                 var nombre = '';
@@ -188,6 +202,8 @@
             this.getMarcas();
 
             this.$parent.$on('abrirModal', this.abrirModal);
+            this.$parent.$on('cerrarModal', this.cerrarModal);
+            this.$parent.$on('validate', this.validate);
         }
     }
 </script>

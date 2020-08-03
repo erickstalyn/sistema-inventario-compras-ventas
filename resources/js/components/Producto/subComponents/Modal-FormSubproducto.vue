@@ -55,21 +55,11 @@
             }
         },
         watch: {
-            'Subproducto.id': function (newId, oldId) {
-                if ( newId !== oldId ) this.$emit('changeValue', 'subproducto.id', newId);
-            },
-            'Subproducto.caracteristicas': {
+            'Subproducto': {
                 deep: true,
-                handler (newCaracteristicas, oldCaracteristicas) {
-                    // if ( newCaracteristicas !== oldCaracteristicas ) this.$emit('changeValue', 'subproducto.caracteristicas', newCaracteristicas);
+                handler (newSubproducto, oldSubproducto) {
                     this.$emit('changeValue', 'subproducto.caracteristicas', newCaracteristicas);
                 }
-            },
-            'Subproducto.precio_menor': function (newPrecioMenor, oldPrecioMenor) {
-                if ( newPrecioMenor !== oldPrecioMenor ) this.$emit('changeValue', 'subproducto.precio_menor', newPrecioMenor);
-            },
-            'Subproducto.precio_mayor': function (newPrecioMayor, oldPrecioMayor) {
-                if ( newPrecioMayor !== oldPrecioMayor ) this.$emit('changeValue', 'subproducto.precio_mayor', newPrecioMayor);
             }
         },
         methods: {
@@ -270,6 +260,7 @@
             this.getCaracteristicas();
 
             this.$parent.$on('abrirModal', this.abrirModal);
+            this.$parent.$on('cerrarModal', this.cerrarModal);
         }
     }
 </script>

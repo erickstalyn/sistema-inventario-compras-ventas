@@ -64,7 +64,7 @@ class ProductoController extends Controller{
             $producto->marca_id = $dataProducto['marca_id']!=0?$dataProducto['marca_id']:NULL;
             $producto->modelo = $dataProducto['modelo'];
 
-            if ( $dataProducto['nombre'] == '' ) {
+            if ( trim($dataProducto['nombre']) == '' ) {
                 $categoria = Categoria::select('nombre')->where('id', '=', $dataProducto['categoria_id'])->first()['nombre'];
                 $marca = $dataProducto['marca_id']!=0?' '.Marca::select('nombre')->where('id', '=', $dataProducto['marca_id'])->first()['nombre']:'';
                 $modelo = ' ' . $producto->modelo;
