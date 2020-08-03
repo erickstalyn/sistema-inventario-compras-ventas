@@ -27,11 +27,11 @@
             </div>
           </div>
 
-          <select-unit
+          <formSelectUnit
             :initTipo.sync="material.subtipo"
             :initUnit.sync="material.unidad"
             :estadoModal="modal.estado"
-          ></select-unit>
+          ></formSelectUnit>
 
           <div class="row form-group">
             <label class="col-6 col-sm-3 font-weight-bold">
@@ -62,13 +62,13 @@ import mainAlert from "../../../globals/Main-alert";
 
 // Components
 import errorModal from "../../../globals/Error-modal";
-import selectUnit from "./Select-unit";
+import formSelectUnit from "./Modal-FormSelectUnit";
 import footerModal from "../../../globals/Footer-modal";
 
 export default {
   components: {
     errorModal,
-    selectUnit,
+    formSelectUnit,
     footerModal,
   },
   props: {},
