@@ -53,25 +53,27 @@
         </div>
       </div>
 
-      <my-table :listaMaterial="listaMaterial" :paginacion="paginacion" @abrirModalEditar="abrirModalEditar" @listar="listar"></my-table>
-
+      <my-table
+        :listaMaterial="listaMaterial"
+        :paginacion="paginacion"
+        @abrirModalEditar="abrirModalEditar"
+        @runParentMethod="runParentMethod"
+      ></my-table>
     </div>
-
     <!-- Modales -->
-    <my-modal @listar="listar"></my-modal>
-    
+    <my-modal @runParentMethod="runParentMethod"></my-modal>
   </main>
 </template>
 
 <script>
 /** Components */
-import myTable from './subcomponents/Table'
+import myTable from "./subcomponents/Table";
 import myModal from "./subcomponents/modal";
 
 export default {
   components: {
     myTable,
-    myModal
+    myModal,
   },
   data() {
     return {
@@ -99,10 +101,9 @@ export default {
       },
     };
   },
-  computed: {
-  },
+  computed: {},
   methods: {
-    listar(page = 1) {
+    listar({page} = {}) {
       this.paginacion.currentPage = page;
       const url =
         this.ruta.material +
@@ -128,20 +129,33 @@ export default {
     abrirModalAgregar() {
       const data = {
         modal: {
-          tipo: 'agregar',
+          tipo: "agregar",
         },
-        material: {}
-      }
-      this.$emit('abrirModal', data);
+        material: {},
+      };
+      this.$emit("abrirModal", data);
     },
-    abrirModalEditar(material) {
+    abrirModalEditar(material = {}) {
       const data = {
         modal: {
-          tipo: 'editar',
+          tipo: "editar",
         },
-        material: material
+        material: material,
+      };
+      this.$emit("abrirModal", data);
+    },
+    runParentMethod(method = '', data = {}) {
+      switch (method) {
+        case "listar":
+          this.listar(data);
+          break;
+        case "abrirModalEditar":
+          this.abrirModalEditar(data);
+          break;
+        default:
+          `Option "${variable}" don't found in runParentMethod() function in Material.vue`;
+          break;
       }
-      this.$emit('abrirModal', data);
     },
     generatePdf() {
       window.open(this.ruta.serverPhp + "/material/generatePdf", "_blank");

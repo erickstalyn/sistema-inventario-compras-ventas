@@ -65,10 +65,10 @@ export default {
   },
   methods: {
     abrirModalEditar(material) {
-      this.$emit('abrirModalEditar', material)
+      this.$emit('runParentMethod', 'abrirModalEditar', material)
     },
     listar(page) {
-      this.$emit('listar', page)
+      this.$emit('runParentMethod', 'listar', {page});
     }
   }
 }

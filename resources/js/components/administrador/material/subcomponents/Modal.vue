@@ -128,14 +128,12 @@ export default {
           break;
       }
     },
-    prepararModal(modal = {}) {
-      this.modal.titulo = modal.titulo;
-      this.modal.size = modal.size != undefined ? modal.size : "";
+    prepararModal({titulo, size = '', btnSuccess = null, btnCancel = null}) {
+      this.modal.titulo = titulo;
+      this.modal.size = size;
       this.modal.loading = false;
-      this.modal.btnSuccess =
-        modal.btnSuccess != undefined ? modal.btnSuccess : null;
-      this.modal.btnCancel =
-        modal.btnCancel != undefined ? modal.btnCancel : null;
+      this.modal.btnSuccess = btnSuccess;
+      this.modal.btnCancel = btnCancel;
     },
     abrirModalAgregar() {
       this.prepararModal({
@@ -220,7 +218,7 @@ export default {
         .then((res) => {
           if (res.data.success) {
             this.cerrarModal();
-            this.$emit("listar");
+            this.$emit('runParentMethod', "listar");
             mainAlert.fire({
               icon: "success",
               title: "El material se ha AGREGADO correctamente",
@@ -260,7 +258,7 @@ export default {
         .then((res) => {
           if (res.data.success) {
             this.cerrarModal();
-            this.$emit("listar");
+            this.$emit('runParentMethod', "listar");
             mainAlert.fire({
               icon: "success",
               title: "El Material se ha EDITADO correctamente",
