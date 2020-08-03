@@ -11,5 +11,6 @@ npm-debug.log
 yarn-error.log
 /public/js/app.js
 /public/js/plantilla.js
+/public/css/bootstrap.min.css
 /public/css/plantilla.css
 /public/mix-manifest.json
