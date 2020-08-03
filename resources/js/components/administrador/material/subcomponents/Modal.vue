@@ -165,7 +165,6 @@ export default {
       this.material.costo = material.costo;
     },
     cerrarModal() {
-      this.$emit("clearMaterial");
 
       this.modal.estado = false;
       this.modal.tipo = "";
@@ -221,7 +220,7 @@ export default {
         .then((res) => {
           if (res.data.success) {
             this.cerrarModal();
-            this.$emit("list");
+            this.$emit("listar");
             mainAlert.fire({
               icon: "success",
               title: "El material se ha AGREGADO correctamente",
@@ -261,7 +260,7 @@ export default {
         .then((res) => {
           if (res.data.success) {
             this.cerrarModal();
-            this.$emit("list");
+            this.$emit("listar");
             mainAlert.fire({
               icon: "success",
               title: "El Material se ha EDITADO correctamente",
@@ -278,7 +277,7 @@ export default {
     },
   },
   mounted() {
-    this.$parent.$on("abrir-modal", this.abrirModal);
+    this.$parent.$on("abrirModal", this.abrirModal);
   },
 };
 </script>

@@ -53,12 +53,12 @@
         </div>
       </div>
 
-      <my-table :listaMaterial="listaMaterial" :paginacion="paginacion" @edit="abrirModalEditar" @list="listar"></my-table>
+      <my-table :listaMaterial="listaMaterial" :paginacion="paginacion" @abrirModalEditar="abrirModalEditar" @listar="listar"></my-table>
 
     </div>
 
     <!-- Modales -->
-    <my-modal @list="listar"></my-modal>
+    <my-modal @listar="listar"></my-modal>
     
   </main>
 </template>
@@ -132,7 +132,7 @@ export default {
         },
         material: {}
       }
-      this.$emit('abrir-modal', data);
+      this.$emit('abrirModal', data);
     },
     abrirModalEditar(material) {
       const data = {
@@ -141,7 +141,7 @@ export default {
         },
         material: material
       }
-      this.$emit('abrir-modal', data);
+      this.$emit('abrirModal', data);
     },
     generatePdf() {
       window.open(this.ruta.serverPhp + "/material/generatePdf", "_blank");

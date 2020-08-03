@@ -57,7 +57,7 @@ export default {
   },
   methods: {
     changePage(page) {
-      if(page >= 1 && page <= this.paginacion.lastPage) this.$emit('list', page)
+      if(page >= 1 && page <= this.paginacion.lastPage) this.$emit('listar', page)
     },
   },
 };

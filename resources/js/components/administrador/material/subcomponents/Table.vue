@@ -19,7 +19,7 @@
           <td class="text-center">
             <button
               type="button"
-              @click="edit(material)"
+              @click="abrirModalEditar(material)"
               title="EDITAR"
               class="btn btn-outline-warning btn-sm"
             >
@@ -30,7 +30,7 @@
       </tbody>
     </table>
     <!-- Barra de navegacion -->
-    <pagination-bar @list="listar" :paginacion="paginacion"></pagination-bar>
+    <pagination-bar @listar="listar" :paginacion="paginacion"></pagination-bar>
   </div>
   <div v-else>
     <h5>No se han encontrado resultados</h5>
@@ -64,11 +64,11 @@ export default {
     }
   },
   methods: {
-    edit(material) {
-      this.$emit('edit', material)
+    abrirModalEditar(material) {
+      this.$emit('abrirModalEditar', material)
     },
     listar(page) {
-      this.$emit('list', page)
+      this.$emit('listar', page)
     }
   }
 }
