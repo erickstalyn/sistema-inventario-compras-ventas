@@ -1,7 +1,7 @@
 <template>
 
-    <div  v-if="estadoModal" class="modal text-gray-900 show-modal">
-        <div v-if="Modal.estado" class="modal-dialog modal-dialog-centered modal-dialog-scrollable animate__animated animate__zoomIn animate__faster" :class="Modal.tamaño">
+    <div class="modal text-gray-900" :class="{'show-modal': Modal.estado}">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable animated bounceIn fast" :class="Modal.tamaño">
             <div class="modal-content">
 
                 <div class="modal-header">
@@ -10,138 +10,98 @@
                 </div>
                 
                 <div class="modal-body">
+                    
                     <!-- Modal Numero 1 de AGREGAR-->
-                    <div v-if="Modal.tipo == 'agregar'">
-                        <div v-if="Error.estado && (Error.numero==1 || Error.numero==3)" class="col-md-12 d-flex justify-content-center mb-3">
-                            <div class="alert alert-danger m-0">
-                                <button type="button" @click="closeError()" class="close text-primary" data-dismiss="alert">×</button>
-                                <strong>Corregir los siguentes errores:</strong>
-                                <ul class="m-0 pl-5"> 
-                                    <li v-for="error in Error.mensaje" :key="error" v-text="error"></li> 
-                                </ul>
-                            </div>
+                    <!-- <div> -->
+
+                    <div v-if="Error.estado" class="col-md-12 d-flex justify-content-center mb-3">
+                        <div class="alert alert-danger m-0">
+                            <button type="button" @click="closeError()" class="close text-primary" data-dismiss="alert">×</button>
+                            <strong>Corregir los siguentes errores:</strong>
+                            <ul class="m-0 pl-5"> 
+                                <li v-for="error in Error.mensaje" :key="error" v-text="error"></li> 
+                            </ul>
                         </div>
-                        <div class="container-small col-md-12">
-                            <div class="col-md-12 shadow rounded bg-white pt-3 pb-3">
-                                <div class="col-md-12 input-group">
-                                    <div class="col-md-6 input-group">
-                                        <label class="mt-1 mb-1" for="nom">Nombre&nbsp;<span class="text-danger">*</span>&nbsp;&nbsp;&nbsp;</label>
-                                        <input type="text" class="form-control form-control-sm" v-model="Producto.nombre" placeholder="El nombre se actualizara automaticamente" id="nom">
-                                    </div>
-                                    <div class="col-md-6 input-group">
-                                        <label class="mt-1 mb-1" for="descripcion">Descripcion&nbsp;&nbsp;&nbsp;</label>
-                                        <input type="text" class="form-control form-control-sm" v-model="Producto.descripcion" placeholder="Descripcion breve del producto" id="descripcion">
-                                    </div>
+                    </div>
+                    
+                    <form-producto @changeValue="changeValue"></form-producto>
+
+                    <div class="col-md-12 input-group mt-3">
+                        <div class="container-small col-md-4 pl-0">
+
+                            <form-subproducto @changeValue="changeValue"></form-subproducto>
+                            <!-- <div class="col-md-12 shadow rounded bg-white pt-3 pb-3">
+                                <div class="col-md-12">
+                                    <label class="col-md-12 text-center h5 font-weight-bold">Agregar SUBPRODUCTO</label>
+                                </div>
+                                <div class="col-md-12 input-group mt-2" v-for="(tipo, index) in TiposCaracteristica" :key="tipo.nombre">
+                                    <label class="col-md-5 pl-0 mt-1 mb-1">{{tipo.nombre}}&nbsp;<span v-if="tipo.required" class="text-danger">*</span></label>
+                                    <select class="col-md-7 custom-select custom-select-sm" v-model="Subproducto.caracteristicas[index].caracteristica">
+                                        <option value="" :disabled="tipo.required">- seleccione -</option>
+                                        <option class="text-gray-900" v-for="caracteristica in tipo.caracteristicas" :key="caracteristica.nombre" :value="caracteristica.nombre" v-text="caracteristica.nombre"></option>
+                                    </select>
                                 </div>
                                 <div class="col-md-12 input-group mt-2">
-                                    <div class="col-md-3 input-group">
-                                        <label class="mt-1  mb-1">Categoria&nbsp;<span class="text-danger">*</span>&nbsp;&nbsp;&nbsp;</label>
-                                        <select class="form-control form-control-sm" v-model="Producto.categoria_id">
-                                            <option value="0" disabled>- seleccione -</option>
-                                            <option v-for="categoria in Categorias" :key="categoria.id" :value="categoria.id" v-text="categoria.nombre" class="text-gray-900"></option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-3 input-group">
-                                        <label class="mt-1  mb-1">Marca&nbsp;&nbsp;&nbsp;</label>
-                                        <select class="form-control form-control-sm" v-model="Producto.marca_id">
-                                            <option value="0">- seleccione -</option>
-                                            <option v-for="marca in Marcas" :key="marca.id" :value="marca.id" v-text="marca.nombre" class="text-gray-900"></option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-3 input-group">
-                                        <label class="mt-1  mb-1" for="mod">Modelo&nbsp;<span class="text-danger">*</span>&nbsp;&nbsp;&nbsp;</label>
-                                        <input type="text" class="form-control form-control-sm" v-model="Producto.modelo" placeholder="Modelo de producto" id="mod">
-                                    </div>
-                                    <div class="col-md-3">
-                                        <button class="btn btn-sm" title="Actualizar el nombre" @click="actualizarNombre()">
-                                            <i class="fas fa-sync-alt fa-lg text-primary"></i>
-                                        </button>
-                                    </div>
+                                    <label class="col-md-5 pl-0 mt-1 mb-1" for="pme">P. por unidad&nbsp;<span class="text-danger">*</span></label>
+                                    <input type="number" class="col-md-7 form-control form-control-sm text-right" min="0" v-model="Subproducto.precio_menor" placeholder="Ingrese precio por unidad" id="pme">
                                 </div>
-                            </div>
+                                <div class="col-md-12 input-group mt-2">
+                                    <label class="col-md-5 pl-0 mt-1 mb-1" for="pma">P. por mayor&nbsp;<span class="text-danger">*</span></label>
+                                    <input type="number" class="col-md-7 form-control form-control-sm text-right" min="0" v-model="Subproducto.precio_mayor" placeholder="Ingrese precio por mayor" id="pma">
+                                </div>
+                                <div class="col-md-12 mt-3 d-flex justify-content-center">
+                                    <button type="button" class="btn btn-sm btn-primary btn-icon-split" @click="agregarSubproducto()">
+                                        <span class="icon text-white-50"><i class="fas fa-plus"></i></span>
+                                        <span class="text font-weight-bold">Agregar SUBPRODUCTO</span>
+                                    </button>
+                                </div>
+                            </div> -->
                         </div>
-                        <div class="col-md-12 input-group mt-3">
-                            <div class="container-small col-md-4 pl-0">
-                                <div class="col-md-12 shadow rounded bg-white pt-3 pb-3">
-                                    <div v-if="Error.estado && (Error.numero==2 || Error.numero==5)" class="col-md-12 d-flex justify-content-center mb-3">
-                                        <div class="alert alert-danger m-0">
-                                            <button type="button" @click="closeError()" class="close text-primary" data-dismiss="alert">×</button>
-                                            <strong>Corregir los siguentes errores:</strong>
-                                            <ul class="m-0 pl-4"> 
-                                                <li v-for="error in Error.mensaje" :key="error" v-text="error"></li> 
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12">
-                                        <label class="col-md-12 text-center h5 font-weight-bold">Agregar SUBPRODUCTO</label>
-                                    </div>
-                                    <div class="col-md-12 input-group mt-2" v-for="(tipo, index) in TiposCaracteristica" :key="tipo.nombre">
-                                        <label class="col-md-5 pl-0 mt-1 mb-1">{{tipo.nombre}}&nbsp;<span v-if="tipo.required" class="text-danger">*</span></label>
-                                        <select class="col-md-7 custom-select custom-select-sm" v-model="Subproducto.caracteristicas[index].caracteristica">
-                                            <option value="" :disabled="tipo.required">- seleccione -</option>
-                                            <option class="text-gray-900" v-for="caracteristica in tipo.caracteristicas" :key="caracteristica.nombre" :value="caracteristica.nombre" v-text="caracteristica.nombre"></option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-12 input-group mt-2">
-                                        <label class="col-md-5 pl-0 mt-1 mb-1" for="pme">P. por unidad&nbsp;<span class="text-danger">*</span></label>
-                                        <input type="number" class="col-md-7 form-control form-control-sm text-right" min="0" v-model="Subproducto.precio_menor" placeholder="Ingrese precio por unidad" id="pme">
-                                    </div>
-                                    <div class="col-md-12 input-group mt-2">
-                                        <label class="col-md-5 pl-0 mt-1 mb-1" for="pma">P. por mayor&nbsp;<span class="text-danger">*</span></label>
-                                        <input type="number" class="col-md-7 form-control form-control-sm text-right" min="0" v-model="Subproducto.precio_mayor" placeholder="Ingrese precio por mayor" id="pma">
-                                    </div>
-                                    <div class="col-md-12 mt-3 d-flex justify-content-center">
-                                        <button type="button" class="btn btn-sm btn-primary btn-icon-split" @click="agregarSubproducto()">
-                                            <span class="icon text-white-50"><i class="fas fa-plus"></i></span>
-                                            <span class="text font-weight-bold">Agregar SUBPRODUCTO</span>
-                                        </button>
-                                    </div>
+                        <div class="container-small col-md-8 pr-0 d-flex">
+                            <div class="col-md-12 shadow rounded bg-white pt-3 pb-3">
+                                <div class="col-md-12">
+                                    <label class="h5 font-weight-bold">Lista de SUBPRODUCTOS</label>
                                 </div>
-                            </div>
-                            <div class="container-small col-md-8 pr-0 d-flex">
-                                <div class="col-md-12 shadow rounded bg-white pt-3 pb-3">
-                                    <div class="col-md-12">
-                                        <label class="h5 font-weight-bold">Lista de SUBPRODUCTOS</label>
+                                <div class="col-md-12 d-flex">
+                                    <div v-if="Subproductos.length" class="col-md-12 d-flex p-0">
+                                        <table class="table table-bordered table-condensed table-sm text-gray-900 m-0">
+                                            <thead>
+                                                <tr class="table-primary">
+                                                    <th class="text-center">Quitar</th>
+                                                    <th v-for="tipo in TiposCaracteristica" :key="tipo.nombre" v-text="tipo.nombre"></th>
+                                                    <th class="text-center">Precio por unidad</th>
+                                                    <th class="text-center">Precio por mayor</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="(subproducto, index) in Subproductos" :key="index">
+                                                    <td class="text-center">
+                                                        <button type="button" class="btn btn-circle btn-outline-danger btn-sm" @click="eliminarSubproducto(index)" title="QUITAR">
+                                                            <i class="fas fa-minus"></i>
+                                                        </button>
+                                                    </td>
+                                                    <td v-for="caracteristica in subproducto.caracteristicas" :key="caracteristica.caracteristica" v-text="caracteristica.caracteristica"></td>
+                                                    <td>
+                                                        <input type="number" class="form-control form-control-sm text-right" min="0" v-model="subproducto.precio_menor">
+                                                    </td>
+                                                    <td>
+                                                        <input type="number" class="form-control form-control-sm text-right" min="0" v-model="subproducto.precio_mayor">
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
                                     </div>
-                                    <div class="col-md-12 d-flex">
-                                        <div v-if="Subproductos.length" class="col-md-12 d-flex p-0">
-                                            <table class="table table-bordered table-condensed table-sm text-gray-900 m-0">
-                                                <thead>
-                                                    <tr class="table-primary">
-                                                        <th class="text-center">Quitar</th>
-                                                        <th v-for="tipo in TiposCaracteristica" :key="tipo.nombre" v-text="tipo.nombre"></th>
-                                                        <th class="text-center">Precio por unidad</th>
-                                                        <th class="text-center">Precio por mayor</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr v-for="(subproducto, index) in Subproductos" :key="index">
-                                                        <td class="text-center">
-                                                            <button type="button" class="btn btn-circle btn-outline-danger btn-sm" @click="eliminarSubproducto(index)" title="QUITAR">
-                                                                <i class="fas fa-minus"></i>
-                                                            </button>
-                                                        </td>
-                                                        <td v-for="caracteristica in subproducto.caracteristicas" :key="caracteristica.caracteristica" v-text="caracteristica.caracteristica"></td>
-                                                        <td>
-                                                            <input type="number" class="form-control form-control-sm text-right" min="0" v-model="subproducto.precio_menor">
-                                                        </td>
-                                                        <td>
-                                                            <input type="number" class="form-control form-control-sm text-right" min="0" v-model="subproducto.precio_mayor">
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                        <div v-else>
-                                            <label class="col-md-12 text text-danger">Sin productos</label>
-                                        </div>
+                                    <div v-else>
+                                        <label class="col-md-12 text text-danger">Sin productos</label>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+
+                    <!-- </div> -->
                     <!-- Modal Numero 2 de VER-->
-                    <div v-if="Modal.tipo == 'ver'">
+                    <!-- <div v-if="Modal.tipo == 'ver'">
                         <div class="row form-group">
                             <label class="col-md-2">Nombre:</label>
                             <label class="col-md-5" v-text="SuperProducto.nombre"></label>
@@ -181,9 +141,9 @@
                             </div>
                         </div>
                         
-                    </div>
+                    </div> -->
                     <!-- Modal Numero 3 de EDITAR-->
-                    <div v-if="Modal.tipo == 'editar'">
+                    <!-- <div v-if="Modal.tipo == 'editar'">
                         <div v-if="Error.estado && (Error.numero==1 || Error.numero==3 || Error.numero==4)" class="row d-flex justify-content-center">
                             <div class="alert alert-danger">
                                 <button type="button" @click="closeError()" class="close text-primary" data-dismiss="alert">×</button>
@@ -201,7 +161,8 @@
                             <label class="col-md-3" for="des">Descripcion</label>
                             <input type="text" class="col-md-9 form-control form-control-sm" v-model="SuperProducto.descripcion" placeholder="Ingrese la descripcion" id="des">
                         </div>
-                    </div>
+                    </div> -->
+
                 </div>
 
                 <div class="modal-footer justify-content-around">
@@ -225,18 +186,14 @@
 </template>
 
 <script>
+
+    import FormProducto from './Modal-FormProducto.vue';
+    import FormSubproducto from './Modal-FormSubproducto.vue';
+    
     export default {
-        props: {
-            tipoModal: {
-                type: String,
-                default: () => null,
-                required: false
-            },
-            initProducto: {
-                type: Object,
-                default: () => {},
-                required: true
-            }
+        components: {
+            FormProducto,
+            FormSubproducto
         },
         data(){
             return {
@@ -244,7 +201,7 @@
                 Categorias: [],
                 Marcas: [],
                 Producto: {
-                    id: 0,
+                    id: null,
                     categoria_id: 0,
                     marca_id: 0,
                     modelo: '',
@@ -257,7 +214,7 @@
                 maxSubproductos: 9,
                 Subproductos: [],
                 Subproducto : {
-                    id: 0,
+                    id: null,
                     caracteristicas: [],
                     precio_menor: '',
                     precio_mayor: '',
@@ -269,7 +226,7 @@
                 Modal: {
                     estado: 0,
                     tipo: null,
-                    titulo: 0,
+                    titulo: '',
                     tamaño: '',
                     loading: false,
                     btnSuccess: '', //Boton de aceptar
@@ -291,14 +248,6 @@
             }
         },
         computed: {
-            estadoModal: function() {
-                if ( this.tipoModal == null ) {
-                    return 0;
-                } else {
-                    this.abrirModal(this.tipoModal);
-                    return 1;
-                }
-            }
         },
         methods: {
             agregar(){
@@ -426,18 +375,19 @@
             //         console.log(error);
             //     });
             // },
-            abrirModal(tipo){
+            abrirModal(tipo, producto){
                 this.Modal.tipo = tipo;
                 
                 switch ( this.Modal.tipo ) {
                     case 'agregar':
                         this.abrirModalAgregar(); break;
                     case 'ver':
-                        this.abrirModalVer(this.initProducto); break;
+                        this.abrirModalVer(producto); break;
                     case 'editar':
-                        this.abrirModalEditar(this.initProducto); break;
+                        this.abrirModalEditar(producto); break;
                     default:
-                        console.error('Tried to open a diferent modal type. (type = "' + modal.tipo + '")'); break;
+                        this.Modal.tipo = null;
+                        console.error('Tried to open a diferent modal type. (type = "' + tipo + '")'); break;
                 }
             },
             prepararModal(modal){
@@ -457,19 +407,8 @@
                     btnSuccess: 'Agregar PRODUCTO',
                     btnCancel: 'Cancelar'
                 });
-
-                this.Producto.categoria_id = 0;
-                this.Producto.marca_id = 0;
-                this.Producto.modelo = '';
-                this.Producto.nombre = '';
-                this.Producto.descripcion = '';
-
-                this.Subproducto.id = null;
-                for (let i = 0; i < this.Subproducto.caracteristicas.length; i++) {
-                    this.Subproducto.caracteristicas[i].caracteristica = ''
-                }
-                this.Subproducto.precio_menor = '';
-                this.Subproducto.precio_mayor = '';
+                
+                this.$emit('abrirModal', this.Modal.tipo);
 
                 this.Subproductos = [];
 
@@ -520,7 +459,6 @@
             //         }
             //     });
             // },
-            
             cerrarModal(){
                 this.$emit('cerrarModal');
 
@@ -536,7 +474,7 @@
                 this.Error.numero = 0;
                 this.Error.mensaje = [];
 
-                this.Producto.id = 0;
+                this.Producto.id = null;
                 this.Producto.categoria_id = 0;
                 this.Producto.marca_id = 0;
                 this.Producto.modelo = '';
@@ -545,7 +483,7 @@
                 this.Producto.stock = 0;
                 this.Producto.created_at = '';
 
-                this.Subproducto.id = 0;
+                this.Subproducto.id = null;
                 for (let i = 0; i < this.Subproducto.caracteristicas.length; i++) {
                     this.Subproducto.caracteristicas[i].caracteristica = ''
                 }
@@ -554,54 +492,29 @@
 
                 this.Subproductos = [];
             },
-            actualizarNombre(){
-                var nombre = '';
-
-                this.Categorias.forEach(category => {
-                    if ( this.Producto.categoria_id == category.id ) nombre += category.nombre;
-                });
-                this.Marcas.forEach(mark => {
-                    if ( this.Producto.marca_id == mark.id ) nombre += ' ' + mark.nombre;
-                });
-                nombre +=  ' ' + this.Producto.modelo;
-
-                if ( nombre.trim() != '' ) this.Producto.nombre = nombre;
-            },
-            getCategorias(){
-                var me = this;
-                var url = this.Ruta.producto+'/getCategorias';
-
-                axios.get(url).then(function (response) {
-                    me.Categorias = response.data;
-                }).catch(function (error) {
-                    console.log(error);
-                });
-            },
-            getMarcas(){
-                var me = this;
-                var url = this.Ruta.producto+'/getMarcas';
-
-                axios.get(url).then(function (response) {
-                    me.Marcas = response.data;
-                }).catch(function (error) {
-                    console.log(error);
-                });
-            },
-            getCaracteristicas(){
-                var me = this;
-                var url = this.Ruta.subproducto+'/getTiposCaracteristica';
-
-                axios.get(url).then(function (response) {
-                    me.TiposCaracteristica = response.data;
-                    me.TiposCaracteristica.forEach(tipo => {
-                        me.Subproducto.caracteristicas.push({
-                            tipo_caracteristica: tipo.nombre,
-                            caracteristica: ''
-                        });
-                    });
-                }).catch(function (error) {
-                    console.log(error);
-                });
+            changeValue(variable, valor){
+                switch ( variable ) {
+                    case 'producto.nombre':
+                        this.Producto.nombre = valor; break;
+                    case 'producto.descripcion':
+                        this.Producto.descripcion = valor; break;
+                    case 'producto.categoria_id':
+                        this.Producto.categoria_id = valor; break;
+                    case 'producto.marca_id':
+                        this.Producto.marca_id = valor; break;
+                    case 'producto.modelo':
+                        this.Producto.modelo = valor; break;
+                    case 'subproducto.id':
+                        this.Subproducto.id = valor; break;
+                    case 'subproducto.caracteristicas':
+                        this.Subproducto.caracteristicas = valor; break;
+                    case 'subproducto.precio_menor':
+                        this.Subproducto.precio_menor = valor; break;
+                    case 'subproducto.precio_mayor':
+                        this.Subproducto.precio_mayor = valor; break;
+                    default:
+                        console.error("Option '"+variable+"-"+valor+"' don't found in changeValue() function"); break;
+                }
             },
             listaProducto(){
                 var me = this;
@@ -721,16 +634,14 @@
             },
         },
         mounted() {
-            this.getCategorias();
-            this.getMarcas();
-            this.getCaracteristicas();
+            this.$parent.$on('abrirModal', this.abrirModal);
         }
     }
 </script>
 
 <style scoped>
     .mostrar{
-        display: list-item !important;
+        display: block !important;
         opacity: 1 !important;
         position: absolute !important;
         background-color: #3c29297a !important;

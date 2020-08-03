@@ -43,7 +43,7 @@
         </div>
 
         <!-- Modal -->
-        <modal :tipoModal="Modal.tipo" :initProducto="Producto" @cerrarModal="cerrarModal" @listar="listar"></modal>
+        <modal @listar="listar"></modal>
 
     </main>
 </template>
@@ -141,11 +141,7 @@
                 });
             },
             abrirModal(tipo, producto = {}){
-                this.Producto = producto;
-                this.Modal.tipo = tipo;
-            },
-            cerrarModal(){
-                this.Modal.tipo = null;
+                this.$emit('abrirModal', tipo, producto);
             },
             // generatePdf(){
             //     window.open(this.Ruta.serverPhp + '/superproducto/generatePdf','_blank');
