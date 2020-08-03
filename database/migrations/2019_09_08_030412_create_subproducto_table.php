@@ -16,7 +16,7 @@ class CreateSubproductoTable extends Migration
             $table->mediumIncrements('id'); // Por ser mediuminteger y unsigned tiene como valor maximo 16'777,215
             $table->string('nombre', 500);  // Se obtendrá uniendo el nombre del superproducto, el tamaño y el color
             $table->string('caracteristicas', 300);
-            $table->string('code_unique', 20);  // Codigo cifrado en base hexadecimal para diferenciar los subproductos. Schema: [product_id|4]-[var1|1]-[var1_value|1]-[var2|1]-[var2_value|1]
+            $table->string('code_unique', 20);  // Codigo cifrado en base 36 para diferenciar los subproductos. Schema: [var1|1]-[var1_value|1]-[var2|1]-[var2_value|1]
             $table->char('codigo', 15); // Estructura: [fecha-hora|12]-[numero aleatorio|1]
             $table->string('descripcion', 100)->nullable();
             $table->longText('caracteristicas_json');    // Aqui se guardaran las caracteristicas de este subproductos. Por ejemplo: tamaño, color
