@@ -48,7 +48,7 @@
           :modalLoading.sync="modal.loading"
           :btnSuccess.sync="modal.btnSuccess"
           :btnCancel.sync="modal.btnCancel"
-          @cerrar-modal="cerrarModal"
+          @cerrarModal="cerrarModal"
           @accionar="accionar"
         ></footer-modal>
       </div>
