@@ -111,23 +111,6 @@ export default {
   computed: {},
   watch: {},
   methods: {
-    abrirModal({ modal, material }) {
-      this.modal.estado = true;
-      this.modal.tipo = modal.tipo;
-      switch (this.modal.tipo) {
-        case "agregar":
-          this.abrirModalAgregar();
-          break;
-        case "editar":
-          this.abrirModalEditar(material);
-          break;
-        default:
-          console.error(
-            `Tried to open a diferent modal type. (type = "${modal.tipo}")`
-          );
-          break;
-      }
-    },
     prepararModal({titulo, size = '', btnSuccess = null, btnCancel = null}) {
       this.modal.titulo = titulo;
       this.modal.size = size;
@@ -136,6 +119,9 @@ export default {
       this.modal.btnCancel = btnCancel;
     },
     abrirModalAgregar() {
+      this.modal.estado = true;
+      this.modal.tipo = 'agregar';
+
       this.prepararModal({
         titulo: "Nuevo material",
         size: "modal-lg",
@@ -143,7 +129,10 @@ export default {
         btnCancel: "Cancelar",
       });
     },
-    abrirModalEditar(material) {
+    abrirModalEditar({material}) {
+      this.modal.estado = true;
+      this.modal.tipo = 'editar';
+
       this.prepararModal({
         titulo: "Editar material",
         size: "modal-lg",
@@ -166,6 +155,12 @@ export default {
 
       this.modal.estado = false;
       this.modal.tipo = "";
+
+      this.initMaterial.id = 0;
+      this.initMaterial.nombre = '';
+      this.initMaterial.unidad = '';
+      this.initMaterial.subtipo = '';
+      this.initMaterial.costo = '';
 
       this.material.id = 0;
       this.material.nombre = "";
@@ -273,9 +268,20 @@ export default {
         })
         .then((res) => (this.modal.loading = false));
     },
+    runChildMethod(method = '', data = {}) {
+      switch(method) {
+        case 'abrirModalAgregar':
+          this.abrirModalAgregar(); break;
+        case 'abrirModalEditar':
+          this.abrirModalEditar(data); break;
+        default:
+          `Option "${method}" don't found in runParentMethod() function in Modal.vue`;
+          break;
+      }
+    }
   },
   mounted() {
-    this.$parent.$on("abrirModal", this.abrirModal);
+    this.$parent.$on("runChildMethod", this.runChildMethod);
   },
 };
 </script>

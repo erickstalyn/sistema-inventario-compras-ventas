@@ -133,7 +133,7 @@ export default {
         },
         material: {},
       };
-      this.$emit("abrirModal", data);
+      this.$emit('runChildMethod', "abrirModalAgregar", data);
     },
     abrirModalEditar(material = {}) {
       const data = {
@@ -142,7 +142,7 @@ export default {
         },
         material: material,
       };
-      this.$emit("abrirModal", data);
+      this.$emit("runChildMethod", 'abrirModalEditar', data);
     },
     runParentMethod(method = '', data = {}) {
       switch (method) {
@@ -153,7 +153,7 @@ export default {
           this.abrirModalEditar(data);
           break;
         default:
-          `Option "${variable}" don't found in runParentMethod() function in Material.vue`;
+          `Option "${method}" don't found in runParentMethod() function in Material.vue`;
           break;
       }
     },
