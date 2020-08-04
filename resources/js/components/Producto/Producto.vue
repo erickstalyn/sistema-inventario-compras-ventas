@@ -71,11 +71,6 @@
                     filas: 5
                 },
 
-                //datos de modales
-                Modal: {
-                    tipo: null
-                },
-
                 //datos de paginacion
                 Paginacion: {
                     total: 0,

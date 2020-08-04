@@ -20,9 +20,9 @@
             <input type="number" class="col-md-7 form-control form-control-sm text-right" min="0" v-model="Subproducto.precio_mayor" placeholder="Ingrese precio por mayor" id="pma">
         </div>
         <div class="col-md-12 mt-3 d-flex justify-content-center">
-            <button type="button" class="btn btn-sm btn-primary btn-icon-split" @click="agregarSubproducto()">
-                <span class="icon text-white-50"><i class="fas fa-plus"></i></span>
-                <span class="text font-weight-bold">Agregar SUBPRODUCTO</span>
+            <button type="button" class="btn btn-sm btn-primary btn-icon-split" @click="addSubproducto()">
+                <span class="text font-weight-bold">Agregar</span>
+                <span class="icon text-white-50"><i class="fas fa-arrow-right"></i></span>
             </button>
         </div>
     </div>
@@ -58,37 +58,24 @@
             'Subproducto': {
                 deep: true,
                 handler (newSubproducto, oldSubproducto) {
-                    this.$emit('changeValue', 'subproducto.caracteristicas', newCaracteristicas);
+                    this.$emit('changeValue', 'subproducto', newSubproducto);
                 }
             }
         },
         methods: {
-            agregarSubproducto(){
-                if ( this.validar(5) ) return;
-                if ( this.validar(2) ) return;
-                
-                var caracteristicas = [];
-                this.Subproducto.caracteristicas.forEach(c => {
-                    caracteristicas.push({
-                        tipo_caracteristica: c.tipo_caracteristica,
-                        caracteristica: c.caracteristica
-                    })
-                });
-                let producto = {
-                    id: null,
-                    caracteristicas: caracteristicas,
-                    precio_menor: parseFloat(this.Subproducto.precio_menor),
-                    precio_mayor: parseFloat(this.Subproducto.precio_mayor)
-                };
-                this.Subproductos.push(producto);
-
-                this.Subproducto.caracteristicas.forEach((caracteristica, index, self) => {
-                    self[index].caracteristica = '';
-                });
-                this.Subproducto.precio_menor = '';
-                this.Subproducto.precio_mayor = '';
+            runChildMethod(method, data) {
+                switch( method ) {
+                    case 'abrirModal':
+                        this.abrirModal(data); break;
+                    case 'cerrarModal':
+                        this.cerrarModal(); break;
+                    case 'clearFormSubproducto':
+                        this.clearFormSubproducto(); break;
+                    default: 
+                        console.error("Method '"+method+"' don't found in runChildMethod() function on Modal-FormSubproducto.vue"); break;
+                }
             },
-            abrirModal(tipo, producto = {}){
+            abrirModal({tipo, producto = {}}){
                 this.Modal.tipo = tipo;
                 
                 switch ( this.Modal.tipo ) {
@@ -133,8 +120,17 @@
                 this.DataSuperProducto = data;
             },
             cerrarModal(){
-                this.$emit('cerrarModal');
-
+                this.Subproducto.id = null;
+                this.Subproducto.caracteristicas.forEach((c, i, self) => {
+                    self[i].caracteristica = '';
+                });
+                this.Subproducto.precio_menor = '';
+                this.Subproducto.precio_mayor = '';
+            },
+            addSubproducto(){
+                this.$emit('runParentMethod', 'addSubproducto');
+            },
+            clearFormSubproducto() {
                 this.Subproducto.id = null;
                 for (let i = 0; i < this.Subproducto.caracteristicas.length; i++) {
                     this.Subproducto.caracteristicas[i].caracteristica = ''
@@ -158,35 +154,13 @@
                     console.log(error);
                 });
             },
-            validar(numero){
-                this.Error.estado = 0;
-                this.Error.numero = numero;
-                this.Error.mensaje = [];
+            validate({component, type = ''}){
+                if ( component != 'form-subproducto' && component != undefined ) return;
 
-                switch (numero) {
-                    case 1: // Se validan los campos del formulario de producto
-                        if ( this.Producto.categoria_id == 0 ) this.Error.mensaje.push("Debe seleccionar una categoria");   //categoria
-                        if ( this.Producto.modelo.trim() == '' ) this.Error.mensaje.push("Debe ingresar un modelo");    //nombre
-                        var pMenorEmpty = false; var pMenorNotNumber = false; var pMayorEmtpy = false; var pMayorNotNumber = false;
-                        for (let i = 0; i < this.Subproductos.length; i++) {
-                            if ( this.Subproductos[i].precio_menor == '' ) {    // precio al por menor
-                                pMenorEmpty = true;
-                            } else if ( isNaN(parseInt(this.Subproductos[i].precio_menor)) || parseInt(this.Subproductos[i].precio_menor) <= 0 ) {
-                                pMenorNotNumber = true;
-                            }
-                            if ( this.Subproductos[i].precio_mayor == '' ) {    // precio al por mayor
-                                pMayorEmtpy = true;
-                            } else if ( isNaN(parseInt(this.Subproductos[i].precio_mayor)) || parseInt(this.Subproductos[i].precio_mayor) <= 0 ) {
-                                pMayorNotNumber = true;
-                            }
-                            if ( pMenorEmpty && pMenorNotNumber && pMayorEmtpy && pMayorNotNumber ) break;
-                        }
-                        if ( pMenorEmpty ) this.Error.mensaje.push("Debe ingresar un precio por unidad en la lista");
-                        if ( pMenorNotNumber ) this.Error.mensaje.push("El precio por unidad ingresado en la lista es incorrecto");
-                        if ( pMayorEmtpy ) this.Error.mensaje.push("Debe ingresar un precio por mayor en la lista");
-                        if ( pMayorNotNumber ) this.Error.mensaje.push("El precio por mayor ingresado en la lista es incorrecto");
-                        break;
-                    case 2: // Se validan los campos del formulario de agregar subproducto
+                const errors = [];
+
+                switch ( type ) {
+                    case 'add-subproducto': // Se validan los campos del formulario de agregar subproducto
                         var found = false;
                         for (let i = 0; i < this.Subproductos.length; i++) {
                             var founds = [];
@@ -202,53 +176,33 @@
                         }
 
                         if ( found ) {
-                            this.Error.mensaje.push("Ese producto ya se encuentra en lista");                                           //producto existente
+                            errors.push("Ese producto ya se encuentra en lista");                                           //producto existente
                         } else {
                             this.TiposCaracteristica.forEach((tipo, index) => {    // caracteristicas
                                 if ( tipo.required ) {
                                     if ( this.Subproducto.caracteristicas[index].caracteristica == '' ) {
-                                        this.Error.mensaje.push('Debe seleccionar un '+tipo.nombre.toLowerCase());
+                                        errors.push('Debe seleccionar un '+tipo.nombre.toLowerCase());
                                     }
                                 }
                             });
                             if ( this.Subproducto.precio_menor == '' ) {    // precio al por menor
-                                this.Error.mensaje.push("Debe ingresar un precio por unidad en el formulario")
+                                errors.push("Debe ingresar un precio por unidad en el formulario")
                             } else if ( isNaN(parseInt(this.Subproducto.precio_menor)) || parseInt(this.Subproducto.precio_menor) <= 0 ) {
-                                this.Error.mensaje.push("El precio por unidad ingresado en el formulario es incorrecto");
+                                errors.push("El precio por unidad ingresado en el formulario es incorrecto");
                             }
                             if ( this.Subproducto.precio_mayor == '' ) {    // precio al por mayor
-                                this.Error.mensaje.push("Debe ingresar un precio por mayor en el formulario")
+                                errors.push("Debe ingresar un precio por mayor en el formulario")
                             } else if ( isNaN(parseInt(this.Subproducto.precio_mayor)) || parseInt(this.Subproducto.precio_mayor) <= 0 ) {
-                                this.Error.mensaje.push("El precio por mayor ingresado en el formulario es incorrecto");
+                                errors.push("El precio por mayor ingresado en el formulario es incorrecto");
                             }
                         }
                         break;
-                    case 3: // El producto ya existe
-                        this.Error.mensaje.push("El Producto ya esta registrado o ha ocurrido un error");    //error o producto existente
-                        break;
-                    case 4:
-                        for (let i = 0; i < this.ListaSuperProducto.length; i++) {
-                            if ( this.SuperProducto.id == this.ListaSuperProducto[i].id ) {
-                                if ( this.SuperProducto.nombre == this.ListaSuperProducto[i].nombre && this.SuperProducto.descripcion == this.ListaSuperProducto[i].descripcion ) {
-                                    this.Error.mensaje.push("Ningun cambio realizado");    //sin cambios
-                                }
-                                break;
-                            }
-                        }
-                        break;
-                    case 5:
-                        if ( this.Subproductos.length >= this.maxSubproductos ) {
-                            this.Error.mensaje.push('Por ahora no se pueden registrar mas subproductos, registre el producto y luego siga agregando mas subproductos');
-                        }
+                    default:
+                        console.error("Type '"+type+"' don't found in validate() function");
                         break;
                 }
 
-                if ( this.Error.mensaje.length ) {
-                    this.Error.estado = 1; 
-                    this.Modal.loading = false;
-                }
-
-                return this.Error.estado;
+                if ( errors.length > 0 ) this.$emit('addError', {'errors': errors});
             },
             closeError(){
                 this.Error.estado = 0;
@@ -261,6 +215,8 @@
 
             this.$parent.$on('abrirModal', this.abrirModal);
             this.$parent.$on('cerrarModal', this.cerrarModal);
+            this.$parent.$on('validate', this.validate);
+            this.$parent.$on('runChildSubproducto', this.runChildMethod);
         }
     }
 </script>

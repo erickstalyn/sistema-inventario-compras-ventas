@@ -5,14 +5,14 @@
             <div class="col-md-12 input-group">
                 <div class="col-md-6 input-group">
                     <label class="mt-1 mb-1" for="nom">Nombre&nbsp;<span class="text-danger">*</span>&nbsp;&nbsp;&nbsp;</label>
-                    <input type="text" class="form-control form-control-sm" v-model="Producto.nombre" placeholder="El nombre se actualizara automaticamente" id="nom">
+                    <input type="text" class="form-control form-control-sm" v-model="nombreProducto" disabled placeholder="El nombre se actualizara automaticamente" id="nom">
                 </div>
                 <div class="col-md-6 input-group">
                     <label class="mt-1 mb-1" for="descripcion">Descripcion&nbsp;&nbsp;&nbsp;</label>
                     <input type="text" class="form-control form-control-sm" v-model="Producto.descripcion" placeholder="Descripcion breve del producto" id="descripcion">
                 </div>
             </div>
-            <div class="col-md-12 input-group mt-2">
+            <div  class="col-md-12 input-group mt-2">
                 <div class="col-md-3 input-group">
                     <label class="mt-1  mb-1">Categoria&nbsp;<span class="text-danger">*</span>&nbsp;&nbsp;&nbsp;</label>
                     <select class="form-control form-control-sm" v-model="Producto.categoria_id">
@@ -30,11 +30,6 @@
                 <div class="col-md-3 input-group">
                     <label class="mt-1  mb-1" for="mod">Modelo&nbsp;<span class="text-danger">*</span>&nbsp;&nbsp;&nbsp;</label>
                     <input type="text" class="form-control form-control-sm" v-model="Producto.modelo" placeholder="Modelo de producto" id="mod">
-                </div>
-                <div class="col-md-3">
-                    <button class="btn btn-sm" title="Actualizar el nombre" @click="actualizarNombre()">
-                        <i class="fas fa-sync-alt fa-lg text-primary"></i>
-                    </button>
                 </div>
             </div>
         </div>
@@ -78,8 +73,37 @@
                 }
             }
         },
+        computed: {
+            nombreProducto: function () {
+                var nombre = '';
+
+                this.Categorias.forEach(category => {
+                    if ( this.Producto.categoria_id == category.id ) nombre += category.nombre;
+                });
+                
+                this.Marcas.forEach(mark => {
+                    if ( this.Producto.marca_id == mark.id ) nombre += ' ' + mark.nombre;
+                });
+                
+                if ( this.Producto.modelo.trim() != '' ) nombre +=  ' ' + this.Producto.modelo.trim();
+
+                this.Producto.nombre = nombre;
+
+                return nombre;
+            }
+        },
         methods: {
-            abrirModal(tipo, producto = {}){
+            runMethodChild(method, data){
+                switch ( method ) {
+                    case 'abrirModal':
+                        this.abrirModal(data); break;
+                    case 'cerrarModal':
+                        this.cerrarModal(); break;
+                    default:
+                        console.error("Method '"+method+"' don't found in runChildMethod() function on Modal-FormProducto.vue"); break;
+                }
+            },
+            abrirModal({tipo, producto = {}}){
                 this.Modal.tipo = tipo;
                 
                 switch ( this.Modal.tipo ) {
@@ -134,47 +158,22 @@
                 this.Producto.stock = 0;
                 this.Producto.created_at = '';
             },
-            validate(component, type){
-                if ( component != 'form-producto' ) return;
-
-                const errors = [];
-
-                if ( this.Producto.categoria_id == 0 ) errors.push("Debe seleccionar una categoria");   //categoria
-                if ( this.Producto.modelo.trim() == '' ) errors.push("Debe ingresar un modelo");    //nombre
+            validate({component, type = ''}){
+                if ( component != 'form-producto' && component != undefined ) return;
                 
-                var pMenorEmpty = false; var pMenorNotNumber = false; var pMayorEmtpy = false; var pMayorNotNumber = false;
-                for (let i = 0; i < this.Subproductos.length; i++) {
-                    if ( this.Subproductos[i].precio_menor == '' ) {    // precio al por menor
-                        pMenorEmpty = true;
-                    } else if ( isNaN(parseInt(this.Subproductos[i].precio_menor)) || parseInt(this.Subproductos[i].precio_menor) <= 0 ) {
-                        pMenorNotNumber = true;
-                    }
-                    if ( this.Subproductos[i].precio_mayor == '' ) {    // precio al por mayor
-                        pMayorEmtpy = true;
-                    } else if ( isNaN(parseInt(this.Subproductos[i].precio_mayor)) || parseInt(this.Subproductos[i].precio_mayor) <= 0 ) {
-                        pMayorNotNumber = true;
-                    }
-                    if ( pMenorEmpty && pMenorNotNumber && pMayorEmtpy && pMayorNotNumber ) break;
+                const errors = [];
+                
+                switch ( type ) {
+                    case 'create-producto':
+                        if ( this.Producto.categoria_id == 0 ) errors.push("Debe seleccionar una categoria");   //categoria
+                        if ( this.Producto.modelo.trim() == '' ) errors.push("Debe ingresar un modelo");    //nombre
+                        break;
+                    default:
+                        console.error("Type '"+type+"' don't found on validate() function");
+                        break;
                 }
-                if ( pMenorEmpty ) errors.push("Debe ingresar un precio por unidad en la lista");
-                if ( pMenorNotNumber ) errors.push("El precio por unidad ingresado en la lista es incorrecto");
-                if ( pMayorEmtpy ) errors.push("Debe ingresar un precio por mayor en la lista");
-                if ( pMayorNotNumber ) errors.push("El precio por mayor ingresado en la lista es incorrecto");
 
-                this.$emit('addError', errors, 'unique');
-            },
-            actualizarNombre(){
-                var nombre = '';
-
-                this.Categorias.forEach(category => {
-                    if ( this.Producto.categoria_id == category.id ) nombre += category.nombre;
-                });
-                this.Marcas.forEach(mark => {
-                    if ( this.Producto.marca_id == mark.id ) nombre += ' ' + mark.nombre;
-                });
-                nombre +=  ' ' + this.Producto.modelo;
-
-                if ( nombre.trim() != '' ) this.Producto.nombre = nombre;
+                if ( errors.length > 0 ) this.$emit('addError', {errors});
             },
             getCategorias(){
                 var me = this;
@@ -201,9 +200,7 @@
             this.getCategorias();
             this.getMarcas();
 
-            this.$parent.$on('abrirModal', this.abrirModal);
-            this.$parent.$on('cerrarModal', this.cerrarModal);
-            this.$parent.$on('validate', this.validate);
+            this.$parent.$on('runMethodChild', this.runMethodChild);
         }
     }
 </script>

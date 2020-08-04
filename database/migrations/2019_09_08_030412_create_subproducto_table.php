@@ -14,8 +14,8 @@ class CreateSubproductoTable extends Migration
     public function up(){
         Schema::create('subproducto', function (Blueprint $table) {
             $table->mediumIncrements('id'); // Por ser mediuminteger y unsigned tiene como valor maximo 16'777,215
-            $table->string('nombre', 500);  // Se obtendrá uniendo el nombre del superproducto, el tamaño y el color
-            $table->string('caracteristicas', 300);
+            $table->string('nombre', 500);  // Se obtendrá uniendo el nombre del producto y las caracteristicas
+            $table->string('caracteristicas', 300); // Son las caracteristicas del subproducto. Las caracteristicas estan separadas por espacios.
             $table->string('code_unique', 20);  // Codigo cifrado en base 36 para diferenciar los subproductos. Schema: [tipo_caracteristica_id|1]-[caracteristica_id|2]
             $table->char('codigo', 15); // Estructura: [fecha-hora|15]-[numero aleatorio|1]
             $table->string('descripcion', 100)->nullable();
