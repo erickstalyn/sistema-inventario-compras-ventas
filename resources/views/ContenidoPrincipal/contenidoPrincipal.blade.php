@@ -8,30 +8,33 @@
                 <adm_material></adm_material>
             </template>
             <template v-if="menu==2">
-                <producto></producto>
-            </template>
-            <template v-if="menu==3">
-                <adm_producto></adm_producto>
+                <adm_categoria></adm_categoria>
             </template>
             <template v-if="menu==4">
-                <adm_abasto></adm_abasto>
+                <producto></producto>
             </template>
             <template v-if="menu==5">
-                <adm_verpuesto></adm_verpuesto>
+                <adm_producto></adm_producto>
             </template>
             <template v-if="menu==6">
-                <adm_veralmacen></adm_veralmacen>
+                <adm_abasto></adm_abasto>
             </template>
             <template v-if="menu==7">
-                <adm_cliente></adm_cliente>
+                <adm_verpuesto></adm_verpuesto>
             </template>
             <template v-if="menu==8">
-                <adm_proveedor></adm_proveedor>
+                <adm_veralmacen></adm_veralmacen>
+            </template>
+            <template v-if="menu==9">
+                <adm_cliente></adm_cliente>
             </template>
             <template v-if="menu==10">
-                <adm_usuario></adm_usuario>
+                <adm_proveedor></adm_proveedor>
             </template>
             <template v-if="menu==11">
+                <adm_usuario></adm_usuario>
+            </template>
+            <template v-if="menu==12">
                 <adm_estadistica></adm_estadistica>
                 {{-- <dashboard :num_mostrar="1"></dashboard> --}}
             </template>

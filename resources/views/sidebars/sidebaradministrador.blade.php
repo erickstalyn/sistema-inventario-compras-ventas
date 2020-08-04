@@ -31,8 +31,10 @@
     <div id="inventario" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
         <div class="bg-white py-2 collapse-inner rounded">
             <a class="collapse-item font-weight-bold" href="#" @click="menu=1">Materiales</a>
-            <a class="collapse-item font-weight-bold" href="#" @click="menu=2">Productos</a>
-            <a class="collapse-item font-weight-bold" href="#" @click="menu=3">Subproductos</a>
+            <a class="collapse-item font-weight-bold" href="#" @click="menu=2">Categoria</a>
+            <a class="collapse-item font-weight-bold" href="#" @click="menu=3">Marcas</a>
+            <a class="collapse-item font-weight-bold" href="#" @click="menu=4">Productos</a>
+            <a class="collapse-item font-weight-bold" href="#" @click="menu=5">Subproductos</a>
         </div>
     </div>
     </li>

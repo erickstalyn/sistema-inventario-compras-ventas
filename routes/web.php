@@ -93,6 +93,11 @@ Route::group(['middleware' => ['auth']], function () {
         Route::put('/material/desactivar', 'MaterialController@desactivar');
         Route::get('/material/selectMaterial', 'MaterialController@selectMaterial'); 
 
+        //RUTA PARA CATEGORIAS
+        Route::get('/categoria', 'CategoriaController@listar');
+        Route::post('/categoria/agregar', 'CategoriaController@agregar');
+        Route::put('/categoria/editar', 'CategoriaController@editar');
+
         //RUTAS PARA SUPERPRODUCTO
         Route::get('/producto', 'ProductoController@listar'); //metodos generales
         Route::post('/producto/agregar', 'ProductoController@agregar');
