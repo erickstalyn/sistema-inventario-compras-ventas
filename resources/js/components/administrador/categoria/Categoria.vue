@@ -28,7 +28,7 @@
               @keyup.enter="listar()"
             />
             <button type="button" class="btn btn-primary" @click="listar()">
-              <i class="fa fa-search"></i>&nbsp; Buscar
+              <i class="fa fa-search mr-1"></i>Buscar
             </button>
           </div>
         </div>

@@ -10,6 +10,9 @@
             <template v-if="menu==2">
                 <adm_categoria></adm_categoria>
             </template>
+            <template v-if="menu==3">
+                <adm_marca></adm_marca>
+            </template>
             <template v-if="menu==4">
                 <producto></producto>
             </template>

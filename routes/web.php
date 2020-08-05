@@ -98,6 +98,12 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('/categoria/agregar', 'CategoriaController@agregar');
         Route::put('/categoria/editar', 'CategoriaController@editar');
 
+        //RUTA PARA MARCAS
+        Route::get('/marca', 'MarcaController@listar');
+        Route::post('/marca/agregar', 'MarcaController@agregar');
+        Route::put('/marca/editar', 'MarcaController@editar');
+    
+
         //RUTAS PARA SUPERPRODUCTO
         Route::get('/producto', 'ProductoController@listar'); //metodos generales
         Route::post('/producto/agregar', 'ProductoController@agregar');
