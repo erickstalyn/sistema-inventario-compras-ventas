@@ -13,9 +13,12 @@
       </thead>
       <tbody>
         <tr class="row-table" v-for="abasto in listaAbasto" :key="abasto.id">
-          <td v-text="abasto.nombre"></td>
-          <td v-text="abasto.unidad"></td>
-          <td v-text="abasto.costo"></td>
+          <td v-text="abasto.proveedor_nombre"></td>
+          <td v-text="abasto.centro_to_nombre"></td>
+          <td v-text="abasto.fecha_envio"></td>
+          <td v-text="abasto.total"></td>
+          <td v-text="abasto.tipo == 0 ? 'Contado': 'Crédito'"></td>
+          <td v-text="abasto.envio_estado == 0 ? 'Enviado': 'Recibido'"></td>
           <td class="text-center">
             <button
               type="button"

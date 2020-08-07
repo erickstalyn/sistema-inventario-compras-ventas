@@ -103,628 +103,25 @@
       </div>
     </div>
 
-    <!-- Modales de Agregar/Editar -->
-    <div class="modal text-gray-900" :class="{'show-modal': Modal.estado}">
-      <div class="modal-dialog modal-dialog-centered animated bounceIn fast" :class="Modal.size">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h3 v-text="Modal.titulo" class="modal-title"></h3>
-            <button type="button" @click="cerrarModal()" class="close">X</button>
-          </div>
-
-          <div class="modal-body">
-            <div class="container-fluid">
-              <div v-if="Modal.numero == 1">
-                <!-- Filtro de productos -->
-                <div v-if="Error.estado" class="row d-flex justify-content-center">
-                  <div class="alert alert-danger">
-                    <button
-                      type="button"
-                      @click="Error.estado=0"
-                      class="close text-primary"
-                      data-dismiss="alert"
-                    >×</button>
-                    <strong>Corregir los siguentes errores:</strong>
-                    <ul>
-                      <li v-for="error in Error.mensaje" :key="error" v-text="error"></li>
-                    </ul>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-md-2 pl-2">
-                    <p class="font-weight-bold">PROVEEDOR</p>
-                  </div>
-                  <div class="col-md-3">
-                    <div class="input-group">
-                      RUC/DNI
-                      <span class="text-danger">*</span>
-                      <input
-                        type="text"
-                        class="form-control form-control-sm"
-                        v-model="DatosServicio.documento"
-                        autofocus
-                        @keyup.enter="consultar()"
-                      />
-                      <button type="button" class="btn btn-sm btn-primary" @click="consultar()">
-                        <i class="fas fa-sync-alt"></i>
-                      </button>
-                    </div>
-                  </div>
-                  <div class="col-md-3">
-                    <h5>
-                      <span role="status" :class="Carga.clase"></span>
-                      <span v-text="DatosServicio.mensaje" :class="DatosServicio.alert"></span>
-                    </h5>
-                  </div>
-                </div>
-                <div v-if="DatosServicio.tipo == 1">
-                  <div class="row form-group">
-                    <div class="col-md-2">
-                      <div class="input-group">
-                        DNI
-                        <input
-                          type="text"
-                          class="form-control form-control-sm"
-                          readonly
-                          v-model="DatosProveedor.documento"
-                        />
-                      </div>
-                    </div>
-                    <div class :class="Modal.numero == 2 ? 'col-md-3': 'col-md-4'">
-                      <div class="input-group">
-                        <label>Nombres</label>
-                        <input
-                          type="text"
-                          class="form-control form-control-sm"
-                          readonly
-                          v-model="DatosProveedor.nombres"
-                        />
-                      </div>
-                    </div>
-                    <div class="col-md-6">
-                      <div class="input-group">
-                        <label>Apellidos</label>
-                        <input
-                          type="text"
-                          class="form-control form-control-sm"
-                          readonly
-                          v-model="DatosProveedor.apellidos"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div v-else-if="DatosServicio.tipo == 2">
-                  <div class="row form-group">
-                    <div class="col-md-2">
-                      <div class="input-group">
-                        RUC
-                        <input
-                          type="text"
-                          class="form-control form-control-sm"
-                          readonly
-                          v-model="DatosProveedor.documento"
-                        />
-                      </div>
-                    </div>
-                    <div class="col-md-10">
-                      <div class="input-group">
-                        <label>Razón social</label>
-                        <input
-                          type="text"
-                          class="form-control form-control-sm"
-                          v-model="DatosProveedor.razon_social"
-                          :readonly="DatosServicio.readonly"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="row shadow bg-white rounded p-2">
-                  <div class="col-md-4">
-                    <div class="row">
-                      <p class="font-weight-bold">PRODUCTOS</p>
-                    </div>
-                    <div class="row">
-                      <div class="input-group">
-                        <input
-                          type="search"
-                          class="form-control form-control-sm"
-                          v-model="BusquedaFiltro.texto"
-                          @keyup.enter="listarFiltro()"
-                          id="filtroProducto"
-                          placeholder="Producto,marca,modelo,tamaño,color"
-                        />
-                        <!-- <button type="button" class="btn btn-sm btn-primary" @click="listarFiltro()">
-                                                    <i class="fa fa-search"></i> Buscar
-                        </button>-->
-                      </div>
-                    </div>
-                    <br />
-                    <div class="row form-group overflow-auto" style="height: 17.5rem;">
-                      <div v-if="ListaProducto.length">
-                        <table class="table table-borderless table-striped table-sm text-gray-900">
-                          <thead>
-                            <tr class="table-danger">
-                              <th class="text-center" style="width: 3rem;">Agregar</th>
-                              <th>Nombre</th>
-                              <th>Stock</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <tr v-for="producto in ListaProducto" :key="producto.id">
-                              <td class="text-center">
-                                <button
-                                  type="button"
-                                  title="Editar"
-                                  class="btn btn-circle btn-sm btn-outline-success"
-                                  @click="agregarDetalle(producto)"
-                                >
-                                  <i class="fas fa-plus"></i>
-                                </button>
-                              </td>
-                              <td v-text="producto.nombre"></td>
-                              <td v-text="producto.stock"></td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                      <div v-else>
-                        <p>No se han encontrado resultados</p>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="col-md-12">
-                        <div class="input-group">
-                          <label for>Enviar a</label>
-                          <span class="text-danger">*</span>
-                          <select
-                            v-model="Abasto.centro_to_id"
-                            class="custom-select custom-select-sm text-gray-900"
-                          >
-                            <option value="0">Seleccione</option>
-                            <option
-                              v-for="item in SelectAlmacen"
-                              :key="item.id"
-                              :value="item.id"
-                              v-text="item.nombre"
-                            ></option>
-                          </select>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-md-8 ml-auto container">
-                    <div class="row">
-                      <div class="col-md-3 p-0">
-                        <p class="font-weight-bold">LISTA DE ITEMS</p>
-                      </div>
-                      <div class="col-md-6"></div>
-                      <div class="col-md-3">
-                        <div class="input-group">
-                          <label for="tipo" class="font-weight-bold">Tipo</label>
-                          <span class="text-danger">*</span>
-                          <select
-                            v-model="Abasto.tipo_abasto"
-                            class="custom-select custom-select-sm"
-                            id="tipo"
-                          >
-                            <option value="0">Contado</option>
-                            <option value="1">Credito</option>
-                          </select>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="row form-group ec-table-modal overflow-auto">
-                      <div v-if="ListaDetalleAbasto.length">
-                        <table class="table tableless table-striped table-sm text-gray-900">
-                          <thead>
-                            <tr class="table-success">
-                              <th class="text-center" style="width: 3rem;">Quitar</th>
-                              <th>Nombre</th>
-                              <th style="width: 5rem;">Cant.</th>
-                              <th style="width: 5rem;">P. Unit.</th>
-                              <th class="text-center">Subtotal</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <tr v-for="(detalle, indice) in ListaDetalleAbasto" :key="detalle.id">
-                              <td class="text-center">
-                                <button
-                                  type="button"
-                                  title="Editar"
-                                  class="btn btn-circle btn-outline-danger btn-sm"
-                                  @click="quitarDetalle(indice)"
-                                >
-                                  <i class="fas fa-minus"></i>
-                                </button>
-                              </td>
-                              <td v-text="detalle.nombre"></td>
-                              <td>
-                                <input
-                                  type="number"
-                                  v-model="detalle.cantidad"
-                                  class="form-control form-control-sm"
-                                  min="1"
-                                />
-                              </td>
-                              <td>
-                                <input
-                                  type="number"
-                                  v-model="detalle.costo_abasto"
-                                  class="form-control form-control-sm"
-                                  min="0"
-                                />
-                              </td>
-                              <td
-                                class="text-right pr-3"
-                              >{{detalle.subtotal = (detalle.costo_abasto * detalle.cantidad).toFixed(2)}}</td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                      <div v-else>
-                        <br />
-                        <p>Sin detalles de abasto</p>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="col-md-4">
-                        <div
-                          class="input-group"
-                          style="width: 12.4rem;"
-                          v-if="Abasto.tipo_abasto == '1'"
-                        >
-                          <label for>Pago inicial</label>
-                          <span class="text-danger">*</span>
-                          <input
-                            type="number"
-                            class="form-control form-control-sm"
-                            v-model="Abasto.pagoInicial"
-                            min="0"
-                          />
-                        </div>
-                      </div>
-                      <div class="col-md-3"></div>
-                      <div class="col-md-5">
-                        <p class="text-right pr-1">Desembolso total: s/ {{getDesembolso}}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div v-if="Modal.numero == 2">
-                <div class="row">
-                  <div class="col-md-2 pl-2">
-                    <p class="font-weight-bold">PROVEEDOR</p>
-                  </div>
-                  <div class="col-md-6"></div>
-                  <div class="col-md-4">
-                    <div class="input-group">
-                      <span class="font-weight-bold">Enviado a:</span>
-                      {{Abasto.nombre_centro}}
-                    </div>
-                  </div>
-                </div>
-                <div v-if="DatosProveedor.documento.length == 8">
-                  <div class="row form-group">
-                    <div class="col-md-2">
-                      <div class="input-group">
-                        DNI
-                        <input
-                          type="text"
-                          class="form-control form-control-sm"
-                          readonly
-                          v-model="DatosProveedor.documento"
-                        />
-                      </div>
-                    </div>
-                    <div class="col-md-6">
-                      <div class="input-group">
-                        <label>Nombres</label>
-                        <input
-                          type="text"
-                          class="form-control form-control-sm"
-                          readonly
-                          v-model="DatosProveedor.nombres"
-                        />
-                      </div>
-                    </div>
-                    <div class="col-md-4">
-                      <div class="input-group">
-                        <span class="font-weight-bold">Estado de envío:</span>
-                        <h5>
-                          <div v-if="Abasto.estado_envio == 0">
-                            <span class="badge badge-primary">Enviado</span>
-                          </div>
-                          <div v-else-if="Abasto.estado_envio == 1">
-                            <span class="badge badge-success">Aceptado</span>
-                          </div>
-                          <div v-else>
-                            <span class="badge badge-danger">Rechazado</span>
-                          </div>
-                        </h5>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div v-else>
-                  <div class="row form-group">
-                    <div class="col-md-2">
-                      <div class="input-group">
-                        RUC
-                        <input
-                          type="text"
-                          class="form-control form-control-sm"
-                          readonly
-                          v-model="DatosProveedor.documento"
-                        />
-                      </div>
-                    </div>
-                    <div class="col-md-6">
-                      <div class="input-group">
-                        <label>Razón social</label>
-                        <input
-                          type="text"
-                          class="form-control form-control-sm"
-                          v-model="DatosProveedor.razon_social"
-                          readonly
-                        />
-                      </div>
-                    </div>
-                    <div class="col-md-4">
-                      <div class="input-group">
-                        <span class="font-weight-bold">Estado de envío:</span>
-                        <h5>
-                          <div v-if="Abasto.estado_envio == 0">
-                            <span class="badge badge-primary">Enviado</span>
-                          </div>
-                          <div v-else-if="Abasto.estado_envio == 1">
-                            <span class="badge badge-success">Aceptado</span>
-                          </div>
-                          <div v-else>
-                            <span class="badge badge-danger">Rechazado</span>
-                          </div>
-                        </h5>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="row shadow bg-white rounded p-2">
-                  <div class="col-md-4" v-if="Abasto.tipo_abasto == 1">
-                    <div class="row">
-                      <p class="font-weight-bold">PAGOS</p>
-                    </div>
-                    <br />
-                    <div class="row form-group overflow-auto" style="height: 15.5rem;">
-                      <div class="col-md-12">
-                        <div v-if="ListaPago.length">
-                          <table
-                            class="table table-borderless table-striped table-sm text-gray-900"
-                          >
-                            <thead>
-                              <tr class="table-info">
-                                <th class="text-center">#</th>
-                                <th class="text-center">Fecha de pago</th>
-                                <th class="text-right pr-4">Monto</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              <tr
-                                v-for="(pago, index) in ListaPago"
-                                :key="index"
-                                :class="pago.color"
-                              >
-                                <td class="text-center">{{index+1}}</td>
-                                <td class="text-center" v-text="fix(0, pago.created_at)"></td>
-                                <td class="text-right pr-4" v-text="pago.monto"></td>
-                              </tr>
-                            </tbody>
-                          </table>
-                        </div>
-                        <div v-else>
-                          <p>Ningun pago registrado</p>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="col-md-12 text-right pr-5">
-                        <span class="font-weight-bold">Monto pagado:</span>
-                        <span class="text-success">s/{{getSumaPagos}}</span>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="col-md-12 text-right pr-5">
-                        <span class="font-weight-bold">Monto faltante:</span>
-                        <span class="text-danger">s/{{(Abasto.total_ver - getSumaPagos).toFixed(2)}}</span>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="col-md-12 text-right pr-5">
-                        <span class="font-weight-bold">Costo total:</span>
-                        <span>s/{{Abasto.total_ver}}</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    class="ml-auto container"
-                    :class="[Abasto.tipo_abasto ? 'col-md-8' : 'col-md-12']"
-                  >
-                    <div class="row">
-                      <div class="col-md-3 p-0">
-                        <p class="font-weight-bold">LISTA DE ITEMS</p>
-                      </div>
-                      <div class="col-md-6"></div>
-                      <div class="col-md-3">
-                        <div class="input-group">
-                          <label for="tipo" class="font-weight-bold">Tipo:</label>
-                          <div v-if="Abasto.tipo_abasto">Crédito</div>
-                          <div v-else>Contado</div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="row form-group ec-table-modal overflow-auto">
-                      <table class="table tableless table-striped table-sm text-gray-900">
-                        <thead>
-                          <tr class="table-success">
-                            <th class="text-center">#</th>
-                            <th class="text-center">Nombre</th>
-                            <th style="width: 5rem;">Cant.</th>
-                            <th style="width: 5rem;">P. Unit.</th>
-                            <th class="text-right pr-4">Subtotal</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr v-for="(detalle, index) in ListaDetalleAbastoVer" :key="index">
-                            <td class="text-center">{{index+1}}</td>
-                            <td class="text-left pl-5" v-text="detalle.nombre_producto"></td>
-                            <td v-text="detalle.cantidad"></td>
-                            <td v-text="detalle.costo_abasto"></td>
-                            <td class="text-right pr-4" v-text="detalle.subtotal"></td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                    <div class="row">
-                      <div class="col-md-7"></div>
-                      <div class="col-md-5">
-                        <p class="text-right pr-2">Desembolso total: s/ {{Abasto.total_ver}}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div v-if="Modal.numero == 3">
-                <div v-if="Error.estado" class="row d-flex justify-content-center">
-                  <div class="alert alert-danger" style="height: 4.5rem;">
-                    <button
-                      type="button"
-                      @click="Error.estado=0"
-                      class="close text-primary"
-                      data-dismiss="alert"
-                    >×</button>
-                    <strong>Corregir los siguentes errores:</strong>
-                    <ul>
-                      <li v-for="error in Error.mensaje" :key="error" v-text="error"></li>
-                    </ul>
-                  </div>
-                </div>
-                <div class="row form-group">
-                  <div class="col-md-3">
-                    <span class="font-weight-bold">Registrar</span>
-                  </div>
-                  <div class="col-md-1"></div>
-                  <div class="col-md-7">
-                    <div class="input-group">
-                      Monto
-                      <input
-                        type="number"
-                        class="form-control form-control-sm"
-                        v-model="Pago.monto"
-                        @keyup.enter="agregarListaPago()"
-                      />
-                      <button
-                        type="button"
-                        class="btn btn-sm btn-primary"
-                        @click="agregarListaPago()"
-                        :disabled="getSumaPagos == Abasto.total_ver"
-                      >Registrar</button>
-                    </div>
-                  </div>
-                  <div class="col-md-1"></div>
-                </div>
-                <div class="row form-group overflow-auto" style="height: 17.5rem;">
-                  <div class="col-md-12">
-                    <div v-if="ListaPago.length">
-                      <table class="table table-borderless table-striped table-sm text-gray-900">
-                        <thead>
-                          <tr class="table-info">
-                            <th class="text-center">#</th>
-                            <th class="text-center">Fecha de pago</th>
-                            <th class="text-right pr-5">Monto</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr v-for="(pago, index) in ListaPago" :key="index" :class="pago.color">
-                            <td class="text-center">{{index+1}}</td>
-                            <td class="text-center" v-text="fix(0, pago.created_at)"></td>
-                            <td class="text-right pr-5" v-text="pago.monto"></td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                    <div v-else>
-                      <p>Ningun pago registrado</p>
-                    </div>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-md-12 text-right pr-5">
-                    <span class="font-weight-bold">Monto pagado:</span>
-                    <span class="text-success">s/{{getSumaPagos}}</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-md-12 text-right pr-5">
-                    <span class="font-weight-bold">Monto faltante:</span>
-                    <span class="text-danger">s/{{(Abasto.total_ver - getSumaPagos).toFixed(2)}}</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-md-12 text-right pr-5">
-                    <span class="font-weight-bold">Costo total:</span>
-                    <span>s/{{Abasto.total_ver}}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="modal-footer" v-if="permisoModalFooter">
-            <div class="row form-group col-md-12 d-flex justify-content-around">
-              <div v-if="Modal.accion">
-                <button
-                  type="button"
-                  @click="accionar(Modal.accion)"
-                  :class="[Modal.accion == 'Generar comprobante' ? 'btn btn-danger' : 'btn btn-success']"
-                  :disabled="Button.press"
-                >
-                  <div v-if="!Button.press">
-                    <div v-if="Modal.accion == 'Generar comprobante'">
-                      <i class="far fa-file-pdf"></i>
-                      {{Modal.accion}}
-                    </div>
-                    <div v-else>{{Modal.accion}}</div>
-                  </div>
-                  <span
-                    v-else
-                    class="spinner-border spinner-border-sm"
-                    role="status"
-                    aria-hidden="true"
-                  ></span>
-                </button>
-              </div>
-              <button
-                type="button"
-                @click="cerrarModal()"
-                class="btn btn-secondary"
-                v-text="Modal.cancelar"
-              ></button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <my-table
+      :listaAbasto="listaAbasto"
+      :paginacion="paginacion"
+    ></my-table>
 		
   </main>
 </template>
 <script>
+/** Components */
+import myTable from "./subcomponents/Table";
+
 export default {
-  components: {},
+  components: {
+    myTable
+  },
   data() {
     return {
       //datos generales
-      ListaAbasto: [],
+      listaAbasto: [],
       Abasto: {
         id: 0,
         total: 0.0,
@@ -766,7 +163,7 @@ export default {
       },
 
       //datos de paginacion
-      Paginacion: {
+      paginacion: {
         total: 0,
         currentPage: 0,
         lastPage: 0,
@@ -809,7 +206,7 @@ export default {
         monto: "",
         sumaPagos: 0.0,
       },
-      Ruta: {
+      ruta: {
 				abasto: '/abasto',
         serverApache: "http://localhost:80",
         serverPhp: "http://127.0.0.1:8000",
@@ -842,10 +239,10 @@ export default {
   },
   methods: {
     listar({page = 1} = {}) {
-      this.Paginacion.currentPage = page;
+      this.paginacion.currentPage = page;
       const url =
-        this.abasto + "?page=" +
-        this.Paginacion.currentPage +
+        this.ruta.abasto + "?page=" +
+        this.paginacion.currentPage +
         "&estado=" +
         this.Busqueda.estado +
         "&texto=" +
@@ -860,8 +257,8 @@ export default {
       axios
         .get(url)
         .then((res) => {
-          this.ListaAbasto = res.data.abastos.data;
-          this.Paginacion = res.data.paginacion;
+          this.listaAbasto = res.data.abastos.data;
+          this.paginacion = res.data.paginacion;
         })
         .catch(error => console.log(`Error: "${error}" in method listar() in Abasto.vue`));
     },
@@ -998,7 +395,7 @@ export default {
       let ruc = me.DatosServicio.documento;
       $.ajax({
         type: "GET",
-        url: me.Ruta.serverApache + "/SunatPHP/demo.php",
+        url: me.ruta.serverApache + "/SunatPHP/demo.php",
         data: "ruc=" + ruc,
         beforeSend() {
           me.Carga.clase = "spinner-border spinner-border-sm text-primary";
@@ -1029,7 +426,7 @@ export default {
       let dni = me.DatosServicio.documento;
       $.ajax({
         type: "POST",
-        url: me.Ruta.serverApache + "/Reniec/consulta_reniec.php",
+        url: me.ruta.serverApache + "/Reniec/consulta_reniec.php",
         data: "dni=" + dni,
         beforeSend() {
           me.Carga.clase = "spinner-border spinner-border-sm text-primary";
@@ -1380,7 +777,7 @@ export default {
       });
     },
     cambiarPagina(page) {
-      if (page >= 1 && page <= this.Paginacion.lastPage) {
+      if (page >= 1 && page <= this.paginacion.lastPage) {
         this.listar(page);
       }
     },
@@ -1504,11 +901,11 @@ export default {
       return fixed;
     },
     generatePdf() {
-      window.open(this.Ruta.serverPhp + "/abasto/generatePdf", "_blank");
+      window.open(this.ruta.serverPhp + "/abasto/generatePdf", "_blank");
     },
     generatePdfSpecific() {
       window.open(
-        this.Ruta.serverPhp +
+        this.ruta.serverPhp +
           "/abasto/generatePdfSpecific?code=" +
           this.Abasto.id,
         "_blank"
