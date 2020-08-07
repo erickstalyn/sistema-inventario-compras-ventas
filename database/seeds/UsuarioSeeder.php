@@ -25,6 +25,17 @@ class UsuarioSeeder extends Seeder
             'created_at' => $now
         ));
 
+        $persona_id = App\Persona::select('id')->where('nombres', '=', 'Milagros Melina')->first()['id'];
+        $rol_id = App\Rol::select('id')->where('descripcion', '=', 'PUESTO')->first()['id'];
+
+        Usuario::create(array(
+            'persona_id' => $persona_id,
+            'usuario' => 'milagros',
+            'password' => bcrypt('milagros'),
+            'rol_id' => $rol_id,
+            'created_at' => $now
+        ));
+
         $rol_id = App\Rol::select('id')->where('descripcion', '=', 'PUESTO')->first()['id'];
         $centros = App\Centro::select('id', 'numero_serie')->where('tipo', '=', 'P')->get();
         foreach ($centros as $centro) {

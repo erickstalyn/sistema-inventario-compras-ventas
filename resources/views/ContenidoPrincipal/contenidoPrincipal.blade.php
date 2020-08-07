@@ -22,22 +22,22 @@
             <template v-if="menu==6">
                 <adm_abasto></adm_abasto>
             </template>
-            <template v-if="menu==7">
+            <template v-if="menu==100">
                 <adm_verpuesto></adm_verpuesto>
             </template>
-            <template v-if="menu==8">
+            <template v-if="menu==100">
                 <adm_veralmacen></adm_veralmacen>
             </template>
-            <template v-if="menu==9">
+            <template v-if="menu==100">
                 <adm_cliente></adm_cliente>
             </template>
-            <template v-if="menu==10">
+            <template v-if="menu==100">
                 <adm_proveedor></adm_proveedor>
             </template>
-            <template v-if="menu==11">
+            <template v-if="menu==100">
                 <adm_usuario></adm_usuario>
             </template>
-            <template v-if="menu==12">
+            <template v-if="menu==100">
                 <adm_estadistica></adm_estadistica>
                 {{-- <dashboard :num_mostrar="1"></dashboard> --}}
             </template>

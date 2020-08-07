@@ -16,5 +16,9 @@ class Detalle_funcionSeeder extends Seeder
             'persona_id' => App\Persona::select('id')->where('nombres', '=', 'Jose Guzman')->first()['id'],
             'funcion_id' => App\Funcion::select('id')->where('descripcion', '=', 'TRABAJADOR')->first()['id']
         ));
+        Detalle_funcion::create(array(
+            'persona_id' => App\Persona::select('id')->where('nombres', '=', 'Milagros Melina')->first()['id'],
+            'funcion_id' => App\Funcion::select('id')->where('descripcion', '=', 'TRABAJADOR')->first()['id']
+        ));
     }
 }

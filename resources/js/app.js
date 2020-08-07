@@ -26,7 +26,7 @@ Vue.component('adm_material', require('./components/administrador/material/Mater
 Vue.component('adm_categoria', require('./components/administrador/categoria/Categoria.vue').default);
 Vue.component('adm_marca', require('./components/administrador/marca/Marca.vue').default);
 
-Vue.component('adm_abasto', require('./components/administrador/Abasto.vue').default);
+Vue.component('adm_abasto', require('./components/administrador/abasto/Abasto.vue').default);
 Vue.component('adm_verpuesto', require('./components/administrador/VerPuesto.vue').default);
 Vue.component('adm_veralmacen', require('./components/administrador/VerAlmacen.vue').default);
 Vue.component('adm_cliente', require('./components/administrador/Cliente.vue').default);
@@ -58,7 +58,7 @@ Vue.component('noti_venta_alm', require('./components/Notificacion/Notification_
 const app = new Vue({
     el: '#app',
     data: {
-        menu: 3,
+        menu: 6,
         notifications:[],
     },
     created(){

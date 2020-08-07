@@ -37,5 +37,21 @@ class PersonaSeeder extends Seeder {
             'tipo' => 'P',
             'created_at' => $now
         ));
+        Persona::create(array( //Trabajador de PUESTO
+            'nombres' => 'Milagros Melina',
+            'apellidos' => 'Gonzales Prada',
+            'tipo_documento' => 'dni',
+            'numero_documento' => '73406798',
+            'tipo' => 'P',
+            'created_at' => $now
+        ));
+        Persona::create(array( //Proveedor
+            'nombres' => 'Armando Leandro',
+            'apellidos' => 'Casas Torres',
+            'tipo_documento' => 'dni',
+            'numero_documento' => '45923078',
+            'tipo' => 'P',
+            'created_at' => $now
+        ));
     }
 }

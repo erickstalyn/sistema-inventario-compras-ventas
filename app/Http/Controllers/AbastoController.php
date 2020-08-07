@@ -23,8 +23,6 @@ class AbastoController extends Controller
         $estado = $request->estado;
         $texto = $request->texto;
         $filas = $request->filas;
-        $ordenarPor = $request->ordenarPor;
-        $orden = $request->orden;
         $hoy = Carbon::now('America/Lima')->toDateString();
         
         //Fechas
@@ -77,7 +75,7 @@ class AbastoController extends Controller
                             })
                             ->where('abasto.centro_id', '=', null)
                             // ->orderBy('abasto.id', 'asc')->get();
-                            ->orderBy($ordenarPor, $orden)->paginate($filas);
+                            ->orderBy('id', 'desc')->paginate($filas);
 
         return [
             'paginacion' => [

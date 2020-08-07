@@ -47,8 +47,8 @@
     </a>
     <div id="operaciones" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
         <div class="bg-white py-2 collapse-inner rounded">
-        {{-- <a class="collapse-item font-weight-bold" href="#" @click="menu=3">Producciones</a> --}}
-        <a class="collapse-item font-weight-bold" href="#" @click="menu=4">Abastecimiento</a>
+        {{-- <a class="collapse-item font-weight-bold" href="#" @click="menu=6">Producciones</a> --}}
+        <a class="collapse-item font-weight-bold" href="#" @click="menu=6">Abastecimiento</a>
         {{-- <h6 class="collapse-header ">Mis proveedores</h6>
         <a class="collapse-item font-weight-bold" href="#" @click="menu=4">Proveedores</a>
         </div> --}}

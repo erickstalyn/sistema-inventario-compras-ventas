@@ -18,7 +18,7 @@ class CreateAbastoTable extends Migration
             $table->decimal('total', 11, 2);
             $table->decimal('total_faltante', 11, 2)->nullable();
             $table->boolean('tipo');    // Tipo de pago que se realiza en este abasto. Por ejemplo: (0: contado), (1: credito)
-            $table->unsignedTinyInteger('centro_id')->nullable();
+            $table->unsignedTinyInteger('centro_id')->nullable(); //Se guarda el id del centro si es que un centro realizó el abasto
             $table->unsignedSmallInteger('proveedor_id')->nullable();
             $table->unsignedSmallInteger('trabajador_id')->nullable();  // Para saber que usuario hizo esta accion
             $table->timestamps();
