@@ -4,103 +4,117 @@
     <div class="container-small">
       <!-- Encabezado principal -->
       <div class="row form-group">
-        <i class="fas fa-map-signs"></i>
-        <span class="h3 mb-0 text-gray-900">Mis Abastecimientos</span>
-        <button type="button" class="btn btn-success" @click="abrirModalAgregar()">
-          <i class="fas fa-hammer"></i>Nuevo
-        </button>
-        <button type="button" class="btn btn-danger" @click="generatePdf()">
-          <i class="far fa-file-pdf"></i> PDF
-        </button>
-      </div>
-
-      <!-- Inputs de busqueda -->
-      <div class="row form-group">
-        <div class="col-md-4">
-          <div class="row">
-            <div class="col-md-4">
-              <div class="input-group">
-                <select
-                  class="custom-select text-gray-900"
-                  v-model="Busqueda.estado"
-                  @change="listar()"
-                >
-                  <option value="3">Todos</option>
-                  <option value="0">Enviados</option>
-                  <option value="1">Recibidos</option>
-                </select>
-              </div>
-            </div>
-            <div class="col-md-8">
-              <input
-                type="search"
-                class="form-control"
-                v-model="Busqueda.texto"
-                @keyup="Busqueda.texto.length >=5 || Busqueda.texto.length == 0 ? listar() : ''"
-                placeholder="Buscar por proveedor"
-              />
-            </div>
-          </div>
+        <div class="col-12 col-sm-6 col-md-5 mb-2">
+          <i class="fas fa-map-signs mr-1"></i>
+          <span class="h3 mb-0 text-gray-900">Abastecimientos</span>
         </div>
-        <div class="col-md-6">
-          <div class="row">
-            <div class="col-md-2">
-              <label for>Fecha de envío</label>
-            </div>
-            <div class="col-md-2">
-              Dia
-              <select
-                class="custom-select custom-select-sm text-gray-900"
-                v-model="Busqueda.dia"
-                @change="listar()"
-              >
-                <option value>Todos</option>
-                <option v-for="item in getDia()" :key="item" :value="item" v-text="item"></option>
-              </select>
-            </div>
-            <div class="col-md-3">
-              Mes
-              <select
-                class="custom-select custom-select-sm text-gray-900"
-                v-model="Busqueda.mes"
-                @change="listar()"
-              >
-                <option value>Todos</option>
-                <option
-                  v-for="item in getMes()"
-                  :key="item.valor"
-                  :value="item.valor"
-                  v-text="item.nombre"
-                ></option>
-              </select>
-            </div>
-            <div class="col-md-2">
-              Año
-              <select
-                class="custom-select custom-select-sm text-gray-900"
-                v-model="Busqueda.year"
-                @change="listar()"
-              >
-                <option value>Todos</option>
-                <option v-for="item in getYear(2016)" :key="item" :value="item" v-text="item"></option>
-              </select>
-            </div>
-            <div class="col-md-2">
-              N° filas:
-              <select
-                class="custom-select custom-select-sm text-gray-900" @change="listar()"
-              >
-                <option v-for="item in [3,4,5,6,7,8,9,10,11,12,13,14,15,16,17]" :key="item" :value="item" v-text="item"></option>
-              </select>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-2">
-          <button type="button" class="btn btn-primary" @click="listar()">
-            <i class="fa fa-search"></i> Buscar
+        <div class="col-12 col-sm-6 col-md-7">
+          <button type="button" class="btn btn-success" @click="abrirModalAgregar()">
+            <i class="fas fa-hammer mr-2"></i>Nuevo
+          </button>
+          <button type="button" class="btn btn-danger" @click="generatePdf()">
+            <i class="far fa-file-pdf mr-2"></i>PDF
           </button>
         </div>
       </div>
+
+      <!-- Inputs de busqueda -->
+      <div class="row mb-3">
+        <div class="col-12 col-sm-4 mb-1">
+          <div class="input-group">
+            <select
+              class="custom-select text-gray-900"
+              v-model="busqueda.estado"
+              @change="listar()"
+            >
+              <option value="3">Todos</option>
+              <option value="0">Enviados</option>
+              <option value="1">Recibidos</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-12 col-sm-8">
+          <div class="input-group">
+            <input
+              type="search"
+              class="form-control"
+              v-model="busqueda.texto"
+              placeholder="Buscar por proveedor"
+              @keyup.enter="listar()"
+            />
+          </div>
+        </div>
+        TODO: cambiar los tamaños de dia, mes y año en md
+        <div class="col-4 mb-2">
+          <div class="form-inline">
+            <label class="mr-2">Día</label>
+            <select
+              class="custom-select custom-select-sm text-gray-900"
+              v-model="busqueda.dia"
+              @change="listar()"
+            >
+              <option value>Todos</option>
+              <option v-for="item in getDia()" :key="item" :value="item" v-text="item"></option>
+            </select>
+          </div>
+        </div>
+        <div class="col-4 mb-2">
+          <div class="form-inline">
+            <label class="mr-2">Mes</label>
+            <select
+              class="custom-select custom-select-sm text-gray-900"
+              v-model="busqueda.mes"
+              @change="listar()"
+            >
+              <option value>Todos</option>
+              <option
+                v-for="item in getMes()"
+                :key="item.valor"
+                :value="item.valor"
+                v-text="item.nombre"
+              ></option>
+            </select>
+          </div>
+        </div>
+        <div class="col-4 mb-2">
+          <div class="form-inline">
+            <label class="mr-2">Año</label>
+            <select
+              class="custom-select custom-select-sm text-gray-900"
+              v-model="busqueda.year"
+              @change="listar()"
+            >
+              <option value>Todos</option>
+              <option v-for="item in getYear(2016)" :key="item" :value="item" v-text="item"></option>
+            </select>
+          </div>
+        </div>
+
+        <div class="col-4 col-sm-4">
+          <div class="form-inline">
+            <label class="mr-2">N° filas</label>
+            <select
+              class="custom-select custom-select-sm mr-sm-2 text-gray-900"
+              v-model="busqueda.filas"
+              @change="listar()"
+            >
+              <option
+                v-for="item in [3,4,5,6,7,8,9,10,11,12,13,14,15,16,17]"
+                :key="item"
+                :value="item"
+                v-text="item"
+              ></option>
+            </select>
+          </div>
+        </div>
+        <div class="col-8 col-sm-4 d-flex justify-content-center align-items-end">
+          <button type="button" class="btn btn-primary" @click="listar()">
+            <i class="fa fa-search mr-1"></i>Buscar
+          </button>
+        </div>
+
+      </div>
+      
     </div>
 
     <my-table
@@ -143,7 +157,7 @@ export default {
         direccion: "",
       },
       //datos de busqueda y filtracion general
-      Busqueda: {
+      busqueda: {
         texto: "",
         estado: 3,
         filas: 5,
@@ -244,15 +258,15 @@ export default {
         this.ruta.abasto + "?page=" +
         this.paginacion.currentPage +
         "&estado=" +
-        this.Busqueda.estado +
+        this.busqueda.estado +
         "&texto=" +
-        this.Busqueda.texto +
+        this.busqueda.texto +
         "&dia=" +
-        this.Busqueda.dia +
+        this.busqueda.dia +
         "&mes=" +
-        this.Busqueda.mes +
+        this.busqueda.mes +
         "&year=" +
-        this.Busqueda.year;
+        this.busqueda.year;
 
       axios
         .get(url)
