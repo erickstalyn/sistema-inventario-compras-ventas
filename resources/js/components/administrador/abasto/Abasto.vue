@@ -44,8 +44,8 @@
             />
           </div>
         </div>
-        TODO: cambiar los tamaños de dia, mes y año en md
-        <div class="col-4 mb-2">
+
+        <div class="mb-2 col-4 col-md-2 col-lg-2 col-xl-2">
           <div class="form-inline">
             <label class="mr-2">Día</label>
             <select
@@ -58,7 +58,7 @@
             </select>
           </div>
         </div>
-        <div class="col-4 mb-2">
+        <div class="mb-2 col-4 col-md-3 col-lg-3 col-xl-2">
           <div class="form-inline">
             <label class="mr-2">Mes</label>
             <select
@@ -76,7 +76,7 @@
             </select>
           </div>
         </div>
-        <div class="col-4 mb-2">
+        <div class="mb-2 col-4 col-md-2 col-lg-2 col-xl-2">
           <div class="form-inline">
             <label class="mr-2">Año</label>
             <select
@@ -90,7 +90,7 @@
           </div>
         </div>
 
-        <div class="col-4 col-sm-4">
+        <div class="col-4 col-sm-4 col-md-2 col-lg-3" >
           <div class="form-inline">
             <label class="mr-2">N° filas</label>
             <select
@@ -107,7 +107,7 @@
             </select>
           </div>
         </div>
-        <div class="col-8 col-sm-4 d-flex justify-content-center align-items-end">
+        <div class="col-8 col-sm-4 col-md-3 col-lg-2 d-flex justify-content-center align-items-center">
           <button type="button" class="btn btn-primary" @click="listar()">
             <i class="fa fa-search mr-1"></i>Buscar
           </button>
