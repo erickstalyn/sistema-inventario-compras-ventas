@@ -155,11 +155,11 @@ export default {
 
       this.modal.estado = false;
       this.modal.tipo = "";
-      this.modal.titulo = "",
-      this.modal.size = "",
-      this.modal.loading = false,
-      this.modal.btnSuccess = "",
-      this.modal.btnCancel = "",
+      this.modal.titulo = "";
+      this.modal.size = "";
+      this.modal.loading = false;
+      this.modal.btnSuccess = "";
+      this.modal.btnCancel = "";
 
       this.initMaterial.id = 0;
       this.initMaterial.nombre = '';

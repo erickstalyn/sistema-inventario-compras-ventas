@@ -11,7 +11,6 @@ class Abasto extends Model
         'proveedor_nombre', 'total', 'total_faltante', 'tipo', 'proveedor_id', 'centro_id'
     ];
 
-    // public $timestamps = false;
     
     //Relación inversa de uno a muchos con proveedor
     public function getProveedor()

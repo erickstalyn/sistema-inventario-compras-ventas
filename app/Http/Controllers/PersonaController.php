@@ -135,14 +135,11 @@ class PersonaController extends Controller
     public function getPersona(Request $request){
         if ( !$request->ajax() ) return redirect('/');
         $documento = $request->documento;
-
-        $persona = Persona::select('id', 'dni', 'ruc', 'nombres', 'apellidos', 'razon_social', 'direccion', 'telefono', 'email')
-                            ->where('dni', '=', $documento)
-                            ->orWhere('ruc', '=', $documento)
-                            ->get();
-        return [
-            'persona' => $persona
-        ];
+        $persona = Persona::select('id', 'numero_documento', 'nombres', 'apellidos', 'razon_social', 'direcciones', 'telefonos', 'emails')
+                    ->where('numero_documento', '=', $documento)
+                    ->first();
+        
+        return ['persona' => $persona];
     }
 
 }

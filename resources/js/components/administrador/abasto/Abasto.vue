@@ -122,21 +122,25 @@
       :paginacion="paginacion"
     ></my-table>
 		
+    <my-modal ></my-modal>
+
   </main>
 </template>
 <script>
 /** Components */
 import myTable from "./subcomponents/Table";
+import myModal from "./subcomponents/modal";
 
 export default {
   components: {
-    myTable
+    myTable,
+    myModal
   },
   data() {
     return {
       //datos generales
       listaAbasto: [],
-      Abasto: {
+      abasto: {
         id: 0,
         total: 0.0,
         total_ver: 0.0,
@@ -148,14 +152,14 @@ export default {
         nombre_centro: "", //Nombre del centro al que se envia
         estado_envio: -1,
       },
-      DatosProveedor: {
-        id: 0,
-        documento: "",
-        nombres: "",
-        apellidos: "",
-        razon_social: "",
-        direccion: "",
-      },
+      // DatosProveedor: {
+      //   id: 0,
+      //   documento: "",
+      //   nombres: "",
+      //   apellidos: "",
+      //   razon_social: "",
+      //   direccion: "",
+      // },
       //datos de busqueda y filtracion general
       busqueda: {
         texto: "",
@@ -199,22 +203,22 @@ export default {
         press: false,
       },
       //DATOS PARA AGREGAR UNA PRODUCCION
-      BusquedaFiltro: {
-        texto: "",
-      },
+      // BusquedaFiltro: {
+      //   texto: "",
+      // },
       ListaProducto: [],
       ListaDetalleAbasto: [],
       ListaDetalleAbastoVer: [],
       //DATOS PARA ENVIAR UNA PRODUCCION
       SelectAlmacen: [],
       //DATOS PARA CONSULTA SUNAT Y RENIEC
-      DatosServicio: {
-        documento: "",
-        tipo: 0, //1->PERSONA, 2-> EMPRESA
-        mensaje: "",
-        alert: "",
-        readonly: false,
-      },
+      // DatosServicio: {
+      //   documento: "",
+      //   tipo: 0, //1->PERSONA, 2-> EMPRESA
+      //   mensaje: "",
+      //   alert: "",
+      //   readonly: false,
+      // },
       ListaPago: [],
       Pago: {
         monto: "",
@@ -236,12 +240,12 @@ export default {
     //   return false;
     // },
     getDesembolso: function () {
-      this.Abasto.total = 0.0;
+      this.abasto.total = 0.0;
       this.ListaDetalleAbasto.forEach((detalle) => {
-        this.Abasto.total =
-          this.Abasto.total + detalle.costo_abasto * detalle.cantidad;
+        this.abasto.total =
+          this.abasto.total + detalle.costo_abasto * detalle.cantidad;
       });
-      return this.Abasto.total.toFixed(2);
+      return this.abasto.total.toFixed(2);
     },
     getSumaPagos: function () {
       let sumaPagos = 0.0;
@@ -274,7 +278,7 @@ export default {
           this.listaAbasto = res.data.abastos.data;
           this.paginacion = res.data.paginacion;
         })
-        .catch(error => console.log(`Error: "${error}" in method listar() in Abasto.vue`));
+        .catch(error => console.log(`Error: "${error}" in method listar() in abasto.vue`));
     },
     formatearFecha(fecha) {
       let arrayFecha = fecha.split(" ")[0].split("-");
@@ -472,14 +476,14 @@ export default {
       }).fail(function () {});
     },
     abrirModalAgregar() {
-      this.abrirModal(
-        1,
-        "Registrar Abasto",
-        "Agregar",
-        "Cancelar",
-        "modal-xl modal-dialog-scrollable"
-      );
-      if (!this.SelectAlmacen.length) this.selectAlmacen();
+      // if (!this.SelectAlmacen.length) this.selectAlmacen();
+      const data = {
+        modal: {
+          tipo: "agregar",
+        },
+        material: {},
+      };
+      this.$emit('runChildMethod', "abrirModalAgregar", data);
     },
     abrirModalVer(abasto = []) {
       if (abasto["dni"]) {
@@ -489,17 +493,17 @@ export default {
         this.DatosProveedor.documento = abasto["ruc"];
         this.DatosProveedor.razon_social = abasto["proveedor_empresa"];
       }
-      this.Abasto.id = abasto["id"];
-      this.Abasto.nombre_centro = abasto["nombre_centro"];
-      this.Abasto.estado_envio = abasto["estado_envio"];
-      this.Abasto.tipo_abasto = abasto["tipo_abasto"];
-      this.Abasto.total_ver = abasto["total"];
+      this.abasto.id = abasto["id"];
+      this.abasto.nombre_centro = abasto["nombre_centro"];
+      this.abasto.estado_envio = abasto["estado_envio"];
+      this.abasto.tipo_abasto = abasto["tipo_abasto"];
+      this.abasto.total_ver = abasto["total"];
 
       this.listarPagos(abasto["id"]);
       this.listarDetallesAbasto(abasto["id"]);
       this.abrirModal(
         2,
-        "Ver Abasto",
+        "Ver abasto",
         "Generar comprobante",
         "Cerrar",
         "modal-xl modal-dialog-scrollable"
@@ -538,22 +542,22 @@ export default {
           this.Error.mensaje.push("Debe ingresar datos del proveedor");
         if (!this.ListaDetalleAbasto.length) {
           this.Error.mensaje.push("No existe ningun detalle de abasto");
-        } else if (this.Abasto.centro_to_id == 0) {
+        } else if (this.abasto.centro_to_id == 0) {
           this.Error.mensaje.push("Debe seleccionar el almacén receptor");
         } else {
           this.validarNegativos();
         }
 
-        if (this.Abasto.tipo_abasto == 1) {
-          if (this.Abasto.pagoInicial < 0 || this.Abasto.pagoInicial == "") {
+        if (this.abasto.tipo_abasto == 1) {
+          if (this.abasto.pagoInicial < 0 || this.abasto.pagoInicial == "") {
             this.Error.mensaje.push(
               "El pago inicial debe ser mayor o igual a 0"
             );
-          } else if (this.Abasto.pagoInicial > this.Abasto.total) {
+          } else if (this.abasto.pagoInicial > this.abasto.total) {
             this.Error.mensaje.push(
               "El pago inicial no debe ser mayor al desembolso total"
             );
-          } else if (this.Abasto.pagoInicial == this.Abasto.total) {
+          } else if (this.abasto.pagoInicial == this.abasto.total) {
             this.Error.mensaje.push(
               "El pago inicial es igual al desembolso total, se recomienda cambiarlo a una venta al contado"
             );
@@ -564,7 +568,7 @@ export default {
         if (
           this.Pago.monto == "" ||
           this.Pago.monto <= 0 ||
-          this.Pago.monto > this.Abasto.total_ver - this.getSumaPagos
+          this.Pago.monto > this.abasto.total_ver - this.getSumaPagos
         )
           this.Error.mensaje.push("Debe ingresar un monto válido");
       }
@@ -597,11 +601,11 @@ export default {
       axios
         .post("/abasto/agregar", {
           //Datos del abasto
-          id: this.Abasto.id,
-          total: this.Abasto.total,
-          tipo: this.Abasto.tipo_abasto,
-          centro_to_id: this.Abasto.centro_to_id,
-          pagoInicial: this.Abasto.pagoInicial,
+          id: this.abasto.id,
+          total: this.abasto.total,
+          tipo: this.abasto.tipo_abasto,
+          centro_to_id: this.abasto.centro_to_id,
+          pagoInicial: this.abasto.pagoInicial,
           proveedor: this.DatosProveedor,
           //Datos del detalle de abasto
           listaDetalleAbasto: this.ListaDetalleAbasto,
@@ -661,8 +665,8 @@ export default {
         });
     },
     abrirModalPagar(abasto = []) {
-      this.Abasto.id = abasto["id"];
-      this.Abasto.total_ver = abasto["total"];
+      this.abasto.id = abasto["id"];
+      this.abasto.total_ver = abasto["total"];
       this.listarPagos(abasto["id"]);
 
       this.abrirModal(3, "Realizar Pago", "Guardar", "Cancelar", "");
@@ -684,7 +688,7 @@ export default {
       let pagosNuevos = me.filtrarPagosNuevos();
       axios
         .post("/pago/agregar", {
-          idAbasto: this.Abasto.id,
+          idAbasto: this.abasto.id,
           listaPagos: pagosNuevos,
         })
         .then(function (response) {
@@ -726,11 +730,11 @@ export default {
       this.DatosServicio.alert = "";
       this.DatosServicio.mensaje = "";
 
-      this.Abasto.id = 0;
-      this.Abasto.total = 0.0;
-      this.Abasto.pagoInicial = "";
-      this.Abasto.centro_to_id = 0;
-      this.Abasto.tipo_abasto = 1;
+      this.abasto.id = 0;
+      this.abasto.total = 0.0;
+      this.abasto.pagoInicial = "";
+      this.abasto.centro_to_id = 0;
+      this.abasto.tipo_abasto = 1;
 
       this.DatosServicio.tipo = 0;
       this.DatosProveedor.id = 0;
@@ -921,7 +925,7 @@ export default {
       window.open(
         this.ruta.serverPhp +
           "/abasto/generatePdfSpecific?code=" +
-          this.Abasto.id,
+          this.abasto.id,
         "_blank"
       );
       this.Button.press = false;
