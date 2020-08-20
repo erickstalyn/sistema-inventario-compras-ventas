@@ -24,7 +24,6 @@
                     type="text"
                     class="form-control form-control-sm"
                     v-model="api.documento"
-                    autofocus
                     @keyup.enter="consultar()"
                   />
                   <button type="button" class="btn btn-sm btn-primary" @click="consultar()">
@@ -34,8 +33,8 @@
               </div>
               <div class="col-md-3">
                 <h5>
-                  <span role="status" :class="carga.clase"></span>
-                  <span v-text="api.mensaje" :class="api.alert"></span>
+                  <span role="status" :class="api.loader.clase"></span>
+                  <span v-text="api.alert.mensaje" :class="api.alert.clase"></span>
                 </h5>
               </div>
             </div>
@@ -335,11 +334,13 @@ export default {
       api: {
         documento: "",
         tipo: '', // persona | empresa
-        mensaje: "",
-        alert: ""
-      },
-      carga: {
-        clase: "",
+        loader: {
+          clase:''
+        },
+        alert: {
+          clase: '',
+          mensaje: ''
+        }
       },
       BusquedaFiltro: {
         texto: "",
@@ -517,37 +518,37 @@ export default {
     },
 
     consultar() {
-      this.api.alert = "";
-      this.api.mensaje = "";
+      this.api.alert.clase = "";
+      this.api.alert.mensaje = "";
       switch (this.api.documento.length) {
         case 0:
-          this.api.alert = "badge badge-warning";
-          this.api.mensaje = "Ingrese un DNI o RUC";
+          this.api.alert.clase = "badge badge-warning";
+          this.api.alert.mensaje = "Ingrese un DNI o RUC";
           break;
         case 8:
         case 11:
           this.consultarDB();
           break;
         default:
-          // this.api.alert = 'alert alert-danger';
-          this.api.alert = "badge badge-primary";
-          this.api.mensaje = "Documento inválido";
+          // this.api.alert.clase = 'alert.clase alert.clase-danger';
+          this.api.alert.clase = "badge badge-primary";
+          this.api.alert.mensaje = "Documento inválido";
           break;
       }
     },
     consultarDB() {
-      this.api.alert = "badge badge-info";
-      this.api.mensaje = "Consultado...";
-      this.carga.clase = "spinner-border spinner-border-sm text-success";
+      this.api.alert.clase = "badge badge-info";
+      this.api.alert.mensaje = "Consultado...";
+      this.api.loader.clase = "spinner-border spinner-border-sm text-success";
       axios
         .get(`${this.ruta.persona}/getPersona?documento=${this.api.documento}`)
         .then((res) => {
           const persona = res.data.persona;
           if (persona != null) {
             //Si existe la persona en la db
-            this.api.alert = "";
-            this.api.mensaje = "";
-            this.carga.clase = "";
+            this.api.alert.clase = "";
+            this.api.alert.mensaje = "";
+            this.api.loader.clase = "";
 
             this.proveedor.id = persona.id;
             if (persona.razon_social) {//Es una EMPRESA
@@ -584,25 +585,25 @@ export default {
         url: me.ruta.serverApache + "/SunatPHP/demo.php",
         data: "ruc=" + ruc,
         beforeSend() {
-          me.carga.clase = "spinner-border spinner-border-sm text-primary";
-          me.api.alert = "badge badge-info";
-          me.api.mensaje = "Consultado...";
+          me.api.loader.clase = "spinner-border spinner-border-sm text-primary";
+          me.api.alert.clase = "badge badge-info";
+          me.api.alert.mensaje = "Consultado...";
         },
         success: function (data, textStatus, jqXHR) {
           let empresa = JSON.parse(data);
           if (empresa.RazonSocial) {
             me.api.documento = "";
-            me.api.alert = "";
-            me.api.mensaje = "";
+            me.api.alert.clase = "";
+            me.api.alert.mensaje = "";
             me.api.tipo = 'empresa';
             me.proveedor.documento = empresa.RUC;
             me.proveedor.razon_social = empresa.RazonSocial;
             me.proveedor.direccion = empresa.Direccion;
           } else {
-            me.api.alert = "badge badge-primary";
-            me.api.mensaje = "El RUC no existe";
+            me.api.alert.clase = "badge badge-primary";
+            me.api.alert.mensaje = "El RUC no existe";
           }
-          me.carga.clase = "";
+          me.api.loader.clase = "";
         },
       }).fail(function () {});
     },
@@ -614,9 +615,9 @@ export default {
         url: me.ruta.serverApache + "/Reniec/consulta_reniec.php",
         data: "dni=" + dni,
         beforeSend() {
-          me.carga.clase = "spinner-border spinner-border-sm text-primary";
-          me.api.alert = "badge badge-info";
-          me.api.mensaje = "Consultado...";
+          me.api.loader.clase = "spinner-border spinner-border-sm text-primary";
+          me.api.alert.clase = "badge badge-info";
+          me.api.alert.mensaje = "Consultado...";
         },
         success: function (data, textStatus, jqXHR) {
           // console.log(JSON.parse(data));
@@ -624,20 +625,20 @@ export default {
             let persona = JSON.parse(data);
             if (persona[2] != null) {
               me.api.documento = "";
-              me.api.alert = "";
-              me.api.mensaje = "";
+              me.api.alert.clase = "";
+              me.api.alert.mensaje = "";
               me.api.tipo = 'persona';
               me.proveedor.documento = persona[0];
               me.proveedor.nombres = persona[1];
               me.proveedor.apellidos = persona[2] + " " + persona[3];
             } else {
-              me.api.alert = "badge badge-primary";
-              me.api.mensaje = "El DNI no existe";
+              me.api.alert.clase = "badge badge-primary";
+              me.api.alert.mensaje = "El DNI no existe";
             }
-            me.carga.clase = "";
+            me.api.loader.clase = "";
           } catch (e) {
-            me.api.alert = "badge badge-primary";
-            me.api.mensaje = "Vuelva a intentarlo porfavor =D";
+            me.api.alert.clase = "badge badge-primary";
+            me.api.alert.mensaje = "Vuelva a intentarlo porfavor =D";
           }
         },
       }).fail(function () {});
