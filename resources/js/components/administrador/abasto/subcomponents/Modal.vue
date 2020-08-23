@@ -530,7 +530,6 @@ export default {
           this.consultarDB();
           break;
         default:
-          // this.api.alert.clase = 'alert.clase alert.clase-danger';
           this.api.alert.clase = "badge badge-primary";
           this.api.alert.mensaje = "Documento inválido";
           break;
