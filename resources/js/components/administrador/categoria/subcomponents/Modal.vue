@@ -13,35 +13,20 @@
           <error-modal :error.sync="error"></error-modal>
 
           <div class="row form-group">
-            <label class="col-md-3 font-weight-bold" for="nom">
-              Nombre&nbsp;
+            <label class="col-md-3 font-weight-bold">
+              Nombre
               <span class="text-danger">*</span>
             </label>
             <div class="col-md-9">
               <input
                 type="text"
-                v-model="material.nombre"
+                v-model="categoria.nombre"
                 class="form-control"
                 placeholder="ingrese el nombre"
               />
             </div>
           </div>
 
-          <formSelectUnit
-            :initTipo.sync="material.subtipo"
-            :initUnit.sync="material.unidad"
-            :estadoModal="modal.estado"
-          ></formSelectUnit>
-
-          <div class="row form-group">
-            <label class="col-6 col-sm-3 font-weight-bold">
-              Costo por Unidad
-              <span class="text-danger">*</span>
-            </label>
-            <div class="col-6 col-sm-4">
-              <input type="number" v-model="material.costo" min="1" class="form-control text-right" />
-            </div>
-          </div>
         </div>
 
         <footer-modal
@@ -62,13 +47,11 @@ import mainAlert from "../../../globals/Main-alert";
 
 // Components
 import errorModal from "../../../globals/Error-modal";
-import formSelectUnit from "./Modal-FormSelectUnit";
 import footerModal from "../../../globals/Footer-modal";
 
 export default {
   components: {
     errorModal,
-    formSelectUnit,
     footerModal,
   },
   props: {},
@@ -83,19 +66,13 @@ export default {
         btnSuccess: "",
         btnCancel: "",
       },
-      initMaterial: {
+      initCategoria: {
         id: 0,
         nombre: "",
-        subtipo: "",
-        unidad: "",
-        costo: "",
       },
-      material: {
+      categoria: {
         id: 0,
         nombre: "",
-        subtipo: "",
-        unidad: "",
-        costo: "",
       },
       //datos de errores
       error: {
@@ -103,8 +80,7 @@ export default {
         mensaje: [],
       },
       ruta: {
-        material: "/material",
-        data: "/data",
+        categoria: "/categoria",
       },
     };
   },
@@ -123,55 +99,43 @@ export default {
       this.modal.tipo = 'agregar';
 
       this.prepararModal({
-        titulo: "Nuevo material",
+        titulo: "Nueva categoria",
         size: "modal-lg",
         btnSuccess: "Agregar",
         btnCancel: "Cancelar",
       });
     },
-    abrirModalEditar({material}) {
+    abrirModalEditar({categoria}) {
       this.modal.estado = true;
       this.modal.tipo = 'editar';
 
       this.prepararModal({
-        titulo: "Editar material",
+        titulo: "Editar categoria",
         size: "modal-lg",
         btnSuccess: "Editar",
         btnCancel: "Cancelar",
       });
-      this.initMaterial.id = material.id;
-      this.initMaterial.nombre = material.nombre;
-      this.initMaterial.unidad = material.unidad;
-      this.initMaterial.subtipo = material.subtipo;
-      this.initMaterial.costo = material.costo;
+      this.initCategoria.id = categoria.id;
+      this.initCategoria.nombre = categoria.nombre;
 
-      this.material.id = material.id;
-      this.material.nombre = material.nombre;
-      this.material.unidad = material.unidad;
-      this.material.subtipo = material.subtipo;
-      this.material.costo = material.costo;
+      this.categoria.id = categoria.id;
+      this.categoria.nombre = categoria.nombre;
     },
     cerrarModal() {
 
       this.modal.estado = false;
       this.modal.tipo = "";
-      this.modal.titulo = "";
-      this.modal.size = "";
-      this.modal.loading = false;
-      this.modal.btnSuccess = "";
-      this.modal.btnCancel = "";
+      this.modal.titulo = "",
+      this.modal.size = "",
+      this.modal.loading = false,
+      this.modal.btnSuccess = "",
+      this.modal.btnCancel = "",
 
-      this.initMaterial.id = 0;
-      this.initMaterial.nombre = '';
-      this.initMaterial.unidad = '';
-      this.initMaterial.subtipo = '';
-      this.initMaterial.costo = '';
+      this.initCategoria.id = 0;
+      this.initCategoria.nombre = '';
 
-      this.material.id = 0;
-      this.material.nombre = "";
-      this.material.unidad = "";
-      this.material.subtipo = "";
-      this.material.costo = "";
+      this.categoria.id = 0;
+      this.categoria.nombre = "";
 
       this.error.estado = 0;
       this.error.mensaje = [];
@@ -192,12 +156,8 @@ export default {
       this.error.estado = 0;
       this.error.mensaje = [];
 
-      if (!this.material.nombre)
+      if (!this.categoria.nombre)
         this.error.mensaje.push("Debe ingresar un nombre");
-      if (!this.material.unidad)
-        this.error.mensaje.push("Debe seleccionar una Unid. Medida");
-      if (this.material.costo == 0 || this.material.costo < 0)
-        this.error.mensaje.push("Debe ingresar un costo válido");
 
       if (this.error.mensaje.length) {
         this.error.estado = 1;
@@ -207,25 +167,22 @@ export default {
     },
     agregar() {
       if (this.validar()) return;
-      const material = {
-        nombre: this.material.nombre,
-        subtipo: this.material.subtipo,
-        unidad: this.material.unidad,
-        costo: this.material.costo,
+      const categoria = {
+        nombre: this.categoria.nombre,
       };
       axios
-        .post(this.ruta.material + "/agregar", material)
+        .post(this.ruta.categoria + "/agregar", categoria)
         .then((res) => {
           if (res.data.success) {
             this.cerrarModal();
             this.$emit('runParentMethod', "listar");
             mainAlert.fire({
               icon: "success",
-              title: "El material se ha AGREGADO correctamente",
+              title: "La Categoria se ha AGREGADO correctamente",
             });
           } else {
             this.error.mensaje.push(
-              `${material.nombre} ya se encuentra registrado`
+              `${categoria.nombre} ya se encuentra registrada`
             );
             this.error.estado = 1;
           }
@@ -237,34 +194,31 @@ export default {
     },
     editar() {
       if (this.validar()) return;
-      if (compareObj(this.initMaterial, this.material)) {
+      if (compareObj(this.initCategoria, this.categoria)) {
         console.log("No ha realizado ninguna modificación");
         this.cerrarModal();
         mainAlert.fire({
           icon: "success",
-          title: "El Material se ha EDITADO correctamente",
+          title: "La Categoría se ha EDITADO correctamente",
         });
         return;
       }
-      const material = {
-        id: this.material.id,
-        nombre: this.material.nombre,
-        subtipo: this.material.subtipo,
-        unidad: this.material.unidad,
-        costo: this.material.costo,
+      const categoria = {
+        id: this.categoria.id,
+        nombre: this.categoria.nombre,
       };
       axios
-        .put(this.ruta.material + "/editar", material)
+        .put(this.ruta.categoria + "/editar", categoria)
         .then((res) => {
           if (res.data.success) {
             this.cerrarModal();
             this.$emit('runParentMethod', "listar");
             mainAlert.fire({
               icon: "success",
-              title: "El Material se ha EDITADO correctamente",
+              title: "La Categoría se ha EDITADO correctamente",
             });
           } else {
-            this.error.mensaje.push(`${material.nombre} ya está registrado`);
+            this.error.mensaje.push(`${categoria.nombre} ya está registrada`);
             this.error.estado = 1;
           }
         })

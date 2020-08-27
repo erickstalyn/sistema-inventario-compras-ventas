@@ -1,10 +1,10 @@
 <template>
-  <div v-if="listaMaterial.length" class="table-responsive">
+  <div v-if="listaAbasto.length" class="table-responsive">
     <table class="table table-borderless table-sm text-gray-900">
       <thead>
         <tr class="table-info">
           <th
-            v-for="head in ['Nombre', 'Unid. Medida', 'Costo Unit.']"
+            v-for="head in ['Proveedor', 'Almacén de destino', 'Fecha de envío', 'Costo total', 'Tipo', 'Estado de envío']"
             :key="head"
             v-text="head"
           ></th>
@@ -12,14 +12,17 @@
         </tr>
       </thead>
       <tbody>
-        <tr class="row-table" v-for="material in listaMaterial" :key="material.id">
-          <td v-text="material.nombre"></td>
-          <td v-text="material.unidad"></td>
-          <td v-text="material.costo"></td>
+        <tr class="row-table" v-for="abasto in listaAbasto" :key="abasto.id">
+          <td v-text="abasto.proveedor_nombre"></td>
+          <td v-text="abasto.centro_to_nombre"></td>
+          <td v-text="abasto.fecha_envio"></td>
+          <td v-text="abasto.total"></td>
+          <td v-text="abasto.tipo == 0 ? 'Contado': 'Crédito'"></td>
+          <td v-text="abasto.envio_estado == 0 ? 'Enviado': 'Recibido'"></td>
           <td class="text-center">
             <button
               type="button"
-              @click="abrirModalEditar(material)"
+              @click="abrirModalEditar(abasto)"
               title="EDITAR"
               class="btn btn-outline-warning btn-sm"
             >
@@ -45,7 +48,7 @@ export default {
     paginationBar
   },
   props: {
-    listaMaterial: {
+    listaAbasto: {
       type: Array,
       default: []
     },
@@ -64,8 +67,8 @@ export default {
     }
   },
   methods: {
-    abrirModalEditar(material) {
-      this.$emit('runParentMethod', 'abrirModalEditar', material)
+    abrirModalEditar(abasto) {
+      this.$emit('runParentMethod', 'abrirModalEditar', abasto)
     },
     listar(page) {
       this.$emit('runParentMethod', 'listar', {page});

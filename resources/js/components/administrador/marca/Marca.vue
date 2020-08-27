@@ -1,12 +1,11 @@
 <template>
   <main>
-    <!-- Interfaz Principal -->
     <div class="container-small">
       <!-- Encabezado -->
       <div class="row form-group">
         <div class="col-12 col-sm-6 col-md-4 mb-2">
           <i class="fas fa-map-signs mr-1"></i>
-          <span class="h3 mb-0 text-gray-900">Materiales</span>
+          <span class="h3 mb-0 text-gray-900">Marcas</span>
         </div>
         <div class="col-12 col-sm-6 col-md-8">
           <button type="button" class="btn btn-success" @click="abrirModalAgregar()">
@@ -17,7 +16,6 @@
           </button>
         </div>
       </div>
-
       <!-- Inputs de busqueda -->
       <div class="row mb-3">
         <div class="col-12 col-sm-8">
@@ -54,14 +52,14 @@
       </div>
 
       <my-table
-        :listaMaterial="listaMaterial"
+        :listaMarca="listaMarca"
         :paginacion="paginacion"
         @abrirModalEditar="abrirModalEditar"
         @runParentMethod="runParentMethod"
       ></my-table>
+      <!-- Modales -->
+      <my-modal @runParentMethod="runParentMethod"></my-modal>
     </div>
-    <!-- Modales -->
-    <my-modal @runParentMethod="runParentMethod"></my-modal>
   </main>
 </template>
 
@@ -77,15 +75,12 @@ export default {
   },
   data() {
     return {
-      //datos generales
-      listaMaterial: [],
-      //datos de busqueda y filtracion
+      listaMarca: [],
       busqueda: {
         texto: "",
         estado: 2,
         filas: 5,
       },
-      //datos de paginacion
       paginacion: {
         total: 0,
         currentPage: 0,
@@ -95,47 +90,44 @@ export default {
         lastItem: 0,
       },
       ruta: {
-        material: "/material",
+        marca: "/marca"
       },
-    };
+    }
   },
-  computed: {},
   methods: {
-    listar({page} = {}) {
+    listar({page = 1} = {}) {
       this.paginacion.currentPage = page;
       const url =
-        this.ruta.material +
+        this.ruta.marca +
         "?page=" +
         this.paginacion.currentPage +
-        "&estado=" +
-        this.busqueda.estado +
         "&texto=" +
         this.busqueda.texto +
         "&filas=" +
         this.busqueda.filas;
       axios
         .get(url)
-        .then(res => {
-          this.listaMaterial = res.data.materiales.data;
+        .then((res) => {
+          this.listaMarca = res.data.marcas.data;
           this.paginacion = res.data.paginacion;
         })
-        .catch(error => console.log(`Error: "${error}" in method listar() in Materia.vue`));
+        .catch(error => console.log(`Error: "${error}" in method listar() in Marca.vue`));
     },
     abrirModalAgregar() {
       const data = {
         modal: {
           tipo: "agregar",
         },
-        material: {},
+        marca: {},
       };
       this.$emit('runChildMethod', "abrirModalAgregar", data);
     },
-    abrirModalEditar(material = {}) {
+    abrirModalEditar(marca = {}) {
       const data = {
         modal: {
           tipo: "editar",
         },
-        material: material,
+        marca
       };
       this.$emit("runChildMethod", 'abrirModalEditar', data);
     },
@@ -148,18 +140,17 @@ export default {
           this.abrirModalEditar(data);
           break;
         default:
-          `Option "${method}" don't found in runParentMethod() function in Material.vue`;
+          `Option "${method}" don't found in runParentMethod() function in Marca.vue`;
           break;
       }
     },
-    generatePdf() {
-      window.open("/material/generatePdf", "_blank");
-    },
   },
   mounted() {
-    this.listar();
-  },
-};
+    this.listar()
+  }
+}
 </script>
 
+<style>
 
+</style>

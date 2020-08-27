@@ -66,8 +66,8 @@ export default {
     },
   },
   watch: {
-    estadoModal: function (newEstado, oldEstado) {
-      if (newEstado == 0) {
+    estadoModal: function (newVal) {
+      if (newVal == 0) {
         this.tipo = "";
         this.unit = "";
       }

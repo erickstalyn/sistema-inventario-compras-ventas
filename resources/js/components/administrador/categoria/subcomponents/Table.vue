@@ -1,10 +1,10 @@
 <template>
-  <div v-if="listaMaterial.length" class="table-responsive">
+  <div v-if="listaCategoria.length" class="table-responsive">
     <table class="table table-borderless table-sm text-gray-900">
       <thead>
         <tr class="table-info">
           <th
-            v-for="head in ['Nombre', 'Unid. Medida', 'Costo Unit.']"
+            v-for="head in ['nombre']"
             :key="head"
             v-text="head"
           ></th>
@@ -12,14 +12,12 @@
         </tr>
       </thead>
       <tbody>
-        <tr class="row-table" v-for="material in listaMaterial" :key="material.id">
-          <td v-text="material.nombre"></td>
-          <td v-text="material.unidad"></td>
-          <td v-text="material.costo"></td>
+        <tr class="row-table" v-for="categoria in listaCategoria" :key="categoria.id">
+          <td v-text="categoria.nombre"></td>
           <td class="text-center">
             <button
               type="button"
-              @click="abrirModalEditar(material)"
+              @click="abrirModalEditar(categoria)"
               title="EDITAR"
               class="btn btn-outline-warning btn-sm"
             >
@@ -45,7 +43,7 @@ export default {
     paginationBar
   },
   props: {
-    listaMaterial: {
+    listaCategoria: {
       type: Array,
       default: []
     },
@@ -64,8 +62,8 @@ export default {
     }
   },
   methods: {
-    abrirModalEditar(material) {
-      this.$emit('runParentMethod', 'abrirModalEditar', material)
+    abrirModalEditar(categoria) {
+      this.$emit('runParentMethod', 'abrirModalEditar', categoria)
     },
     listar(page) {
       this.$emit('runParentMethod', 'listar', {page});

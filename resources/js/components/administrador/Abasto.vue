@@ -6,13 +6,13 @@
             
             <!-- Encabezado principal -->
             <div class="row form-group">
-                <i class="fas fa-map-signs"></i>&nbsp;&nbsp;
-                <span class="h3 mb-0 text-gray-900">Mis Abastecimientos&nbsp;</span>
+                <i class="fas fa-map-signs"></i>
+                <span class="h3 mb-0 text-gray-900">Mis Abastecimientos</span>
                 <button type="button" class="btn btn-success" @click="abrirModalAgregar()">
-                    <i class="fas fa-hammer"></i>&nbsp; Nuevo
-                </button>&nbsp;
+                    <i class="fas fa-hammer"></i>Nuevo
+                </button>
                 <button type="button" class="btn btn-danger" @click="generatePdf()">
-                    <i class="far fa-file-pdf"></i>&nbsp; PDF
+                    <i class="far fa-file-pdf"></i> PDF
                 </button>
             </div>
 
@@ -70,7 +70,7 @@
                 </div>
                 <div class="col-md-2">
                     <button type="button" class="btn btn-primary" @click="listar()">
-                        <i class="fa fa-search"></i>&nbsp; Buscar
+                        <i class="fa fa-search"></i> Buscar
                     </button>
                 </div>
             </div>
@@ -188,7 +188,7 @@
                                     </div>
                                     <div class="col-md-3">
                                         <div class="input-group"> 
-                                            RUC/DNI&nbsp;<span class="text-danger">*</span>&nbsp;
+                                            RUC/DNI<span class="text-danger">*</span>
                                             <input type="text" class="form-control form-control-sm" v-model="DatosServicio.documento" autofocus @keyup.enter="consultar()">
                                             <button type="button" class="btn btn-sm btn-primary" @click="consultar()">
                                                 <i class="fas fa-sync-alt"></i>
@@ -197,7 +197,7 @@
                                     </div>
                                     <div class="col-md-3">
                                         <h5>
-                                            <span role="status" :class="Carga.clase"></span>&nbsp;
+                                            <span role="status" :class="Carga.clase"></span>
                                             <span v-text="DatosServicio.mensaje" :class="DatosServicio.alert"></span>
                                         </h5>
                                     </div>
@@ -206,19 +206,19 @@
                                     <div class="row form-group">
                                         <div class="col-md-2">
                                             <div class="input-group"> 
-                                                DNI&nbsp;
+                                                DNI
                                                 <input type="text" class="form-control form-control-sm" readonly v-model="DatosProveedor.documento">
                                             </div>
                                         </div>
                                         <div class="" :class="Modal.numero == 2 ? 'col-md-3': 'col-md-4'">
                                             <div class="input-group">
-                                                <label >Nombres</label>&nbsp;
+                                                <label >Nombres</label>
                                                 <input type="text" class="form-control form-control-sm" readonly v-model="DatosProveedor.nombres">
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="input-group">
-                                                <label >Apellidos</label>&nbsp;
+                                                <label >Apellidos</label>
                                                 <input type="text" class="form-control form-control-sm" readonly v-model="DatosProveedor.apellidos">
                                             </div>
                                         </div>
@@ -228,13 +228,13 @@
                                     <div class="row form-group">
                                         <div class="col-md-2">
                                             <div class="input-group"> 
-                                                RUC&nbsp;
+                                                RUC
                                                 <input type="text" class="form-control form-control-sm" readonly v-model="DatosProveedor.documento">
                                             </div>
                                         </div>
                                         <div class="col-md-10">
                                             <div class="input-group">
-                                                <label >Razón social</label>&nbsp;
+                                                <label >Razón social</label>
                                                 <input type="text" class="form-control form-control-sm" v-model="DatosProveedor.razon_social" :readonly="DatosServicio.readonly">
                                             </div>
                                         </div>
@@ -249,7 +249,7 @@
                                             <div class="input-group"> 
                                                 <input type="search" class="form-control form-control-sm" v-model="BusquedaFiltro.texto" @keyup.enter="listarFiltro()" id="filtroProducto" placeholder="Producto,marca,modelo,tamaño,color">
                                                 <!-- <button type="button" class="btn btn-sm btn-primary" @click="listarFiltro()">
-                                                    <i class="fa fa-search"></i>&nbsp; Buscar
+                                                    <i class="fa fa-search"></i> Buscar
                                                 </button> -->
                                             </div>
                                         </div>
@@ -284,7 +284,7 @@
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <div class="input-group"> 
-                                                    <label for="">Enviar a</label>&nbsp;<span class="text-danger">*</span>&nbsp;
+                                                    <label for="">Enviar a</label><span class="text-danger">*</span>
                                                     <select v-model="Abasto.centro_to_id" class="custom-select custom-select-sm text-gray-900">
                                                         <option value="0">Seleccione</option>
                                                         <option v-for="item in SelectAlmacen" :key="item.id" :value="item.id" v-text="item.nombre" ></option>
@@ -301,7 +301,7 @@
                                             <div class="col-md-6"></div>
                                             <div class="col-md-3">
                                                 <div class="input-group">
-                                                    <label for="tipo" class="font-weight-bold">Tipo</label>&nbsp;<span class="text-danger">*</span>&nbsp;
+                                                    <label for="tipo" class="font-weight-bold">Tipo</label><span class="text-danger">*</span>
                                                     <select v-model="Abasto.tipo_abasto" class="custom-select custom-select-sm" id="tipo">
                                                         <option value="0">Contado</option>
                                                         <option value="1">Credito</option>
@@ -350,7 +350,7 @@
                                         <div class="row">
                                             <div class="col-md-4">
                                                 <div class="input-group" style="width: 12.4rem;" v-if="Abasto.tipo_abasto == '1'"> 
-                                                    <label for="">Pago inicial</label>&nbsp;<span class="text-danger">*</span>&nbsp;
+                                                    <label for="">Pago inicial</label><span class="text-danger">*</span>
                                                     <input type="number" class="form-control form-control-sm" v-model="Abasto.pagoInicial" min="0">
                                                 </div>
                                             </div>
@@ -372,7 +372,7 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="input-group">
-                                            <span class="font-weight-bold">Enviado a:</span>&nbsp;{{Abasto.nombre_centro}}
+                                            <span class="font-weight-bold">Enviado a:</span>{{Abasto.nombre_centro}}
                                         </div>
                                     </div>
                                 </div>
@@ -380,19 +380,19 @@
                                     <div class="row form-group">
                                         <div class="col-md-2">
                                             <div class="input-group"> 
-                                                DNI&nbsp;
+                                                DNI
                                                 <input type="text" class="form-control form-control-sm" readonly v-model="DatosProveedor.documento">
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="input-group">
-                                                <label >Nombres</label>&nbsp;
+                                                <label >Nombres</label>
                                                 <input type="text" class="form-control form-control-sm" readonly v-model="DatosProveedor.nombres">
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="input-group">
-                                                <span class="font-weight-bold">Estado de envío:</span>&nbsp;&nbsp;
+                                                <span class="font-weight-bold">Estado de envío:</span>
                                                 <h5>
                                                     <div v-if="Abasto.estado_envio == 0">
                                                         <span class="badge badge-primary">Enviado</span>
@@ -408,23 +408,23 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div v-else="">
+                                <div v-else>
                                     <div class="row form-group">
                                         <div class="col-md-2">
                                             <div class="input-group"> 
-                                                RUC&nbsp;
+                                                RUC
                                                 <input type="text" class="form-control form-control-sm" readonly v-model="DatosProveedor.documento">
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="input-group">
-                                                <label >Razón social</label>&nbsp;
+                                                <label >Razón social</label>
                                                 <input type="text" class="form-control form-control-sm" v-model="DatosProveedor.razon_social" readonly>
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="input-group">
-                                                <span class="font-weight-bold">Estado de envío:</span>&nbsp;&nbsp;
+                                                <span class="font-weight-bold">Estado de envío:</span>
                                                 <h5>
                                                     <div v-if="Abasto.estado_envio == 0">
                                                         <span class="badge badge-primary">Enviado</span>
@@ -495,7 +495,7 @@
                                             <div class="col-md-6"></div>
                                             <div class="col-md-3">
                                                 <div class="input-group">
-                                                    <label for="tipo" class="font-weight-bold">Tipo: </label>&nbsp;
+                                                    <label for="tipo" class="font-weight-bold">Tipo: </label>
                                                     <div v-if="Abasto.tipo_abasto">
                                                         Crédito
                                                     </div>
@@ -554,8 +554,8 @@
                                     <div class="col-md-1"></div>
                                     <div class="col-md-7">
                                         <div class="input-group"> 
-                                            Monto&nbsp;
-                                            <input type="number" class="form-control form-control-sm" v-model="Pago.monto" @keyup.enter="agregarListaPago()">&nbsp;
+                                            Monto
+                                            <input type="number" class="form-control form-control-sm" v-model="Pago.monto" @keyup.enter="agregarListaPago()">
                                             <button type="button" class="btn btn-sm btn-primary" @click="agregarListaPago()" :disabled="getSumaPagos == Abasto.total_ver">
                                                 Registrar
                                             </button>
@@ -613,7 +613,7 @@
                                 <button type="button" @click="accionar(Modal.accion)" :class="[Modal.accion == 'Generar comprobante' ? 'btn btn-danger' : 'btn btn-success']" :disabled="Button.press">
                                     <div v-if="!Button.press">
                                         <div v-if="Modal.accion == 'Generar comprobante'">
-                                            <i class="far fa-file-pdf"></i>&nbsp; {{Modal.accion}}
+                                            <i class="far fa-file-pdf"></i> {{Modal.accion}}
                                         </div>
                                         <div v-else>{{Modal.accion}}</div>
                                     </div>
