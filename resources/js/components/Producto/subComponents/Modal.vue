@@ -118,8 +118,6 @@
         data(){
             return {
                 //datos de producto
-                Categorias: [],
-                Marcas: [],
                 Producto: {
                     id: null,
                     categoria_id: 0,
@@ -131,7 +129,7 @@
                 },
 
                 //datos de los subproductos
-                maxSubproductos: 10,
+                maxSubproductosLength: 10,
                 Subproductos: [],
                 Subproducto : {
                     id: null,
@@ -139,6 +137,9 @@
                     precio_menor: '',
                     precio_mayor: '',
                 },
+
+                // datos para 
+                TiposCaracteristica: [],
 
                 //datos de modales
                 Modal: {
@@ -160,12 +161,13 @@
 
                 //datos de la ruta de consultas
                 Ruta: {
-                    producto: '/producto'
+                    producto: '/producto',
+                    subproducto: '/subproducto'
                 }
             }
         },
         methods: {
-            runParentMethod(method, data) {
+            runParentMethod({method = '', data = {}}) {
                 switch ( method ) {
                     case 'addSubproducto':
                         this.addSubproducto(); break;
@@ -174,11 +176,9 @@
                 }
             },
             agregar(){
-                this.validate({
+                if ( this.validate({
                     type: 'create-producto'
-                });
-
-                if ( this.Error.estado ) return;
+                }) ) return;
                 
                 var me = this;
                 var url = this.Ruta.producto+'/agregar';
@@ -204,7 +204,9 @@
                         });
                     } else {
                         console.log(response.data.error);
-                        me.validate(3);
+                        me.validate({
+                            type: 'producto-exist-or-error'
+                        });
                     }
                 }).catch(error => {
                     console.log(error);
@@ -248,21 +250,19 @@
                 });
             },
             addSubproducto(){
-                this.validate({
+                if ( this.validate({
                     type: 'add-subproducto'
-                });
-                if ( this.Error.estado ) return;
+                }) ) return;
 
-                this.validate({
+                if ( this.validate({
                     type: 'max-subproductos-length'
-                });
-                if ( this.Error.estado ) return;
+                }) ) return;
                 
                 var caracteristicas = [];
                 this.Subproducto.caracteristicas.forEach(c => {
                     caracteristicas.push({
                         tipo_caracteristica: c.tipo_caracteristica,
-                        caracteristica: c.caracteristica
+                        nombre: c.nombre
                     })
                 });
 
@@ -279,7 +279,7 @@
                     data: subproducto
                 });
                 this.$emit('runChildMethod', {
-                    method: 'cleanForm', 
+                    method: 'clearForm', 
                     component: 'form-subproducto'
                 });
             },
@@ -343,7 +343,12 @@
                     btnCancel: 'Cancelar'
                 });
                 
-                this.$emit('abrirModal', this.Modal.tipo);
+                this.$emit('runChildMethod', {
+                    method: 'abrirModal',
+                    data: {
+                        tipo: this.Modal.tipo
+                    }
+                });
 
                 this.ejecutarModal();
             },
@@ -393,7 +398,9 @@
             //     });
             // },
             cerrarModal(){
-                this.$emit('cerrarModal');
+                this.$emit('runChildMethod', {
+                    method: 'cerrarModal'
+                });
 
                 this.Modal.estado = 0;
                 this.Modal.tipo = null;
@@ -407,17 +414,27 @@
                 this.Error.numero = 0;
                 this.Error.mensaje = [];
             },
-            changeValue({variable, valor}){
+            changeValue({variable, value}){
                 switch ( variable ) {
                     case 'producto':
-                        this.Producto = valor; break;
+                        this.Producto = value; break;
                     case 'subproducto':
-                        this.Subproducto = valor; break;
+                        this.Subproducto = value; break;
                     case 'subproductos':
-                        this.Subproductos = valor; break;
+                        this.Subproductos = value; break;
                     default:
-                        console.error("Variable '"+variable+"-"+valor+"' don't found in changeValue() function on Modal.vue"); break;
+                        console.error("Variable '"+variable+"-"+value+"' don't found in changeValue() function on Modal.vue"); break;
                 }
+            },
+            getTiposCaracteristica(){
+                var me = this;
+                var url = this.Ruta.subproducto+'/getTiposCaracteristica';
+
+                axios.get(url).then(function (response) {
+                    me.TiposCaracteristica = response.data;
+                }).catch(function (error) {
+                    console.log(error);
+                });
             },
             listaProducto(){
                 var me = this;
@@ -439,65 +456,115 @@
                         console.error("Type '"+this.Modal.tipo+"' don't found in accionar() function on Modal.vue"); break;
                 }
             },
-            validate({type = ''}){
-                this.Error.numero = type;
+            validate({type: uniqueType = '', types = []}){
                 this.Error.mensaje = [];
+
+                if ( uniqueType != '' ) types = [uniqueType];
                 
-                switch ( type ) {
-                    case 'create-producto':
-                        if ( this.Producto.categoria_id == 0 ) errors.push("Debe seleccionar una categoria");   //categoria
-                        if ( this.Producto.modelo.trim() == '' ) errors.push("Debe ingresar un modelo");    //nombre
+                types.forEach(type => {
+                    switch ( type ) {
+                        case 'create-producto':
+                            if ( this.Producto.categoria_id == 0 ) this.Error.mensaje.push("Debe seleccionar una categoria");   //categoria
+                            if ( this.Producto.modelo.trim() == '' ) this.Error.mensaje.push("Debe ingresar un modelo");    //nombre
 
-                        
-                        break;
-                    case 3: // El producto ya existe
-                        errors.push("El Producto ya esta registrado o ha ocurrido un error");    //error o producto existente
-                        break;
-                    case 4:
-                        for (let i = 0; i < this.ListaSuperProducto.length; i++) {
-                            if ( this.SuperProducto.id == this.ListaSuperProducto[i].id ) {
-                                if ( this.SuperProducto.nombre == this.ListaSuperProducto[i].nombre && this.SuperProducto.descripcion == this.ListaSuperProducto[i].descripcion ) {
-                                    errors.push("Ningun cambio realizado");    //sin cambios
+                            var pMenorEmpty = false, pMenorNotNumber = false, pMayorEmtpy = false, pMayorNotNumber = false;
+                            for (let i = 0; i < this.Subproductos.length; i++) {
+                                if ( this.Subproductos[i].precio_menor == '' ) {    // precio al por menor
+                                    pMenorEmpty = true;
+                                } else if ( isNaN(parseInt(this.Subproductos[i].precio_menor)) || parseInt(this.Subproductos[i].precio_menor) <= 0 ) {
+                                    pMenorNotNumber = true;
                                 }
-                                break;
+                                if ( this.Subproductos[i].precio_mayor == '' ) {    // precio al por mayor
+                                    pMayorEmtpy = true;
+                                } else if ( isNaN(parseInt(this.Subproductos[i].precio_mayor)) || parseInt(this.Subproductos[i].precio_mayor) <= 0 ) {
+                                    pMayorNotNumber = true;
+                                }
+                                if ( pMenorEmpty && pMenorNotNumber && pMayorEmtpy && pMayorNotNumber ) break;
                             }
-                        }
-                        break;
-                    case 5:
-                        if ( this.Subproductos.length >= this.maxSubproductos ) {
-                            errors.push('Por ahora no se pueden registrar mas subproductos, registre el producto y luego siga agregando mas subproductos');
-                        }
-                        break;
-                }
 
-                if ( errors.length ) {
-                    this.addError(errors);
+                            if ( pMenorEmpty ) this.Error.mensaje.push("Debe ingresar un precio por unidad en el formulario");
+                            if ( pMenorNotNumber ) this.Error.mensaje.push("El precio por unidad ingresado en la lista es incorrecto");
+                            if ( pMayorEmtpy ) this.Error.mensaje.push("Debe ingresar un precio por mayor en el formulario");
+                            if ( pMayorNotNumber ) this.Error.mensaje.push("El precio por mayor ingresado en la lista es incorrecto");
+                            break;
+                        case 'add-subproducto':
+                            var found = false;
+                            for (let i = 0; i < this.Subproductos.length; i++) {
+                                var founds = [];
+                                this.TiposCaracteristica.forEach((tipo, index) => {
+                                    if ( this.Subproducto.caracteristicas[index].nombre == this.Subproductos[i].caracteristicas[index].nombre) founds.push(true);
+                                    else founds.push(false);
+                                })
+                                for (let j = 0; j < founds.length; j++) {
+                                    if ( founds[j] == 0 ) break;
+                                    if ( j == founds.length-1 && founds[j] == 1 ) found = true;
+                                }
+                                if ( found ) break;
+                            }
+
+                            if ( found ) {
+                                this.Error.mensaje.push("Ese producto ya se encuentra en lista");                                           //producto existente
+                            } else {
+                                this.TiposCaracteristica.forEach((tipo, index) => {    // caracteristicas
+                                    if ( tipo.required ) {
+                                        if ( this.Subproducto.caracteristicas[index].nombre == '' ) {
+                                            this.Error.mensaje.push('Debe seleccionar un '+tipo.nombre.toLowerCase());
+                                        }
+                                    }
+                                });
+                                if ( this.Subproducto.precio_menor == '' ) {    // precio al por menor
+                                    this.Error.mensaje.push("Debe ingresar un precio por unidad en el formulario")
+                                } else if ( isNaN(parseInt(this.Subproducto.precio_menor)) || parseInt(this.Subproducto.precio_menor) <= 0 ) {
+                                    this.Error.mensaje.push("El precio por unidad ingresado en el formulario es incorrecto");
+                                }
+                                if ( this.Subproducto.precio_mayor == '' ) {    // precio al por mayor
+                                    this.Error.mensaje.push("Debe ingresar un precio por mayor en el formulario")
+                                } else if ( isNaN(parseInt(this.Subproducto.precio_mayor)) || parseInt(this.Subproducto.precio_mayor) <= 0 ) {
+                                    this.Error.mensaje.push("El precio por mayor ingresado en el formulario es incorrecto");
+                                }
+                            }
+                            break;
+                        case 'producto-exist-or-error': // El producto ya existe
+                            this.Error.mensaje.push("El Producto ya esta registrado o ha ocurrido un error");    //error o producto existente
+                            break;
+                        case 4:
+                            for (let i = 0; i < this.ListaSuperProducto.length; i++) {
+                                if ( this.SuperProducto.id == this.ListaSuperProducto[i].id ) {
+                                    if ( this.SuperProducto.nombre == this.ListaSuperProducto[i].nombre && this.SuperProducto.descripcion == this.ListaSuperProducto[i].descripcion ) {
+                                        this.Error.mensaje.push("Ningun cambio realizado");    //sin cambios
+                                    }
+                                    break;
+                                }
+                            }
+                            break;
+                        case 'max-subproductos-length':
+                            if ( this.Subproductos.length >= this.maxSubproductosLength ) {
+                                this.Error.mensaje.push('Por ahora no se pueden registrar mas subproductos, registre el producto y luego siga agregando mas subproductos');
+                            }
+                            break;
+                        default:
+                            console.error("Type '"+type+"' don't found in validate() function on Modal.vue"); break;
+                    }
+                });
+
+                if ( this.Error.mensaje.length > 0 ) {
+                    this.Error.estado = 1;
+                    this.Modal.loading = false;
+                } else {
+                    this.Error.estado = 0;
                 }
 
                 return this.Error.estado;
-            },
-            addError({errors = [], type = ''}){
-                if ( errors.length == 0 ) return;
-
-                if ( type === 'restart' ) { // reinicia la lista de errores
-                    this.Error.mensaje = errors;
-                } else {
-                    this.Error.mensaje = this.Error.mensaje.concat(errors);
-                }
-
-                this.Modal.loading = false;
-                this.Error.estado = 1;
             },
             closeError(){
                 this.Error.estado = 0;
                 this.Error.numero = 0;
                 this.Error.mensaje = [];
-            },
-            clearFormSubproducto() {
-                this.$emit('runChildMethod', 'clearFormSubproducto');
             }
         },
         mounted() {
+            this.getTiposCaracteristica();
+
             this.$parent.$on('abrirModal', this.abrirModal);
         }
     }

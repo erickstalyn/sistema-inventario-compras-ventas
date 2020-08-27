@@ -22,7 +22,7 @@
                                     <i class="fas fa-minus"></i>
                                 </button>
                             </td>
-                            <td v-for="caracteristica in subproducto.caracteristicas" :key="caracteristica.caracteristica" v-text="caracteristica.caracteristica==''?'---':caracteristica.caracteristica"></td>
+                            <td v-for="caracteristica in subproducto.caracteristicas" :key="caracteristica.nombre" v-text="caracteristica.nombre==''?'---':caracteristica.nombre"></td>
                             <td>
                                 <input type="number" class="form-control form-control-sm text-right" min="0" v-model="subproducto.precio_menor">
                             </td>
@@ -43,12 +43,6 @@
 
 <script>
     export default {
-        props: {
-            Error: {
-                type: Object,
-                default: {estado: 0},
-            }
-        },
         data(){
             return {
                 //datos de los subproductos
@@ -57,12 +51,15 @@
 
                 //datos de modales
                 Modal: {
-                    tipo: null,
-                    estado: 0
+                    tipo: null
                 },
+
+                // tipos de caracteristicas que van en las tablas
+                TiposCaracteristica: [],
 
                 //datos de la ruta de consultas
                 Ruta: {
+                    subproducto: '/subproducto'
                 }
             }
         },
@@ -70,46 +67,30 @@
             Subproductos: {
                 deep: true,
                 handler(newSubproductos, oldSubproductos) {
-                    this.$emit('changeValue', 'subproductos', newSubproductos);
+                    this.$emit('changeValue', {
+                        variable: 'subproductos', 
+                        value: newSubproductos
+                    });
                 }
             }
         },
         methods: {
-            runChildMethod(method, data) {
+            runChildMethod({method = '', component = 'all', data = {}}) {
+                if ( component != 'list-subproductos' && component != 'all' ) return;
+
                 switch ( method ) {
-                    case 'addSubproducto-ListSubproductos':
+                    case 'abrirModal':
+                        this.abrirModal(data); break;
+                    case 'cerrarModal':
+                        this.cerrarModal(); break;
+                    case 'addSubproducto':
                         this.addSubproducto(data); break;
+                    default:
+                        console.error("Method '"+method+"' don't found in runChildMethod() function on Modal-ListSubproductos.vue")
+                        break;
                 }
             },
-            addSubproducto(subproducto){
-                this.validate({
-                    type: 'add-subproducto',
-                    data: subproducto
-                });
-
-                if ( this.Error.estado ) return;
-
-                this.validate({
-                    type: 'top-subproductos'
-                });
-
-                if ( this.Error.estado ) return;
-                
-                let {caracteristicas, precio_menor, precio_mayor} = subproducto;
-                
-                this.Subproductos.push({
-                    id: null,
-                    caracteristicas: caracteristicas,
-                    precio_menor: parseFloat(precio_menor),
-                    precio_mayor: parseFloat(precio_mayor)
-                });
-
-                this.$emit('runParentMethod', 'clearFormSubproducto');
-            },
-            eliminarSubproducto(index){
-                this.Subproductos.splice(index, 1);
-            },
-            abrirModal(tipo, producto){
+            abrirModal({tipo = '', producto = {}}){
                 this.Modal.tipo = tipo;
                 
                 switch ( this.Modal.tipo ) {
@@ -121,7 +102,7 @@
                         this.abrirModalEditar(producto); break;
                     default:
                         this.Modal.tipo = null;
-                        console.error('Tried to open a diferent modal type. (type = "' + tipo + '")'); break;
+                        console.error("Type '"+tipo+"' don't found in abrirModal() function on Modal-ListSubproductos.vue"); break;
                 }
             },
             abrirModalAgregar(){
@@ -150,21 +131,23 @@
                 this.DataSuperProducto = data;
             },
             cerrarModal(){
-                this.$emit('cerrarModal');
-
-                this.Modal.estado = 0;
-                this.Modal.tipo = null;
-                this.Modal.titulo = '';
-                this.Modal.tamaño = '';
-                this.Modal.loading = false;
-                this.Modal.btnSuccess = null;
-                this.Modal.btnCancel = null;
-
-                this.Error.estado = 0;
-                this.Error.numero = 0;
-                this.Error.mensaje = [];
-
                 this.Subproductos = [];
+            },
+            getTiposCaracteristica(){
+                var me = this;
+                var url = this.Ruta.subproducto+'/getTiposCaracteristica';
+
+                axios.get(url).then(function (response) {
+                    me.TiposCaracteristica = response.data;
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            },
+            addSubproducto(subproducto){
+                this.Subproductos.push(subproducto);
+            },
+            eliminarSubproducto(index){
+                this.Subproductos.splice(index, 1);
             },
             listaProducto(){
                 var me = this;
@@ -208,7 +191,9 @@
             },
         },
         mounted() {
-            this.$parent.$on('runChildMethod', this.abrirModal);
+            this.getTiposCaracteristica();
+
+            this.$parent.$on('runChildMethod', this.runChildMethod);
         }
     }
 </script>

@@ -6,7 +6,7 @@
         </div>
         <div class="col-md-12 input-group mt-2" v-for="(tipo, index) in TiposCaracteristica" :key="tipo.nombre">
             <label class="col-md-5 pl-0 mt-1 mb-1">{{tipo.nombre}}&nbsp;<span v-if="tipo.required" class="text-danger">*</span></label>
-            <select class="col-md-7 custom-select custom-select-sm" v-model="Subproducto.caracteristicas[index].caracteristica">
+            <select class="col-md-7 custom-select custom-select-sm" v-model="Subproducto.caracteristicas[index].nombre">
                 <option value="" :disabled="tipo.required">- seleccione -</option>
                 <option class="text-gray-900" v-for="caracteristica in tipo.caracteristicas" :key="caracteristica.nombre" :value="caracteristica.nombre" v-text="caracteristica.nombre"></option>
             </select>
@@ -58,24 +58,29 @@
             'Subproducto': {
                 deep: true,
                 handler (newSubproducto, oldSubproducto) {
-                    this.$emit('changeValue', 'subproducto', newSubproducto);
+                    this.$emit('changeValue', {
+                        variable: 'subproducto', 
+                        value: newSubproducto
+                    });
                 }
             }
         },
         methods: {
-            runChildMethod(method, data) {
+            runChildMethod({method = '', component = 'all', data = {}}) {
+                if ( component != 'form-subproducto' && component != 'all' ) return;
+
                 switch( method ) {
                     case 'abrirModal':
                         this.abrirModal(data); break;
                     case 'cerrarModal':
                         this.cerrarModal(); break;
-                    case 'clearFormSubproducto':
-                        this.clearFormSubproducto(); break;
+                    case 'clearForm':
+                        this.clearForm(); break;
                     default: 
                         console.error("Method '"+method+"' don't found in runChildMethod() function on Modal-FormSubproducto.vue"); break;
                 }
             },
-            abrirModal({tipo, producto = {}}){
+            abrirModal({tipo = ''}){
                 this.Modal.tipo = tipo;
                 
                 switch ( this.Modal.tipo ) {
@@ -87,16 +92,11 @@
                         this.abrirModalEditar(producto); break;
                     default:
                         this.Modal.tipo = null;
-                        console.error('Tried to open a diferent modal type. (type = "' + tipo + '")'); break;
+                        console.error("Type '"+tipo+"' don't found in abrirModal() function on Modal-FormSubproducto.vue"); break;
                 }
             },
             abrirModalAgregar(){
-                this.Subproducto.id = null;
-                for (let i = 0; i < this.Subproducto.caracteristicas.length; i++) {
-                    this.Subproducto.caracteristicas[i].caracteristica = ''
-                }
-                this.Subproducto.precio_menor = '';
-                this.Subproducto.precio_mayor = '';
+                this.clearForm();
             },
             abrirModalVer(data = []){
                 this.abrirModal(2, 'Ver Super Producto', 'modal-lg', '', 'Cerrar');
@@ -120,25 +120,22 @@
                 this.DataSuperProducto = data;
             },
             cerrarModal(){
+                this.clearForm();
+            },
+            addSubproducto(){
+                this.$emit('runParentMethod', {
+                    method: 'addSubproducto'
+                });
+            },
+            clearForm() {
                 this.Subproducto.id = null;
                 this.Subproducto.caracteristicas.forEach((c, i, self) => {
-                    self[i].caracteristica = '';
+                    self[i].nombre = '';
                 });
                 this.Subproducto.precio_menor = '';
                 this.Subproducto.precio_mayor = '';
             },
-            addSubproducto(){
-                this.$emit('runParentMethod', 'addSubproducto');
-            },
-            clearFormSubproducto() {
-                this.Subproducto.id = null;
-                for (let i = 0; i < this.Subproducto.caracteristicas.length; i++) {
-                    this.Subproducto.caracteristicas[i].caracteristica = ''
-                }
-                this.Subproducto.precio_menor = '';
-                this.Subproducto.precio_mayor = '';
-            },
-            getCaracteristicas(){
+            getTiposCaracteristica(){
                 var me = this;
                 var url = this.Ruta.subproducto+'/getTiposCaracteristica';
 
@@ -147,7 +144,7 @@
                     me.TiposCaracteristica.forEach(tipo => {
                         me.Subproducto.caracteristicas.push({
                             tipo_caracteristica: tipo.nombre,
-                            caracteristica: ''
+                            nombre: ''
                         });
                     });
                 }).catch(function (error) {
@@ -161,41 +158,7 @@
 
                 switch ( type ) {
                     case 'add-subproducto': // Se validan los campos del formulario de agregar subproducto
-                        var found = false;
-                        for (let i = 0; i < this.Subproductos.length; i++) {
-                            var founds = [];
-                            this.TiposCaracteristica.forEach((tipo, index) => {
-                                if ( this.Subproducto.caracteristicas[index].caracteristica == this.Subproductos[i].caracteristicas[index].caracteristica) founds.push(true);
-                                else founds.push(false);
-                            })
-                            for (let j = 0; j < founds.length; j++) {
-                                if ( founds[j] == 0 ) break;
-                                if ( j == founds.length-1 && founds[j] == 1 ) found = true;
-                            }
-                            if ( found ) break;
-                        }
-
-                        if ( found ) {
-                            errors.push("Ese producto ya se encuentra en lista");                                           //producto existente
-                        } else {
-                            this.TiposCaracteristica.forEach((tipo, index) => {    // caracteristicas
-                                if ( tipo.required ) {
-                                    if ( this.Subproducto.caracteristicas[index].caracteristica == '' ) {
-                                        errors.push('Debe seleccionar un '+tipo.nombre.toLowerCase());
-                                    }
-                                }
-                            });
-                            if ( this.Subproducto.precio_menor == '' ) {    // precio al por menor
-                                errors.push("Debe ingresar un precio por unidad en el formulario")
-                            } else if ( isNaN(parseInt(this.Subproducto.precio_menor)) || parseInt(this.Subproducto.precio_menor) <= 0 ) {
-                                errors.push("El precio por unidad ingresado en el formulario es incorrecto");
-                            }
-                            if ( this.Subproducto.precio_mayor == '' ) {    // precio al por mayor
-                                errors.push("Debe ingresar un precio por mayor en el formulario")
-                            } else if ( isNaN(parseInt(this.Subproducto.precio_mayor)) || parseInt(this.Subproducto.precio_mayor) <= 0 ) {
-                                errors.push("El precio por mayor ingresado en el formulario es incorrecto");
-                            }
-                        }
+                        
                         break;
                     default:
                         console.error("Type '"+type+"' don't found in validate() function");
@@ -204,19 +167,11 @@
 
                 if ( errors.length > 0 ) this.$emit('addError', {'errors': errors});
             },
-            closeError(){
-                this.Error.estado = 0;
-                this.Error.numero = 0;
-                this.Error.mensaje = [];
-            },
         },
         mounted() {
-            this.getCaracteristicas();
+            this.getTiposCaracteristica();
 
-            this.$parent.$on('abrirModal', this.abrirModal);
-            this.$parent.$on('cerrarModal', this.cerrarModal);
-            this.$parent.$on('validate', this.validate);
-            this.$parent.$on('runChildSubproducto', this.runChildMethod);
+            this.$parent.$on('runChildMethod', this.runChildMethod);
         }
     }
 </script>

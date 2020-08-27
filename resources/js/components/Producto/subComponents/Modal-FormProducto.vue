@@ -45,7 +45,7 @@
                 Categorias: [],
                 Marcas: [],
                 Producto: {
-                    id: 0,
+                    id: null,
                     categoria_id: 0,
                     marca_id: 0,
                     modelo: '',
@@ -69,7 +69,10 @@
             Producto: {
                 deep: true,
                 handler (newProducto, oldProducto) {
-                    this.$emit('changeValue', 'producto', newProducto);
+                    this.$emit('changeValue', {
+                        variable: 'producto', 
+                        value: newProducto
+                    });
                 }
             }
         },
@@ -93,7 +96,9 @@
             }
         },
         methods: {
-            runMethodChild(method, data){
+            runChildMethod({method = '', component = 'all', data = {}}){
+                if ( component != 'form-producto' && component != 'all' ) return;
+
                 switch ( method ) {
                     case 'abrirModal':
                         this.abrirModal(data); break;
@@ -115,7 +120,7 @@
                         this.abrirModalEditar(producto); break;
                     default:
                         this.Modal.tipo = null;
-                        console.error('Tried to open a diferent modal type. (type = "' + tipo + '")'); break;
+                        console.error("Type '"+tipo+"' don't found in abrirModal() function on Modal-FormProducto.vue"); break;
                 }
             },
             abrirModalAgregar(){
@@ -158,23 +163,6 @@
                 this.Producto.stock = 0;
                 this.Producto.created_at = '';
             },
-            validate({component, type = ''}){
-                if ( component != 'form-producto' && component != undefined ) return;
-                
-                const errors = [];
-                
-                switch ( type ) {
-                    case 'create-producto':
-                        if ( this.Producto.categoria_id == 0 ) errors.push("Debe seleccionar una categoria");   //categoria
-                        if ( this.Producto.modelo.trim() == '' ) errors.push("Debe ingresar un modelo");    //nombre
-                        break;
-                    default:
-                        console.error("Type '"+type+"' don't found on validate() function");
-                        break;
-                }
-
-                if ( errors.length > 0 ) this.$emit('addError', {errors});
-            },
             getCategorias(){
                 var me = this;
                 var url = this.Ruta.producto+'/getCategorias';
@@ -200,7 +188,7 @@
             this.getCategorias();
             this.getMarcas();
 
-            this.$parent.$on('runMethodChild', this.runMethodChild);
+            this.$parent.$on('runChildMethod', this.runChildMethod);
         }
     }
 </script>
