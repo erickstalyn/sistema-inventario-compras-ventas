@@ -95,7 +95,7 @@ class ProductoController extends Controller {
     }
 
     public function listaProducto(Request $request){
-        $productos = Producto::select('costo_produccion', 'precio_menor', 'precio_mayor', 'stock')
+        $productos = Producto::select('nombre', 'costo_produccion', 'precio_menor', 'precio_mayor', 'stock')
                             ->where('categoria_id', '=', $request->id)
                             ->orderBy('id', 'desc')->get();
         

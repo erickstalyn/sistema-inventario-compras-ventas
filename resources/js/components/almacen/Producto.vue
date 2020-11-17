@@ -40,11 +40,11 @@
                                 <th class="text-center">Precio al por menor</th>
                                 <th class="text-center">Precio al por mayor</th>
                                 <th class="text-center">Disponible</th>
-                                <th class="text-center">Reservados</th>
-                                <th class="text-center">Fallidos</th>
+                                <!-- <th class="text-center">Reservados</th> -->
+                                <!-- <th class="text-center">Fallidos</th> -->
                                 <th class="text-center">Traslado</th>
-                                <th class="text-center">Total</th>
-                                <th class="text-center">Opción</th>
+                                <th class="text-center">Stock Total</th>
+                                <!-- <th class="text-center">Opción</th> -->
                             </tr>
                         </thead>
                         <tbody>
@@ -53,16 +53,16 @@
                                 <td v-text="producto.precio_menor" class="text-right"></td>
                                 <td v-text="producto.precio_mayor" class="text-right"></td>
                                 <td v-text="producto.substock" class="text-right"></td>
-                                <td v-text="producto.reservados==0?'---':producto.reservados" :class="producto.reservados==0?'text-center':'text-right'"></td>
-                                <td v-text="producto.fallidos==0?'---':producto.fallidos" :class="producto.fallidos==0?'text-center':'text-right'"></td>
+                                <!-- <td v-text="producto.reservados==0?'---':producto.reservados" :class="producto.reservados==0?'text-center':'text-right'"></td> -->
+                                <!-- <td v-text="producto.fallidos==0?'---':producto.fallidos" :class="producto.fallidos==0?'text-center':'text-right'"></td> -->
                                 <td v-text="producto.traslado==0?'---':producto.traslado" :class="producto.traslado==0?'text-center':'text-right'"></td>
                                 <td v-text="producto.total" class="text-right"></td>
-                                <td class="text-center">
+                                <!-- <td class="text-center">
                                     <template v-if="producto.fallidos > 0">
                                         <button type="button"  title="REPARAR" class="btn btn-info btn-sm" @click="abrirModalReparar(producto)"><i class="fas fa-tools"></i></button>
                                     </template>
                                     <div v-else>---</div>
-                                </td>
+                                </td> -->
                             </tr>
                         </tbody>
                     </table>

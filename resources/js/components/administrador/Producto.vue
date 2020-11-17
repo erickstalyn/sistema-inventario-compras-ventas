@@ -48,7 +48,7 @@
                                 <th class="text-center">Costo de produccion</th>
                                 <th class="text-center">Precio al por menor</th>
                                 <th class="text-center">Precio al por mayor</th>
-                                <th class="text-center">Stock</th>
+                                <th class="text-center">Stock Total</th>
                                 <th class="text-center">Opciones</th>
                             </tr>
                         </thead>
@@ -66,9 +66,9 @@
                                     <button type="button" @click="abrirModalEditar(producto)" title="EDITAR" class="btn btn-warning btn-sm">
                                         <i class="fas fa-edit"></i>
                                     </button>
-                                    <button type="button" @click="abrirModalMaterial(producto)" title="MATERIALES" class="btn btn-secondary btn-sm">
+                                    <!-- <button type="button" @click="abrirModalMaterial(producto)" title="MATERIALES" class="btn btn-secondary btn-sm">
                                         <i class="fas fa-hammer"></i>
-                                    </button>
+                                    </button> -->
                                 </td>
                             </tr>
                         </tbody>
@@ -189,15 +189,15 @@
                                 </div>
                             </div>
                             <div class="row form-group">
-                                <label class="col-md-3 font-weight-bold">Nombre</label>
-                                <label class="col-md-9 text-info" v-text="updateNombre"></label>
-                            </div>
-                            <div class="row form-group">
                                 <label class="col-md-5 font-weight-bold">Categoria&nbsp;<span class="text-danger">*</span></label>
                                 <select class="col-md-7 custom-select custom-select-sm" v-model="Producto.categoria_id">
                                     <option value="0" disabled>Seleccione una categoria</option>
                                     <option class="text-gray-900" v-for="categoria in SelectCategoria" :key="categoria.id" :value="categoria.id" v-text="categoria.nombre"></option>
                                 </select>
+                            </div>
+                            <div class="row form-group">
+                                <label class="col-md-3 font-weight-bold">Nombre</label>
+                                <input type="text" class="col-md-9 form-control form-control-sm" v-model="Producto.nombre" placeholder="Ingrese el nombre">
                             </div>
                             <div class="row form-group">
                                 <label class="col-md-5 font-weight-bold">Codigo</label>

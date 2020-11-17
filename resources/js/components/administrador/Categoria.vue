@@ -122,7 +122,7 @@
                                     <input type="text" class="col-md-10 form-control form-control-sm" v-model="Categoria.descripcion" placeholder="Ingrese la descripcion" id="des">
                                 </div>
                             </div>
-                            <div class="row form-group">
+                            <!-- <div class="row form-group">
                                 <div class="col-md-4">
                                     <div v-if="Error.estado && Error.numero==2" class="row d-flex justify-content-center">
                                         <div class="alert alert-danger">
@@ -183,7 +183,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </div> -->
                         </div>
                         <!-- Modal Numero 2 de VER-->
                         <div v-if="Modal.numero==2">
@@ -201,7 +201,7 @@
                                     <table class="table table-bordered table-striped table-sm text-gray-900">
                                         <thead>
                                             <tr class="table-primary">
-                                                <th>Costo de produccion</th>
+                                                <th>Nombre</th>
                                                 <th>Precio al por menor</th>
                                                 <th>Precio al por mayor</th>
                                                 <th>Stock</th>
@@ -209,7 +209,7 @@
                                         </thead>
                                         <tbody>
                                             <tr v-for="(producto, indice) in ListaProducto" :key="indice" >
-                                                <td v-text="producto.costo_produccion?producto.costo_produccion:'-'"></td>
+                                                <td v-text="producto.nombre"></td>
                                                 <td v-text="producto.precio_menor"></td>
                                                 <td v-text="producto.precio_mayor"></td>
                                                 <td v-text="producto.stock"></td>

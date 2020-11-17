@@ -272,7 +272,7 @@
                                                                 </button>
                                                             </td>
                                                             <td v-text="producto.nombre"></td>
-                                                            <td v-text="producto.stock"></td>
+                                                            <td v-text="producto.stock" class="text-right"></td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
