@@ -82,7 +82,7 @@
     </head>
     <body>
         <div>
-        <h3>Lista de Superproducto <span class="derecha" id="fecha">{{date("d/m/Y")}}</span></h3>
+        <h3>Lista de Categorias <span class="derecha" id="fecha">{{date("d/m/Y")}}</span></h3>
         </div>
         <div>
             <table class="table table-bordered table-striped table-sm">
@@ -94,11 +94,11 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($superproducto as $sup)
+                    @foreach ($categoria as $sup)
                     <tr>
                         <td>{{$sup->nombre}}</td>
                         <td>{{$sup->descripcion}}</td>
-                        <td>{{$sup->superstock}}</td>
+                        <td>{{$sup->stock}}</td>
                     </tr>
                     @endforeach                                
                 </tbody>

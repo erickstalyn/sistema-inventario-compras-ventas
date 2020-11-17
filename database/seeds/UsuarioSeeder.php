@@ -13,10 +13,11 @@ class UsuarioSeeder extends Seeder
     public function run()
     {
         $now = Carbon::now('America/Lima')->toDateString();
+        
         DB::table('usuario')->insert(array(
             'persona_id'=>1 ,
-            'usuario'=>'silmar',
-            'password'=>bcrypt('silmar'),
+            'usuario'=>'admin',
+            'password'=>bcrypt('admin'),
             'rol_id' => 1,
         ));
         DB::table('usuario')->insert(array(

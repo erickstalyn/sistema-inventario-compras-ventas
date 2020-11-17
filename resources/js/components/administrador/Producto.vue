@@ -118,29 +118,15 @@
                                 </div>
                             </div>
                             <div class="row form-group">
-                                <label class="col-md-3 font-weight-bold">Nombre</label>
-                                <label class="col-md-9 text-info" v-text="updateNombre"></label>
-                            </div>
-                            <div class="row form-group">
-                                <label class="col-md-5 font-weight-bold">Super Producto&nbsp;<span class="text-danger">*</span></label>
-                                <select class="col-md-7 custom-select custom-select-sm" v-model="Producto.superproducto_id">
-                                    <option value="0" disabled>Seleccione un superproducto</option>
-                                    <option class="text-gray-900" v-for="superproducto in SelectSuperProducto" :key="superproducto.id" :value="superproducto.id" v-text="superproducto.nombre"></option>
+                                <label class="col-md-5 font-weight-bold">Categoria&nbsp;<span class="text-danger">*</span></label>
+                                <select class="col-md-7 custom-select custom-select-sm" v-model="Producto.categoria_id">
+                                    <option value="0" disabled>Seleccione una categoria</option>
+                                    <option class="text-gray-900" v-for="categoria in SelectCategoria" :key="categoria.id" :value="categoria.id" v-text="categoria.nombre"></option>
                                 </select>
                             </div>
                             <div class="row form-group">
-                                <label class="col-md-5 font-weight-bold">Tamaño&nbsp;<span class="text-danger">*</span></label>
-                                <select class="col-md-7 custom-select custom-select-sm" v-model="Producto.size">
-                                    <option value="" disabled>Seleccione un tamaño</option>
-                                    <option class="text-gray-900" v-for="size in SelectSize" :key="size.nombre" :value="size.nombre" v-text="size.nombre"></option>
-                                </select>
-                            </div>
-                            <div class="row form-group">
-                                <label class="col-md-5 font-weight-bold">Color&nbsp;<span class="text-danger">*</span></label>
-                                <select class="col-md-7 custom-select custom-select-sm" v-model="Producto.color">
-                                    <option value="" disabled>seleccione un color</option>
-                                    <option class="text-gray-900" v-for="color in SelectColor" :key="color.nombre" :value="color.nombre" v-text="color.nombre"></option>
-                                </select>
+                                <label class="col-md-3 font-weight-bold">Nombre&nbsp;<span class="text-danger">*</span></label>
+                                <input type="text" class="col-md-9 form-control form-control-sm" v-model="Producto.nombre" placeholder="Ingrese el nombre">
                             </div>
                             <div class="row form-group">
                                 <label class="col-md-5 font-weight-bold">Codigo</label>
@@ -207,24 +193,10 @@
                                 <label class="col-md-9 text-info" v-text="updateNombre"></label>
                             </div>
                             <div class="row form-group">
-                                <label class="col-md-5 font-weight-bold">Super Producto&nbsp;<span class="text-danger">*</span></label>
-                                <select class="col-md-7 custom-select custom-select-sm" v-model="Producto.superproducto_id">
-                                    <option value="0" disabled>Seleccione un superproducto</option>
-                                    <option class="text-gray-900" v-for="superproducto in SelectSuperProducto" :key="superproducto.id" :value="superproducto.id" v-text="superproducto.nombre"></option>
-                                </select>
-                            </div>
-                            <div class="row form-group">
-                                <label class="col-md-5 font-weight-bold">Tamaño&nbsp;<span class="text-danger">*</span></label>
-                                <select class="col-md-7 custom-select custom-select-sm" v-model="Producto.size">
-                                    <option value="" disabled>Seleccione un tamaño</option>
-                                    <option class="text-gray-900" v-for="size in SelectSize" :key="size.nombre" :value="size.nombre" v-text="size.nombre"></option>
-                                </select>
-                            </div>
-                            <div class="row form-group">
-                                <label class="col-md-5 font-weight-bold">Color&nbsp;<span class="text-danger">*</span></label>
-                                <select class="col-md-7 custom-select custom-select-sm" v-model="Producto.color">
-                                    <option value="" disabled>seleccione un color</option>
-                                    <option class="text-gray-900" v-for="color in SelectColor" :key="color.nombre" :value="color.nombre" v-text="color.nombre"></option>
+                                <label class="col-md-5 font-weight-bold">Categoria&nbsp;<span class="text-danger">*</span></label>
+                                <select class="col-md-7 custom-select custom-select-sm" v-model="Producto.categoria_id">
+                                    <option value="0" disabled>Seleccione una categoria</option>
+                                    <option class="text-gray-900" v-for="categoria in SelectCategoria" :key="categoria.id" :value="categoria.id" v-text="categoria.nombre"></option>
                                 </select>
                             </div>
                             <div class="row form-group">
@@ -368,20 +340,16 @@
                 ListaProducto: [],
                 Producto: {
                     id: 0,
-                    superproducto_id: 0,
+                    categoria_id: 0,
                     nombre: '',
                     codigo: '',
-                    size: '',
-                    color: '',
                     costo_produccion: 0,
                     precio_menor: '',
                     precio_mayor: '',
                     stock: 0,
                     created_at: ''
                 },
-                SelectSuperProducto: [],
-                SelectSize: [],
-                SelectColor:[],
+                SelectCategoria: [],
 
                 //datos del producto_material
                 ListaProductoMaterial: [],
@@ -440,7 +408,7 @@
                 },
                 //datos de ruta de consultas
                 Ruta: {
-                    superproducto: '/superproducto',
+                    categoria: '/categoria',
                     producto: '/producto',
                     productomaterial: '/productomaterial',
                     material: '/material',
@@ -484,18 +452,6 @@
                 }
 
                 return filas;
-            },
-            updateNombre: function () {
-                var name = '';
-                for (let i = 0; i < this.SelectSuperProducto.length; i++) {
-                    if ( this.SelectSuperProducto[i].id == this.Producto.superproducto_id ) {
-                        name = this.SelectSuperProducto[i].nombre; break;
-                    }
-                }
-
-                this.Producto.nombre = name + ' ' + this.Producto.size + ' ' + this.Producto.color;
-
-                return this.Producto.nombre;
             },
             updateCostoProduccion: function() {
                 var costo_produccion = 0.00;
@@ -544,11 +500,9 @@
                 var me = this;
                 var url = this.Ruta.producto+'/agregar';
                 axios.post(url , {
-                    'superproducto_id' : this.Producto.superproducto_id,
+                    'categoria_id' : this.Producto.categoria_id,
                     'nombre' : this.Producto.nombre,
                     'codigo' : this.Producto.codigo,
-                    'size': this.Producto.size,
-                    'color' : this.Producto.color,
                     'precio_menor' : this.Producto.precio_menor,
                     'precio_mayor' : this.Producto.precio_mayor
                 }).then(function(response){
@@ -584,10 +538,8 @@
                 var url = this.Ruta.producto+'/editar';
                 axios.put(url , {
                     'id': this.Producto.id,
-                    'superproducto_id' : this.Producto.superproducto_id,
+                    'categoria_id' : this.Producto.categoria_id,
                     'nombre' : this.Producto.nombre,
-                    'size': this.Producto.size,
-                    'color' : this.Producto.color,
                     'codigo' : this.Producto.codigo,
                     'precio_menor' : this.Producto.precio_menor,
                     'precio_mayor' : this.Producto.precio_mayor
@@ -653,11 +605,9 @@
             abrirModalAgregar(){
                 this.abrirModal(1, 'Nuevo Producto', '', 'Agregar', 'Cancelar');
 
-                this.Producto.superproducto_id = 0;
+                this.Producto.categoria_id = 0;
                 this.Producto.nombre = '';
                 this.Producto.codigo = '';
-                this.Producto.size = '';
-                this.Producto.color = '';
                 this.Producto.precio_menor = '';
                 this.Producto.precio_mayor = '';
 
@@ -680,11 +630,9 @@
                 this.abrirModal(3, 'Editar Producto', '', 'Editar', 'Cancelar');
                 
                 this.Producto.id = data['id'];
-                this.Producto.superproducto_id = data['superproducto_id'];
+                this.Producto.categoria_id = data['categoria_id'];
                 this.Producto.nombre = data['nombre'];
                 this.Producto.codigo = data['codigo'];
-                this.Producto.size = data['size'];
-                this.Producto.color = data['color'];
                 this.Producto.precio_menor = data['precio_menor'];
                 this.Producto.precio_mayor = data['precio_mayor'];
 
@@ -729,11 +677,9 @@
                 this.Error.mensaje = [];
 
                 this.Producto.id = 0;
-                this.Producto.superproducto_id = 0;
+                this.Producto.categoria_id = 0;
                 this.Producto.nombre = '';
                 this.Producto.codigo = '';
-                this.Producto.size = '';
-                this.Producto.color = '';
                 this.Producto.costo_produccion = 0;
                 this.Producto.precio_menor = 0;
                 this.Producto.precio_mayor = 0;
@@ -764,28 +710,10 @@
                 var me = this;
                 switch ( numero ) {
                     case 0: 
-                        if ( this.SelectSuperProducto.length ) break;
-                        var url = this.Ruta.superproducto+'/selectSuperProducto';
-                        axios.get(url).then(function(response){
-                            me.SelectSuperProducto = response.data;
-                        }).catch(function(error){
-                            console.log(error);
-                        });
-                        break;
-                    case 1:
-                        if ( this.SelectSize.length ) break;
-                        var url = this.Ruta.data+'/selectSize';
-                        axios.get(url).then(function(response){
-                            me.SelectSize = response.data;
-                        }).catch(function(error){
-                            console.log(error);
-                        });
-                        break;
-                    case 2:
-                        if ( this.SelectColor.length ) break;
-                        var url = this.Ruta.data+'/selectColor';
-                        axios.get(url).then(function(response){
-                            me.SelectColor = response.data;
+                        if ( this.SelectCategoria.length ) break;
+                        var url = this.Ruta.categoria+'/selectCategoria';
+                        axios.get(url).then(response => {
+                            this.SelectCategoria = response.data;
                         }).catch(function(error){
                             console.log(error);
                         });
@@ -885,9 +813,7 @@
 
                 switch (numero) {
                     case 1:
-                        if ( this.Producto.superproducto_id == 0 ) this.Error.mensaje.push("Debe seleccionar un superproducto");    //superproducto
-                        if ( this.Producto.size == '' ) this.Error.mensaje.push("Debe seleccionar un tamaño");                      //size
-                        if ( this.Producto.color == '' ) this.Error.mensaje.push("Debe seleccionar un color");                      //color
+                        if ( this.Producto.categoria_id == 0 ) this.Error.mensaje.push("Debe seleccionar una categoria");       //categoria
                         if ( this.Producto.precio_menor == 0) this.Error.mensaje.push("Debe ingresar un precio al por menor");      //precio_menor
                         if ( this.Producto.precio_menor < 0) this.Error.mensaje.push("El precio al por menor debe ser positivo");   //precio_menor
                         if ( this.Producto.precio_mayor == 0) this.Error.mensaje.push("Debe ingresar un precio al por mayor");      //precio_mayor
@@ -918,7 +844,7 @@
                     case 5:
                         for (let i = 0; i < this.ListaProducto.length; i++) {
                             if ( this.Producto.id == this.ListaProducto[i].id ) {
-                                if ( this.Producto.superproducto_id == this.ListaProducto[i].superproducto_id && this.Producto.size == this.ListaProducto[i].size && this.Producto.color == this.ListaProducto[i].color && this.Producto.precio_menor == this.ListaProducto[i].precio_menor && this.Producto.precio_mayor == this.ListaProducto[i].precio_mayor && this.Producto.codigo == this.ListaProducto[i].codigo ) {
+                                if ( this.Producto.categoria_id == this.ListaProducto[i].categoria_id && this.Producto.size == this.ListaProducto[i].size && this.Producto.color == this.ListaProducto[i].color && this.Producto.precio_menor == this.ListaProducto[i].precio_menor && this.Producto.precio_mayor == this.ListaProducto[i].precio_mayor && this.Producto.codigo == this.ListaProducto[i].codigo ) {
                                     this.Error.mensaje.push("Ningun cambio realizado");    //sin cambios
                                 }
                                 break;

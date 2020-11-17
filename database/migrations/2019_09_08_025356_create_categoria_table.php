@@ -18,8 +18,7 @@ class CreateCategoriaTable extends Migration
             $table->string('nombre', 100)->unique();
             $table->string('descripcion', 60)->nullable();
             $table->smallInteger('stock')->default(0); // usa 2 bytes - máximo 32767 datos
-            
-            $table->date('created_at'); //Fecha de creacion manual
+            $table->timestamps(); //Fecha de creacion manual
         });
     }
 

@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use App\Producto;
-use App\SuperProducto;
+use App\Categoria;
 use App\Data;
 use App\Material;
 use Exception;
@@ -46,11 +46,9 @@ class ProductoController extends Controller {
             DB::beginTransaction();
             
             $producto = new Producto();
-            $producto->superproducto_id = $request->superproducto_id;
+            $producto->categoria_id = $request->categoria_id;
             $producto->nombre = $request->nombre;
             $producto->codigo = $request->codigo;
-            $producto->size = $request->size;
-            $producto->color = $request->color;
             $producto->precio_menor = $request->precio_menor;
             $producto->precio_mayor = $request->precio_mayor;
             $producto->created_at = Carbon::now('America/Lima')->toDateTimeString();
@@ -76,11 +74,9 @@ class ProductoController extends Controller {
             DB::beginTransaction();
 
             $producto = Producto::findOrFail($request->id);
-            $producto->superproducto_id = $request->superproducto_id;
+            $producto->categoria_id = $request->categoria_id;
             $producto->nombre = $request->nombre;
             $producto->codigo = $request->codigo;
-            $producto->size = $request->size;
-            $producto->color = $request->color;
             $producto->precio_menor = $request->precio_menor;
             $producto->precio_mayor = $request->precio_mayor;
             $producto->save();
@@ -99,8 +95,8 @@ class ProductoController extends Controller {
     }
 
     public function listaProducto(Request $request){
-        $productos = Producto::select('size', 'color', 'costo_produccion', 'precio_menor', 'precio_mayor', 'stock')
-                            ->where('superproducto_id', '=', $request->id)
+        $productos = Producto::select('costo_produccion', 'precio_menor', 'precio_mayor', 'stock')
+                            ->where('categoria_id', '=', $request->id)
                             ->orderBy('id', 'desc')->get();
         
         return $productos;

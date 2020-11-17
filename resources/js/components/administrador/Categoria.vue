@@ -8,7 +8,7 @@
             <div class="row form-group">
                 <div class="col-md-12">
                     <i class="fas fa-briefcase"></i>&nbsp;&nbsp;
-                    <span class="h3 mb-0 text-gray-900">Super Producto</span>&nbsp;&nbsp;
+                    <span class="h3 mb-0 text-gray-900">Categorias</span>&nbsp;&nbsp;
                     <button type="button" class="btn btn-success" @click="abrirModalAgregar()">
                         <i class="fas fa-user-plus"></i>&nbsp; Nuevo
                     </button>
@@ -40,7 +40,7 @@
             </div>
 
             <!-- Listado -->
-            <div v-if="ListaSuperProducto.length" class="table-responsive">
+            <div v-if="ListaCategorias.length" class="table-responsive">
                 <!-- Tabla -->
                 <div class="ec-table overflow-auto">
                     <table class="table table-bordered table-condensed table-striped table-sm text-gray-900">
@@ -53,15 +53,15 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="superproducto in ListaSuperProducto" :key="superproducto.id" >
-                                <td v-text="superproducto.nombre"></td>
-                                <td v-text="superproducto.descripcion==null?'-':superproducto.descripcion"></td>
-                                <td v-text="superproducto.superstock"></td>
+                            <tr v-for="categoria in ListaCategorias" :key="categoria.id" >
+                                <td v-text="categoria.nombre"></td>
+                                <td v-text="categoria.descripcion==null?'-':categoria.descripcion"></td>
+                                <td v-text="categoria.stock"></td>
                                 <td>
-                                    <button type="button" @click="abrirModalVer(superproducto)" title="VER" class="btn btn-primary btn-sm">
+                                    <button type="button" @click="abrirModalVer(categoria)" title="VER" class="btn btn-primary btn-sm">
                                         <i class="far fa-eye"></i>
                                     </button>
-                                    <button type="button" @click="abrirModalEditar(superproducto)" title="EDITAR" class="btn btn-warning btn-sm">
+                                    <button type="button" @click="abrirModalEditar(categoria)" title="EDITAR" class="btn btn-warning btn-sm">
                                         <i class="fas fa-edit"></i>
                                     </button>
                                 </td>
@@ -115,11 +115,11 @@
                             <div class="row form-group">
                                 <div class="col-md-4 input-group">
                                     <label class="col-md-4" for="nom">Nombre&nbsp;<span class="text-danger">*</span></label>
-                                    <input type="text" class="col-md-8 form-control form-control-sm" v-model="SuperProducto.nombre" placeholder="Ingrese el nombre" id="nom">   
+                                    <input type="text" class="col-md-8 form-control form-control-sm" v-model="Categoria.nombre" placeholder="Ingrese el nombre" id="nom">   
                                 </div>
                                 <div class="col-md-8 input-group">
                                     <label class="col-md-2" for="des">Descripción</label>
-                                    <input type="text" class="col-md-10 form-control form-control-sm" v-model="SuperProducto.descripcion" placeholder="Ingrese la descripcion" id="des">
+                                    <input type="text" class="col-md-10 form-control form-control-sm" v-model="Categoria.descripcion" placeholder="Ingrese la descripcion" id="des">
                                 </div>
                             </div>
                             <div class="row form-group">
@@ -135,20 +135,6 @@
                                     </div>
                                     <div class="row">
                                         <label class="col-md-12 font-weight-bold">AGREGAR PRODUCTO</label>
-                                    </div>
-                                    <div class="row form-group">
-                                        <label class="col-md-6" for="tam">Tamaño&nbsp;<span class="text-danger">*</span></label>
-                                        <select class="col-md-6 custom-select custom-select-sm" v-model="Producto.size" id="tam">
-                                            <option value="" disabled>Seleccione</option>
-                                            <option class="text-gray-900" v-for="size in SelectSize" :key="size.nombre" :value="size.nombre" v-text="size.nombre"></option>
-                                        </select>
-                                    </div>
-                                    <div class="row form-group">
-                                        <label class="col-md-6" for="col">Color&nbsp;<span class="text-danger">*</span></label>
-                                        <select class="col-md-6 custom-select custom-select-sm" v-model="Producto.color" id="col">
-                                            <option value="" disabled>Seleccione</option>
-                                            <option class="text-gray-900" v-for="color in SelectColor" :key="color.nombre" :value="color.nombre" v-text="color.nombre"></option>
-                                        </select>
                                     </div>
                                     <div class="row form-group">
                                         <label class="col-md-6" for="pme">Precio al por menor&nbsp;<span class="text-danger">*</span></label>
@@ -175,8 +161,6 @@
                                                 <thead>
                                                     <tr class="table-primary">
                                                         <th>Quitar</th>
-                                                        <th>Tamaño</th>
-                                                        <th>Color</th>
                                                         <th>Precio al por menor</th>
                                                         <th>Precio al por mayor</th>
                                                     </tr>
@@ -188,8 +172,6 @@
                                                                 <i class="fas fa-minus"></i>
                                                             </button>
                                                         </td>
-                                                        <td v-text="producto.size"></td>
-                                                        <td v-text="producto.color"></td>
                                                         <td v-text="producto.precio_menor"></td>
                                                         <td v-text="producto.precio_mayor"></td>
                                                     </tr>
@@ -207,20 +189,18 @@
                         <div v-if="Modal.numero==2">
                             <div class="row form-group">
                                 <label class="col-md-2">Nombre:</label>
-                                <label class="col-md-5" v-text="SuperProducto.nombre"></label>
-                                <label class="col-md-5">Fecha de creacion:   {{SuperProducto.created_at}}</label>
+                                <label class="col-md-5" v-text="Categoria.nombre"></label>
+                                <label class="col-md-5">Fecha de creacion:   {{Categoria.created_at}}</label>
                                 <label class="col-md-2">Descripcion:</label>
-                                <label class="col-md-10" v-text="SuperProducto.descripcion?SuperProducto.descripcion:'-'"></label>
+                                <label class="col-md-10" v-text="Categoria.descripcion?Categoria.descripcion:'-'"></label>
                             </div>
                             <div class="row form-group">
                                 <label class="col-md-9 font-weight-bold">LISTA DE PRODUCTOS</label>
-                                <label class="col-md-3">Super Stock:   {{SuperProducto.superstock}}</label>
+                                <label class="col-md-3">Stock Total:   {{Categoria.stock}}</label>
                                 <div class="col-md-12" v-if="ListaProducto.length">
                                     <table class="table table-bordered table-striped table-sm text-gray-900">
                                         <thead>
                                             <tr class="table-primary">
-                                                <th>Tamaño</th>
-                                                <th>Color</th>
                                                 <th>Costo de produccion</th>
                                                 <th>Precio al por menor</th>
                                                 <th>Precio al por mayor</th>
@@ -229,8 +209,6 @@
                                         </thead>
                                         <tbody>
                                             <tr v-for="(producto, indice) in ListaProducto" :key="indice" >
-                                                <td v-text="producto.size"></td>
-                                                <td v-text="producto.color"></td>
                                                 <td v-text="producto.costo_produccion?producto.costo_produccion:'-'"></td>
                                                 <td v-text="producto.precio_menor"></td>
                                                 <td v-text="producto.precio_mayor"></td>
@@ -258,11 +236,11 @@
                             </div>
                             <div class="row form-group">
                                 <label class="col-md-3" for="nom">Nombre&nbsp;<span class="text-danger">*</span></label>
-                                <input type="text" class="col-md-9 form-control form-control-sm" v-model="SuperProducto.nombre" placeholder="Ingrese el nombre" id="nom">
+                                <input type="text" class="col-md-9 form-control form-control-sm" v-model="Categoria.nombre" placeholder="Ingrese el nombre" id="nom">
                             </div>
                             <div class="row form-group">
                                 <label class="col-md-3" for="des">Descripcion</label>
-                                <input type="text" class="col-md-9 form-control form-control-sm" v-model="SuperProducto.descripcion" placeholder="Ingrese la descripcion" id="des">
+                                <input type="text" class="col-md-9 form-control form-control-sm" v-model="Categoria.descripcion" placeholder="Ingrese la descripcion" id="des">
                             </div>
                         </div>
                     </div>
@@ -292,13 +270,13 @@
     export default {
         data(){
             return {
-                //datos de superproducto
-                ListaSuperProducto: [],
-                SuperProducto: {
+                //datos de Categorias
+                ListaCategorias: [],
+                Categoria: {
                     id: 0,
                     nombre: '',
                     descripcion: '',
-                    superstock: 0,
+                    stock: 0,
                     created_at: ''
                 },
 
@@ -306,13 +284,9 @@
                 ListaProducto: [],
                 Producto : {
                     id: 0,
-                    size: '',
-                    color: '',
                     precio_menor: 0.00,
                     precio_mayor: 0.00,
                 },
-                SelectSize: [],
-                SelectColor: [],
 
                 //datos de busqueda y filtracion
                 Busqueda: {
@@ -358,7 +332,7 @@
                 },
                 //datos de la ruta de consultas
                 Ruta: {
-                    superproducto: '/superproducto',
+                    categoria: '/categoria',
                     producto: '/producto',
                     data: '/data',
                     serverPhp: 'http://127.0.0.1:8000'
@@ -407,14 +381,14 @@
                 this.Paginacion.currentPage = page;
 
                 var me = this;
-                var url = this.Ruta.superproducto+'?'
+                var url = this.Ruta.categoria+'?'
                         +'page='+this.Paginacion.currentPage
                         +'&texto='+this.Busqueda.texto
                         +'&filas='+this.Busqueda.filas;
                 
-                axios.get(url).then(function (response) {
-                    me.ListaSuperProducto = response.data.superproductos.data;
-                    me.Paginacion = response.data.paginacion;
+                axios.get(url).then(response => {
+                    this.ListaCategorias = response.data.categorias.data;
+                    this.Paginacion = response.data.paginacion;
                 }).catch(function (error) {
                     console.log(error);
                 });
@@ -423,10 +397,10 @@
                 if ( this.validar(1) ) return;
                 
                 var me = this;
-                var url = this.Ruta.superproducto+'/agregar';
+                var url = this.Ruta.categoria+'/agregar';
                 axios.post(url, {
-                    'nombre' : this.SuperProducto.nombre,
-                    'descripcion' : this.SuperProducto.descripcion,
+                    'nombre' : this.Categoria.nombre,
+                    'descripcion' : this.Categoria.descripcion,
                     'listaproducto': this.ListaProducto
                 }).then(function(response){
                     var estado = response.data.estado;
@@ -437,7 +411,7 @@
                             position: 'top-end',
                             toast: true,
                             type: 'success',
-                            title: 'El super producto se ha AGREGADO correctamente',
+                            title: 'La categoria se ha AGREGADO correctamente',
                             showConfirmButton: false,
                             timer: 4500,
                             animation:false,
@@ -458,11 +432,11 @@
                 if ( this.validar(4) ) return;
 
                 var me = this;
-                var url = this.Ruta.superproducto+'/editar';
+                var url = this.Ruta.categoria+'/editar';
                 axios.put(url, {
-                    'id' : this.SuperProducto.id,
-                    'nombre' : this.SuperProducto.nombre,
-                    'descripcion' : this.SuperProducto.descripcion
+                    'id' : this.Categoria.id,
+                    'nombre' : this.Categoria.nombre,
+                    'descripcion' : this.Categoria.descripcion
                 }).then(function(response){
                     var estado = response.data.estado;
                     if ( estado ) {
@@ -472,7 +446,7 @@
                             position: 'top-end',
                             toast: true,
                             type: 'success',
-                            title: 'El super producto se ha EDITADO correctamente',
+                            title: 'La categoria se ha EDITADO correctamente',
                             showConfirmButton: false,
                             timer: 4500,
                             animation:false,
@@ -493,16 +467,12 @@
                 
                 let producto = {
                     id: 0,
-                    size: this.Producto.size,
-                    color: this.Producto.color,
                     precio_menor: Number.parseFloat(this.Producto.precio_menor).toFixed(2),
                     precio_mayor: Number.parseFloat(this.Producto.precio_mayor).toFixed(2)
                 };
                 
                 this.ListaProducto.push(producto);
 
-                this.Producto.size = '';
-                this.Producto.color = '';
                 this.Producto.precio_menor = 0.00;
                 this.Producto.precio_mayor = 0.00;
             },
@@ -514,8 +484,8 @@
             //     var url = this.Ruta+'/setEstado';
 
             //     axios.put(url, {
-            //         'id' : me.SuperProducto.id,
-            //         'estado': me.SuperProducto.estado
+            //         'id' : me.Categoria.id,
+            //         'estado': me.Categoria.estado
             //     }).then(function (response) {
             //         me.listar();
             //         var estado = response.data.estado;
@@ -524,7 +494,7 @@
             //             position: 'top-end',
             //             toast: true,
             //             type: estado==1?'success':'info',
-            //             title: 'El super producto'+ (estado==1?' se ha':' NO se ha') + (me.SuperProducto.estado==1?' ACTIVADO':' DESACTIVADO') +' correctamente',
+            //             title: 'La categoria '+ (estado==1?' se ha':' NO se ha') + (me.Categoria.estado==1?' ACTIVADO':' DESACTIVADO') +' correctamente',
             //             showConfirmButton: false,
             //             timer: 4500,
             //             animation:false,
@@ -537,50 +507,45 @@
             //     });
             // },
             abrirModalAgregar(){
-                this.abrirModal(1, 'Nuevo Super Producto', 'modal-xl', 'Agregar Super Producto', 'Cancelar');
+                this.abrirModal(1, 'Nueva Categoria', 'modal-xl', 'Agregar Categoria', 'Cancelar');
 
-                this.SuperProducto.nombre = '';
-                this.SuperProducto.descripcion = '';
+                this.Categoria.nombre = '';
+                this.Categoria.descripcion = '';
 
                 this.Producto.id = 0;
-                this.Producto.size = '';
-                this.Producto.color = '';
                 this.Producto.precio_menor = 0.00;
                 this.Producto.precio_mayor = 0.00;
 
                 this.ListaProducto = [];
-
-                this.selectSize();
-                this.selectColor();
             },
             abrirModalVer(data = []){
-                this.abrirModal(2, 'Ver Super Producto', 'modal-lg', '', 'Cerrar');
+                this.abrirModal(2, 'Ver Categoria', 'modal-lg', '', 'Cerrar');
                 
-                this.SuperProducto.id = data['id'];
-                this.SuperProducto.nombre = data['nombre'];
-                this.SuperProducto.descripcion = data['descripcion'];
-                this.SuperProducto.superstock = data['superstock'];
-                this.SuperProducto.estado = data['estado'];
-                this.SuperProducto.created_at = data['created_at'];
+                this.Categoria.id = data['id'];
+                this.Categoria.nombre = data['nombre'];
+                this.Categoria.descripcion = data['descripcion'];
+                this.Categoria.stock = data['stock'];
+                this.Categoria.estado = data['estado'];
+                this.Categoria.created_at = data['created_at'];
 
                 this.listaProducto();
             },
             abrirModalEditar(data = []){
-                this.abrirModal(3, 'Editar Super Producto', '', 'Editar', 'Cancelar');
+                this.abrirModal(3, 'Editar Categoria', '', 'Editar', 'Cancelar');
                 
-                this.SuperProducto.id = data['id'];
-                this.SuperProducto.nombre = data['nombre'];
-                this.SuperProducto.descripcion = data['descripcion'];
+                this.Categoria.id = data['id'];
+                this.Categoria.nombre = data['nombre'];
+                this.Categoria.descripcion = data['descripcion'];
 
-                this.DataSuperProducto = data;
+                this.DataCategoria = data;
             },
             // abrirModalSetEstado(data = [], estado){
-            //     this.SuperProducto.id = data['id'];
-            //     this.SuperProducto.nombre = data['nombre'];
-            //     this.SuperProducto.estado = estado;
+            //     this.Categoria.id = data['id'];
+            //     this.Categoria.nombre = data['nombre'];
+            //     this.Categoria.estado = estado;
 
             //     Swal.fire({
-            //         title: '¿Esta seguro de '+ (this.SuperProducto.estado?'ACTIVAR':'DESACTIVAR') +' el super producto "'+this.SuperProducto.nombre+'"?',
+            //         title: '¿Esta seguro de '+ (this.Categoria.estado?'ACTIVAR':'DESACTIVAR') +' la categoria "'+this.Categoria.nombre+'"?',
             //         type: 'warning',
             //         showCancelButton: true,
             //         confirmButtonText: 'Aceptar',
@@ -618,15 +583,13 @@
                 this.Error.numero = 0;
                 this.Error.mensaje = [];
 
-                this.SuperProducto.id = 0;
-                this.SuperProducto.nombre = '';
-                this.SuperProducto.descripcion = '';
-                this.SuperProducto.superstock = 0;
-                this.SuperProducto.created_at = '';
+                this.Categoria.id = 0;
+                this.Categoria.nombre = '';
+                this.Categoria.descripcion = '';
+                this.Categoria.stock = 0;
+                this.Categoria.created_at = '';
 
                 this.Producto.id = 0;
-                this.Producto.size = '';
-                this.Producto.color = '';
                 this.Producto.precio_menor = 0;
                 this.Producto.precio_mayor = 0;
 
@@ -634,33 +597,9 @@
 
                 this.ListaProducto = [];
             },
-            selectSize(){
-                if ( !this.SelectSize.length ) {
-                    var me = this;
-                    var url = this.Ruta.data+'/selectSize';
-
-                    axios.get(url).then(function (response) {
-                        me.SelectSize = response.data;
-                    }).catch(function (error) {
-                        console.log(error);
-                    });
-                }
-            },
-            selectColor(){
-                if ( !this.SelectColor.length ) {
-                    var me = this;
-                    var url = this.Ruta.data+'/selectColor';
-
-                    axios.get(url).then(function(response){
-                        me.SelectColor = response.data;
-                    }).catch(function(error){
-                        console.log(error);
-                    });
-                }
-            },
             listaProducto(){
                 var me = this;
-                var url = this.Ruta.producto+'/listaProducto?id='+this.SuperProducto.id;
+                var url = this.Ruta.producto+'/listaProducto?id='+this.Categoria.id;
                 
                 axios.get(url).then(function (response) {
                     me.ListaProducto = response.data;
@@ -684,19 +623,17 @@
 
                 switch (numero) {
                     case 1:
-                        if ( !this.SuperProducto.nombre ) this.Error.mensaje.push("Debe ingresar un nombre");   //nombre
+                        if ( !this.Categoria.nombre ) this.Error.mensaje.push("Debe ingresar un nombre");   //nombre
                         break;
                     case 2:
                         var found = 0;
                         for (let i = 0; i < this.ListaProducto.length; i++) {
-                            if ( this.Producto.size == this.ListaProducto[i].size && this.Producto.color == this.ListaProducto[i].color ) {found = 1; break;}
+                            if ( this.Producto.nombre === this.ListaProducto[i].nombre ) {found = 1; break;}
                         }
 
                         if ( found ) {
                             this.Error.mensaje.push("Ese producto ya se encuentra en lista");                                           //producto existente
                         } else {
-                            if ( !this.Producto.size ) this.Error.mensaje.push("Debe seleccionar un tamaño");                           //size
-                            if ( !this.Producto.color ) this.Error.mensaje.push("Debe seleccionar un color");                           //color
                             if ( this.Producto.precio_menor == 0 ) this.Error.mensaje.push("Debe ingresar un precio al por menor");     //precio_menor
                             if ( this.Producto.precio_menor < 0 ) this.Error.mensaje.push("El precio al por menor debe ser positivo");  //precio_menor
                             if ( this.Producto.precio_mayor == 0 ) this.Error.mensaje.push("Debe ingresar un precio al por mayor");     //precio_mayor
@@ -704,12 +641,12 @@
                         }
                         break;
                     case 3:
-                        this.Error.mensaje.push("El Super Producto ya esta registrado");    //superproducto existente
+                        this.Error.mensaje.push("La categoria ya esta registrado");    //Categoria existente
                         break;
                     case 4:
-                        for (let i = 0; i < this.ListaSuperProducto.length; i++) {
-                            if ( this.SuperProducto.id == this.ListaSuperProducto[i].id ) {
-                                if ( this.SuperProducto.nombre == this.ListaSuperProducto[i].nombre && this.SuperProducto.descripcion == this.ListaSuperProducto[i].descripcion ) {
+                        for (let i = 0; i < this.ListaCategorias.length; i++) {
+                            if ( this.Categoria.id == this.ListaCategorias[i].id ) {
+                                if ( this.Categoria.nombre == this.ListaCategorias[i].nombre && this.Categoria.descripcion == this.ListaCategorias[i].descripcion ) {
                                     this.Error.mensaje.push("Ningun cambio realizado");    //sin cambios
                                 }
                                 break;
@@ -734,7 +671,7 @@
                 }
             },
             generatePdf(){
-                window.open(this.Ruta.serverPhp + '/superproducto/generatePdf','_blank');
+                window.open(this.Ruta.serverPhp + '/categoria/generatePdf','_blank');
                 this.Button.press = false;
             },
         },

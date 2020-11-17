@@ -90,11 +90,11 @@ Route::group(['middleware' => ['auth']], function () {
         Route::put('/material/desactivar', 'MaterialController@desactivar');
         Route::get('/material/selectMaterial', 'MaterialController@selectMaterial'); 
 
-        //RUTAS PARA SUPERPRODUCTO
-        Route::get('/superproducto', 'SuperProductoController@listar'); //metodos generales
-        Route::post('/superproducto/agregar', 'SuperProductoController@agregar');
-        Route::put('/superproducto/editar', 'SuperProductoController@editar');
-        Route::get('/superproducto/selectSuperProducto', 'SuperProductoController@selectSuperProducto'); //metodos secundarios
+        //RUTAS PARA CATEGORIA
+        Route::get('/categoria', 'CategoriaController@listar'); //metodos generales
+        Route::post('/categoria/agregar', 'CategoriaController@agregar');
+        Route::put('/categoria/editar', 'CategoriaController@editar');
+        Route::get('/categoria/selectCategoria', 'CategoriaController@selectCategoria'); //metodos secundarios
 
         //RUTAS PARA PRODUCTO
         Route::get('/producto', 'ProductoController@listar'); //metodos generales
@@ -127,7 +127,7 @@ Route::group(['middleware' => ['auth']], function () {
 
         //RUTAS DE PDF
         Route::get('/material/generatePdf', 'MaterialController@generatePdf');
-        Route::get('/superproducto/generatePdf', 'SuperProductoController@generatePdf');
+        Route::get('/categoria/generatePdf', 'CategoriaController@generatePdf');
         Route::get('/producto/generatePdf', 'ProductoController@generatePdf');
         Route::get('/abasto/generatePdf', 'AbastoController@generatePdf');
         Route::get('/abasto/generatePdfSpecific', 'AbastoController@generatePdfSpecific');
