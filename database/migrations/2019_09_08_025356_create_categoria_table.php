@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateSuperproductoTable extends Migration
+class CreateCategoriaTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,11 @@ class CreateSuperproductoTable extends Migration
      */
     public function up()
     {
-        Schema::create('superproducto', function (Blueprint $table) {
+        Schema::create('categoria', function (Blueprint $table) {
             $table->mediumIncrements('id'); // usa 3 bytes, Cantiada max: 8 388 607
             $table->string('nombre', 100)->unique();
             $table->string('descripcion', 60)->nullable();
-            $table->smallInteger('superstock')->default(0); // usa 2 bytes - máximo 32767 datos
+            $table->smallInteger('stock')->default(0); // usa 2 bytes - máximo 32767 datos
             
             $table->date('created_at'); //Fecha de creacion manual
         });
@@ -30,6 +30,6 @@ class CreateSuperproductoTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('superproducto');
+        Schema::dropIfExists('categoria');
     }
 }

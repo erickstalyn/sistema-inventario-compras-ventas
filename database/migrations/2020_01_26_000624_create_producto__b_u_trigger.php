@@ -30,9 +30,9 @@ class CreateProductoBUTrigger extends Migration
                     WHERE dproducto.producto_id = new.id and dproducto.precio_mayor = old.precio_mayor;
             END IF;
             IF(new.stock <> old.stock) THEN
-                UPDATE superproducto
-                set superstock = superstock + (new.stock-old.stock)
-                where id = new.superproducto_id;
+                UPDATE categoria
+                set stock = stock + (new.stock-old.stock)
+                where id = new.categoria_id;
             END IF;
         end
         ");
