@@ -44,9 +44,15 @@
         <div class="card text-white bg-primary py-5 d-md-down-none" style="width:44%">
           <div class="card-body text-center">
             <div>
-              <h2>SILMAR</h2>
-              <h5>Sistema de Control de Inventario</h5>
-              {{-- <a href="" target="_blank" class="btn btn-primary active mt-3">EasyCode</a> --}}
+              <h3>Universidad Nacional Pedro Ruiz Gallo</h3>
+              <h4 class="mb-4">Kardex | Grupo 04</h4>
+              <ul class="">
+                <li class="mb-1">Baldera Cardozo Jhordy Benjamín</li>
+                <li class="mb-1">Céspedes Días José Anderson</li>
+                <li class="mb-1">Chapoñan Villalobos Areliz Verania</li>
+                <li class="mb-1">Pacherrez Puyén Erick Stalyn</li>
+                <li class="mb-1">Purihuaman Nicolás Mercy Jadira</li>
+              </ul>
             </div>
           </div>
         </div>
