@@ -5,9 +5,9 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="SILMAR - Control de inventario">
+  <meta name="description" content="KARDEX - Control de inventario">
   <meta name="author" content="EasyCode">
-  <meta name="keyword" content="SILMAR - Control de inventario">
+  <meta name="keyword" content="KARDEX - Control de inventario">
 
   <title>KARDEX | Grupo 04</title>
   

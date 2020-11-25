@@ -130,6 +130,6 @@ class MaterialController extends Controller
         $cont = Material::count();
         
         $pdf = \PDF::loadView('pdf.materialpdf', ['material'=>$material, 'cont'=>$cont]);
-        return $pdf->download('lista_materiales_silmar.pdf');
+        return $pdf->download('lista_materiales.pdf');
     }
 }

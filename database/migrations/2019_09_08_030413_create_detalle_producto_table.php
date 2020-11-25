@@ -21,6 +21,7 @@ class CreateDetalleProductoTable extends Migration
             $table->smallInteger('traslado')->default(0);// usa 2 bytes - máximo 32767 datos
             $table->decimal('precio_menor', 10,2);
             $table->decimal('precio_mayor', 10,2);
+            $table->integer('tiempo_espera');    // Esta en dias
 
             $table->unsignedTinyInteger('centro_id');
             $table->foreign('centro_id')->references('id')->on('centro');

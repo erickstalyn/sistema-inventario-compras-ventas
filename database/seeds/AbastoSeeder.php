@@ -2,6 +2,8 @@
 
 use Illuminate\Database\Seeder;
 use Carbon\Carbon;
+use App\Abasto;
+
 class AbastoSeeder extends Seeder
 {
     /**
@@ -30,15 +32,7 @@ class AbastoSeeder extends Seeder
         //     'created_at' => $now
         // ));
 
+        factory(Abasto::class, 100)->create();
 
-
-        // DB::table('abasto')->insert(array(//3
-        //     'total' => '40',
-        //     'tipo' => 0, 
-        //     'proveedor_id' => 2,
-        //     // 'proveedor_nombre' => 'Amelia Sofía Rojas Cordova',
-        //     'centro_id' => 1, //El puesto que realizó el abasto
-        //     'created_at' => $now
-        // ));
     }
 }

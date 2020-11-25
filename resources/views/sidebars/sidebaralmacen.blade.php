@@ -38,12 +38,12 @@
         </li>
 
         <!-- Elemento de navegación - MENÚ PRODUCCIONES -->
-        <li class="nav-item">
+        {{-- <li class="nav-item">
             <a class="nav-link collapsed" href="#" @click="menu=2">
                 <i class="fas fa-plane"></i>
                 <span >Producciones</span>
             </a>
-        </li>
+        </li> --}}
         <!-- Elemento de navegación - MENÚ ENVIOS -->
         <li class="nav-item">
           <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#envios" aria-expanded="true" aria-controls="envios">

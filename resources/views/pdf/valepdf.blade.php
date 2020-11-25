@@ -135,10 +135,10 @@
             </div>
             <div id="datos">
                 <p id="encabezado">
-                    <b>EMPRESA SILMAR</b>
+                    <b>KARDEX</b>
                     <br>José Gálvez 1368, Lambayeque - Chiclayo, Perú
                     <br>Telefono:(+51)931742904<br>
-                    Email: empresa_silmar@gmail.com<br><br>
+                    Email: kardexinc@gmail.com<br><br>
                     <u><i>Comprobante de vale</i></u>
                 </p>
             </div>

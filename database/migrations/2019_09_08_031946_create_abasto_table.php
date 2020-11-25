@@ -19,12 +19,13 @@ class CreateAbastoTable extends Migration
             $table->decimal('total_faltante', 8, 2)->nullable();
             $table->boolean('tipo'); // 0: Contado, 1: Credito
             $table->string('proveedor_nombre', 120)->nullable();
-
+            // $table->date('lead_time')->;
             $table->unsignedSmallInteger('proveedor_id')->nullable();
-            $table->foreign('proveedor_id')->references('id')->on('persona');
             $table->unsignedSmallInteger('administrador_id')->nullable();
-            $table->foreign('administrador_id')->references('id')->on('persona');
             $table->unsignedTinyInteger('centro_id')->nullable();
+
+            $table->foreign('proveedor_id')->references('id')->on('persona');
+            $table->foreign('administrador_id')->references('id')->on('persona');
             $table->foreign('centro_id')->references('id')->on('centro');
 
             $table->dateTime('created_at'); //Fecha de creación manual

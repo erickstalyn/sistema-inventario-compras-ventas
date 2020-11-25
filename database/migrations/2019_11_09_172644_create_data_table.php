@@ -13,22 +13,22 @@ class CreateDataTable extends Migration
      */
     public function up()
     {
-        Schema::create('data', function (Blueprint $table) {
-            $table->smallIncrements('id'); // usa 2 bytes - máximo 32767 datos
-            $table->char('tipo',1);
-            /*
-                C -> color
-                T -> tamaño
-                U -> unidad
-            */
-            $table->string('subtipo',25)->nullable();
-            /*
-                Peso
-                Longitud
-                unidades propiamente dicha :v
-            */
-            $table->string('nombre', 20);
-        });
+        // Schema::create('data', function (Blueprint $table) {
+        //     $table->smallIncrements('id'); // usa 2 bytes - máximo 32767 datos
+        //     $table->char('tipo',1);
+        //     /*
+        //         C -> color
+        //         T -> tamaño
+        //         U -> unidad
+        //     */
+        //     $table->string('subtipo',25)->nullable();
+        //     /*
+        //         Peso
+        //         Longitud
+        //         unidades propiamente dicha :v
+        //     */
+        //     $table->string('nombre', 20);
+        // });
     }
 
     /**
@@ -38,6 +38,6 @@ class CreateDataTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('data');
+        // Schema::dropIfExists('data');
     }
 }

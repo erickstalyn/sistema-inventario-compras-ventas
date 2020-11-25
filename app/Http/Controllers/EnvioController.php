@@ -176,7 +176,7 @@ class EnvioController extends Controller
 
             DB::commit();
         } catch(Exception $e) {
-            echo($e);
+            // echo($e);
             DB::rollback();
         }
 
@@ -193,7 +193,7 @@ class EnvioController extends Controller
 
             DB::commit();
         } catch (Exception $e) {
-            echo($e);
+            // echo($e);
             DB::rollback();
         }
     }

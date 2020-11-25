@@ -1,6 +1,9 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use App\Persona;
+use App\Detalle_funcion;
+use App\Funcion;
 
 class Detalle_funcionSeeder extends Seeder
 {
@@ -11,17 +14,22 @@ class Detalle_funcionSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('detalle_funcion')->insert(array(
-            'persona_id'=> 1,
-            'funcion_id'=> 3,
-        ));
-        DB::table('detalle_funcion')->insert(array(
-            'persona_id'=> 2,
-            'funcion_id'=> 2,
-        ));
-        DB::table('detalle_funcion')->insert(array(
-            'persona_id'=> 3,
-            'funcion_id'=> 2,
-        ));
+        $personas = Persona::where('dni', '<>', '71736657')->get();
+        $cliente = Funcion::where('descripcion', 'like', '%cliente%')->first();
+        $proveedor = Funcion::where('descripcion', 'like', '%proveedor%')->first();
+
+        foreach ($personas as $persona) {
+            if ( $persona->tipo === 'E' ) {
+                Detalle_funcion::create([
+                    'persona_id' => $persona->id,
+                    'funcion_id' => $proveedor->id
+                ]);
+            } else {
+                Detalle_funcion::create([
+                    'persona_id' => $persona->id,
+                    'funcion_id' => $cliente->id
+                ]);
+            }
+        }
     }
 }

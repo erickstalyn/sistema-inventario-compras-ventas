@@ -13,33 +13,19 @@ class CreateProductoAITrigger extends Migration
      */
     public function up()
     {
-        DB::unprepared("
-        CREATE TRIGGER producto_AI
-        AFTER INSERT
-        ON producto
-        FOR EACH ROW
-        BEGIN
-            INSERT INTO detalle_producto(substock, precio_menor, precio_mayor, centro_id, producto_id)
-            values(0, new.precio_menor, new.precio_mayor, 1, new.id);
+        // DB::unprepared("
+        // CREATE TRIGGER producto_AI
+        // AFTER INSERT
+        // ON producto
+        // FOR EACH ROW
+        // BEGIN
+        //     INSERT INTO detalle_producto(substock, precio_menor, precio_mayor, centro_id, producto_id)
+        //     values(0, new.precio_menor, new.precio_mayor, 1, new.id);
         
-            INSERT INTO detalle_producto(substock, precio_menor, precio_mayor, centro_id, producto_id)
-            values(0, new.precio_menor, new.precio_mayor, 2, new.id);
-        
-        
-            INSERT INTO detalle_producto(substock, precio_menor, precio_mayor, centro_id, producto_id)
-            values(0, new.precio_menor, new.precio_mayor, 3, new.id);
-        
-            INSERT INTO detalle_producto(substock, precio_menor, precio_mayor, centro_id, producto_id)
-            values(0, new.precio_menor, new.precio_mayor, 4, new.id);
-        
-            INSERT INTO detalle_producto(substock, precio_menor, precio_mayor, centro_id, producto_id)
-            values(0, new.precio_menor, new.precio_mayor, 5, new.id);
-        
-        
-            INSERT INTO detalle_producto(substock, precio_menor, precio_mayor, centro_id, producto_id)
-            values(0, new.precio_menor, new.precio_mayor, 6, new.id);
-        end
-        ");
+        //     INSERT INTO detalle_producto(substock, precio_menor, precio_mayor, centro_id, producto_id)
+        //     values(0, new.precio_menor, new.precio_mayor, 2, new.id);
+        // end
+        // ");
     }
 
     /**
@@ -49,6 +35,6 @@ class CreateProductoAITrigger extends Migration
      */
     public function down()
     {
-        DB::unprepared('DROP TRIGGER IF EXISTS producto_AI');
+        // DB::unprepared('DROP TRIGGER IF EXISTS producto_AI');
     }
 }

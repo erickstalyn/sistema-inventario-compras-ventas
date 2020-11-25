@@ -448,7 +448,7 @@ class VentaController extends Controller {
         // ];
 
         $pdf = \PDF::loadView('pdf.comprobante_venta', ['venta'=>$venta, 'detalles'=>$detalles, 'pagos' => $pagos]);
-        return $pdf->download('comprobante_venta_silmar_' . $venta[0]->codigo . '.pdf');
+        return $pdf->download('comprobante_venta_' . $venta[0]->codigo . '.pdf');
     }
     
     public function getVentaWithAll(Request $request){

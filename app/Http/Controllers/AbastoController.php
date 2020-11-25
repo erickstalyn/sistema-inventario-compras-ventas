@@ -38,8 +38,8 @@ class AbastoController extends Controller
                         'abasto.total as total', 'abasto.total_faltante as total_faltante',
                         'abasto.tipo as tipo_abasto', 'envio.estado as estado_envio')
                         ->join('persona', 'abasto.proveedor_id', '=', 'persona.id')
-                        ->leftjoin('envio', 'abasto.id', '=', 'envio.abasto_id')
-                        ->leftjoin('centro', 'envio.centro_to_id', 'centro.id')
+                        ->leftJoin('envio', 'abasto.id', '=', 'envio.abasto_id')
+                        ->leftJoin('centro', 'envio.centro_to_id', 'centro.id')
                             ->where(function ($query) use ($texto) {
                                 if ( $texto != '' ) {
                                     $query->where('persona.razon_social', 'like', '%'.$texto.'%')
@@ -52,32 +52,35 @@ class AbastoController extends Controller
                                     $query->where('envio.estado', '=', $estado);
                                 }
                             })
-                            ->where(function ($query) use ($dia, $mes, $year) {
-                                if($dia != '' && $mes != '' && $year != ''){//todos los campos llenos
-                                    $query->whereDay('abasto.created_at', $dia)
-                                        ->whereMonth('abasto.created_at', $mes)
-                                        ->whereYear('abasto.created_at', $year);
-                                }else if($dia != '' && $mes != ''){// dia y mes llenos
-                                    $query->whereDay('abasto.created_at', $dia)
-                                        ->whereMonth('abasto.created_at', $mes);
-                                }else if($dia != '' && $year != ''){//dia y año lleno
-                                    $query->whereDay('abasto.created_at', $dia)
-                                        ->whereYear('abasto.created_at', $year);
-                                }else if($mes != '' && $year != ''){//mes y año lleno
-                                    $query->whereMonth('abasto.created_at', $mes)
-                                        ->whereYear('abasto.created_at', $year);
-                                }else if($dia != ''){//dia lleno
-                                    $query->whereDay('abasto.created_at', $dia);
-                                }else if($mes != ''){//mes lleno
-                                    $query->whereMonth('abasto.created_at', $mes);
-                                }else if($year != ''){//año lleno
-                                    $query->whereYear('abasto.created_at', $year);
-                                }else{
-                                }
-                            })
-                            ->where('abasto.centro_id', '=', null)
+                            // ->where(function ($query) use ($dia, $mes, $year) {
+                            //     if ( $dia !== '' ) $query->whereDay('abasto.created_at', $dia);
+                            //     if ( $mes !== '' ) $query->whereMonth('abasto.created_at', $mes);
+                            //     if ( $year !== '' ) $query->whereYear('abasto.created_at', $year);
+                            //     // if($dia != '' && $mes != '' && $year != ''){//todos los campos llenos
+                            //     //     $query->whereDay('abasto.created_at', $dia)
+                            //     //         ->whereMonth('abasto.created_at', $mes)
+                            //     //         ->whereYear('abasto.created_at', $year);
+                            //     // }else if($dia != '' && $mes != ''){// dia y mes llenos
+                            //     //     $query->whereDay('abasto.created_at', $dia)
+                            //     //         ->whereMonth('abasto.created_at', $mes);
+                            //     // }else if($dia != '' && $year != ''){//dia y año lleno
+                            //     //     $query->whereDay('abasto.created_at', $dia)
+                            //     //         ->whereYear('abasto.created_at', $year);
+                            //     // }else if($mes != '' && $year != ''){//mes y año lleno
+                            //     //     $query->whereMonth('abasto.created_at', $mes)
+                            //     //         ->whereYear('abasto.created_at', $year);
+                            //     // }else if($dia != ''){//dia lleno
+                            //     //     $query->whereDay('abasto.created_at', $dia);
+                            //     // }else if($mes != ''){//mes lleno
+                            //     //     $query->whereMonth('abasto.created_at', $mes);
+                            //     // }else if($year != ''){//año lleno
+                            //     //     $query->whereYear('abasto.created_at', $year);
+                            //     // }else{
+                            //     // }
+                            // })
+                            // ->where('abasto.centro_id', '=', null)
                             // ->orderBy('abasto.id', 'asc')->get();
-                            ->orderBy($ordenarPor, $orden)->paginate($filas);
+                            ->orderBy('abasto.created_at', 'desc')->paginate($filas);
 
         return [
             'paginacion' => [
@@ -318,7 +321,7 @@ class AbastoController extends Controller
         $cont = Abasto::count();
         
         $pdf = \PDF::loadView('pdf.abastopdf', ['abasto'=>$abasto, 'cont'=>$cont])->setPaper('a4', 'landscape');
-        return $pdf->download('lista_abastos_silmar.pdf');
+        return $pdf->download('lista_abastos.pdf');
     }
 
     public function generatePdfSpecific(Request $request){
@@ -338,7 +341,7 @@ class AbastoController extends Controller
         $pagos = Abasto::findOrFail($request->code)->getPagos;
 
         $pdf = \PDF::loadView('pdf.comprobante_abasto', ['abasto'=>$abasto, 'detalles'=>$detalles, 'pagos' => $pagos]);
-        return $pdf->download('abasto_silmar_' . $request->code . '.pdf');
+        return $pdf->download('abasto_' . $request->code . '.pdf');
             
     }
 

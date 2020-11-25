@@ -125,6 +125,6 @@ class ProductoController extends Controller {
         $cont = Producto::count();
         
         $pdf = \PDF::loadView('pdf.productopdf', ['producto'=>$producto, 'cont'=>$cont]);
-        return $pdf->download('lista_productos_silmar.pdf');
+        return $pdf->download('lista_productos.pdf');
     }
 }

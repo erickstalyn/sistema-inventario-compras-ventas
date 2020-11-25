@@ -4,9 +4,9 @@
 
     @if(Auth::check())
         @if(Auth::user()->getRol->id===1)
-            <template v-if="menu==1">
+            {{-- <template v-if="menu==1">
                 <adm_material></adm_material>
-            </template>
+            </template> --}}
             <template v-if="menu==2">
                 <adm_categoria></adm_categoria>
             </template>
@@ -16,12 +16,12 @@
             <template v-if="menu==4">
                 <adm_abasto></adm_abasto>
             </template>
-            <template v-if="menu==5">
+            {{-- <template v-if="menu==5">
                 <adm_verpuesto></adm_verpuesto>
             </template>
             <template v-if="menu==6">
                 <adm_veralmacen></adm_veralmacen>
-            </template>
+            </template> --}}
             <template v-if="menu==7">
                 <adm_cliente></adm_cliente>
             </template>
@@ -60,9 +60,9 @@
             <template v-if="menu==1">
                 <alm_producto></alm_producto>
             </template>
-            <template v-if="menu==2">
+            {{-- <template v-if="menu==2">
                 <alm_produccion></alm_produccion>
-            </template>
+            </template> --}}
             <template v-if="menu==3">
                 <enviorealizado></enviorealizado>
             </template>

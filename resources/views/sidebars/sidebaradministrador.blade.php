@@ -54,7 +54,7 @@
     </li>
 
     <!-- Elemento de navegación: MENÚ CENTROS -->
-    <li class="nav-item">
+    {{-- <li class="nav-item">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#centros" aria-expanded="true" aria-controls="centros">
         <i class="fas fa-warehouse"></i>
         <span>Centros</span>
@@ -65,7 +65,7 @@
             <a class="collapse-item font-weight-bold" href="#" @click="menu=6">Mis Almacenes</a>
         </div>
     </div>
-    </li>
+    </li> --}}
 
     <!-- Elemento de navegación: MENÚ PERSONAS -->
     <li class="nav-item">

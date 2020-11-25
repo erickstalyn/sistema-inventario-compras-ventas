@@ -1,7 +1,10 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use Carbon\Carbon;
+use Faker\Factory as Faker;
+use App\Envio;
+use App\Abasto;
+// use DateTime;
 
 class EnvioSeeder extends Seeder
 {
@@ -12,42 +15,19 @@ class EnvioSeeder extends Seeder
      */
     public function run()
     {
-        // $now = Carbon::now('America/Lima')->toDateString();
-        // DB::table('envio')->insert(array(
-        //     'estado' => '0',//Enviado
-        //     'centro_from_id' => 4,
-        //     'centro_to_id' => 5,
-        //     'created_at' => $now
-        // ));
-        // DB::table('envio')->insert(array(
-        //     'estado' => '1',//Aceptado
-        //     'centro_from_id' => 4,
-        //     'centro_to_id' => 5,
-        //     'centro_to_id' => 5,
-        //     'created_at' => $now,
-        //     'updated_at' => $now
-        // ));
-        // DB::table('envio')->insert(array(
-        //     'estado' => '2',//Rechazado
-        //     'centro_from_id' => 4,
-        //     'centro_to_id' => 5,
-        //     'centro_to_id' => 5,
-        //     'created_at' => $now,
-        //     'updated_at' => $now
-        // ));
-        // DB::table('envio')->insert(array(
-        //     'estado' => '1',//Aceptado
-        //     'centro_to_id' => 4,
-        //     'abasto_id' => 2,
-        //     'created_at' => $now,
-        //     'updated_at' => $now
-        // ));
-        // DB::table('envio')->insert(array(
-        //     'estado' => '2', //Rechazado
-        //     'centro_to_id' => 4,
-        //     'abasto_id' => 2,
-        //     'created_at' => $now,
-        //     'updated_at' => $now
-        // ));
+        $abastos = Abasto::all();
+        $faker = Faker::create();
+
+        foreach ($abastos as $abasto) {
+            $updated_at = $faker->dateTimeBetween($abasto->created_at . " +5 days", $abasto->created_at . " +50 days");
+            if ( $updated_at > (new DateTime()) ) $updated_at = NULL;
+
+            factory(Envio::class, 1)->create([
+                'abasto_id' => $abasto->id,
+                'created_at' => $abasto->created_at,
+                'updated_at' => $updated_at,
+                'estado' => is_null($updated_at) ? 0 : 1
+            ]);
+        }
     }
 }
