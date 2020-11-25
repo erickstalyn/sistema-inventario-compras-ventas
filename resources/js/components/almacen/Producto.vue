@@ -366,8 +366,8 @@
                 axios.get(url, {
                     params: {
                         detalle_producto_id: id,
-                        fecha_inicial: '2020-06-01',
-                        fecha_final: '2020-10-31'
+                        fecha_inicial: '2020-01-01',
+                        fecha_final: '2020-12-31'
                     }
                 }).then(response => {
                     if ( response.data.state !== 'success' ) return;

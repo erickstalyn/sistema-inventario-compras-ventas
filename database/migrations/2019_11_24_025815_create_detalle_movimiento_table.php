@@ -18,8 +18,8 @@ class CreateDetalleMovimientoTable extends Migration
             $table->string('descripcion');
             $table->unsignedInteger('ingreso')->default(0);
             $table->unsignedInteger('egreso')->default(0);
-            $table->unsignedInteger('stock_old');
-            $table->unsignedInteger('stock_new');
+            $table->integer('stock_old');
+            $table->integer('stock_new');
             $table->datetime('fecha');
             $table->timestamps();
             $table->unsignedInteger('detalle_producto_id');

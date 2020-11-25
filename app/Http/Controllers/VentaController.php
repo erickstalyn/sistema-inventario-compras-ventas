@@ -21,6 +21,8 @@ use App\Detalle_funcion;
 use App\Rol;
 use App\Notifications\NotifyAdmin;
 use App\Http\Controllers\DetalleVentaController;
+use App\Detalle_producto;
+use App\DetalleMovimiento;
 
 class VentaController extends Controller {
     
@@ -271,6 +273,17 @@ class VentaController extends Controller {
                 $detalle->precio = $dataVenta['tipo_precio']=='1'?$det['precio_menor']:$det['precio_mayor'];
                 $detalle->subtotal = $det['subtotal'];
                 $detalle->save();
+            
+                $dProducto = Detalle_producto::where('id', $det['detalle_producto_id'])->first();
+                
+                $movimiento = new DetalleMovimiento();
+                $movimiento->detalle_producto_id = $det['detalle_producto_id']; 
+                $movimiento->descripcion = 'Venta al cliente';
+                $movimiento->fecha = $venta->created_at;
+                $movimiento->egreso = $det['cantidad'];
+                $movimiento->stock_old = $dProducto->substock;
+                $movimiento->stock_new = $dProducto->substock + $det['cantidad'];
+                $movimiento->save();
             }
 
             //Sección notificaciones

@@ -14,9 +14,9 @@
                     </button>&nbsp;
                 </div>
                 <div class="col-md-3 d-flex justify-content-end">
-                    <button type="button" class="btn btn-success" @click="abrirModalAbastecer()" v-if="Caja.state==1">
+                    <!-- <button type="button" class="btn btn-success" @click="abrirModalAbastecer()" v-if="Caja.state==1">
                         <i class="fas fa-comment-dollar" :class="DetalleVenta.button.class"></i>&nbsp;&nbsp;Productos externos
-                    </button>
+                    </button> -->
                 </div>
             </div>
 
@@ -142,7 +142,7 @@
                             </div>
                             <div class="col-md-12 p-0 m-0 input-group" v-if="Step.number==0" style="height: 26rem;">
                                 <div class="container-small col-md-4">
-                                    <div v-if="Modal.step==0" class="shadow rounded bg-warning" style="border: 1px solid; height: 26rem;">
+                                    <div v-if="Modal.step==0" class="shadow rounded bg-warning pt-2" style="border: 1px solid; height: 26rem;">
                                         <!-- <div class="container-small col-md-12 input-group form-group p-0">
                                             <button type="button" class="col-md-6 btn btn-warning btn" @click="Modal.step=0" style="border: 1px solid; border-color: black;">
                                                 <label class="font-weight-bold m-0" style="color: black;">Productos</label>

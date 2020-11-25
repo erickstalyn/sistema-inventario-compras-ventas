@@ -13,19 +13,19 @@ class CreateDetalleVentaBITrigger extends Migration
      */
     public function up()
     {
-        DB::unprepared("
-        CREATE TRIGGER detalle_venta_BI
-        BEFORE INSERT 
-        ON detalle_venta
-        FOR EACH ROW
-        BEGIN
-            IF ( NEW.detalle_producto_id IS NOT NULL ) THEN
-                UPDATE detalle_producto 
-                SET substock = substock - NEW.cantidad
-                WHERE id = NEW.detalle_producto_id;
-            END IF;
-        END
-        ");
+        // DB::unprepared("
+        // CREATE TRIGGER detalle_venta_BI
+        // BEFORE INSERT 
+        // ON detalle_venta
+        // FOR EACH ROW
+        // BEGIN
+        //     IF ( NEW.detalle_producto_id IS NOT NULL ) THEN
+        //         UPDATE detalle_producto 
+        //         SET substock = substock - NEW.cantidad
+        //         WHERE id = NEW.detalle_producto_id;
+        //     END IF;
+        // END
+        // ");
     }
 
     /**
@@ -35,6 +35,6 @@ class CreateDetalleVentaBITrigger extends Migration
      */
     public function down()
     {
-        DB::unprepared('DROP TRIGGER IF EXISTS detalle_venta_BI');
+        // DB::unprepared('DROP TRIGGER IF EXISTS detalle_venta_BI');
     }
 }

@@ -16,7 +16,7 @@ class DetalleAbastoSeeder extends Seeder
         $abastos = Abasto::all();
 
         foreach ($abastos as $abasto) {
-            factory(Detalle_abasto::class, rand(1, 7))->create(['abasto_id' => $abasto->id]);
+            factory(Detalle_abasto::class, rand(1, 5))->create(['abasto_id' => $abasto->id]);
         }
         
     }
