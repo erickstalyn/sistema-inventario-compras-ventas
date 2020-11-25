@@ -8,7 +8,7 @@ use App\Centro;
 
 $factory->define(Envio::class, function (Faker $faker) {
     return [
-        'tipo' => $faker->randomElement([1, 2]),
+        'tipo' => 1,
         'centro_to_id' => Centro::all()->random()['id']
     ];
 });

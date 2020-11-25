@@ -16,9 +16,11 @@ class CreateDetalleMovimientoTable extends Migration
         Schema::create('detalle_movimiento', function (Blueprint $table) {
             $table->increments('id');
             $table->string('descripcion');
-            $table->boolean('tipo');
-            $table->unsignedInteger('cantidad');
-            $table->date('fecha');
+            $table->unsignedInteger('ingreso')->default(0);
+            $table->unsignedInteger('egreso')->default(0);
+            $table->unsignedInteger('stock_old');
+            $table->unsignedInteger('stock_new');
+            $table->datetime('fecha');
             $table->timestamps();
             $table->unsignedInteger('detalle_producto_id');
 

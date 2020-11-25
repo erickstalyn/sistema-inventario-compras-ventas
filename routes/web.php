@@ -1,4 +1,7 @@
 <?php
+
+use App\Detalle_abasto;
+
 Route::group(['middleware' => ['guest']], function (){
     // Route::get('/login', 'Seguridad\LoginController@index')->name('login');
     Route::get('/', 'Seguridad\LoginController@index')->name('login');
@@ -7,6 +10,8 @@ Route::group(['middleware' => ['guest']], function (){
 
 });
 
+
+Route::get('/test', 'Controller@test');
 Route::group(['middleware' => ['auth']], function () {
     Route::get('/logout', 'Seguridad\LoginController@logout')->name('logout');
 
@@ -33,7 +38,8 @@ Route::group(['middleware' => ['auth']], function () {
     //RUTAS PARA LOS DETALLE_PRODUCTO
     Route::get('/detalle_producto/getDetalle_productoFiltrado', 'Detalle_productoController@getDetalle_productoFiltrado');
     Route::get('/detalle_producto/listProductos', 'Detalle_productoController@listProductos');
-    
+    Route::get('/detalle_producto/getKardex', 'Detalle_productoController@getKardex');
+
     //RUTAS PARA VENTAS
     Route::get('/venta', 'VentaController@listar');
     Route::get('/venta/getVentaWithAll', 'VentaController@getVentaWithAll');

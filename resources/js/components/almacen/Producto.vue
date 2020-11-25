@@ -44,7 +44,7 @@
                                 <!-- <th class="text-center">Fallidos</th> -->
                                 <th class="text-center">Traslado</th>
                                 <th class="text-center">Stock Total</th>
-                                <!-- <th class="text-center">Opción</th> -->
+                                <th class="text-center">Opción</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -57,12 +57,11 @@
                                 <!-- <td v-text="producto.fallidos==0?'---':producto.fallidos" :class="producto.fallidos==0?'text-center':'text-right'"></td> -->
                                 <td v-text="producto.traslado==0?'---':producto.traslado" :class="producto.traslado==0?'text-center':'text-right'"></td>
                                 <td v-text="producto.total" class="text-right"></td>
-                                <!-- <td class="text-center">
-                                    <template v-if="producto.fallidos > 0">
-                                        <button type="button"  title="REPARAR" class="btn btn-info btn-sm" @click="abrirModalReparar(producto)"><i class="fas fa-tools"></i></button>
+                                <td class="text-center">
+                                    <template>
+                                        <button type="button"  title="KARDEX" class="btn btn-info btn-sm" @click="abrirModalKardex(producto)"><i class="fas fa-tools"></i></button>
                                     </template>
-                                    <div v-else>---</div>
-                                </td> -->
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -99,6 +98,7 @@
                     </div>
                     
                     <div class="modal-body">
+                        
                         <!-- Modal Numero 1 de REPARAR-->
                         <div v-if="Modal.numero==1" class="container">
                             <div v-if="Error.estado && (Error.numero==1 || Error.numero==2)" class="row d-flex justify-content-center">
@@ -126,6 +126,63 @@
                                 <label class="col-md-6 font-weight-bold">Cantidad de reparados&nbsp;<span class="text-danger">*</span></label>
                                 <input type="number" class="col-md-6 text-left form-control form-control-sm" v-model="Producto.cant_reparar" placeholder="Ingrese la cantidad reparada" min="1" :max="Producto.fallidos">
                             </div>
+                        </div>
+
+                        <!-- Modal Numero 2 de KARDEX-->
+                        <div v-if="Modal.numero==='kardex'" class="container">
+                            <div class="row form-group">
+                                <div class="col-12">
+                                    <table class="table table-sm table-condensed">
+                                        <thead>
+                                            <tr>
+                                                <td>Mes</td>
+                                                <td>Tipo de transaccion</td>
+                                                <td>Cantidad</td>
+                                                <td>Saldo inicial</td>
+                                                <td>Ingresos</td>
+                                                <td>Salidas</td>
+                                                <td>Saldo final</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td></td>
+                                                <td>Saldo inicial</td>
+                                                <td v-text="Kardex.saldo_inicial"></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td v-text="Kardex.saldo_inicial"></td>
+                                            </tr>
+                                            <tr v-for="movimiento in Movimientos" :key="movimiento.mes">
+                                                <td v-text="movimiento.nombre_mes"></td>
+                                                <td v-text="movimiento.descripcion"></td>
+                                                <td v-text="movimiento.ingreso_total !== 0 ? movimiento.ingreso_total : movimiento.egreso_total"></td>
+                                                <td v-text="movimiento.saldo_inicial"></td>
+                                                <td v-text="movimiento.ingreso_total !==0 ? movimiento.ingreso_total : ''"></td>
+                                                <td v-text="movimiento.egreso_total !==0 ? movimiento.egreso_total : ''"></td>
+                                                <td v-text="movimiento.saldo_final"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <!-- <div class="row form-group">
+                                <label class="col-md-3 font-weight-bold">Nombre</label>
+                                <label class="col-md-9 text-info" v-text="Producto.nombre"></label>
+                            </div>
+                            <div class="row form-group">
+                                <label class="col-md-6 font-weight-bold">Codigo</label>
+                                <label class="col-md-6" v-text="Producto.codigo?Producto.codigo:'---'"></label>
+                            </div>
+                            <div class="row form-group">
+                                <label class="col-md-6 font-weight-bold">Cant. Productos Fallidos</label>
+                                <label class="col-md-6 text-danger" v-text="Producto.fallidos"></label>
+                            </div>
+                            <div class="row">
+                                <label class="col-md-6 font-weight-bold">Cantidad de reparados&nbsp;<span class="text-danger">*</span></label>
+                                <input type="number" class="col-md-6 text-left form-control form-control-sm" v-model="Producto.cant_reparar" placeholder="Ingrese la cantidad reparada" min="1" :max="Producto.fallidos">
+                            </div> -->
                         </div>
                     </div>
 
@@ -164,6 +221,12 @@
                     precio_mayor: 0,
                     fallidos: 0,
                     cant_reparar: null
+                },
+
+                // datos del kardex
+                Movimientos: [],
+                Kardex: {
+                    saldo_inicial: 0
                 },
 
                 //datos de busqueda y filtracion
@@ -287,12 +350,51 @@
 
                 this.Error.estado = 0;
                 this.Error.mensaje = [];
+
+                this.Movimientos = [];
+                this.Kardex.saldo_inicial = 0;
             },
             accionar(){
                 this.Button.press = true;
                 switch( this.Modal.numero ){
                     case 1: this.reparar(); break;
                 }
+            },
+            abrirModalKardex({id}){
+                const url = '/detalle_producto/getKardex';
+                
+                axios.get(url, {
+                    params: {
+                        detalle_producto_id: id,
+                        fecha_inicial: '2020-06-01',
+                        fecha_final: '2020-10-31'
+                    }
+                }).then(response => {
+                    if ( response.data.state !== 'success' ) return;
+
+                    const list = response.data.movimientos;
+                    const saldo_inicial = parseInt(response.data.saldo_inicial);
+                    const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+
+                    for (let i = 0; i < list.length; i++) {
+                        // nombre del mes
+                        list[i].nombre_mes = meses[parseInt(list[i].fecha.substring(5, 7))];
+                        //saldo inicial
+                        list[i].saldo_inicial = i >= 1 ? parseInt(list[i-1].saldo_final) : parseInt(saldo_inicial);
+                        // egreso e ingreso
+                        list[i].ingreso_total = parseInt(list[i].ingreso_total);
+                        list[i].egreso_total = parseInt(list[i].egreso_total);
+                        // saldo final
+                        list[i].saldo_final = list[i].saldo_inicial + (list[i].ingreso_total - list[i].egreso_total);
+                    }
+
+                    this.Movimientos = list;
+                    this.Kardex.saldo_inicial = saldo_inicial;
+                }).catch(error => {
+                    console.error(error);
+                });
+
+                this.abrirModal('kardex', 'Kardex unitario', 'modal-lg', '', 'Cerrar');
             },
             abrirModalReparar(data){
                 this.Producto.id = data.id;

@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Detalle_producto;
 use App\Centro;
+use App\DetalleMovimiento;
+use DateTime;
 
 class Detalle_productoController extends Controller
 {
@@ -26,6 +28,38 @@ class Detalle_productoController extends Controller
                             ->orderBy('producto.nombre', 'asc')->get();
         return [
             'productos' => $productos
+        ];
+    }
+
+    public function getKardex(Request $request)
+    {
+        if ( !$request->ajax() ) return redirect('/');
+
+        $detalle_producto_id = $request->detalle_producto_id;
+        $fecha_inicial = $request->fecha_inicial;
+        $fecha_final = $request->fecha_final;
+        
+        $fecha = 'CONCAT(YEAR(fecha), "-", LPAD(MONTH(fecha), 2, "0"), "-01")';
+
+        $list = DetalleMovimiento::select(DB::raw("$fecha fecha"), 'descripcion', DB::raw('SUM(ingreso) ingreso_total'), DB::raw('SUM(egreso) egreso_total'))
+                                    ->where(DB::raw($fecha), '>=', $fecha_inicial)
+                                    ->where(DB::raw($fecha), '<=', $fecha_final)
+                                    ->where('detalle_producto_id', $detalle_producto_id)
+                                    ->groupBy(DB::raw($fecha), 'descripcion')
+                                    ->orderBy(DB::raw($fecha), 'asc')->get();
+        
+        $saldo_inicial = DetalleMovimiento::select('stock_old')
+                                        ->where('fecha', '<', $fecha_inicial)
+                                        ->orderBy('fecha', 'desc')->first();
+        
+        if ( is_null($saldo_inicial) ) $saldo_inicial = 0;
+        else $saldo_inicial = $saldo_inicial['stock_old'];
+
+
+        return [
+            'state' => 'success',
+            'movimientos' => $list,
+            'saldo_inicial' => $saldo_inicial
         ];
     }
 

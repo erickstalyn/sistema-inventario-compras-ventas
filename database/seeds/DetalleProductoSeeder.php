@@ -21,13 +21,13 @@ class DetalleProductoSeeder extends Seeder
         
         foreach ($centros as $centro) {
             foreach ($productos as $producto) {
-                $detalle = new Detalle_producto();
-                $detalle->centro_id = $centro->id;
-                $detalle->producto_id = $producto->id;
-                $detalle->precio_menor = $producto->precio_menor;
-                $detalle->precio_mayor = $producto->precio_mayor;
-                $detalle->tiempo_espera = $faker->numberBetween(2, 30);
-                $detalle->save();
+                Detalle_producto::create([
+                    'centro_id' => $centro->id,
+                    'producto_id' => $producto->id,
+                    'precio_menor' => $producto->precio_menor,
+                    'precio_mayor' => $producto->precio_mayor,
+                    'tiempo_espera' => $faker->numberBetween(2, 30)
+                ]);
             }
         }
     }

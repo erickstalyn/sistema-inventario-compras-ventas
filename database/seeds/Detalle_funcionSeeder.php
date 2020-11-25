@@ -14,20 +14,15 @@ class Detalle_funcionSeeder extends Seeder
      */
     public function run()
     {
-        $personas = Persona::where('dni', '<>', '71736657')->get();
-        $cliente = Funcion::where('descripcion', 'like', '%cliente%')->first();
-        $proveedor = Funcion::where('descripcion', 'like', '%proveedor%')->first();
+        $personas = Persona::all();
+        $cliente = Funcion::where('descripcion', 'CLIENTE')->first();
+        $proveedor = Funcion::where('descripcion', 'PROVEEDOR')->first();
 
         foreach ($personas as $persona) {
-            if ( $persona->tipo === 'E' ) {
+            if ( $persona->dni !== '71736657' ) {
                 Detalle_funcion::create([
                     'persona_id' => $persona->id,
-                    'funcion_id' => $proveedor->id
-                ]);
-            } else {
-                Detalle_funcion::create([
-                    'persona_id' => $persona->id,
-                    'funcion_id' => $cliente->id
+                    'funcion_id' => $persona->tipo === 'E' ? $proveedor->id : $cliente->id
                 ]);
             }
         }

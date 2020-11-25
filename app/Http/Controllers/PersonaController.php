@@ -12,35 +12,35 @@ class PersonaController extends Controller
 {
     public function listar(Request $request){
         if ( !$request->ajax() ) return redirect('/');
-        $funcion = $request->funcion;
-        $estado = $request->estado;
-        $tipo = $request->tipo;
-        $texto = $request->texto;
-        $filas = $request->filas;
-
+        $funcion = intval($request->funcion);
+        $estado = intval($request->estado);
+        $tipo = is_null($request->tipo) ? '' : $request->tipo;
+        $texto = is_null($request->texto) ? '' : $request->texto;
+        $filas = intval($request->filas);
+        
         $personas = Persona::select('id', 'nombres', 'apellidos','razon_social', 'dni', 'ruc', 'direccion', 'telefono', 'email', 'tipo', 'estado')
                         ->join('detalle_funcion','detalle_funcion.persona_id', 'persona.id')
                         ->where(function ($query) use ($estado) {
-                            if ( $estado != 2 ) {
+                            if ( $estado !== 2 ) {
                                 $query->where('detalle_funcion.estado', '=', $estado);
                             }
                         })
                         ->where(function ($query) use ($tipo) {
-                            if ( $tipo != '' ) {
+                            if ( $tipo !== '' ) {
                                 $query->where('persona.tipo', '=', $tipo);
                             }
                         })
                         ->where(function ($query) use ($texto) {
-                            if ( $texto != '' ) {
-                                $query->orWhere(DB::raw("concat(persona.apellidos , ' ', persona.nombres)"), 'like', $texto .'%')
-                                    ->orWhere(DB::raw("concat(persona.nombres , ' ', persona.apellidos)"), 'like', $texto .'%')
-                                    ->orWhere('persona.dni', 'like', $texto . '%')
-                                    ->orWhere('persona.razon_social', 'like', $texto.'%')
-                                    ->orWhere('persona.ruc', 'like', $texto . '%');
+                            if ( $texto !== '' ) {
+                                $query->orWhere(DB::raw("concat(persona.apellidos , ' ', persona.nombres)"), 'like', "%$texto%")
+                                    ->orWhere(DB::raw("concat(persona.nombres , ' ', persona.apellidos)"), 'like', "%$texto%")
+                                    ->orWhere('persona.dni', 'like', "%$texto%")
+                                    ->orWhere('persona.razon_social', 'like', "%$texto%")
+                                    ->orWhere('persona.ruc', 'like', "%$texto%");
                             }
                         })
                         ->where(function ($query) use ($funcion) {
-                            if ( $funcion != '' ) {
+                            if ( $funcion === 1 || $funcion === 2 || $funcion === 3 ) {
                                 $query->where('detalle_funcion.funcion_id', $funcion);
                             }
                         })

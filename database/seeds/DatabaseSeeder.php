@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
         $this->call(AbastoSeeder::class);
         $this->call(DetalleAbastoSeeder::class);
         $this->call(EnvioSeeder::class);
-        $this->call(DetalleEnvioSeeder::class);
+
+        $this->call(DetalleMovimientoSeeder::class);
     }
 }

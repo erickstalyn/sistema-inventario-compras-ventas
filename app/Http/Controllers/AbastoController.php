@@ -28,10 +28,10 @@ class AbastoController extends Controller
         $hoy = Carbon::now('America/Lima')->toDateString();
         
         //Fechas
-        $dia = $request->dia;
-        $mes = $request->mes;
-        $year = $request->year;
-
+        $dia = is_null($request->dia) ? '' : $request->dia;
+        $mes = is_null($request->mes) ? '' : $request->mes;
+        $year = is_null($request->year) ? '' : $request->year;
+        
         $abastos = Abasto::select('abasto.id as id', DB::raw("concat_ws(' ', persona.nombres, persona.apellidos) as proveedor_persona"),
                         'persona.razon_social as proveedor_empresa', 'persona.dni as dni', 'persona.ruc as ruc',
                         'centro_to_id', 'centro.nombre as nombre_centro', 'abasto.created_at as fecha_envio',
@@ -52,10 +52,10 @@ class AbastoController extends Controller
                                     $query->where('envio.estado', '=', $estado);
                                 }
                             })
-                            // ->where(function ($query) use ($dia, $mes, $year) {
-                            //     if ( $dia !== '' ) $query->whereDay('abasto.created_at', $dia);
-                            //     if ( $mes !== '' ) $query->whereMonth('abasto.created_at', $mes);
-                            //     if ( $year !== '' ) $query->whereYear('abasto.created_at', $year);
+                            ->where(function ($query) use ($dia, $mes, $year) {
+                                if ( $dia !== '' ) $query->whereDay('abasto.created_at', $dia);
+                                if ( $mes !== '' ) $query->whereMonth('abasto.created_at', $mes);
+                                if ( $year !== '' ) $query->whereYear('abasto.created_at', $year);
                             //     // if($dia != '' && $mes != '' && $year != ''){//todos los campos llenos
                             //     //     $query->whereDay('abasto.created_at', $dia)
                             //     //         ->whereMonth('abasto.created_at', $mes)
@@ -77,8 +77,8 @@ class AbastoController extends Controller
                             //     //     $query->whereYear('abasto.created_at', $year);
                             //     // }else{
                             //     // }
-                            // })
-                            // ->where('abasto.centro_id', '=', null)
+                            })
+                            ->where('abasto.centro_id', '=', null)
                             // ->orderBy('abasto.id', 'asc')->get();
                             ->orderBy('abasto.created_at', 'desc')->paginate($filas);
 

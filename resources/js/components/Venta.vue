@@ -143,14 +143,14 @@
                             <div class="col-md-12 p-0 m-0 input-group" v-if="Step.number==0" style="height: 26rem;">
                                 <div class="container-small col-md-4">
                                     <div v-if="Modal.step==0" class="shadow rounded bg-warning" style="border: 1px solid; height: 26rem;">
-                                        <div class="container-small col-md-12 input-group form-group p-0">
+                                        <!-- <div class="container-small col-md-12 input-group form-group p-0">
                                             <button type="button" class="col-md-6 btn btn-warning btn" @click="Modal.step=0" style="border: 1px solid; border-color: black;">
                                                 <label class="font-weight-bold m-0" style="color: black;">Productos</label>
                                             </button>
                                             <button type="button" class="col-md-6 btn btn-info" @click="Modal.step=1" style="border: 1px solid; border-color: black;">
                                                 <label class="font-weight-bold m-0" style="color: black;">Adquiridos</label>
                                             </button>
-                                        </div>
+                                        </div> -->
                                         <div class="col-md-12 form-group">
                                             <label class="h5 mb-0 font-weight-bold">LISTA DE PRODUCTOS</label>
                                         </div>

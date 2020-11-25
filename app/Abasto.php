@@ -33,5 +33,8 @@ class Abasto extends Model
         return $this->hasMany('App\Detalle_abasto', 'abasto_id');
     }
 
-
+    public function getEnvio()
+    {
+        return $this->hasOne('App\Envio');
+    }
 }

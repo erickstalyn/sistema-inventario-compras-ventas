@@ -26,8 +26,16 @@ class EnvioSeeder extends Seeder
                 'abasto_id' => $abasto->id,
                 'created_at' => $abasto->created_at,
                 'updated_at' => $updated_at,
-                'estado' => is_null($updated_at) ? 0 : 1
+                'estado' => 0
             ]);
         }
+
+        $envios = Envio::where('updated_at', '<>', NULL)->get();
+
+        foreach ($envios as $envio) {
+            $envio->estado = 1;
+            $envio->updated_at = $envio->updated_at;
+            $envio->save();
+        };
     }
 }
