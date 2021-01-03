@@ -90,7 +90,7 @@ export default {
         lastItem: 0,
       },
       ruta: {
-        categoria: "/categoria"
+        categoria: "EC_ci/pubic/categoria"
       },
     }
   },

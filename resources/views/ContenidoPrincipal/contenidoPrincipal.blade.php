@@ -5,7 +5,7 @@
     @if(Auth::check())
         @if(Auth::user()->getRol->id===1)
             <template v-if="menu==1">
-                <adm_material></adm_material>
+                {{-- <adm_material></adm_material> --}}
             </template>
             <template v-if="menu==2">
                 <adm_categoria></adm_categoria>
